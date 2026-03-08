@@ -1,0 +1,224 @@
+.footer {
+  margin-top: 4rem;
+  background: linear-gradient(170deg, var(--color-green) 0%, var(--color-green-dark) 100%);
+  color: var(--color-white);
+}
+
+/* ── Top section ── */
+.top {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 2rem 1.5rem;
+}
+
+/* Brand row */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.brandName {
+  font-weight: 800;
+  font-size: var(--font-size-lg);
+  line-height: 1.2;
+}
+
+.brandSub {
+  font-size: var(--font-size-xs);
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+/* Columns */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 3rem;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.colCentered {
+  composes: col;
+}
+
+.colEnd {
+  composes: col;
+  margin-left: auto;
+}
+
+.heading {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-yellow);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Address ── */
+.address {
+  font-style: normal;
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  opacity: 0.85;
+  display: flex;
+  flex-direction: column;
+}
+
+.address strong {
+  opacity: 1;
+  font-weight: 700;
+}
+
+.addressLink {
+  display: flex;
+  flex-direction: column;
+  transition: opacity var(--transition-fast);
+}
+
+.addressLink:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Email ── */
+.email {
+  margin-top: 1rem;
+}
+
+.email a {
+  font-size: var(--font-size-sm);
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-underline-offset: 3px;
+}
+
+.email a:hover {
+  opacity: 1;
+  text-decoration-color: var(--color-yellow);
+}
+
+/* ── Social buttons ── */
+.socials {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  padding: 0.5rem 1.1rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.socialBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Newsletter ── */
+.newsletterForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  display: flex;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: border-color var(--transition-fast);
+}
+
+.inputGroup:focus-within {
+  border-color: var(--color-yellow);
+}
+
+.emailInput {
+  flex: 1;
+  padding: 0.65rem 0.9rem;
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  outline: none;
+}
+
+.emailInput::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.subscribeBtn {
+  padding: 0.65rem 1.4rem;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--color-black);
+  background: var(--color-yellow);
+  border: none;
+  transition: background var(--transition-fast);
+}
+
+.subscribeBtn:hover {
+  background: var(--color-yellow-dark);
+}
+
+/* ── Bottom bar ── */
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  padding: 1rem 2rem;
+  font-size: var(--font-size-xs);
+  opacity: 0.5;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .top {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .columns {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .colEnd {
+    margin-left: 0;
+  }
+
+  .colCentered {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+}

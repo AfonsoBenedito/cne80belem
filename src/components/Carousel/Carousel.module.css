@@ -1,0 +1,143 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  overflow: hidden;
+  background-color: var(--color-black);
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  transition: transform 600ms ease-in-out;
+}
+
+.slide {
+  min-width: 100%;
+  height: 100%;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.65) 100%
+  );
+  pointer-events: none;
+}
+
+/* Static text */
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--color-white);
+  z-index: 2;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  margin-top: var(--spacing-sm);
+  color: var(--color-yellow);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+
+.btnGreen {
+  padding: 0.75rem 2rem;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--color-green);
+  border-radius: 100px;
+  transition: background var(--transition-fast);
+}
+
+.btnGreen:hover {
+  background: var(--color-green-dark);
+}
+
+.btnWhite {
+  padding: 0.75rem 2rem;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-black);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 100px;
+  transition: background var(--transition-fast);
+}
+
+.btnWhite:hover {
+  background: var(--color-white);
+}
+
+/* Dots */
+.dots {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--spacing-sm);
+  z-index: 3;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid var(--color-white);
+  transition: background-color var(--transition-fast);
+}
+
+.dot:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.dotActive {
+  background-color: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    height: 60vh;
+  }
+
+  .dots {
+    bottom: var(--spacing-md);
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+}
