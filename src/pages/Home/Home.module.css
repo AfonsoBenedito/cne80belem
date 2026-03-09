@@ -1,0 +1,27 @@
+.home {}
+
+.welcome {
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-green);
+}
+
+.subtitle {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-yellow-dark);
+  margin-top: var(--spacing-xs);
+}
+
+.description {
+  max-width: 600px;
+  margin: var(--spacing-lg) auto 0;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-lg);
+  line-height: 1.8;
+}
