@@ -1,0 +1,485 @@
+.page {
+  padding: 3rem 0 4rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-green);
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-500);
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filterToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--color-gray-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-fast);
+}
+
+.filterToggle:hover {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+
+.filterToggleActive {
+  border-color: var(--color-green);
+  background: var(--color-green-light);
+  color: var(--color-green);
+}
+
+.filterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--color-white);
+  background: var(--color-green);
+  border-radius: 50%;
+}
+
+.clearBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--color-gray-500);
+  background: none;
+  border: none;
+  transition: color var(--transition-fast);
+}
+
+.clearBtn:hover {
+  color: #e74c3c;
+}
+
+/* ── Filter panel (in-flow) ── */
+.filterPanel {
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  animation: slideDown 200ms ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filterRow {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Presets */
+.presets {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.preset {
+  padding: 0.35rem 0.85rem;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  font-family: inherit;
+  color: var(--color-gray-500);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 100px;
+  transition: all var(--transition-fast);
+}
+
+.preset:hover {
+  color: var(--color-green);
+  border-color: var(--color-green);
+}
+
+.presetActive {
+  color: var(--color-white);
+  background: var(--color-green);
+  border-color: var(--color-green);
+}
+
+.presetActive:hover {
+  color: var(--color-white);
+  background: var(--color-green-dark);
+  border-color: var(--color-green-dark);
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.filterLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterSelect {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-black);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--border-radius);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  width: 100%;
+}
+
+.filterSelect:focus {
+  border-color: var(--color-green);
+}
+
+/* ── Date picker overrides ── */
+.calendar {
+  font-family: var(--font-family) !important;
+  border: 1px solid var(--color-gray-200) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+:global(.react-datepicker__header) {
+  background: var(--color-green) !important;
+  border-bottom: none !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding-top: 0.75rem !important;
+}
+
+:global(.react-datepicker__current-month),
+:global(.react-datepicker__day-name) {
+  color: var(--color-white) !important;
+  font-family: var(--font-family) !important;
+}
+
+:global(.react-datepicker__current-month) {
+  font-weight: 700 !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+:global(.react-datepicker__day-name) {
+  font-size: var(--font-size-xs) !important;
+  font-weight: 600 !important;
+}
+
+:global(.react-datepicker__day) {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-sm) !important;
+  border-radius: 50% !important;
+  transition: background 150ms ease, color 150ms ease !important;
+}
+
+:global(.react-datepicker__day:hover) {
+  background: var(--color-green-light) !important;
+  color: var(--color-green) !important;
+}
+
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--range-start),
+:global(.react-datepicker__day--range-end) {
+  background: var(--color-green) !important;
+  color: var(--color-white) !important;
+}
+
+:global(.react-datepicker__day--in-range),
+:global(.react-datepicker__day--in-selecting-range) {
+  background: var(--color-green-light) !important;
+  color: var(--color-green) !important;
+}
+
+:global(.react-datepicker__navigation) {
+  top: 10px !important;
+}
+
+:global(.react-datepicker__navigation-icon::before) {
+  border-color: var(--color-white) !important;
+}
+
+:global(.react-datepicker__close-icon) {
+  padding: 0 6px 0 0 !important;
+}
+
+:global(.react-datepicker__close-icon::after) {
+  background: var(--color-gray-500) !important;
+  font-size: 12px !important;
+  width: 18px !important;
+  height: 18px !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+}
+
+/* ── View toggle ── */
+.viewToggle {
+  display: flex;
+  margin-left: auto;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.viewBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 36px;
+  background: var(--color-white);
+  color: var(--color-gray-500);
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.viewBtn:not(:last-child) {
+  border-right: 1px solid var(--color-gray-200);
+}
+
+.viewBtn:hover {
+  color: var(--color-green);
+}
+
+.viewBtnActive {
+  background: var(--color-green);
+  color: var(--color-white);
+}
+
+.viewBtnActive:hover {
+  color: var(--color-white);
+}
+
+/* ── Result count ── */
+.resultCount {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  margin-bottom: 1.5rem;
+}
+
+/* ── Empty ── */
+.empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-lg);
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.cardImage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.card:hover .cardImage img {
+  transform: scale(1.05);
+}
+
+.cardSection {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-white);
+  background: var(--color-green);
+  border-radius: 100px;
+}
+
+.cardBody {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardTitle {
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  color: var(--color-black);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardExcerpt {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+}
+
+.cardMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ── List view ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.listCard {
+  display: flex;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.listCard:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.listImage {
+  position: relative;
+  width: 260px;
+  min-height: 160px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.listImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.listCard:hover .listImage img {
+  transform: scale(1.05);
+}
+
+.listBody {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .listCard {
+    flex-direction: column;
+  }
+
+  .listImage {
+    width: 100%;
+    min-height: 180px;
+  }
+
+  .filterRow {
+    flex-direction: column;
+  }
+
+  .filterPanel {
+    padding: 1rem;
+  }
+}
