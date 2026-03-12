@@ -1,0 +1,44 @@
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-green);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 90;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.fab:hover {
+  background: var(--color-green-dark);
+  transform: scale(1.08);
+}
+
+.fabScrolled {
+  background: var(--color-green);
+}
+
+.iconWrap {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.icon {
+  position: absolute;
+  inset: 0;
+  transition: opacity 300ms ease, transform 300ms ease;
+  opacity: 0;
+  transform: scale(0.5) rotate(-90deg);
+}
+
+.iconVisible {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
