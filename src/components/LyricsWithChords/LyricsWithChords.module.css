@@ -1,0 +1,93 @@
+.lyrics {
+  padding: 2rem;
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 16px;
+}
+
+.stanza {
+  margin-bottom: 1.75rem;
+}
+
+.stanza:last-child {
+  margin-bottom: 0;
+}
+
+.stanzaChorus .lyricLine {
+  font-weight: 700;
+  color: var(--color-green-dark);
+}
+
+/* ── Intro line ── */
+.introLine {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.introLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-500);
+  margin-right: 0.25rem;
+}
+
+/* ── Line ── */
+.lyricLine {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-700);
+  line-height: 1.8;
+}
+
+.lyricLineWithChords {
+  margin-top: 1.4em;
+}
+
+.lyricLineWithChords:first-child {
+  margin-top: 0;
+  padding-top: 1.4em;
+}
+
+/* ── Segment: inline unit with chord above text ── */
+.segment {
+  position: relative;
+  display: inline;
+}
+
+.segmentPlain {
+  display: inline;
+}
+
+.chordAbove {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 2px);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* ── Chord badge ── */
+.chordAnchor {
+  position: relative;
+  display: inline-block;
+}
+
+.chord {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  color: var(--color-green);
+  background: var(--color-green-light);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Show popup on hover */
+.chordAnchor:hover > div {
+  opacity: 1;
+  pointer-events: auto;
+}

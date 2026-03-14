@@ -13,6 +13,10 @@ import UnderConstruction from './pages/UnderConstruction/UnderConstruction';
 import Seccao from './pages/Seccao/Seccao';
 import Provas from './pages/Provas/Provas';
 import ProvaDetail from './pages/ProvaDetail/ProvaDetail';
+import Programa from './pages/Programa/Programa';
+import Contactos from './pages/Contactos/Contactos';
+import Cancioneiro from './pages/Cancioneiro/Cancioneiro';
+import CancaoDetail from './pages/CancaoDetail/CancaoDetail';
 import FloatingBtn from './components/FloatingBtn/FloatingBtn';
 
 export default function App() {
@@ -35,13 +39,16 @@ export default function App() {
         <Route path="/seccao/pioneiros/abrigo" element={<Noticias fixedSection="Pioneiros" hideHero />} />
         <Route path="/seccao/caminheiros/base" element={<Noticias fixedSection="Caminheiros" hideHero />} />
         {/* Section sub-pages */}
+        <Route path="/seccao/:seccao/programa" element={<Programa />} />
         <Route path="/seccao/:seccao/provas" element={<Provas />} />
         <Route path="/seccao/:seccao/provas/:slug" element={<ProvaDetail />} />
         {/* Pages under construction */}
         <Route path="/seccao/:seccao/*" element={<UnderConstruction />} />
+        <Route path="/recursos/cancioneiro" element={<Cancioneiro />} />
+        <Route path="/recursos/cancioneiro/:slug" element={<CancaoDetail />} />
         <Route path="/recursos/*" element={<UnderConstruction />} />
         <Route path="/links" element={<UnderConstruction />} />
-        <Route path="/contactos" element={<UnderConstruction />} />
+        <Route path="/contactos" element={<Contactos />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
