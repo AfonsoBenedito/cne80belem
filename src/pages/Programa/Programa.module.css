@@ -1,0 +1,254 @@
+.page {
+  padding-bottom: 4rem;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 3.5rem 0;
+  overflow: hidden;
+}
+
+.heroBadge {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 220%;
+  width: auto;
+  opacity: 0.3;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  border-radius: 70%;
+}
+
+.heroLabel {
+  position: relative;
+  z-index: 1;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.25rem;
+}
+
+.heroTitle {
+  position: relative;
+  z-index: 1;
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-white);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.heroSub {
+  position: relative;
+  z-index: 1;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 0.5rem;
+}
+
+/* ── Calendar grid ── */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+/* ── Month ── */
+.month {
+  display: flex;
+  flex-direction: column;
+}
+
+.monthName {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  text-align: center;
+  padding: 0.6rem;
+  border-radius: 10px 10px 0 0;
+  color: var(--color-white);
+  margin: 0;
+}
+
+.weeks {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-gray-200);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+
+/* ── Week row ── */
+.week {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.week:last-child,
+.weekMerged:last-child {
+  border-bottom: none;
+}
+
+/* ── Merged multi-day row ── */
+.weekMerged {
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.dayMerged {
+  padding: 0.6rem 0.65rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dayMerged .event {
+  font-size: var(--font-size-base);
+  font-weight: 800;
+}
+
+.dayMerged .dayNumber {
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+  color: var(--color-white);
+}
+
+.dayRange {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-400);
+}
+
+/* ── Day cell ── */
+.day {
+  padding: 0.6rem 0.65rem;
+  min-height: 80px;
+  border-right: 1px solid var(--color-gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.day:last-child {
+  border-right: none;
+}
+
+.dayActive {
+  background: var(--color-white);
+}
+
+.dayEmpty {
+  background: var(--color-gray-100);
+  opacity: 0.5;
+}
+
+.dayHighlight {
+  font-weight: 700;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dayNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-gray-400);
+  background: var(--color-gray-100);
+  flex-shrink: 0;
+}
+
+.dayActive .dayNumber {
+  color: var(--color-white);
+}
+
+.dayWeekday {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-gray-400);
+}
+
+.dayNextMonth {
+  color: var(--color-gray-300);
+}
+
+/* ── Events ── */
+.events {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+}
+
+.event {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--color-black);
+}
+
+.subtitle {
+  font-size: 10px;
+  color: var(--color-gray-400);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ── Note ── */
+.note {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-gray-200);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .calendar {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 2.5rem 0;
+  }
+
+  .calendar {
+    margin-top: 1.5rem;
+  }
+
+  .day {
+    min-height: 70px;
+    padding: 0.5rem;
+  }
+}

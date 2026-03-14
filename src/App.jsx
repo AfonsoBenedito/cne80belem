@@ -11,6 +11,8 @@ import NoticiaDetail from './pages/NoticiaDetail/NoticiaDetail';
 import NotFound from './pages/NotFound/NotFound';
 import UnderConstruction from './pages/UnderConstruction/UnderConstruction';
 import Seccao from './pages/Seccao/Seccao';
+import Provas from './pages/Provas/Provas';
+import ProvaDetail from './pages/ProvaDetail/ProvaDetail';
 import FloatingBtn from './components/FloatingBtn/FloatingBtn';
 
 export default function App() {
@@ -32,6 +34,9 @@ export default function App() {
         <Route path="/seccao/exploradores/cabana" element={<Noticias fixedSection="Exploradores" hideHero />} />
         <Route path="/seccao/pioneiros/abrigo" element={<Noticias fixedSection="Pioneiros" hideHero />} />
         <Route path="/seccao/caminheiros/base" element={<Noticias fixedSection="Caminheiros" hideHero />} />
+        {/* Section sub-pages */}
+        <Route path="/seccao/:seccao/provas" element={<Provas />} />
+        <Route path="/seccao/:seccao/provas/:slug" element={<ProvaDetail />} />
         {/* Pages under construction */}
         <Route path="/seccao/:seccao/*" element={<UnderConstruction />} />
         <Route path="/recursos/*" element={<UnderConstruction />} />

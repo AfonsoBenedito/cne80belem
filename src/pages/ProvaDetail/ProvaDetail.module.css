@@ -37,7 +37,7 @@
 .heroTitle {
   position: relative;
   z-index: 1;
-  font-size: var(--font-size-3xl);
+  font-size: var(--font-size-2xl);
   font-weight: 800;
   color: var(--color-white);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -224,6 +224,10 @@
 @media (max-width: 768px) {
   .hero {
     padding: 2.5rem 0;
+  }
+
+  .heroTitle {
+    font-size: var(--font-size-xl);
   }
 
   .layout {
