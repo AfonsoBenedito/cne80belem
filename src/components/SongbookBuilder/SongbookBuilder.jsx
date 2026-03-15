@@ -1,6 +1,7 @@
 import { useState, useRef, useLayoutEffect, useCallback } from 'react';
-import { FaMusic, FaTimes, FaGripVertical, FaPlus, FaCheck, FaDownload } from 'react-icons/fa';
+import { FaMusic, FaTimes, FaGripVertical, FaPlus, FaCheck, FaDownload, FaImage, FaSearch } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
+import { normalize } from '../../utils/normalize';
 import styles from './SongbookBuilder.module.css';
 
 const sorted = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
@@ -13,7 +14,10 @@ export default function SongbookBuilder({ onClose }) {
   const [description, setDescription] = useState('');
   const [layout, setLayout] = useState('vertical');
   const [generating, setGenerating] = useState(false);
+  const [customLogo, setCustomLogo] = useState(null);
+  const [search, setSearch] = useState('');
 
+  const logoInputRef = useRef(null);
   const dragSlug = useRef(null);
   const itemRefs = useRef({});
   const prevRects = useRef({});
@@ -90,6 +94,14 @@ export default function SongbookBuilder({ onClose }) {
     dragSlug.current = null;
   }
 
+  function handleLogoUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setCustomLogo(reader.result);
+    reader.readAsDataURL(file);
+  }
+
   async function handleGenerate() {
     if (selected.length === 0) return;
     setGenerating(true);
@@ -100,6 +112,7 @@ export default function SongbookBuilder({ onClose }) {
         title: title || 'Cancioneiro',
         description,
         layout,
+        customLogo,
       });
     } finally {
       setGenerating(false);
@@ -122,8 +135,18 @@ export default function SongbookBuilder({ onClose }) {
           {/* Left: Song picker */}
           <div className={styles.pickerCol}>
             <h3 className={styles.colTitle}>Canções disponíveis</h3>
+            <div className={styles.searchWrapper}>
+              <FaSearch size={12} className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Procurar canção..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={styles.searchInput}
+              />
+            </div>
             <div className={styles.songList}>
-              {sorted.map((song) => (
+              {sorted.filter((song) => normalize(song.title).includes(normalize(search))).map((song) => (
                 <button
                   key={song.slug}
                   className={`${styles.songItem} ${isSelected(song.slug) ? styles.songItemSelected : ''}`}
@@ -171,12 +194,34 @@ export default function SongbookBuilder({ onClose }) {
                 >
                   Horizontal
                 </button>
+              </div>
+              <div className={styles.logoUpload}>
+                <span className={styles.layoutLabel}>Capa:</span>
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className={styles.hiddenInput}
+                />
                 <button
-                  className={`${styles.layoutBtn} ${layout === 'booklet' ? styles.layoutBtnActive : ''}`}
-                  onClick={() => setLayout('booklet')}
+                  className={`${styles.layoutBtn} ${customLogo ? styles.layoutBtnActive : ''}`}
+                  onClick={() => logoInputRef.current?.click()}
                 >
-                  Modo Livro
+                  <FaImage size={11} />
+                  {customLogo ? 'Alterar ícone' : 'Carregar ícone'}
                 </button>
+                {customLogo && (
+                  <>
+                    <img src={customLogo} alt="Ícone" className={styles.logoPreview} />
+                    <button
+                      className={styles.removeLogoBtn}
+                      onClick={() => { setCustomLogo(null); if (logoInputRef.current) logoInputRef.current.value = ''; }}
+                    >
+                      <FaTimes size={10} />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
