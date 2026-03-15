@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
-import { transposeChord } from '../../config/chords';
+import { transposeChord, chordToSolfege } from '../../config/chords';
 import ChordDiagram from '../ChordDiagram/ChordDiagram';
 import styles from './LyricsWithChords.module.css';
 
-function ChordLabel({ chord, semitones, variantMap, onChangeVariant }) {
+function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) {
   const transposed = transposeChord(chord, semitones);
+  const display = solfege ? chordToSolfege(transposed) : transposed;
   const [hovering, setHovering] = useState(false);
 
   return (
@@ -13,7 +14,7 @@ function ChordLabel({ chord, semitones, variantMap, onChangeVariant }) {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      <span className={styles.chord}>{transposed}</span>
+      <span className={styles.chord}>{display}</span>
       {hovering && (
         <ChordDiagram
           transposedChord={transposed}
@@ -70,6 +71,7 @@ export default function LyricsWithChords({
   lyricsWithChords,
   showChords,
   semitones,
+  solfege,
 }) {
   const [variantMap, setVariantMap] = useState({});
 
@@ -103,6 +105,7 @@ export default function LyricsWithChords({
                   key={ci}
                   chord={chord}
                   semitones={semitones}
+                  solfege={solfege}
                   variantMap={variantMap}
                   onChangeVariant={handleChangeVariant}
                 />
@@ -134,6 +137,7 @@ export default function LyricsWithChords({
                         <ChordLabel
                           chord={seg.chord}
                           semitones={semitones}
+                          solfege={solfege}
                           variantMap={variantMap}
                           onChangeVariant={handleChangeVariant}
                         />

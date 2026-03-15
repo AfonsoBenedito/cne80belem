@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaMusic, FaChevronRight, FaSearch, FaBookOpen } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
+import { normalize } from '../../utils/normalize';
 import SongbookBuilder from '../../components/SongbookBuilder/SongbookBuilder';
 import styles from './Cancioneiro.module.css';
 
@@ -12,7 +13,7 @@ export default function Cancioneiro() {
   const [showBuilder, setShowBuilder] = useState(false);
 
   const filtered = useMemo(
-    () => sorted.filter((s) => s.title.toLowerCase().includes(search.toLowerCase())),
+    () => sorted.filter((s) => normalize(s.title).includes(normalize(search))),
     [search],
   );
 

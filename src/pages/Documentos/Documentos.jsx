@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { FaFilePdf, FaTimes, FaDownload } from 'react-icons/fa';
+import { FaFilePdf, FaTimes, FaDownload, FaSearch } from 'react-icons/fa';
 import { documentos } from '../../config/documentos';
+import { normalize } from '../../utils/normalize';
 import styles from './Documentos.module.css';
 
 export default function Documentos() {
   const [activeDoc, setActiveDoc] = useState(null);
+  const [search, setSearch] = useState('');
 
   const handleSelect = (doc) => {
     setActiveDoc((prev) => (prev?.name === doc.name ? null : doc));
   };
+
+  const filtered = documentos.filter((doc) =>
+    normalize(doc.name).includes(normalize(search))
+  );
 
   return (
     <main className={styles.page}>
@@ -21,9 +27,22 @@ export default function Documentos() {
         </header>
 
         <div className={styles.layout}>
-          {/* Document list */}
-          <ul className={styles.list}>
-            {documentos.map((doc) => (
+          {/* Sidebar */}
+          <div className={styles.sidebar}>
+            <div className={styles.searchWrapper}>
+              <FaSearch className={styles.searchIcon} />
+              <input
+                type="text"
+                className={styles.searchInput}
+                placeholder="Pesquisar documento..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            {/* Document list */}
+            <ul className={styles.list}>
+              {filtered.map((doc) => (
               <li key={doc.name}>
                 <button
                   className={`${styles.docItem} ${activeDoc?.name === doc.name ? styles.docItemActive : ''}`}
@@ -37,7 +56,11 @@ export default function Documentos() {
                 </button>
               </li>
             ))}
+            {filtered.length === 0 && (
+              <p className={styles.noResults}>Nenhum documento encontrado.</p>
+            )}
           </ul>
+          </div>
 
           {/* PDF viewer */}
           <div className={styles.viewer}>

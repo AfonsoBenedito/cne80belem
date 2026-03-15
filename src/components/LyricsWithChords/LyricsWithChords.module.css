@@ -91,3 +91,27 @@
   opacity: 1;
   pointer-events: auto;
 }
+
+/* ── Mobile adjustments ── */
+@media (max-width: 768px) {
+  .lyrics {
+    padding: 1.25rem;
+  }
+
+  .lyricLine {
+    font-size: var(--font-size-sm);
+  }
+
+  .chord {
+    font-size: 0.65rem;
+    padding: 0.05em 0.3em;
+  }
+
+  .lyricLineWithChords {
+    margin-top: 1.2em;
+  }
+
+  .lyricLineWithChords:first-child {
+    padding-top: 1.2em;
+  }
+}
