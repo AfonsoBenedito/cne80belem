@@ -2,7 +2,7 @@ export const cancoes = [
   {
     slug: 'sopro-leve',
     title: 'Sopro Leve',
-    author: 'Gonçalo Sarávia',
+    author: '',
     youtubeId: '1qk0mI6kZJI?start=28',
     key: 'D',
     lyricsWithChords: `[D]Eu sinto que vem do Céu um sopro [A]leve
@@ -67,7 +67,7 @@ A vontade de o amar.`,
   {
     slug: 'pai-melhor-amigo',
     title: 'Pai, Melhor Amigo',
-    author: 'CUPAV',
+    author: '',
     youtubeId: '',
     soundcloudUrl: 'https://soundcloud.com/coro-do-cupav/pai',
     key: 'C',
@@ -102,7 +102,7 @@ O que a vida trouxer
   {
     slug: 'dar-mais',
     title: 'Dar Mais',
-    author: 'John Bucchino / Grupo das Terças',
+    author: '',
     youtubeId: 'OF2zq0rn1ME',
     key: 'G',
     lyricsWithChords: `{Intro: G Dm C Am}
@@ -145,7 +145,7 @@ Tu tens que dar um pouco m[C]ais do que tens[G]`,
   {
     slug: 'impele-a-tua-propria-canoa',
     title: 'Impele a Tua Própria Canoa',
-    author: 'Alexandre Reis / Pe. José Nuno',
+    author: '',
     youtubeId: 'IieUUcEeNwE',
     key: 'G',
     lyricsWithChords: `Não dei[G]xes cair teus o[Am7]lhos
@@ -181,252 +181,202 @@ Impele a [D]tua própria ca[G]noa`,
   {
     slug: 'em-nome-do-pai',
     title: 'Em Nome do Pai',
-    author: 'Paullo Roberto',
-    youtubeId: '',
-    key: 'D',
-    lyricsWithChords: `[D]Em nome do [G]Pai, do [A]Filho
-E do Espírito [D]Santo
-[D]Em nome do [G]Pai, do [A]Filho
-E do Espírito [D]Santo
+    author: '',
+    youtubeId: 'aGcfWBbas8U',
+    key: 'G',
+    lyricsWithChords: `{R}Em nome do [G]Pai, em nome do [C]Filho,
+em nome do Esp[G]írito Santo, [D]estamos aqu[G]i,
 
-[Bm]Deus Trino que me [G]ama
-[A]Deus Trino que me [D]criou
-[Bm]Deus Trino eu Te [G]louvo
-[A]Deus Trino eu Te a[D]doro
+Para louv[C]ar e agrade[D]cer, bendi[Bm]zer e ador[Em]ar:
+estamos aqu[C]i, Senh[Am]or, ao Teu disp[D]or.
 
-[D]Em nome do [G]Pai, do [A]Filho
-E do Espírito [D]Santo
-[D]Ámen, á[G]men, á[A]men, á[D]men`,
+Para louv[C]ar e agrade[D]cer, bendi[Bm]zer e ador[Em]ar:
+e aclam[C]ar [D]Deus Trino de Am[G]or.`,
   },
   {
     slug: 'perdoai-a-nossa-culpa',
     title: 'Perdoai a Nossa Culpa',
-    author: 'J. Acácio Santana',
-    youtubeId: '',
+    author: '',
+    youtubeId: 'AMSh305Xacw',
     key: 'D',
-    lyricsWithChords: `[D]Senhor, tende pie[A]dade
-E [D]perdoai a nossa [G]culpa
-E per[D]doai a nossa [A]culpa
-Porque [Bm]nós somos Vosso [G]Povo
-Que [A]vem pedir Vosso per[D]dão
+    lyricsWithChords: `S[D]enhor, tende pi[G]edade e per[A]doai noss[D]a culpa [G]
+E perdo[A]ai nossa [D]culpa
+Porq[G]ue nós [A]somos vosso [D]povo [Bm]
+Que vem [E]pedir vosso per[A]dão [D]
 
-[D]Senhor, nós Vos pe[A]dimos
-[D]Perdão pelas nossas [G]faltas
-Per[D]dão pelas nossas [A]faltas
-Porque [Bm]nós somos Vosso [G]Povo
-Que [A]vem pedir Vosso per[D]dão
+Cristo, tende piedade e perdoai nossa culpa
+E perdoai nossa culpa
+Porque nós somos o vosso povo
+Que vem pedir vosso perdão
 
-[D]Senhor, tende pie[A]dade
-E [D]perdoai a nossa [G]culpa
-E per[D]doai a nossa [A]culpa
-Porque [Bm]nós somos Vosso [G]Povo
-Que [A]vem pedir Vosso per[D]dão`,
+Senhor, tende piedade e perdoai nossa culpa
+E perdoai nossa culpa
+Porque nós somos vosso povo
+Que vem pedir vosso perdão `,
   },
   {
     slug: 'promessa',
     title: 'Promessa (Minha Promessa Atende)',
-    author: 'Padre Sevin',
-    youtubeId: '',
+    author: '',
+    youtubeId: 'CITMNsLDFUU',
     key: 'C',
-    lyricsWithChords: `[C]Minha promessa [G7]atende, meu Deus, Deus meu
-[C]E sobre mim es[G]tende o manto [C]Teu
+    lyricsWithChords: `[C]Minha promessa atende, [Am]meu Deus, De[G]us meu
+E [C]sobre mim estende [G]o m[G7]anto [C]Teu
 
-[F]Eu Te amo e [C]quero amar [G]cada vez [C]mais
-[G]Não deixes de es[C]cutar, [G]Senhor, meus [C]ais
+{R}Eu [F]Te amo e quero am[C]ar [G]cada vez [C]mais
+Não [F]deixes de escut[C]ar, [G]Senhor, meus [C]ais
 
-[C]Juro seguir Teus [G7]passos como cristão
-[C]E depor em Teus [G]braços meu cora[C]ção
-
-[F]Eu Te amo e [C]quero amar [G]cada vez [C]mais
-[G]Não deixes de es[C]cutar, [G]Senhor, meus [C]ais
-
-[C]Defende-me do [G7]mal, Jesus meu Rei
-[C]E em prol de [G]Portugal batalha[C]rei
-
-[F]Eu Te amo e [C]quero amar [G]cada vez [C]mais
-[G]Não deixes de es[C]cutar, [G]Senhor, meus [C]ais
-
-[C]Minh'alma toda [G7]cega de fé e de amor
-[C]Hoje e sempre se [G]entrega a Vós, [C]Senhor
-
-[F]Eu Te amo e [C]quero amar [G]cada vez [C]mais
-[G]Não deixes de es[C]cutar, [G]Senhor, meus [C]ais`,
+Juro seguir Teus passos como cristão
+E depor em Teus braços meu coração`,
   },
   {
     slug: 'oracao-de-santo-inacio',
     title: 'Oração de Santo Inácio',
-    author: 'Santo Inácio de Loyola',
-    youtubeId: '',
-    key: 'Bb',
-    lyricsWithChords: `[Bb]Tomai, [Cm]Senhor, e [Dm]rece[Cm]bei
-[Gm]Toda a minha [F]liberdade
-[Gm]A minha memó[F]ria
-[Eb]E o meu entendi[Gm]mento
-[F]Toda a minha vontade
-[Eb]E tudo o que eu [Gm]possuo
-[F]Vós mo destes
-[Eb]A Vós o resti[Bb]tuo
-
-[Bb]Tudo é [Cm]Vosso: dis[Dm]pon[Cm]de
-[Gm]Pela Vossa von[F]tade
-[Gm]Dai-me apenas, [F]Senhor
-[Eb]O Vosso amor e [Gm]graça
-[F]Que esta me [Gm]basta
-[F]Que [Eb]esta me [Bb]basta`,
+    author: '',
+    youtubeId: 'xpuB46CQ2ls',
+    key: 'A',
+    lyricsWithChords: `
+    [A]Tomai Senh[Bm]or, e receb[C#m]ei        [Bm]
+    t[F#m]oda a minha liberd[E]ade,[F#m]
+    a minha mem[E]ória e o m[D]eu entendim[F#m]ento,
+    Toda a minha vont[E]ade,
+    e t[D]udo o que eu poss[F#m]uo.
+    Vós me d[E]estes, 
+    a v[D]ós o restit[A]uo. [Bm]       [C#m]            [Bm]
+ 
+    [A]Tudo é v[Bm]osso, disp[C#m]onde.   [Bm] 
+    P[F#m]ela Vossa vont[E]ade[F#m]
+    Dai-me apenas, Senh[E]or,
+    o vosso am[D]or e gr[F#m]aça
+    Que [E]isso me b[F#m]asta.
+    Que [E]isso me b[F#m]asta. [Bm]         [C#m]`,
   },
   {
-    slug: 'santo',
-    title: 'Santo',
-    author: 'Liturgia',
-    youtubeId: '',
-    key: 'D',
-    lyricsWithChords: `[D]Santo, [G]Santo, [A]Santo é o Se[D]nhor
-[D]Senhor [G]Deus do Uni[A]ver[D]so
-O [G]Céu e a [A]Terra pro[Bm]clamam
-A [G]Vossa [A]Gló[D]ria
+    slug: 'santo-santo-e-o-senhor',
+    title: 'Santo, Santo é o Senhor',
+    author: '',
+    youtubeId: '5PDSoW2lKD4',
+    key: 'E',
+    lyricsWithChords: `{R}Santo, Santo é o Senh[E]or, Senhor Deus do un[A]iverso,
+o céu e a terra pro[B]clamam a Vossa [E]gló--[A]-ó---[E]ria.
 
-[D]Hossana [G]nas al[A]tu[D]ras
-[D]Hossana [G]nas al[A]tu[D]ras
+O c[E]éu e a terra procl[A]amam a Vossa glória,
+ho[F#m]ssana [B]nas a[E]lturas.
 
-[D]Bendito o que [G]vem
-Em [A]nome do Se[D]nhor
-[D]Bendito o que [G]vem
-Em [A]nome do Se[D]nhor
-
-[D]Hossana [G]nas al[A]tu[D]ras
-[D]Hossana [G]nas al[A]tu[D]ras`,
+Bendito Aquele que vem em Seu nome,
+hossana nas alturas.`,
   },
   {
     slug: 'nada-nos-separara',
     title: 'Nada Nos Separará',
-    author: 'Tradicional (Rm 8, 35-39)',
-    youtubeId: '',
-    key: 'G',
-    lyricsWithChords: `[G]Nada nos sepa[C]rará
-Do a[D]mor de [G]Cristo
-[Em]Nada nos sepa[C]rará
-Do [D]Seu a[G]mor
-
-[G]Nem a tribu[Em]lação,
-Nem a an[Am]gústia
-[C]Nem a perse[D]gui[G]ção
-[G]Nem a [Em]fome,
-Nem a es[Am]pada
-[C]Nem o pe[D]rigo ou a [G]morte
-
-[G]Nada nos sepa[C]rará
-Do a[D]mor de [G]Cristo
-[Em]Nada nos sepa[C]rará
-Do [D]Seu a[G]mor
-
-[C]Em tudo [D]isto
-So[Bm]mos mais que [Em]vencedores
-[C]Pelo a[D]mor d'Aquele que nos [G]amou
-[C]Porque eu [D]estou con[Bm]venci[Em]do
-[Am]De que nada nos sepa[D]rará
-Do a[G]mor de Deus`,
+    author: '',
+    youtubeId: 'aUS06CYAFJI',
+    key: 'C',
+    lyricsWithChords: `[C]Nada nos sep[F]arar[C]á
+Nada nos sep[F]arar[C]á
+Nada nos s[G]eparar[Am]á
+[F]Do Am[G]or de D[C]eus`,
   },
   {
     slug: 'entrega',
     title: 'Entrega',
-    author: 'Maria Durão',
-    youtubeId: '',
+    author: '',
+    youtubeId: 'AxiRaYoxERE',
     key: 'C',
-    lyricsWithChords: `[C]Sei Senhor [G]que na vida
-[Am]Nem sempre temos [F]tudo, tudo dado
-[C]Sei Senhor [G]que no dia
-[Am]Nem tudo se [F]dá de cora[G]ção
+    lyricsWithChords: `[C]Sei Senhor, que na [Am]vida,
+nem sempre temos [Dm]tudo, [F]tudo [G]dado.
+[C]Por isso, aqui [Am]estou
+pronto para [Dm]ser, [F]ser aju[G]dado...
 
-[C]A Ti, Se[G]nhor, me en[Am]trego
-[F]Com todo o [G]meu cora[C]ção
-[C]A Ti, Se[G]nhor, me en[Am]trego
-[F]Aceita a [G]minha en[C]trega
+{R}[C]Senhor a [G]Ti me en[Am]trego
+com [A7]todo o cora[Dm]ção
+eu nunca fui tão sin[G]cero
+não sei mais o que fa[C]zer, sem Ti eu não sei vi[Am]ver
+ouve a minha ora[Dm]ção, Senhor [Dm7]dá-me a Tua [G]mão
 
-[C]Sei Senhor [G]que Te esqueço
-[Am]Que vivo longe [F]de Ti tantas vezes
-[C]Sei Senhor [G]que Teu rosto
-[Am]Se apaga em [F]mim ao fim [G]do dia
-
-[C]A Ti, Se[G]nhor, me en[Am]trego
-[F]Com todo o [G]meu cora[C]ção
-[C]A Ti, Se[G]nhor, me en[Am]trego
-[F]Aceita a [G]minha en[C]trega`,
+Sei Senhor que não posso ter tudo o que quero ou que gosto
+por isso peço-Te a Ti, que me leves sempre, sempre conTigo`,
   },
   {
     slug: 'luz-terna-e-suave',
     title: 'Luz Terna e Suave',
-    author: 'Peu Madureira / Pilar Noronha Andrade',
-    youtubeId: 'Lb3K89rg0C8',
+    author: '',
+    youtubeId: 'OlvbpnqZKQA',
     key: 'G',
-    lyricsWithChords: `[G]Luz terna e [D]suave
-[Em]No meio da [C]noite
-[G]Leva-nos mais [D]longe
-[Em]Por caminhos [C]de bondade
+    lyricsWithChords: `Que importa, Senh[G]or,
+se é tão longe para mim
+a praia onde tenho de cheg[D]ar,
+se sobre mim levar pousada
+a clara luz do teu olh[G]ar.
 
-[G]Que importa, Se[D]nhor
-[Em]Se é tão longe [C]para mim
-[G]A praia onde [D]tenho de che[Em]gar
-[C]Se sobre [D]mim levar pou[G]sada
-A clara [Em]luz do [D]Teu o[G]lhar
+H[D9]oje te p[Em]eço, Senhor,
+p[C9]ara seres a l[D]uz que me ilum[G]ina
+na plenit[C9]ude da tua l[D]uz divina.
 
-[G]Guia-nos ao [D]longe
-[Em]Passo após [C]passo
-[G]Não peço ver [D]longe
-[Em]Basta-me um [C]passo, só um passo
+{R}[G]Luz terna e su[C9]ave no meio da n[D]oite, [G]
+l[C9]eva-nos mais l[D]onge.
+Não tem[Em]os aqu[C]i um[Em]a mor[C9]ada perman[D]ente.
+Leva-nos mais l[C9]ong[D]e,
+[G]Luz terna e su[C9]ave [D]no meio da n[G]oite.
 
-[G]Que importa, Se[D]nhor
-[Em]Se é tão longe [C]para mim
-[G]A praia onde [D]tenho de che[Em]gar
-[C]Se sobre [D]mim levar pou[G]sada
-A clara [Em]luz do [D]Teu o[G]lhar`,
+Esquece, Senhor,
+os meus passos mal andados, meu desamor,
+perdoa os meus pecados. Eu sei que vai
+raiar a madrugada
+e não me deixarás abandonado.
+
+Se Tu me dás a mão, Senhor,
+meus passos serão firmes no andar.
+Leva-me mais longe para a Ti chegar.`,
   },
   {
     slug: 'oracao-de-sao-pedro',
     title: 'Oração de São Pedro',
-    author: 'Pe. Nuno Tovar de Lemos SJ',
+    author: '',
     youtubeId: 'quqZKmuj0LY',
     key: 'C',
-    lyricsWithChords: `[C]Foi por Ti que [Em]um dia [Dm7]fui
-P'rá a[F]lém da praia
-[G]Desco[C]bri em [Em]Ti um mar [Dm7]que eu
-Nem sa[F]bia haver
-[G]"Faz-te ao [Em]largo,
-[Dm7]Confia em Mim."
-[F]Disseste e a [C]praia inteira parou
-[Em]"Lança as redes,
-[Dm7]Confia em Mim."
-[F]Passaste e [C]segredas[C7]te-me: "Vem."
+    lyricsWithChords: `{Intro: C Dm Em F}
 
-[Dm7]Onde iria [Em]eu sem Ti, Senhor
-[F]Se Tu falas e eu [C]ouço o [C7]mar?
-[Dm7]Irei conTigo [Em]onde quer que vás
-[F]Onde quer que o vento sopre
-[Dm7]Até ao dia [G]em que o [C]mar me levar
+[C]Foi por Ti que [Em]um dia [Dm]fui p'ra a[F]lém da praia
+[C]Descobri em [Em]Ti um mar [Dm]que eu nem sa[C]bia haver
+"Faz-te ao [Em]largo,
+[Dm]confia em Mim."
+[F]Disseste e a praia inteira pa[C]rou
+"Lança as [Em]redes,
+[Dm]confia em Mim."
+[F]Passaste e segredaste-me: [C]"Vem." [C7]
 
-[C]Eis aqui o [Em]amigo em [Dm7]quem Tu confiaste
-E um [F]dia Te negou por medo ou por traição, nem sei
-[G]Mas o[C]lhaste e [Em]o mar se [Dm7]acalmou
-Em [F]Teu perdão, de novo, encontrei
-[G]Noutra [Em]praia um dia a nascer
-[Dm7]Passaste e [F]segredas[C]te-me: [C7]"Vem."
+{R}Onde iria [Dm]eu sem Ti, Se[Em]nhor
+se Tu [F]falas e eu ouço o [C]mar?
+Irei con[Dm]Tigo onde quer [Em]que vás
+[F]onde quer que o vento sopre
+[Dm]até ao dia [G]em [G7]que o mar me le[C]var
 
-[Dm7]Onde iria [Em]eu sem Ti, Senhor
-[F]Se Tu falas e eu [C]ouço o [C7]mar?
-[Dm7]Irei conTigo [Em]onde quer que vás
-[F]Onde quer que o vento sopre
-[Dm7]Até ao dia [G]em que o [C]mar me levar
+[C]Eis aqui o [Em]amigo em [Dm]quem Tu confiaste
+e um [F]dia Te negou por medo ou por traição, nem sei
+mas o[C]lhaste e [Em]o mar se a[Dm]calmou
+em [F]Teu perdão, de novo, encon[C]trei
+noutra [Em]praia um dia a nas[Dm]cer
+[F]passaste e segredaste-me: [C]"Vem." [C7]
 
-[C]Vi em Ti a [Em]força e a [Dm7]ambição da rocha
-Inven[F]cível, eu, conTigo a caminhar p'lo mar!
-[G]Mas um [C]dia [Em]não enten[Dm7]di
-Vieste [F]pra me lavar os pés
-[G]Quem és [Em]Tu, Senhor? Quem sou eu?
+{R}Onde iria [Dm]eu sem Ti, Se[Em]nhor
+se Tu [F]falas e eu ouço o [C]mar?
+Irei con[Dm]Tigo onde quer [Em]que vás
+[F]onde quer que o vento sopre
+[Dm]até ao dia [G]em [G7]que o mar me le[C]var
 
-[Dm7]Onde iria [Em]eu sem Ti, Senhor
-[F]Se Tu falas e eu [C]ouço o [C7]mar?
-[Dm7]Irei conTigo [Em]onde quer que vás
-[F]Onde quer que o vento sopre
-[Dm7]Até ao dia [G]em que o [C]mar me levar`,
+[C]Vi em Ti a [Em]força e a am[Dm]bição da rocha
+inven[F]cível, eu, conTigo a caminhar p'lo [C]mar!
+Mas um [Em]dia não enten[Dm]di
+vieste [F]pra me lavar os pés
+Quem és [Em]Tu, Senhor? Quem sou [Dm]eu?
+[F]Passaste e segredaste-me [C]"Vem." [C7]
+
+{R}Onde iria [Dm]eu sem Ti, Se[Em]nhor
+se Tu [F]falas e eu ouço o [C]mar?
+Irei con[Dm]Tigo onde quer [Em]que vás
+[F]onde quer que o vento sopre
+[Dm]até ao dia [G]em [G7]que o mar me le[C]var`,
   },
   {
     slug: 'mau-elemento',

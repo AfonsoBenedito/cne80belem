@@ -85,6 +85,11 @@ export const chordDb = {
     { fingers: [8, 10, 8, 9, 8, 8], startFret: 8 },
     { fingers: [-1, 3, 2, 3, 1, 0], startFret: 1 },
   ],
+  A7: [
+    { fingers: [-1, 0, 2, 0, 2, 0], startFret: 1 },
+    { fingers: [5, 7, 5, 6, 5, 5], startFret: 5 },
+    { fingers: [-1, 0, 2, 2, 2, 3], startFret: 1 },
+  ],
   B7: [
     { fingers: [-1, 2, 1, 2, 0, 2], startFret: 1 },
     { fingers: [7, 9, 7, 8, 7, 7], startFret: 7 },
@@ -99,6 +104,11 @@ export const chordDb = {
     { fingers: [-1, -1, 1, 3, 4, 3], startFret: 1 },
     { fingers: [-1, 6, 8, 8, 8, 6], startFret: 6 },
     { fingers: [-1, -1, 1, 3, 4, 3], startFret: 1 },
+  ],
+  D9: [
+    { fingers: [-1, -1, 0, 2, 1, 0], startFret: 1 },
+    { fingers: [-1, 5, 4, 5, 5, 5], startFret: 5 },
+    { fingers: [-1, -1, 0, 2, 1, 2], startFret: 1 },
   ],
   G9: [
     { fingers: [3, 0, 0, 0, 0, 1], startFret: 1 },
@@ -182,4 +192,19 @@ export function transposeChord(chord, semitones) {
 
   const newIdx = ((idx + semitones) % 12 + 12) % 12;
   return NOTES[newIdx] + suffix;
+}
+
+// Solfège mapping
+const TO_SOLFEGE = { C: 'Dó', D: 'Ré', E: 'Mi', F: 'Fá', G: 'Sol', A: 'Lá', B: 'Si' };
+
+/**
+ * Convert a chord from letter notation to solfège.
+ * e.g. 'C#m7' => 'Dó#m7', 'Am' => 'Lám'
+ */
+export function chordToSolfege(chord) {
+  const match = chord.match(/^([A-G])([#b]?)(.*)/);
+  if (!match) return chord;
+  const [, root, accidental, suffix] = match;
+  const solfege = TO_SOLFEGE[root];
+  return solfege ? solfege + accidental + suffix : chord;
 }

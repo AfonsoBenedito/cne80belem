@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload } from 'react-icons/fa';
+import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
-import { transposeChord } from '../../config/chords';
+import { transposeChord, chordToSolfege } from '../../config/chords';
 import LyricsWithChords from '../../components/LyricsWithChords/LyricsWithChords';
 const loadPdfGenerator = () => import('../../utils/generateSongPdf');
 import styles from './CancaoDetail.module.css';
@@ -13,6 +13,7 @@ export default function CancaoDetail() {
 
   const [showChords, setShowChords] = useState(true);
   const [semitones, setSemitones] = useState(0);
+  const [solfege, setSolfege] = useState(false);
 
   if (!song) return <Navigate to="/recursos/cancioneiro" replace />;
 
@@ -21,6 +22,7 @@ export default function CancaoDetail() {
   const next = currentIndex < cancoes.length - 1 ? cancoes[currentIndex + 1] : null;
 
   const currentKey = transposeChord(song.key, semitones);
+  const displayKey = solfege ? chordToSolfege(currentKey) : currentKey;
 
   return (
     <main className={styles.page}>
@@ -55,32 +57,6 @@ export default function CancaoDetail() {
             PDF
           </button>
 
-          {showChords && (
-            <div className={styles.transposeGroup}>
-              <span className={styles.transposeLabel}>Tom:</span>
-              <button
-                className={styles.transposeBtn}
-                onClick={() => setSemitones((s) => s - 1)}
-              >
-                <FaMinus size={10} />
-              </button>
-              <span className={styles.transposeKey}>{currentKey}</span>
-              <button
-                className={styles.transposeBtn}
-                onClick={() => setSemitones((s) => s + 1)}
-              >
-                <FaPlus size={10} />
-              </button>
-              {semitones !== 0 && (
-                <button
-                  className={styles.transposeReset}
-                  onClick={() => setSemitones(0)}
-                >
-                  Original
-                </button>
-              )}
-            </div>
-          )}
         </div>
 
         <div className={styles.layout}>
@@ -90,6 +66,7 @@ export default function CancaoDetail() {
               lyricsWithChords={song.lyricsWithChords}
               showChords={showChords}
               semitones={semitones}
+              solfege={solfege}
             />
 
             {/* Prev / Next */}
@@ -143,6 +120,50 @@ export default function CancaoDetail() {
                 <div className={styles.videoEmpty}>
                   <FaMusic size={32} />
                   <p>Video em breve</p>
+                </div>
+              )}
+
+              {showChords && (
+                <div className={styles.sidebarControls}>
+                  <div className={styles.transposeGroup}>
+                    <span className={styles.transposeLabel}>Tom:</span>
+                    <button
+                      className={styles.transposeBtn}
+                      onClick={() => setSemitones((s) => s - 1)}
+                    >
+                      <FaMinus size={10} />
+                    </button>
+                    <span className={styles.transposeKey}>{displayKey}</span>
+                    <button
+                      className={styles.transposeBtn}
+                      onClick={() => setSemitones((s) => s + 1)}
+                    >
+                      <FaPlus size={10} />
+                    </button>
+                    {semitones !== 0 && (
+                      <button
+                        className={styles.transposeReset}
+                        onClick={() => setSemitones(0)}
+                        title="Tom original"
+                      >
+                        <FaUndo size={9} />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className={styles.sidebarDivider} />
+
+                  <div className={styles.solfegeToggle}>
+                    <span className={`${styles.solfegeLabel} ${!solfege ? styles.solfegeLabelActive : ''}`}>C D E</span>
+                    <button
+                      className={`${styles.solfegeSwitch} ${solfege ? styles.solfegeSwitchOn : ''}`}
+                      onClick={() => setSolfege((s) => !s)}
+                      aria-label="Alternar notação solfejo"
+                    >
+                      <span className={styles.solfegeThumb} />
+                    </button>
+                    <span className={`${styles.solfegeLabel} ${solfege ? styles.solfegeLabelActive : ''}`}>Dó Ré Mi</span>
+                  </div>
                 </div>
               )}
             </div>

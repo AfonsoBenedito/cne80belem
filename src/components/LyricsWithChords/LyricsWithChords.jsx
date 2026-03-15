@@ -139,7 +139,7 @@ export default function LyricsWithChords({
                         />
                       </span>
                     )}
-                    <span>{seg.text}</span>
+                    <span>{seg.text.replace(/ /g, '\u00A0')}</span>
                   </span>
                 ))}
               </div>

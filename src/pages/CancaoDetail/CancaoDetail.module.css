@@ -93,10 +93,63 @@
   border-color: var(--color-green);
 }
 
+.solfegeToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.solfegeLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-300);
+  transition: color var(--transition-fast);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.solfegeLabelActive {
+  color: var(--color-gray-500);
+}
+
+.solfegeSwitch {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  background: var(--color-gray-200);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  padding: 0;
+}
+
+.solfegeSwitchOn {
+  background: var(--color-green);
+}
+
+.solfegeThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--color-white);
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.solfegeSwitchOn .solfegeThumb {
+  transform: translateX(14px);
+}
+
 .transposeGroup {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .transposeLabel {
@@ -136,15 +189,23 @@
 }
 
 .transposeReset {
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  font-family: var(--font-family);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
   color: var(--color-green);
   background: none;
-  border: none;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 6px;
   cursor: pointer;
-  text-decoration: underline;
+  transition: all var(--transition-fast);
   padding: 0;
+}
+
+.transposeReset:hover {
+  border-color: var(--color-green);
+  background: var(--color-green-light);
 }
 
 /* ── Sidebar ── */
@@ -182,6 +243,23 @@
   width: 100%;
   height: 166px;
   border: none;
+}
+
+.sidebarControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-gray-100);
+  border-radius: 10px;
+}
+
+.sidebarDivider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--color-gray-200);
 }
 
 .videoEmpty {
