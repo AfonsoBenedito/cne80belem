@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaBoxOpen, FaRecycle, FaHandshake } from 'react-icons/fa';
 import { categories } from '../../config/bancoDeFardas';
+import { mainEmail } from '../../config/contacts';
 import styles from './BancoDeFardas.module.css';
 
 const howItWorks = [
@@ -126,8 +127,8 @@ export default function BancoDeFardas() {
         <div className="container">
           <h2 className={styles.ctaTitle}>Queres contribuir ou precisas de ajuda?</h2>
           <p className={styles.ctaText}>Entra em contacto connosco através do email do agrupamento.</p>
-          <a href="mailto:geral@agr80.cne-escutismo.pt" className={styles.ctaButton}>
-            geral@agr80.cne-escutismo.pt
+          <a href={`mailto:${mainEmail}`} className={styles.ctaButton}>
+            {mainEmail}
           </a>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaEnvelope, FaArrowUp } from 'react-icons/fa';
+import { mainEmail } from '../../config/contacts';
 import styles from './FloatingBtn.module.css';
 
 const SCROLL_THRESHOLD = 300;
@@ -19,7 +20,7 @@ export default function FloatingBtn() {
     if (scrolled) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      window.location.href = 'mailto:geral@agrupamento80.pt';
+      window.location.href = `mailto:${mainEmail}`;
     }
   };
 

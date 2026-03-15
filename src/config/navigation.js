@@ -59,6 +59,7 @@ export const navigation = [
     path: '/recursos',
     children: [
       { label: 'Cancioneiro', path: '/recursos/cancioneiro' },
+      { label: 'Reservar Alojamento', path: '/recursos/reservar-alojamento' },
     ],
   },
 {

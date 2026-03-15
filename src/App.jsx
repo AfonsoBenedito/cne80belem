@@ -17,6 +17,7 @@ import Programa from './pages/Programa/Programa';
 import Contactos from './pages/Contactos/Contactos';
 import Cancioneiro from './pages/Cancioneiro/Cancioneiro';
 import CancaoDetail from './pages/CancaoDetail/CancaoDetail';
+import ReservarAlojamento from './pages/ReservarAlojamento/ReservarAlojamento';
 import FloatingBtn from './components/FloatingBtn/FloatingBtn';
 
 export default function App() {
@@ -46,6 +47,7 @@ export default function App() {
         <Route path="/seccao/:seccao/*" element={<UnderConstruction />} />
         <Route path="/recursos/cancioneiro" element={<Cancioneiro />} />
         <Route path="/recursos/cancioneiro/:slug" element={<CancaoDetail />} />
+        <Route path="/recursos/reservar-alojamento" element={<ReservarAlojamento />} />
         <Route path="/recursos/*" element={<UnderConstruction />} />
         <Route path="/links" element={<UnderConstruction />} />
         <Route path="/contactos" element={<Contactos />} />
