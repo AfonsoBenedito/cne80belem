@@ -1,11 +1,24 @@
 import { jsPDF } from 'jspdf';
 import { transposeChord } from '../config/chords';
+import { registerNunito } from './pdfFonts';
 import faviconUrl from '/favicon.png';
 
 const GREEN = [84, 155, 139];
+const GREEN_DARK = [14, 122, 58];
 const BLACK = [26, 26, 26];
 const GRAY = [115, 115, 115];
 const LIGHT_GREEN = [230, 243, 240];
+
+function drawChordBadge(doc, chord, cx, y, chordFontSize) {
+  doc.setFont('Nunito', 'bold');
+  doc.setFontSize(chordFontSize);
+  const cw = doc.getTextWidth(chord) + 2.5;
+  doc.setFillColor(...LIGHT_GREEN);
+  doc.roundedRect(cx, y - 2.5, cw, 3.5, 0.8, 0.8, 'F');
+  doc.setTextColor(...GREEN);
+  doc.text(chord, cx + 1.25, y);
+  return cw;
+}
 
 function parseSegments(line) {
   const segments = [];
@@ -65,6 +78,7 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
   const stanzaGap = 5;
 
   const logoData = await loadImage(faviconUrl);
+  await registerNunito(doc);
 
   // ── Two-column state ──
   let col = 0; // 0 = left, 1 = right
@@ -100,26 +114,26 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
   }
 
   // ── Header bar ──
-  const headerH = 22;
+  const headerH = 30;
   doc.setFillColor(...GREEN);
   doc.rect(0, 0, pageW, headerH, 'F');
 
   if (logoData) {
-    doc.addImage(logoData, 'PNG', pageW - marginRight - 17, 2.5, 17, 17);
+    doc.addImage(logoData, 'PNG', pageW - marginRight - 20, 5, 20, 20);
   }
   const textX = marginLeft;
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
+  doc.setFont('Nunito', 'bold');
+  doc.setFontSize(18);
   doc.setTextColor(255, 255, 255);
-  const titleY = song.author ? 11 : 13;
+  const titleY = song.author ? 15 : 18;
   doc.text(song.title, textX, titleY);
 
   if (song.author) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFont('Nunito', 'normal');
+    doc.setFontSize(9);
     doc.setTextColor(200, 210, 205);
-    doc.text(song.author, textX, titleY + 4.5);
+    doc.text(song.author, textX, titleY + 5.5);
   }
 
   y = headerH + 10;
@@ -142,20 +156,15 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
       checkSpace(chordLineHeight + stanzaGap);
 
       const x = colX();
-      doc.setFont('helvetica', 'bold');
+      doc.setFont('Nunito', 'bold');
       doc.setFontSize(lyricsFontSize);
       doc.setTextColor(...GRAY);
       doc.text(`${label}:`, x, y);
 
       let cx = x + doc.getTextWidth(`${label}:`) + 3;
-      doc.setFontSize(chordFontSize);
       chords.forEach((chord) => {
         const transposed = transposeChord(chord, semitones);
-        const cw = doc.getTextWidth(transposed) + 2.5;
-        doc.setFillColor(...LIGHT_GREEN);
-        doc.roundedRect(cx, y - 2.5, cw, 3.5, 0.8, 0.8, 'F');
-        doc.setTextColor(...GREEN);
-        doc.text(transposed, cx + 1.25, y);
+        const cw = drawChordBadge(doc, transposed, cx, y, chordFontSize);
         cx += cw + 2;
       });
 
@@ -187,20 +196,14 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
 
       if (lineHasChords) {
         let cx = x;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(chordFontSize);
 
         segments.forEach((seg) => {
           if (seg.chord) {
             const transposed = transposeChord(seg.chord, semitones);
-            const cw = doc.getTextWidth(transposed) + 2.5;
-            doc.setFillColor(...LIGHT_GREEN);
-            doc.roundedRect(cx, y - 2.5, cw, 3.5, 0.8, 0.8, 'F');
-            doc.setTextColor(...GREEN);
-            doc.text(transposed, cx + 1.25, y);
+            drawChordBadge(doc, transposed, cx, y, chordFontSize);
           }
 
-          doc.setFont('helvetica', 'normal');
+          doc.setFont('Nunito', 'bold');
           doc.setFontSize(lyricsFontSize);
           cx += doc.getTextWidth(seg.text);
         });
@@ -209,9 +212,9 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
       }
 
       // Draw lyrics line
-      doc.setFont('helvetica', isChorus ? 'bold' : 'normal');
+      doc.setFont('Nunito', 'bold');
       doc.setFontSize(lyricsFontSize);
-      doc.setTextColor(...(isChorus ? GREEN : BLACK));
+      doc.setTextColor(...(isChorus ? GREEN_DARK : BLACK));
 
       const plainText = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
       doc.text(plainText, x, y);
@@ -236,7 +239,7 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
     }
 
     // Footer
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Nunito', 'normal');
     doc.setFontSize(7);
     doc.setTextColor(...GRAY);
     doc.text(

@@ -1,13 +1,26 @@
 import { jsPDF } from 'jspdf';
 import { transposeChord } from '../config/chords';
+import { registerNunito } from './pdfFonts';
 import faviconUrl from '/favicon.png';
 
 const GREEN = [84, 155, 139];
+const GREEN_DARK = [14, 122, 58];
 const BLACK = [26, 26, 26];
 const GRAY = [115, 115, 115];
 const GRAY_LIGHT = [220, 220, 220];
 const LIGHT_GREEN = [230, 243, 240];
 const WHITE = [255, 255, 255];
+
+function drawChordBadge(doc, chord, cx, y, chordFontSize) {
+  doc.setFont('Nunito', 'bold');
+  doc.setFontSize(chordFontSize);
+  const cw = doc.getTextWidth(chord) + 2.5;
+  doc.setFillColor(...LIGHT_GREEN);
+  doc.roundedRect(cx, y - 2.5, cw, 3.5, 0.8, 0.8, 'F');
+  doc.setTextColor(...GREEN);
+  doc.text(chord, cx + 1.25, y);
+  return cw;
+}
 
 function parseSegments(line) {
   const segments = [];
@@ -53,28 +66,28 @@ function loadImage(url) {
 // ══════════════════════════════════════════════
 
 function drawSongHeader(doc, song, pageW, marginLeft, marginRight, logoData) {
-  const barHeight = 20;
+  const barHeight = 28;
 
   doc.setFillColor(...GREEN);
   doc.rect(0, 0, pageW, barHeight, 'F');
 
   if (logoData) {
-    doc.addImage(logoData, 'PNG', pageW - marginRight - 14, 3, 14, 14);
+    doc.addImage(logoData, 'PNG', pageW - marginRight - 18, 4, 18, 18);
   }
 
   const textX = marginLeft;
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(12);
+  doc.setFont('Nunito', 'bold');
+  doc.setFontSize(16);
   doc.setTextColor(...WHITE);
-  const titleY = song.author ? 9 : 11;
+  const titleY = song.author ? 14 : 17;
   doc.text(song.title, textX, titleY);
 
   if (song.author) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
+    doc.setFont('Nunito', 'normal');
+    doc.setFontSize(8.5);
     doc.setTextColor(200, 210, 205);
-    doc.text(song.author, textX, titleY + 4);
+    doc.text(song.author, textX, titleY + 5);
   }
 
   return barHeight + 8;
@@ -85,21 +98,15 @@ function drawSongHeader(doc, song, pageW, marginLeft, marginRight, logoData) {
 // ══════════════════════════════════════════════
 
 function renderMarkerLine(doc, label, chords, x, y, semitones, lyricsFontSize, chordFontSize) {
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setFontSize(lyricsFontSize);
   doc.setTextColor(...GRAY);
   doc.text(`${label}:`, x, y);
 
   let cx = x + doc.getTextWidth(`${label}:`) + 3;
-  const cfs = chordFontSize || lyricsFontSize - 1;
-  doc.setFontSize(cfs);
   chords.forEach((chord) => {
     const transposed = transposeChord(chord, semitones);
-    const cw = doc.getTextWidth(transposed) + 2.5;
-    doc.setFillColor(...LIGHT_GREEN);
-    doc.roundedRect(cx, y - 2.5, cw, 3.5, 0.8, 0.8, 'F');
-    doc.setTextColor(...GREEN);
-    doc.text(transposed, cx + 1.25, y);
+    const cw = drawChordBadge(doc, transposed, cx, y, chordFontSize);
     cx += cw + 2;
   });
 }
@@ -182,20 +189,14 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
 
       if (lineHasChords) {
         let cx = x;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(chordFontSize);
 
         segments.forEach((seg) => {
           if (seg.chord) {
             const transposed = transposeChord(seg.chord, semitones);
-            const chordW = doc.getTextWidth(transposed) + 2.5;
-            doc.setFillColor(...LIGHT_GREEN);
-            doc.roundedRect(cx, y - 2.5, chordW, 3.5, 0.8, 0.8, 'F');
-            doc.setTextColor(...GREEN);
-            doc.text(transposed, cx + 1.25, y);
+            drawChordBadge(doc, transposed, cx, y, chordFontSize);
           }
 
-          doc.setFont('helvetica', 'normal');
+          doc.setFont('Nunito', 'bold');
           doc.setFontSize(lyricsFontSize);
           cx += doc.getTextWidth(seg.text);
         });
@@ -203,9 +204,9 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
         y += chordLineHeight + 1;
       }
 
-      doc.setFont('helvetica', isChorus ? 'bold' : 'normal');
+      doc.setFont('Nunito', 'bold');
       doc.setFontSize(lyricsFontSize);
-      doc.setTextColor(...(isChorus ? GREEN : BLACK));
+      doc.setTextColor(...(isChorus ? GREEN_DARK : BLACK));
 
       const plainText = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
       const wrappedLines = doc.splitTextToSize(plainText, effectiveColWidth);
@@ -226,6 +227,8 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
     drawColSeparator(doc, marginLeft, colWidth, colGap, startY, maxY);
   });
   doc.setPage(currentPage);
+
+  return y;
 }
 
 function drawColSeparator(doc, marginLeft, colWidth, colGap, topY, bottomY) {
@@ -238,7 +241,7 @@ function drawColSeparator(doc, marginLeft, colWidth, colGap, topY, bottomY) {
 function drawContinuationHeader(doc, song, pageW, marginLeft) {
   doc.setFillColor(...LIGHT_GREEN);
   doc.rect(0, 0, pageW, 10, 'F');
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setFontSize(8);
   doc.setTextColor(...GREEN);
   doc.text(`${song.title} (cont.)`, marginLeft, 7);
@@ -257,7 +260,7 @@ function drawCover(doc, songs, title, description, logoData, pageW, pageH, margi
   doc.setLineWidth(0.8);
   doc.line(pageW / 2 - 35, 80, pageW / 2 + 35, 80);
 
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setFontSize(30);
   doc.setTextColor(...BLACK);
   const titleLines = doc.splitTextToSize(title, pageW - 50);
@@ -265,7 +268,7 @@ function drawCover(doc, songs, title, description, logoData, pageW, pageH, margi
 
   let descEndY = 96 + titleLines.length * 11;
   if (description) {
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Nunito', 'normal');
     doc.setFontSize(11);
     doc.setTextColor(...GRAY);
     const descLines = doc.splitTextToSize(description, pageW - 70);
@@ -281,12 +284,12 @@ function drawCover(doc, songs, title, description, logoData, pageW, pageH, margi
   doc.setFontSize(8.5);
   songs.forEach((song, i) => {
     const itemY = indexStartY + i * 6;
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('Nunito', 'bold');
     doc.setTextColor(...GREEN);
     doc.text(String(i + 1).padStart(2, '0'), pageW / 2 - 32, itemY);
     doc.setTextColor(...GRAY_LIGHT);
     doc.text('·', pageW / 2 - 23, itemY);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Nunito', 'normal');
     doc.setTextColor(...BLACK);
     doc.text(song.title, pageW / 2 - 19, itemY);
   });
@@ -294,7 +297,7 @@ function drawCover(doc, songs, title, description, logoData, pageW, pageH, margi
   doc.setDrawColor(...GREEN);
   doc.setLineWidth(0.5);
   doc.line(marginLeft, pageH - 16, pageW - marginRight, pageH - 16);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('Nunito', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(...GRAY);
   doc.text('Agrupamento 80 — Santa Maria de Belém', pageW / 2, pageH - 11, { align: 'center' });
@@ -309,12 +312,12 @@ function drawPageFooter(doc, pdfTitle, pageNum, marginLeft, marginRight, pageW, 
   doc.setLineWidth(0.5);
   doc.line(marginLeft, pageH - 13, pageW - marginRight, pageH - 13);
 
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('Nunito', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(...GRAY);
   doc.text(`${pdfTitle}  •  Agrupamento 80`, marginLeft, pageH - 9);
 
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setTextColor(...GREEN);
   doc.text(`${pageNum}`, pageW - marginRight, pageH - 9, { align: 'right' });
 }
@@ -335,7 +338,7 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
   doc.setLineWidth(0.6);
   doc.line(cx - 25, oy + 52, cx + 25, oy + 52);
 
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setFontSize(20);
   doc.setTextColor(...BLACK);
   const tLines = doc.splitTextToSize(title, pw - margin * 2);
@@ -344,7 +347,7 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
   let endY = oy + 64 + tLines.length * 8;
 
   if (description) {
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Nunito', 'normal');
     doc.setFontSize(8.5);
     doc.setTextColor(...GRAY);
     const dLines = doc.splitTextToSize(description, pw - margin * 2 - 10);
@@ -359,12 +362,12 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
   let listY = endY + 14;
   doc.setFontSize(7);
   songs.forEach((song, i) => {
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('Nunito', 'bold');
     doc.setTextColor(...GREEN);
     doc.text(String(i + 1).padStart(2, '0'), cx - 28, listY);
     doc.setTextColor(...GRAY_LIGHT);
     doc.text('·', cx - 20, listY);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Nunito', 'normal');
     doc.setTextColor(...BLACK);
     doc.text(song.title, cx - 16, listY);
     listY += 4.5;
@@ -373,7 +376,7 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
   doc.setDrawColor(...GREEN);
   doc.setLineWidth(0.4);
   doc.line(ox + margin, oy + ph - 12, ox + pw - margin, oy + ph - 12);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('Nunito', 'normal');
   doc.setFontSize(6);
   doc.setTextColor(...GRAY);
   doc.text('Agrupamento 80 — Santa Maria de Belém', cx, oy + ph - 8, { align: 'center' });
@@ -400,13 +403,13 @@ function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
 
   const textX = contentX;
 
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setFontSize(9.5);
   doc.setTextColor(...WHITE);
   doc.text(song.title, textX, oy + (song.author ? 7 : 9));
 
   if (song.author) {
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('Nunito', 'normal');
     doc.setFontSize(6.5);
     doc.setTextColor(200, 210, 205);
     doc.text(song.author, textX, oy + 11);
@@ -448,18 +451,14 @@ function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
 
       if (hasChords) {
         let cx = contentX;
-        doc.setFont('helvetica', 'bold');
+        doc.setFont('Nunito', 'bold');
         doc.setFontSize(chordSize);
 
         segments.forEach((seg) => {
           if (seg.chord) {
-            const cw = doc.getTextWidth(seg.chord) + 2.5;
-            doc.setFillColor(...LIGHT_GREEN);
-            doc.roundedRect(cx, y - 2.5, cw, 3.5, 0.8, 0.8, 'F');
-            doc.setTextColor(...GREEN);
-            doc.text(seg.chord, cx + 1.2, y);
+            drawChordBadge(doc, seg.chord, cx, y, chordSize);
           }
-          doc.setFont('helvetica', 'normal');
+          doc.setFont('Nunito', 'bold');
           doc.setFontSize(fontSize);
           cx += doc.getTextWidth(seg.text);
         });
@@ -467,9 +466,9 @@ function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
         y += clh + 0.5;
       }
 
-      doc.setFont('helvetica', isChorus ? 'bold' : 'normal');
+      doc.setFont('Nunito', 'bold');
       doc.setFontSize(fontSize);
-      doc.setTextColor(...(isChorus ? GREEN : BLACK));
+      doc.setTextColor(...(isChorus ? GREEN_DARK : BLACK));
       const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
       const wrappedLines = doc.splitTextToSize(plain, contentW);
       wrappedLines.forEach((wl) => {
@@ -486,7 +485,7 @@ function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
   doc.setDrawColor(...GREEN);
   doc.setLineWidth(0.3);
   doc.line(ox + margin, oy + ph - 9, ox + pw - margin, oy + ph - 9);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('Nunito', 'bold');
   doc.setFontSize(6);
   doc.setTextColor(...GREEN);
   doc.text(`${pageNum}`, ox + pw - margin, oy + ph - 5.5, { align: 'right' });
@@ -512,12 +511,14 @@ function getBookletPairs(totalPages) {
 //  MAIN EXPORT
 // ══════════════════════════════════════════════
 
-export async function generateCompilationPdf({ songs, title, description, layout }) {
+export async function generateCompilationPdf({ songs, title, description, layout, customLogo }) {
   const logoData = await loadImage(faviconUrl);
+  const coverLogo = customLogo || logoData;
 
   // ── Booklet mode ──
   if (layout === 'booklet') {
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+    await registerNunito(doc);
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
     const halfW = pageW / 2;
@@ -537,7 +538,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
 
       // Left half
       if (leftVPage === 1) {
-        renderBookletCover(doc, songs, title, description, logoData, 0, 0, halfW, pageH);
+        renderBookletCover(doc, songs, title, description, coverLogo, 0, 0, halfW, pageH);
       } else {
         const si = leftVPage - 2;
         if (si >= 0 && si < songs.length) {
@@ -547,7 +548,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
 
       // Right half
       if (rightVPage === 1) {
-        renderBookletCover(doc, songs, title, description, logoData, halfW, 0, halfW, pageH);
+        renderBookletCover(doc, songs, title, description, coverLogo, halfW, 0, halfW, pageH);
       } else {
         const si = rightVPage - 2;
         if (si >= 0 && si < songs.length) {
@@ -565,6 +566,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
   const isHorizontal = layout === 'horizontal';
   const orientation = isHorizontal ? 'landscape' : 'portrait';
   const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation });
+  await registerNunito(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   const marginLeft = 15;
@@ -573,7 +575,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
   const maxY = pageH - marginBottom;
 
   // Cover
-  drawCover(doc, songs, title, description, logoData, pageW, pageH, marginLeft, marginRight);
+  drawCover(doc, songs, title, description, coverLogo, pageW, pageH, marginLeft, marginRight);
 
   // Song pages
   const colGap = isHorizontal ? 12 : 10;
