@@ -47,18 +47,20 @@ export default function Programa() {
                           style={{ background: `${section.color}12` }}
                         >
                           <div className={styles.dayHeader}>
-                            <span
-                              className={styles.dayNumber}
-                              style={{ background: section.color }}
-                            >
-                              {entry.dayStart}
-                            </span>
-                            <span className={styles.dayRange}>—</span>
-                            <span
-                              className={styles.dayNumber}
-                              style={{ background: section.color }}
-                            >
-                              {entry.dayEnd}
+                            <span className={styles.dayGroup}>
+                              <span
+                                className={styles.dayNumber}
+                                style={{ background: section.color }}
+                              >
+                                {entry.dayStart}
+                              </span>
+                              <span className={styles.dayRange}>—</span>
+                              <span
+                                className={styles.dayNumber}
+                                style={{ background: section.color }}
+                              >
+                                {entry.dayEnd}
+                              </span>
                             </span>
                             <span className={styles.dayWeekday}>
                               {entry.weekdayStart} — {entry.weekdayEnd}
