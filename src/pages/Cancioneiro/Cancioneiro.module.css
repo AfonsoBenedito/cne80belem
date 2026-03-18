@@ -90,13 +90,85 @@
   padding: 2rem 0;
 }
 
+/* ── Content wrapper ── */
+.content {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ── Alphabet sidebar ── */
+.alphabet {
+  position: sticky;
+  top: 1rem;
+  float: left;
+  margin-left: -40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.4rem 0;
+}
+
+.letterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-green);
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.letterBtn:hover {
+  background: var(--color-green-light);
+}
+
+.letterDot {
+  display: block;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-300);
+  line-height: 1;
+  padding: 0.1rem 0;
+}
+
 /* ── Grid ── */
 .grid {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  max-width: 640px;
-  margin: 0 auto;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Show more ── */
+.showMoreBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-green);
+  background: var(--color-green-light);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.showMoreBtn:hover {
+  border-color: var(--color-green);
+  box-shadow: var(--shadow-md);
 }
 
 /* ── Card ── */
@@ -172,6 +244,10 @@
   .builderBtn {
     width: 100%;
     justify-content: center;
+  }
+
+  .alphabet {
+    display: none;
   }
 
   .card {
