@@ -23,12 +23,14 @@ export default function NavDropdown({ item, onNavigate }) {
     onNavigate();
   };
 
+  const isTouchDevice = () => window.matchMedia('(hover: none)').matches;
+
   return (
     <li
       ref={ref}
       className={`${styles.navItem} ${styles.dropdown}`}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => { if (!isTouchDevice()) setOpen(true); }}
+      onMouseLeave={() => { if (!isTouchDevice()) setOpen(false); }}
     >
       <button
         className={styles.navLink}

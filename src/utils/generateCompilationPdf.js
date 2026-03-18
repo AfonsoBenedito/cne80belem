@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { transposeChord } from '../config/chords';
+import { transposeChord, chordToSolfege } from '../config/chords';
 import { registerNunito } from './pdfFonts';
 import faviconUrl from '/favicon.png';
 
@@ -97,7 +97,7 @@ function drawSongHeader(doc, song, pageW, marginLeft, marginRight, logoData) {
 //  SHARED: Render marker line (Intro/Bridge)
 // ══════════════════════════════════════════════
 
-function renderMarkerLine(doc, label, chords, x, y, semitones, lyricsFontSize, chordFontSize) {
+function renderMarkerLine(doc, label, chords, x, y, semitones, lyricsFontSize, chordFontSize, useSolfege = false) {
   doc.setFont('Nunito', 'bold');
   doc.setFontSize(lyricsFontSize);
   doc.setTextColor(...GRAY);
@@ -105,36 +105,38 @@ function renderMarkerLine(doc, label, chords, x, y, semitones, lyricsFontSize, c
 
   let cx = x + doc.getTextWidth(`${label}:`) + 3;
   chords.forEach((chord) => {
-    const transposed = transposeChord(chord, semitones);
-    const cw = drawChordBadge(doc, transposed, cx, y, chordFontSize);
+    let displayChord = transposeChord(chord, semitones);
+    if (useSolfege) displayChord = chordToSolfege(displayChord);
+    const cw = drawChordBadge(doc, displayChord, cx, y, chordFontSize);
     cx += cw + 2;
   });
 }
 
 // ══════════════════════════════════════════════
-//  SHARED: Two-column flowing song renderer
+//  SHARED: Multi-column flowing song renderer
 // ══════════════════════════════════════════════
 
-function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY, pageW, opts, semitones = 0) {
-  const { lyricsFontSize, chordFontSize, lineHeight, chordLineHeight, stanzaGap } = opts;
+function renderSongColumns(doc, song, marginLeft, colWidth, colGap, numCols, startY, maxY, pageW, opts, semitones = 0) {
+  const { lyricsFontSize, chordFontSize, lineHeight, chordLineHeight, stanzaGap, includeChords = true, solfege = false } = opts;
   const colMargin = 4;
 
   let col = 0;
   let y = startY;
-  const rightX = marginLeft + colWidth + colGap;
   let verseStartY = null;
   const effectiveColWidth = colWidth - colMargin;
-  const separatorPages = new Set();
+  const separatorPages = {};
 
   function getX() {
-    return col === 0 ? marginLeft : rightX + colMargin;
+    return marginLeft + col * (colWidth + colGap) + (col > 0 ? colMargin : 0);
   }
 
   function advance(needed) {
     if (y + needed > maxY) {
-      if (col === 0) {
-        col = 1;
-        separatorPages.add(doc.internal.getNumberOfPages());
+      if (col < numCols - 1) {
+        col++;
+        const pageNum = doc.internal.getNumberOfPages();
+        if (!separatorPages[pageNum]) separatorPages[pageNum] = new Set();
+        separatorPages[pageNum].add(col);
         y = verseStartY != null ? verseStartY : startY;
       } else {
         doc.addPage();
@@ -155,11 +157,12 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
     // Check for marker lines: {Intro: G Dm C Am}, {Bridge: ...}
     const markerMatch = stanza.match(/^\{(\w+):\s*(.+)\}$/);
     if (markerMatch) {
+      if (!includeChords) return;
       const label = markerMatch[1];
       const chords = markerMatch[2].trim().split(/\s+/);
 
       advance(chordLineHeight + stanzaGap);
-      renderMarkerLine(doc, label, chords, getX(), y, semitones, lyricsFontSize, chordFontSize);
+      renderMarkerLine(doc, label, chords, getX(), y, semitones, lyricsFontSize, chordFontSize, solfege);
       y += chordLineHeight + stanzaGap;
       return;
     }
@@ -170,7 +173,7 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
     }
 
     const lines = stanza.split('\n');
-    const hasChords = lines.some((l) => /\[[A-G]/.test(l));
+    const hasChords = includeChords && lines.some((l) => /\[[A-G]/.test(l));
     const estimatedHeight =
       lines.length * (lineHeight + (hasChords ? chordLineHeight : 0)) + stanzaGap;
 
@@ -180,7 +183,7 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
 
     lines.forEach((line) => {
       const segments = parseSegments(line);
-      const lineHasChords = segments.some((s) => s.chord);
+      const lineHasChords = includeChords && segments.some((s) => s.chord);
       const needed = lineHeight + (lineHasChords ? chordLineHeight + 1 : 0);
 
       advance(needed);
@@ -192,8 +195,9 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
 
         segments.forEach((seg) => {
           if (seg.chord) {
-            const transposed = transposeChord(seg.chord, semitones);
-            drawChordBadge(doc, transposed, cx, y, chordFontSize);
+            let displayChord = transposeChord(seg.chord, semitones);
+            if (solfege) displayChord = chordToSolfege(displayChord);
+            drawChordBadge(doc, displayChord, cx, y, chordFontSize);
           }
 
           doc.setFont('Nunito', 'bold');
@@ -220,22 +224,20 @@ function renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY,
     y += stanzaGap;
   });
 
-  // Draw separators only on pages that used both columns
+  // Draw separators on pages that used multiple columns
   const currentPage = doc.internal.getNumberOfPages();
-  separatorPages.forEach((pageNum) => {
-    doc.setPage(pageNum);
-    drawColSeparator(doc, marginLeft, colWidth, colGap, startY, maxY);
+  Object.entries(separatorPages).forEach(([pageNum, cols]) => {
+    doc.setPage(Number(pageNum));
+    cols.forEach((c) => {
+      const sepX = marginLeft + c * (colWidth + colGap) - colGap / 2;
+      doc.setDrawColor(...GRAY_LIGHT);
+      doc.setLineWidth(0.3);
+      doc.line(sepX, startY, sepX, maxY);
+    });
   });
   doc.setPage(currentPage);
 
   return y;
-}
-
-function drawColSeparator(doc, marginLeft, colWidth, colGap, topY, bottomY) {
-  const sepX = marginLeft + colWidth + colGap / 2;
-  doc.setDrawColor(...GRAY_LIGHT);
-  doc.setLineWidth(0.3);
-  doc.line(sepX, topY, sepX, bottomY);
 }
 
 function drawContinuationHeader(doc, song, pageW, marginLeft) {
@@ -386,7 +388,7 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
 //  BOOKLET: Measure stanza height for pagination
 // ══════════════════════════════════════════════
 
-function measureBookletStanzaH(doc, rawStanza, contentW) {
+function measureBookletStanzaH(doc, rawStanza, contentW, withChords = true) {
   const fontSize = 8;
   const lh = 3.5;
   const clh = 3;
@@ -396,15 +398,17 @@ function measureBookletStanzaH(doc, rawStanza, contentW) {
   const stanza = isChorus ? rawStanza.slice(3) : rawStanza;
 
   const markerMatch = stanza.match(/^\{(\w+):\s*(.+)\}$/);
-  if (markerMatch) return clh + stanzaGap;
+  if (markerMatch) return withChords ? clh + stanzaGap : 0;
 
   let h = 0;
   const lines = stanza.split('\n');
 
   lines.forEach((line) => {
-    const segments = parseSegments(line);
-    const hasChords = segments.some((s) => s.chord);
-    if (hasChords) h += clh + 0.5;
+    if (withChords) {
+      const segments = parseSegments(line);
+      const hasChords = segments.some((s) => s.chord);
+      if (hasChords) h += clh + 0.5;
+    }
 
     doc.setFont('Nunito', 'bold');
     doc.setFontSize(fontSize);
@@ -421,7 +425,7 @@ function measureBookletStanzaH(doc, rawStanza, contentW) {
 //  BOOKLET: Render a song page (stanza range)
 // ══════════════════════════════════════════════
 
-function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, stanzaStart, stanzaEnd, isContinuation) {
+function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, stanzaStart, stanzaEnd, isContinuation, includeChords = true, useSolfege = false) {
   const margin = 10;
   const contentX = ox + margin;
   const contentW = pw - margin * 2;
@@ -477,10 +481,11 @@ function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, sta
 
     const markerMatch = stanza.match(/^\{(\w+):\s*(.+)\}$/);
     if (markerMatch) {
+      if (!includeChords) continue;
       if (y > maxY) continue;
       const label = markerMatch[1];
       const chords = markerMatch[2].trim().split(/\s+/);
-      renderMarkerLine(doc, label, chords, contentX, y, 0, fontSize, chordSize);
+      renderMarkerLine(doc, label, chords, contentX, y, 0, fontSize, chordSize, useSolfege);
       y += clh + gap;
       continue;
     }
@@ -491,7 +496,7 @@ function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, sta
       if (y > maxY) return;
 
       const segments = parseSegments(line);
-      const hasChords = segments.some((s) => s.chord);
+      const hasChords = includeChords && segments.some((s) => s.chord);
 
       if (hasChords) {
         let cx = contentX;
@@ -500,7 +505,9 @@ function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, sta
 
         segments.forEach((seg) => {
           if (seg.chord) {
-            drawChordBadge(doc, seg.chord, cx, y, chordSize);
+            let displayChord = seg.chord;
+            if (useSolfege) displayChord = chordToSolfege(displayChord);
+            drawChordBadge(doc, displayChord, cx, y, chordSize);
           }
           doc.setFont('Nunito', 'bold');
           doc.setFontSize(fontSize);
@@ -555,7 +562,42 @@ function getBookletPairs(totalPages) {
 //  MAIN EXPORT
 // ══════════════════════════════════════════════
 
-export async function generateCompilationPdf({ songs, title, description, layout, customLogo }) {
+function measureSongHeight(doc, song, colWidth, opts) {
+  const { lyricsFontSize, chordLineHeight, lineHeight, stanzaGap, includeChords = true } = opts;
+  const colMargin = 4;
+  const effectiveColWidth = colWidth - colMargin;
+  let h = 0;
+
+  const stanzas = song.lyricsWithChords.split('\n\n');
+  stanzas.forEach((rawStanza) => {
+    const isChorus = rawStanza.startsWith('{R}');
+    const stanza = isChorus ? rawStanza.slice(3) : rawStanza;
+
+    const markerMatch = stanza.match(/^\{(\w+):\s*(.+)\}$/);
+    if (markerMatch) {
+      h += includeChords ? chordLineHeight + stanzaGap : 0;
+      return;
+    }
+
+    const lines = stanza.split('\n');
+    lines.forEach((line) => {
+      if (includeChords) {
+        const segments = parseSegments(line);
+        if (segments.some((s) => s.chord)) h += chordLineHeight + 1;
+      }
+      doc.setFont('Nunito', 'bold');
+      doc.setFontSize(lyricsFontSize);
+      const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+      const wrappedLines = doc.splitTextToSize(plain, effectiveColWidth);
+      h += wrappedLines.length * lineHeight;
+    });
+    h += stanzaGap;
+  });
+
+  return h;
+}
+
+export async function generateCompilationPdf({ songs, title, description, layout, includeChords = true, solfege = false, customLogo }) {
   const logoData = await loadImage(faviconUrl);
   const coverLogo = customLogo || logoData;
 
@@ -588,7 +630,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
         let stanzaEnd = stanzaStart;
 
         for (let i = stanzaStart; i < stanzas.length; i++) {
-          const h = measureBookletStanzaH(doc, stanzas[i], contentW);
+          const h = measureBookletStanzaH(doc, stanzas[i], contentW, includeChords);
           if (usedH + h > availableH && i > stanzaStart) break;
           usedH += h;
           stanzaEnd = i + 1;
@@ -628,7 +670,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
         if (leftPage.type === 'cover') {
           renderBookletCover(doc, songs, title, description, coverLogo, 0, 0, halfW, pageH);
         } else if (leftPage.type === 'song') {
-          renderBookletSongPage(doc, songs[leftPage.songIndex], logoData, 0, 0, halfW, pageH, leftVP - 1, leftPage.stanzaStart, leftPage.stanzaEnd, leftPage.isContinuation);
+          renderBookletSongPage(doc, songs[leftPage.songIndex], logoData, 0, 0, halfW, pageH, leftVP - 1, leftPage.stanzaStart, leftPage.stanzaEnd, leftPage.isContinuation, includeChords, solfege);
         }
       }
 
@@ -638,7 +680,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
         if (rightPage.type === 'cover') {
           renderBookletCover(doc, songs, title, description, coverLogo, halfW, 0, halfW, pageH);
         } else if (rightPage.type === 'song') {
-          renderBookletSongPage(doc, songs[rightPage.songIndex], logoData, halfW, 0, halfW, pageH, rightVP - 1, rightPage.stanzaStart, rightPage.stanzaEnd, rightPage.isContinuation);
+          renderBookletSongPage(doc, songs[rightPage.songIndex], logoData, halfW, 0, halfW, pageH, rightVP - 1, rightPage.stanzaStart, rightPage.stanzaEnd, rightPage.isContinuation, includeChords, solfege);
         }
       }
     });
@@ -665,13 +707,25 @@ export async function generateCompilationPdf({ songs, title, description, layout
 
   // Song pages
   const colGap = isHorizontal ? 12 : 10;
-  const colWidth = (pageW - marginLeft - marginRight - colGap) / 2;
-  const renderOpts = { lyricsFontSize: 9, chordFontSize: 5.5, lineHeight: 4, chordLineHeight: 3.5, stanzaGap: 5 };
+  const baseOpts = { lyricsFontSize: 9, chordFontSize: 5.5, lineHeight: 4, chordLineHeight: 3.5, stanzaGap: 5, includeChords, solfege };
 
   songs.forEach((song) => {
     doc.addPage();
     const startY = drawSongHeader(doc, song, pageW, marginLeft, marginRight, logoData);
-    renderSongTwoCol(doc, song, marginLeft, colWidth, colGap, startY, maxY, pageW, renderOpts);
+    const availableH = maxY - startY;
+
+    let numCols = isHorizontal ? 1 : 2;
+    if (isHorizontal) {
+      for (let n = 1; n <= 3; n++) {
+        const cw = (pageW - marginLeft - marginRight - colGap * (n - 1)) / n;
+        const songH = measureSongHeight(doc, song, cw, baseOpts);
+        if (songH <= availableH * n) { numCols = n; break; }
+        numCols = n;
+      }
+    }
+
+    const colWidth = (pageW - marginLeft - marginRight - colGap * (numCols - 1)) / numCols;
+    renderSongColumns(doc, song, marginLeft, colWidth, colGap, numCols, startY, maxY, pageW, baseOpts);
   });
 
   // Footers

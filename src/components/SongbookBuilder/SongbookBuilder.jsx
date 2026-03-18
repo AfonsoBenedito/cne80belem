@@ -1,5 +1,5 @@
 import { useState, useRef, useLayoutEffect, useCallback, useEffect } from 'react';
-import { FaMusic, FaTimes, FaGripVertical, FaPlus, FaCheck, FaDownload, FaImage, FaSearch, FaBookOpen } from 'react-icons/fa';
+import { FaMusic, FaTimes, FaGripVertical, FaPlus, FaCheck, FaDownload, FaImage, FaSearch, FaBookOpen, FaFileAlt } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { normalize } from '../../utils/normalize';
 import styles from './SongbookBuilder.module.css';
@@ -13,6 +13,8 @@ export default function SongbookBuilder({ onClose }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [layout, setLayout] = useState('vertical');
+  const [includeChords, setIncludeChords] = useState(true);
+  const [solfege, setSolfege] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [customLogo, setCustomLogo] = useState(null);
   const [search, setSearch] = useState('');
@@ -117,6 +119,8 @@ export default function SongbookBuilder({ onClose }) {
         title: title || 'Cancioneiro',
         description,
         layout,
+        includeChords,
+        solfege,
         customLogo,
       });
     } finally {
@@ -150,21 +154,23 @@ export default function SongbookBuilder({ onClose }) {
                 className={styles.searchInput}
               />
             </div>
-            <div className={styles.songList}>
-              {sorted.filter((song) => normalize(song.title).includes(normalize(search))).map((song) => (
-                <button
-                  key={song.slug}
-                  className={`${styles.songItem} ${isSelected(song.slug) ? styles.songItemSelected : ''}`}
-                  onClick={() => toggleSong(song)}
-                >
-                  <span className={styles.songName}>{song.title}</span>
-                  {isSelected(song.slug) ? (
-                    <FaCheck size={12} className={styles.songCheck} />
-                  ) : (
-                    <FaPlus size={12} className={styles.songAdd} />
-                  )}
-                </button>
-              ))}
+            <div className={styles.songListWrapper}>
+              <div className={styles.songList}>
+                {sorted.filter((song) => normalize(song.title).includes(normalize(search))).map((song) => (
+                  <button
+                    key={song.slug}
+                    className={`${styles.songItem} ${isSelected(song.slug) ? styles.songItemSelected : ''}`}
+                    onClick={() => toggleSong(song)}
+                  >
+                    <span className={styles.songName}>{song.title}</span>
+                    {isSelected(song.slug) ? (
+                      <FaCheck size={12} className={styles.songCheck} />
+                    ) : (
+                      <FaPlus size={12} className={styles.songAdd} />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -191,12 +197,14 @@ export default function SongbookBuilder({ onClose }) {
                   className={`${styles.layoutBtn} ${layout === 'vertical' ? styles.layoutBtnActive : ''}`}
                   onClick={() => setLayout('vertical')}
                 >
+                  <FaFileAlt size={11} />
                   Vertical
                 </button>
                 <button
                   className={`${styles.layoutBtn} ${layout === 'horizontal' ? styles.layoutBtnActive : ''}`}
                   onClick={() => setLayout('horizontal')}
                 >
+                  <FaFileAlt size={11} style={{ transform: 'rotate(-90deg)' }} />
                   Horizontal
                 </button>
                 <button
@@ -207,33 +215,60 @@ export default function SongbookBuilder({ onClose }) {
                   Livro
                 </button>
               </div>
-              <div className={styles.logoUpload}>
-                <span className={styles.layoutLabel}>Capa:</span>
-                <input
-                  ref={logoInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className={styles.hiddenInput}
-                />
-                <button
-                  className={`${styles.layoutBtn} ${customLogo ? styles.layoutBtnActive : ''}`}
-                  onClick={() => logoInputRef.current?.click()}
-                >
-                  <FaImage size={11} />
-                  {customLogo ? 'Alterar ícone' : 'Carregar ícone'}
-                </button>
-                {customLogo && (
-                  <>
-                    <img src={customLogo} alt="Ícone" className={styles.logoPreview} />
+              <div className={styles.optionsRow}>
+                <div className={styles.logoUpload}>
+                  <span className={styles.layoutLabel}>Capa:</span>
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className={styles.hiddenInput}
+                  />
+                  <button
+                    className={`${styles.layoutBtn} ${customLogo ? styles.layoutBtnActive : ''}`}
+                    onClick={() => logoInputRef.current?.click()}
+                  >
+                    <FaImage size={11} />
+                    {customLogo ? 'Alterar ícone' : 'Carregar ícone'}
+                  </button>
+                  {customLogo && (
+                    <>
+                      <img src={customLogo} alt="Ícone" className={styles.logoPreview} />
+                      <button
+                        className={styles.removeLogoBtn}
+                        onClick={() => { setCustomLogo(null); if (logoInputRef.current) logoInputRef.current.value = ''; }}
+                      >
+                        <FaTimes size={10} />
+                      </button>
+                    </>
+                  )}
+                </div>
+                <div className={styles.switchGroup}>
+                  <div className={styles.switchRow}>
+                    <span className={styles.switchLabel}>Acordes</span>
                     <button
-                      className={styles.removeLogoBtn}
-                      onClick={() => { setCustomLogo(null); if (logoInputRef.current) logoInputRef.current.value = ''; }}
+                      className={`${styles.switch} ${includeChords ? styles.switchOn : ''}`}
+                      onClick={() => setIncludeChords((v) => !v)}
+                      aria-label="Incluir acordes"
                     >
-                      <FaTimes size={10} />
+                      <span className={styles.switchThumb} />
                     </button>
-                  </>
-                )}
+                  </div>
+                  {includeChords && (
+                    <div className={styles.switchRow}>
+                      <span className={`${styles.switchSideLabel} ${!solfege ? styles.switchSideLabelActive : ''}`}>C D E</span>
+                      <button
+                        className={`${styles.switch} ${solfege ? styles.switchOn : ''}`}
+                        onClick={() => setSolfege((v) => !v)}
+                        aria-label="Alternar notação solfejo"
+                      >
+                        <span className={styles.switchThumb} />
+                      </button>
+                      <span className={`${styles.switchSideLabel} ${solfege ? styles.switchSideLabelActive : ''}`}>Dó Ré Mi</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
