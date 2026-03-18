@@ -383,41 +383,85 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
 }
 
 // ══════════════════════════════════════════════
-//  BOOKLET: Render song at arbitrary position
+//  BOOKLET: Measure stanza height for pagination
 // ══════════════════════════════════════════════
 
-function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
+function measureBookletStanzaH(doc, rawStanza, contentW) {
+  const fontSize = 8;
+  const lh = 3.5;
+  const clh = 3;
+  const stanzaGap = 4;
+
+  const isChorus = rawStanza.startsWith('{R}');
+  const stanza = isChorus ? rawStanza.slice(3) : rawStanza;
+
+  const markerMatch = stanza.match(/^\{(\w+):\s*(.+)\}$/);
+  if (markerMatch) return clh + stanzaGap;
+
+  let h = 0;
+  const lines = stanza.split('\n');
+
+  lines.forEach((line) => {
+    const segments = parseSegments(line);
+    const hasChords = segments.some((s) => s.chord);
+    if (hasChords) h += clh + 0.5;
+
+    doc.setFont('Nunito', 'bold');
+    doc.setFontSize(fontSize);
+    const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+    const wrappedLines = doc.splitTextToSize(plain, contentW);
+    h += wrappedLines.length * lh;
+  });
+
+  h += stanzaGap;
+  return h;
+}
+
+// ══════════════════════════════════════════════
+//  BOOKLET: Render a song page (stanza range)
+// ══════════════════════════════════════════════
+
+function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, stanzaStart, stanzaEnd, isContinuation) {
   const margin = 10;
   const contentX = ox + margin;
   const contentW = pw - margin * 2;
   const maxY = oy + ph - 12;
 
-  // Green header bar
-  const barH = 16;
-  doc.setFillColor(...GREEN);
-  doc.rect(ox, oy, pw, barH, 'F');
+  let y;
 
-  if (logoData) {
-    doc.addImage(logoData, 'PNG', ox + pw - margin - 11, oy + 2.5, 11, 11);
+  if (isContinuation) {
+    const barH = 10;
+    doc.setFillColor(...LIGHT_GREEN);
+    doc.rect(ox, oy, pw, barH, 'F');
+    doc.setFont('Nunito', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(...GREEN);
+    doc.text(`${song.title} (cont.)`, contentX, oy + 6.5);
+    y = oy + barH + 4;
+  } else {
+    const barH = 16;
+    doc.setFillColor(...GREEN);
+    doc.rect(ox, oy, pw, barH, 'F');
+
+    if (logoData) {
+      doc.addImage(logoData, 'PNG', ox + pw - margin - 11, oy + 2.5, 11, 11);
+    }
+
+    doc.setFont('Nunito', 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...WHITE);
+    doc.text(song.title, contentX, oy + (song.author ? 7 : 9));
+
+    if (song.author) {
+      doc.setFont('Nunito', 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(200, 210, 205);
+      doc.text(song.author, contentX, oy + 11);
+    }
+
+    y = oy + barH + 5;
   }
 
-  const textX = contentX;
-
-  doc.setFont('Nunito', 'bold');
-  doc.setFontSize(9.5);
-  doc.setTextColor(...WHITE);
-  doc.text(song.title, textX, oy + (song.author ? 7 : 9));
-
-  if (song.author) {
-    doc.setFont('Nunito', 'normal');
-    doc.setFontSize(6.5);
-    doc.setTextColor(200, 210, 205);
-    doc.text(song.author, textX, oy + 11);
-  }
-
-  let y = oy + barH + 5;
-
-  // Lyrics — single column, smaller font for booklet
   const fontSize = 8;
   const chordSize = 5.5;
   const lh = 3.5;
@@ -426,19 +470,19 @@ function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
 
   const stanzas = song.lyricsWithChords.split('\n\n');
 
-  stanzas.forEach((rawStanza) => {
+  for (let si = stanzaStart; si < stanzaEnd; si++) {
+    const rawStanza = stanzas[si];
     const isChorus = rawStanza.startsWith('{R}');
     const stanza = isChorus ? rawStanza.slice(3) : rawStanza;
 
-    // Check for marker lines
     const markerMatch = stanza.match(/^\{(\w+):\s*(.+)\}$/);
     if (markerMatch) {
-      if (y > maxY) return;
+      if (y > maxY) continue;
       const label = markerMatch[1];
       const chords = markerMatch[2].trim().split(/\s+/);
       renderMarkerLine(doc, label, chords, contentX, y, 0, fontSize, chordSize);
       y += clh + gap;
-      return;
+      continue;
     }
 
     const lines = stanza.split('\n');
@@ -479,7 +523,7 @@ function renderBookletSong(doc, song, logoData, ox, oy, pw, ph, pageNum) {
     });
 
     y += gap;
-  });
+  }
 
   // Footer
   doc.setDrawColor(...GREEN);
@@ -523,36 +567,78 @@ export async function generateCompilationPdf({ songs, title, description, layout
     const pageH = doc.internal.pageSize.getHeight();
     const halfW = pageW / 2;
 
-    // Build virtual page list — one page per song (no multi-page overflow in booklet)
-    const contentPages = 1 + songs.length;
-    const totalVPages = Math.ceil(contentPages / 4) * 4;
+    const margin = 10;
+    const contentW = halfW - margin * 2;
+    const firstHeaderH = 16 + 5;
+    const contHeaderH = 10 + 4;
+    const footerSpace = 12;
+
+    // Build virtual page list with multi-page song support
+    const vPages = [{ type: 'cover' }];
+
+    songs.forEach((song, songIdx) => {
+      const stanzas = song.lyricsWithChords.split('\n\n');
+      let stanzaStart = 0;
+      let isFirst = true;
+
+      while (stanzaStart < stanzas.length) {
+        const headerH = isFirst ? firstHeaderH : contHeaderH;
+        const availableH = pageH - headerH - footerSpace;
+        let usedH = 0;
+        let stanzaEnd = stanzaStart;
+
+        for (let i = stanzaStart; i < stanzas.length; i++) {
+          const h = measureBookletStanzaH(doc, stanzas[i], contentW);
+          if (usedH + h > availableH && i > stanzaStart) break;
+          usedH += h;
+          stanzaEnd = i + 1;
+        }
+
+        vPages.push({
+          type: 'song',
+          songIndex: songIdx,
+          stanzaStart,
+          stanzaEnd,
+          isContinuation: !isFirst,
+        });
+
+        stanzaStart = stanzaEnd;
+        isFirst = false;
+      }
+    });
+
+    // Pad to multiple of 4
+    const totalVPages = Math.ceil(vPages.length / 4) * 4;
+    while (vPages.length < totalVPages) {
+      vPages.push({ type: 'blank' });
+    }
 
     const pairs = getBookletPairs(totalVPages);
 
-    pairs.forEach(([leftVPage, rightVPage], idx) => {
+    pairs.forEach(([leftVP, rightVP], idx) => {
       if (idx > 0) doc.addPage();
 
       doc.setDrawColor(...GRAY_LIGHT);
       doc.setLineWidth(0.2);
       doc.line(halfW, 0, halfW, pageH);
 
-      // Left half
-      if (leftVPage === 1) {
-        renderBookletCover(doc, songs, title, description, coverLogo, 0, 0, halfW, pageH);
-      } else {
-        const si = leftVPage - 2;
-        if (si >= 0 && si < songs.length) {
-          renderBookletSong(doc, songs[si], logoData, 0, 0, halfW, pageH, leftVPage - 1, false);
+      // Render left half
+      const leftPage = vPages[leftVP - 1];
+      if (leftPage) {
+        if (leftPage.type === 'cover') {
+          renderBookletCover(doc, songs, title, description, coverLogo, 0, 0, halfW, pageH);
+        } else if (leftPage.type === 'song') {
+          renderBookletSongPage(doc, songs[leftPage.songIndex], logoData, 0, 0, halfW, pageH, leftVP - 1, leftPage.stanzaStart, leftPage.stanzaEnd, leftPage.isContinuation);
         }
       }
 
-      // Right half
-      if (rightVPage === 1) {
-        renderBookletCover(doc, songs, title, description, coverLogo, halfW, 0, halfW, pageH);
-      } else {
-        const si = rightVPage - 2;
-        if (si >= 0 && si < songs.length) {
-          renderBookletSong(doc, songs[si], logoData, halfW, 0, halfW, pageH, rightVPage - 1, false);
+      // Render right half
+      const rightPage = vPages[rightVP - 1];
+      if (rightPage) {
+        if (rightPage.type === 'cover') {
+          renderBookletCover(doc, songs, title, description, coverLogo, halfW, 0, halfW, pageH);
+        } else if (rightPage.type === 'song') {
+          renderBookletSongPage(doc, songs[rightPage.songIndex], logoData, halfW, 0, halfW, pageH, rightVP - 1, rightPage.stanzaStart, rightPage.stanzaEnd, rightPage.isContinuation);
         }
       }
     });

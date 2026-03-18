@@ -1,5 +1,5 @@
-import { useState, useRef, useLayoutEffect, useCallback } from 'react';
-import { FaMusic, FaTimes, FaGripVertical, FaPlus, FaCheck, FaDownload, FaImage, FaSearch } from 'react-icons/fa';
+import { useState, useRef, useLayoutEffect, useCallback, useEffect } from 'react';
+import { FaMusic, FaTimes, FaGripVertical, FaPlus, FaCheck, FaDownload, FaImage, FaSearch, FaBookOpen } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { normalize } from '../../utils/normalize';
 import styles from './SongbookBuilder.module.css';
@@ -16,6 +16,11 @@ export default function SongbookBuilder({ onClose }) {
   const [generating, setGenerating] = useState(false);
   const [customLogo, setCustomLogo] = useState(null);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
 
   const logoInputRef = useRef(null);
   const dragSlug = useRef(null);
@@ -194,6 +199,13 @@ export default function SongbookBuilder({ onClose }) {
                 >
                   Horizontal
                 </button>
+                <button
+                  className={`${styles.layoutBtn} ${layout === 'booklet' ? styles.layoutBtnActive : ''}`}
+                  onClick={() => setLayout('booklet')}
+                >
+                  <FaBookOpen size={11} />
+                  Livro
+                </button>
               </div>
               <div className={styles.logoUpload}>
                 <span className={styles.layoutLabel}>Capa:</span>
@@ -225,9 +237,16 @@ export default function SongbookBuilder({ onClose }) {
               </div>
             </div>
 
-            <h3 className={styles.colTitle}>
-              Selecionadas ({selected.length})
-            </h3>
+            <div className={styles.selectedHeader}>
+              <h3 className={styles.colTitle}>
+                Selecionadas ({selected.length})
+              </h3>
+              {selected.length > 0 && (
+                <button className={styles.clearBtn} onClick={() => setSelected([])}>
+                  Limpar
+                </button>
+              )}
+            </div>
 
             {selected.length === 0 ? (
               <p className={styles.emptyMsg}>
