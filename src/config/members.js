@@ -9,6 +9,14 @@ import bernardoSantosImg from '../assets/images/members/bernardo_santos.jpg';
 import joseFerreiraImg from '../assets/images/members/jose_ferreira.jpg';
 import marcoSilveiraImg from '../assets/images/members/marco_silveira.jpg';
 import samuelSimaoImg from '../assets/images/members/samuel_simao.jpg';
+import andreMilheiroImg from '../assets/images/members/andre_milheiro.png';
+import isauraNevesImg from '../assets/images/members/isaura_neves.png';
+import joaoBorgesImg from '../assets/images/members/joao_borges.png';
+import inesPintoImg from '../assets/images/members/ines_pinto.png';
+import saraChalanteImg from '../assets/images/members/sara_chalante.jpg';
+import afonsoBeneditoImg from '../assets/images/members/afonso_benedito.jpeg';
+import joaoCarvalhosaImg from '../assets/images/members/joao_carvalhosa.jpg';
+import danielRoqueImg from '../assets/images/members/daniel_roque.png';
 
 export const sectionBadges = {
   lobitos: lobitosImg,
@@ -71,14 +79,14 @@ export const dirigentes = [
   { name: 'Diogo Cardoso', section: 'lobitos', photo: diogoCardosoImg },
   { name: 'Bernardo Santos', section: 'lobitos', photo: bernardoSantosImg },
   { name: 'Paulo "Cocas" Couceiro', section: 'lobitos', photo: cocasImg },
-  { name: 'André Milheiro', section: 'lobitos' },
-  { name: 'Isaura Neves', section: 'lobitos' },
+  { name: 'André Milheiro', section: 'lobitos', photo: andreMilheiroImg },
+  { name: 'Isaura Neves', section: 'lobitos', photo: isauraNevesImg },
   { name: 'Samuel Simão', section: 'exploradores', photo: samuelSimaoImg },
-  { name: 'João Borges', section: 'exploradores' },
-  { name: 'Inês Pinto', section: 'exploradores' },
-  { name: 'Sara Chalante', section: 'exploradores' },
+  { name: 'João Borges', section: 'exploradores', photo: joaoBorgesImg },
+  { name: 'Inês Pinto', section: 'exploradores', photo: inesPintoImg },
+  { name: 'Sara Chalante', section: 'exploradores', photo: saraChalanteImg },
   { name: 'Marco Silveira', section: 'pioneiros', photo: marcoSilveiraImg },
-  { name: 'Afonso Benedito', section: 'pioneiros' },
-  { name: 'João Carvalhosa', section: 'pioneiros' },
-  { name: 'Daniel Roque', section: 'pioneiros' },
+  { name: 'Afonso Benedito', section: 'pioneiros', photo: afonsoBeneditoImg },
+  { name: 'João Carvalhosa', section: 'pioneiros', photo: joaoCarvalhosaImg },
+  { name: 'Daniel Roque', section: 'pioneiros', photo: danielRoqueImg },
 ];
