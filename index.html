@@ -8,6 +8,23 @@
     <meta name="description" content="Site oficial do Agrupamento 80 - Santa Maria de Belém, Corpo Nacional de Escutas." />
   </head>
   <body>
+    <!-- GitHub Pages SPA redirect handler (restores route from 404.html) -->
+    <script>
+      (function(){
+        var l = window.location;
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function(s) {
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          var path = decoded.split('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + path[0] +
+            (path[1] ? ('?' + path[1]) : '') +
+            l.hash
+          );
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
