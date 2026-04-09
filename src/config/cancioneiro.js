@@ -283,9 +283,9 @@ Nada nos s[G]eparar[Am]á
     author: '',
     youtubeId: 'AxiRaYoxERE',
     key: 'C',
-    lyricsWithChords: `[C]Sei Senhor, q[E]ue na [Am]vida,
+    lyricsWithChords: `[C]Sei Senhor, que na [Am]vida,
 nem sempre temos [Dm]tudo, [F]tudo [G]dado.
-[C]Por isso, a[E]qui [Am]estou
+[C]Por isso, aqui [Am]estou
 pronto para [Dm]ser, [F]ser aju[G]dado...
 
 {R}[C]Senhor a [G]Ti me en[Am]trego
