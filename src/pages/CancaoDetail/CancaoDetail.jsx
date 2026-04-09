@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
@@ -16,6 +16,13 @@ export default function CancaoDetail() {
   const [showChords, setShowChords] = useState(true);
   const [semitones, setSemitones] = useState(0);
   const [solfege, setSolfege] = useState(false);
+
+  useEffect(() => {
+    if (!song) return;
+    const previousTitle = document.title;
+    document.title = `${song.title} | Cancioneiro`;
+    return () => { document.title = previousTitle; };
+  }, [song]);
 
   if (!song) return <Navigate to="/recursos/cancioneiro" replace />;
 
