@@ -7,9 +7,11 @@ import LyricsWithChords from '../../components/LyricsWithChords/LyricsWithChords
 const loadPdfGenerator = () => import('../../utils/generateSongPdf');
 import styles from './CancaoDetail.module.css';
 
+const sortedCancoes = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
+
 export default function CancaoDetail() {
   const { slug } = useParams();
-  const song = cancoes.find((s) => s.slug === slug);
+  const song = sortedCancoes.find((s) => s.slug === slug);
 
   const [showChords, setShowChords] = useState(true);
   const [semitones, setSemitones] = useState(0);
@@ -17,9 +19,9 @@ export default function CancaoDetail() {
 
   if (!song) return <Navigate to="/recursos/cancioneiro" replace />;
 
-  const currentIndex = cancoes.findIndex((s) => s.slug === slug);
-  const prev = currentIndex > 0 ? cancoes[currentIndex - 1] : null;
-  const next = currentIndex < cancoes.length - 1 ? cancoes[currentIndex + 1] : null;
+  const currentIndex = sortedCancoes.findIndex((s) => s.slug === slug);
+  const prev = currentIndex > 0 ? sortedCancoes[currentIndex - 1] : null;
+  const next = currentIndex < sortedCancoes.length - 1 ? sortedCancoes[currentIndex + 1] : null;
 
   const currentKey = transposeChord(song.key, semitones);
   const displayKey = solfege ? chordToSolfege(currentKey) : currentKey;
