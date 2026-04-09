@@ -34,6 +34,7 @@ export default function CancaoDetail() {
         <header className={styles.header}>
           <h1 className={styles.title}>{song.title}</h1>
           {song.author && <p className={styles.author}>{song.author}</p>}
+          {song.capo && <p className={styles.capo}>Capo na {song.capo}ª casa</p>}
         </header>
 
         {/* Chord controls */}
