@@ -236,13 +236,13 @@ E depor em Teus braços meu coração`,
     youtubeId: 'xpuB46CQ2ls',
     key: 'A',
     lyricsWithChords: `
-    [A]Tomai Senh[Bm]or, e receb[C#m]ei        [Bm]
+    [A]Tomai Senh[Bm]or, e re[C#m]cebei                [Bm]
     t[F#m]oda a minha liberd[E]ade,[F#m]
     a minha mem[E]ória e o m[D]eu entendim[F#m]ento,
     Toda a minha vont[E]ade,
     e t[D]udo o que eu poss[F#m]uo.
     Vós me d[E]estes, 
-    a v[D]ós o restit[A]uo. [Bm]       [C#m]            [Bm]
+    a v[D]ós o restit[A]uo. [Bm]       ------[C#m]            -----[Bm]
  
     [A]Tudo é v[Bm]osso, disp[C#m]onde.   [Bm] 
     P[F#m]ela Vossa vont[E]ade[F#m]
