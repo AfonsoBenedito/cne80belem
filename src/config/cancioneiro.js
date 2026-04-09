@@ -227,7 +227,13 @@ E [C]sobre mim estende [G]o m[G7]anto [C]Teu
 Não [F]deixes de escut[C]ar, [G]Senhor, meus [C]ais
 
 Juro seguir Teus passos como cristão
-E depor em Teus braços meu coração`,
+E depor em Teus braços meu coração
+
+Defende-me do mal, Jesus meu rei
+E em prol de Portugal batalharei
+
+Minh’alma toda cega de fé e de amor
+Hoje e sempre se entrega a Vós Senhor`,
   },
   {
     slug: 'oracao-de-santo-inacio',
@@ -236,13 +242,13 @@ E depor em Teus braços meu coração`,
     youtubeId: 'xpuB46CQ2ls',
     key: 'A',
     lyricsWithChords: `
-    [A]Tomai Senh[Bm]or, e receb[C#m]ei        [Bm]
+    [A]Tomai Senh[Bm]or, e re[C#m]cebei                [Bm]
     t[F#m]oda a minha liberd[E]ade,[F#m]
     a minha mem[E]ória e o m[D]eu entendim[F#m]ento,
     Toda a minha vont[E]ade,
     e t[D]udo o que eu poss[F#m]uo.
     Vós me d[E]estes, 
-    a v[D]ós o restit[A]uo. [Bm]       [C#m]            [Bm]
+    a v[D]ós o restit[A]uo. [Bm]       ------[C#m]            -----[Bm]
  
     [A]Tudo é v[Bm]osso, disp[C#m]onde.   [Bm] 
     P[F#m]ela Vossa vont[E]ade[F#m]
@@ -283,9 +289,9 @@ Nada nos s[G]eparar[Am]á
     author: '',
     youtubeId: 'AxiRaYoxERE',
     key: 'C',
-    lyricsWithChords: `[C]Sei Senhor, q[E]ue na [Am]vida,
+    lyricsWithChords: `[C]Sei Senhor, que na [Am]vida,
 nem sempre temos [Dm]tudo, [F]tudo [G]dado.
-[C]Por isso, a[E]qui [Am]estou
+[C]Por isso, aqui [Am]estou
 pronto para [Dm]ser, [F]ser aju[G]dado...
 
 {R}[C]Senhor a [G]Ti me en[Am]trego
@@ -396,7 +402,7 @@ Irei con[Dm]Tigo onde quer [Em]que vás
 [Am]Em cada beijo, [F]em cada abraço
 [C]Deixo a marca [G]fria do [F]aço [G]
 
-[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
+{R}[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
 [C]Sou um [G]mau elemento, o [Am]meu amor [G]não tem ri[F]val
 [G]Não há outro igual, [C]não há outro igual
 
@@ -408,7 +414,7 @@ Irei con[Dm]Tigo onde quer [Em]que vás
 [Am]Especialista em [F]crime passional
 [C]Amar é cumprir [G]um ritu[F]al [G]
 
-[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
+{R}[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
 [C]Sou um [G]mau elemento, o [Am]meu amor [G]não tem ri[F]val
 [G]Não há outro igual, [C]não há outro igual`,
   },
