@@ -57,6 +57,17 @@
   margin-top: 0.25rem;
 }
 
+.capo {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-green);
+  background: var(--color-green-light);
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  margin-top: 0.35rem;
+}
+
 /* ── Chord Controls ── */
 .controls {
   display: flex;

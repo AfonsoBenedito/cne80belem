@@ -412,4 +412,101 @@ Irei con[Dm]Tigo onde quer [Em]que vás
 [C]Sou um [G]mau elemento, o [Am]meu amor [G]não tem ri[F]val
 [G]Não há outro igual, [C]não há outro igual`,
   },
+  {
+    slug: 'cordeiro-de-deus',
+    title: 'Cordeiro de Deus',
+    author: '',
+    youtubeId: 'n2FVCzxm_Hk',
+    key: 'G',
+    lyricsWithChords: `[G]Cordeiro de [C]Deus que [D]tiras o pecado do [G]mundo  [Em]
+Tem piedade de [Am]nós (Tem piedade de [D]nós)
+Tem piedade de [G]nós (Tem piedade de [Em]nós)
+Tem piedade de [Am]nós (Tem piedade de [D]nós)
+Tem piedade de [G]nós [C] -----[G]
+
+Tem piedade de nós...
+Dá-nos a Tua paz...`,
+  },
+  {
+    slug: 'senhor-tem-piedade-de-nos',
+    title: 'Senhor, Tem Piedade de Nós',
+    author: '',
+    youtubeId: 'yIlf9Kyn6cE',
+    key: 'C',
+    lyricsWithChords: `[C]Senhor, piedade de [F]nós [C]
+Somos o Teu [F]povo peca[G]dor
+
+[F]Toma a nossa [G]vida de pe[C]cado e [Am]dor
+[F]Enche-nos do [G]Espírito de a[C]mor
+
+[C]Cristo, piedade de [F]nós [C]
+Somos o Teu [F]povo peca[G]dor
+
+[F]Toma a nossa [G]vida de pe[C]cado e [Am]dor
+[F]Enche-nos do [G]Espírito de a[C]mor
+
+[C]Senhor, piedade de [F]nós [C]
+Somos o Teu [F]povo peca[G]dor
+
+[F]Toma a nossa [G]vida de pe[C]cado e [Am]dor
+[F]Enche-nos do [G]Espírito de a[C]mor`,
+  },
+  {
+    slug: 'estrela-polar',
+    title: 'Estrela Polar',
+    author: '',
+    youtubeId: '1y07suA6SBU',
+    key: 'Em',
+    capo: 2,
+    lyricsWithChords: `{Intro: Em C D Em Bm C D}
+
+[Em]Esta sede de te encontrar em [G]mim
+[Bm]De correr p'ra ti, de estar junto de [C]ti
+[Am]Guias pelos vales o decurso do meu [Em]rio
+[C]Única razão és [D]Tu. [Bm]Único sustento és [Em]Tu
+[C]A minha vida [D]existe porque existes [G]Tu.
+
+{R}[Em]Tudo gira à Tua [C]volta, em função de [D]Ti, [Em]
+[Bm]Não importa [C]quando, onde e o por[D]quê.
+
+[Em]Gira o firmamento sem nunca ter [G]paz
+[Bm]Mas existe um ponto a brilhar p'ra [C]mim
+[Am]A estrela polar que guia os meus [Em]passos.
+[C]A estrela polar és [D]Tu. [Bm]A estrela segura [Em]Tu
+[C]A minha vida [D]existe porque existes [G]Tu.
+
+{R}[Em]Tudo gira à Tua [C]volta, em função de [D]Ti, [Em]
+[Bm]Não importa [C]quando, onde e o por[D]quê.
+
+[Em]Brilha a Tua luz no centro do meu [G]ser,
+[Bm]Dás sentido à vida que em mim nas[C]ceu,
+[Am]Tudo o que farei será somente [Em]amor.
+[C]Única razão és [D]Tu. [Bm]A estrela polar [Em]Tu
+[C]A minha vida [D]existe porque existes [G]Tu.
+
+{R}[Em]Tudo gira à Tua [C]volta, em função de [D]Ti, [Em]
+[Bm]Não importa [C]quando, onde e o por[D]quê.
+
+[Em]Esta sede de te encontrar em [G]mim
+[Bm]De correr p'ra ti, de estar junto de [C]ti
+[Am]Guias pelos vales o decurso do meu [Em]rio
+[C]Única razão és [D]Tu. [Bm]Único sustento és [Em]Tu
+[C]A minha vida [D]existe porque existes [G]Tu.`,
+  },
+  {
+    slug: 'a-tua-palavra',
+    title: 'A Tua Palavra',
+    author: '',
+    youtubeId: 'DfFHbhxry2w',
+    key: 'D',
+    lyricsWithChords: `[D]A tua pala[F#m]vra, Se[Bm]nhor,
+é para nós [G]testemunho, é [A]amor.
+
+E vivendo o dia-a-dia
+seguiremos teus passos, ó Senhor.
+
+{R}[G]Cantai todos com muita [A]alegria
+[D]a palavra da [F#m]ressur[Bm]reição
+que está [G]presente em [Em]nós, meu ir[A]mão. [D]`,
+  },
 ];
