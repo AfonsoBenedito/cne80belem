@@ -396,7 +396,7 @@ Irei con[Dm]Tigo onde quer [Em]que vás
 [Am]Em cada beijo, [F]em cada abraço
 [C]Deixo a marca [G]fria do [F]aço [G]
 
-[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
+{R}[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
 [C]Sou um [G]mau elemento, o [Am]meu amor [G]não tem ri[F]val
 [G]Não há outro igual, [C]não há outro igual
 
@@ -408,7 +408,7 @@ Irei con[Dm]Tigo onde quer [Em]que vás
 [Am]Especialista em [F]crime passional
 [C]Amar é cumprir [G]um ritu[F]al [G]
 
-[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
+{R}[C]Sou um [G]mau elemento e [Am]vou fazer-te [F]mal [G]
 [C]Sou um [G]mau elemento, o [Am]meu amor [G]não tem ri[F]val
 [G]Não há outro igual, [C]não há outro igual`,
   },
