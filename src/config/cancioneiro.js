@@ -227,7 +227,13 @@ E [C]sobre mim estende [G]o m[G7]anto [C]Teu
 Não [F]deixes de escut[C]ar, [G]Senhor, meus [C]ais
 
 Juro seguir Teus passos como cristão
-E depor em Teus braços meu coração`,
+E depor em Teus braços meu coração
+
+Defende-me do mal, Jesus meu rei
+E em prol de Portugal batalharei
+
+Minh’alma toda cega de fé e de amor
+Hoje e sempre se entrega a Vós Senhor`,
   },
   {
     slug: 'oracao-de-santo-inacio',
