@@ -493,4 +493,20 @@ Somos o Teu [F]povo peca[G]dor
 [C]Única razão és [D]Tu. [Bm]Único sustento és [Em]Tu
 [C]A minha vida [D]existe porque existes [G]Tu.`,
   },
+  {
+    slug: 'a-tua-palavra',
+    title: 'A Tua Palavra',
+    author: '',
+    youtubeId: 'DfFHbhxry2w',
+    key: 'D',
+    lyricsWithChords: `[D]A tua pala[F#m]vra, Se[Bm]nhor,
+é para nós [G]testemunho, é [A]amor.
+
+E vivendo o dia-a-dia
+seguiremos teus passos, ó Senhor.
+
+{R}[G]Cantai todos com muita [A]alegria
+[D]a palavra da [F#m]ressur[Bm]reição
+que está [G]presente em [Em]nós, meu ir[A]mão. [D]`,
+  },
 ];
