@@ -68,6 +68,199 @@
   margin-top: 0.35rem;
 }
 
+/* ── Report error ── */
+.reportText {
+  text-align: right;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-400);
+  margin-top: 1rem;
+}
+
+.reportLink {
+  color: var(--color-gray-400);
+  font-weight: 700;
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.reportLink:hover {
+  color: var(--color-green);
+}
+
+.reportOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.reportPanel {
+  background: var(--color-white);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.reportHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.reportTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  color: var(--color-green);
+}
+
+.reportClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: var(--color-gray-100);
+  border-radius: 8px;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reportClose:hover {
+  background: var(--color-gray-200);
+  color: var(--color-black);
+}
+
+.reportForm {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reportField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.reportLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-500);
+}
+
+.reportInput,
+.reportTextarea {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+  background: var(--color-white);
+  color: var(--color-black);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  resize: none;
+}
+
+.reportInput:disabled {
+  background: var(--color-gray-100);
+  color: var(--color-gray-500);
+}
+
+.reportInput:focus,
+.reportTextarea:focus {
+  border-color: var(--color-green);
+}
+
+.reportError {
+  font-size: var(--font-size-xs);
+  color: #d32f2f;
+  text-align: center;
+}
+
+.reportSubmitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.7rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--color-green);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reportSubmitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+  box-shadow: var(--shadow-md);
+}
+
+.reportSubmitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reportSuccess {
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.reportSuccess p:first-child {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-green);
+}
+
+.reportSuccessSub {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-400);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.reportDoneBtn {
+  margin-top: 1.25rem;
+  padding: 0.55rem 1.5rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-500);
+  background: var(--color-gray-100);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reportDoneBtn:hover {
+  background: var(--color-gray-200);
+  color: var(--color-black);
+}
+
 /* ── Chord Controls ── */
 .controls {
   display: flex;
