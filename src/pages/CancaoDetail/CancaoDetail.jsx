@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo } from 'react-icons/fa';
+import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo, FaExclamationCircle, FaTimes, FaPaperPlane } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { transposeChord, chordToSolfege } from '../../config/chords';
 import LyricsWithChords from '../../components/LyricsWithChords/LyricsWithChords';
@@ -16,6 +16,7 @@ export default function CancaoDetail() {
   const [showChords, setShowChords] = useState(true);
   const [semitones, setSemitones] = useState(0);
   const [solfege, setSolfege] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
     if (!song) return;
@@ -78,6 +79,13 @@ export default function CancaoDetail() {
               semitones={semitones}
               solfege={solfege}
             />
+
+            <p className={styles.reportText}>
+              Encontraste algum erro?{' '}
+              <button className={styles.reportLink} onClick={() => setShowReport(true)}>
+                Reporta aqui <FaExclamationCircle size={11} />
+              </button>
+            </p>
 
             {/* Prev / Next */}
             <nav className={styles.nav}>
@@ -180,6 +188,93 @@ export default function CancaoDetail() {
           </aside>
         </div>
       </div>
+      {showReport && <ReportModal songTitle={song.title} onClose={() => setShowReport(false)} />}
     </main>
+  );
+}
+
+function ReportModal({ songTitle, onClose }) {
+  const [description, setDescription] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('https://formspree.io/f/mpqoggqp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _subject: `⚠️ Erro reportado: ${songTitle}`,
+          musica: songTitle,
+          descricao: description,
+        }),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError('Erro ao enviar. Tenta novamente.');
+      }
+    } catch {
+      setError('Erro de ligação. Verifica a internet.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className={styles.reportOverlay} onClick={onClose}>
+      <div className={styles.reportPanel} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.reportHeader}>
+          <h2 className={styles.reportTitle}>
+            <FaExclamationCircle size={16} /> Reportar Erro
+          </h2>
+          <button className={styles.reportClose} onClick={onClose}>
+            <FaTimes size={14} />
+          </button>
+        </div>
+
+        {submitted ? (
+          <div className={styles.reportSuccess}>
+            <p>Obrigado!</p>
+            <p className={styles.reportSuccessSub}>
+              O erro foi reportado com sucesso. Vamos corrigi-lo em breve.
+            </p>
+            <button className={styles.reportDoneBtn} onClick={onClose}>Fechar</button>
+          </div>
+        ) : (
+          <form className={styles.reportForm} onSubmit={handleSubmit}>
+            <div className={styles.reportField}>
+              <label className={styles.reportLabel}>Música</label>
+              <input
+                type="text"
+                value={songTitle}
+                disabled
+                className={styles.reportInput}
+              />
+            </div>
+            <div className={styles.reportField}>
+              <label className={styles.reportLabel}>Descreve o erro *</label>
+              <textarea
+                required
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Ex: O acorde na segunda estrofe deveria ser Am em vez de Em..."
+                className={styles.reportTextarea}
+                rows={4}
+              />
+            </div>
+            {error && <p className={styles.reportError}>{error}</p>}
+            <button type="submit" className={styles.reportSubmitBtn} disabled={submitting}>
+              <FaPaperPlane size={12} />
+              {submitting ? 'A enviar...' : 'Enviar'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
