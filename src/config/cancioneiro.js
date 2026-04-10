@@ -18,6 +18,7 @@ import senhorTemPiedadeDeNos from './songs/senhor-tem-piedade-de-nos';
 import estrelaPolar from './songs/estrela-polar';
 import aTuaPalavra from './songs/a-tua-palavra';
 import ireiFicar from './songs/irei-ficar';
+import despertouDeUmSonho from './songs/despertou-de-um-sonho';
 
 export const cancoes = [
   soproLeve,
@@ -40,4 +41,5 @@ export const cancoes = [
   estrelaPolar,
   aTuaPalavra,
   ireiFicar,
+  despertouDeUmSonho,
 ];
