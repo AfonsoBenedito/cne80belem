@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMusic, FaChevronRight, FaSearch, FaBookOpen } from 'react-icons/fa';
+import { FaMusic, FaChevronRight, FaSearch, FaBookOpen, FaLightbulb, FaTimes, FaPaperPlane } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { normalize } from '../../utils/normalize';
 import SongbookBuilder from '../../components/SongbookBuilder/SongbookBuilder';
@@ -12,6 +12,7 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 export default function Cancioneiro() {
   const [search, setSearch] = useState('');
   const [showBuilder, setShowBuilder] = useState(false);
+  const [showSuggest, setShowSuggest] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
 
   const filtered = useMemo(() => {
@@ -121,9 +122,129 @@ export default function Cancioneiro() {
             )}
           </div>
         </div>
+
+        <p className={styles.suggestText}>
+          Não encontras a música que procuras?{' '}
+          <button className={styles.suggestLink} onClick={() => setShowSuggest(true)}>
+            Sugere-nos <FaLightbulb size={11} />
+          </button>
+        </p>
       </div>
 
       {showBuilder && <SongbookBuilder onClose={() => setShowBuilder(false)} />}
+      {showSuggest && <SuggestModal onClose={() => setShowSuggest(false)} />}
     </main>
+  );
+}
+
+function SuggestModal({ onClose }) {
+  const [title, setTitle] = useState('');
+  const [artist, setArtist] = useState('');
+  const [link, setLink] = useState('');
+  const [notes, setNotes] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+    try {
+      const res = await fetch('https://formspree.io/f/mpqoggqp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _subject: `🎵 Sugestão de música: ${title}`,
+          titulo: title,
+          artista: artist || '—',
+          link: link || '—',
+          notas: notes || '—',
+        }),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError('Erro ao enviar. Tenta novamente.');
+      }
+    } catch {
+      setError('Erro de ligação. Verifica a internet.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className={styles.suggestOverlay} onClick={onClose}>
+      <div className={styles.suggestPanel} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.suggestHeader}>
+          <h2 className={styles.suggestTitle}>
+            <FaLightbulb size={16} /> Sugere uma Música
+          </h2>
+          <button className={styles.suggestClose} onClick={onClose}>
+            <FaTimes size={14} />
+          </button>
+        </div>
+
+        {submitted ? (
+          <div className={styles.suggestSuccess}>
+            <p>Obrigado pela sugestão!</p>
+            <p className={styles.suggestSuccessSub}>
+              A tua sugestão foi enviada com sucesso. Vamos analisá-la em breve.
+            </p>
+            <button className={styles.suggestDoneBtn} onClick={onClose}>Fechar</button>
+          </div>
+        ) : (
+          <form className={styles.suggestForm} onSubmit={handleSubmit}>
+            <div className={styles.suggestField}>
+              <label className={styles.suggestLabel}>Título da música *</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Ex: Irei Ficar"
+                className={styles.suggestInput}
+              />
+            </div>
+            <div className={styles.suggestField}>
+              <label className={styles.suggestLabel}>Artista (opcional)</label>
+              <input
+                type="text"
+                value={artist}
+                onChange={(e) => setArtist(e.target.value)}
+                placeholder="Ex: Escuteiros"
+                className={styles.suggestInput}
+              />
+            </div>
+            <div className={styles.suggestField}>
+              <label className={styles.suggestLabel}>Link (opcional)</label>
+              <input
+                type="text"
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                placeholder="YouTube, CifraClub, etc."
+                className={styles.suggestInput}
+              />
+            </div>
+            <div className={styles.suggestField}>
+              <label className={styles.suggestLabel}>Notas (opcional)</label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Alguma informação extra..."
+                className={styles.suggestTextarea}
+                rows={2}
+              />
+            </div>
+            {error && <p className={styles.suggestError}>{error}</p>}
+            <button type="submit" className={styles.suggestSubmitBtn} disabled={submitting}>
+              <FaPaperPlane size={12} />
+              {submitting ? 'A enviar...' : 'Enviar Sugestão'}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
   );
 }
