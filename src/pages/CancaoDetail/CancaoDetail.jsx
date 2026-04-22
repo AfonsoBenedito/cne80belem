@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo, FaExclamationCircle, FaTimes, FaPaperPlane } from 'react-icons/fa';
+import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo, FaExclamationCircle, FaTimes, FaPaperPlane, FaYoutube, FaSoundcloud, FaTiktok } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { transposeChord, chordToSolfege } from '../../config/chords';
 import LyricsWithChords from '../../components/LyricsWithChords/LyricsWithChords';
@@ -17,6 +17,7 @@ export default function CancaoDetail() {
   const [semitones, setSemitones] = useState(0);
   const [solfege, setSolfege] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [sourceOverride, setSourceOverride] = useState(null);
 
   useEffect(() => {
     if (!song) return;
@@ -25,7 +26,15 @@ export default function CancaoDetail() {
     return () => { document.title = previousTitle; };
   }, [song]);
 
+  useEffect(() => {
+    setSourceOverride(null);
+  }, [slug]);
+
   if (!song) return <Navigate to="/recursos/cancioneiro" replace />;
+
+  const sourceKeys = { youtubeId: 'youtube', soundcloudUrl: 'soundcloud', tiktokUrl: 'tiktok' };
+  const mediaSources = Object.keys(song).filter(k => sourceKeys[k] && song[k]).map(k => sourceKeys[k]);
+  const activeSource = mediaSources.includes(sourceOverride) ? sourceOverride : mediaSources[0] || null;
 
   const currentIndex = sortedCancoes.findIndex((s) => s.slug === slug);
   const prev = currentIndex > 0 ? sortedCancoes[currentIndex - 1] : null;
@@ -114,7 +123,23 @@ export default function CancaoDetail() {
           {/* Video sidebar */}
           <aside className={styles.sidebar}>
             <div className={styles.videoSticky}>
-              {song.youtubeId ? (
+              {mediaSources.length > 1 && (
+                <div className={styles.mediaTabs}>
+                  {mediaSources.map((source) => (
+                    <button
+                      key={source}
+                      className={`${styles.mediaTab} ${activeSource === source ? styles.mediaTabActive : ''}`}
+                      onClick={() => setSourceOverride(source)}
+                    >
+                      {source === 'youtube' && <FaYoutube />}
+                      {source === 'soundcloud' && <FaSoundcloud />}
+                      {source === 'tiktok' && <FaTiktok />}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {activeSource === 'youtube' ? (
                 <div className={styles.videoWrapper}>
                   <iframe
                     src={`https://www.youtube.com/embed/${song.youtubeId}`}
@@ -124,7 +149,7 @@ export default function CancaoDetail() {
                     allowFullScreen
                   />
                 </div>
-              ) : song.soundcloudUrl ? (
+              ) : activeSource === 'soundcloud' ? (
                 <div className={styles.soundcloudWrapper}>
                   <iframe
                     title={song.title}
@@ -134,7 +159,7 @@ export default function CancaoDetail() {
                     src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(song.soundcloudUrl)}&color=%23129648&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`}
                   />
                 </div>
-              ) : song.tiktokUrl ? (
+              ) : activeSource === 'tiktok' ? (
                 <div className={styles.tiktokWrapper}>
                   <iframe
                     src={`https://www.tiktok.com/player/v1/${song.tiktokUrl.match(/video\/(\d+)/)?.[1]}`}
