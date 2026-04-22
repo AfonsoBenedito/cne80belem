@@ -20,6 +20,7 @@ import aTuaPalavra from './songs/a-tua-palavra';
 import ireiFicar from './songs/irei-ficar';
 import despertouDeUmSonho from './songs/despertou-de-um-sonho';
 import passoAPasso from './songs/passo-a-passo';
+import graoDeTrigo from './songs/grao-de-trigo';
 
 export const cancoes = [
   soproLeve,
@@ -44,4 +45,5 @@ export const cancoes = [
   ireiFicar,
   despertouDeUmSonho,
   passoAPasso,
+  graoDeTrigo,
 ];
