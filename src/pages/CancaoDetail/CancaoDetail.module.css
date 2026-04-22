@@ -483,6 +483,31 @@
   border: none;
 }
 
+.mediaTabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.mediaTab {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-gray-300);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.mediaTab:hover {
+  color: var(--color-green);
+}
+
+.mediaTabActive {
+  color: var(--color-green);
+}
+
 .sidebarControls {
   display: flex;
   align-items: center;
