@@ -8,7 +8,7 @@ export default {
 Tem piedade de [Am]nós (Tem piedade de [D]nós)
 Tem piedade de [G]nós (Tem piedade de [Em]nós)
 Tem piedade de [Am]nós (Tem piedade de [D]nós)
-Tem piedade de [G]nós [C] -----[G]
+Tem piedade de [G]nós [C]      [G]
 
 Tem piedade de nós...
 Dá-nos a Tua paz...`,

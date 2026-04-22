@@ -11,7 +11,7 @@ export default {
     Toda a minha vont[E]ade,
     e t[D]udo o que eu poss[F#m]uo.
     Vós me d[E]estes,
-    a v[D]ós o restit[A]uo. [Bm]       ------[C#m]            -----[Bm]
+    a v[D]ós o restit[A]uo. [Bm]       [C#m]            [Bm]
 
     [A]Tudo é v[Bm]osso, disp[C#m]onde.   [Bm]
     P[F#m]ela Vossa vont[E]ade[F#m]
