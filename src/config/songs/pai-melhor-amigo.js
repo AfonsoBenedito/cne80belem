@@ -5,6 +5,7 @@ export default {
   youtubeId: '',
   soundcloudUrl: 'https://soundcloud.com/coro-do-cupav/pai',
   key: 'C',
+  tags: ['oração', 'missa'],
   lyricsWithChords: `[C]Pai, assim Te vou chamar
 [C]Do Universo és Senhor
 [C]Mas não sinto dis[G]tância

@@ -83,6 +83,111 @@
   box-shadow: var(--shadow-md);
 }
 
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 34px;
+  height: 34px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--color-green);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filterBtn:hover {
+  opacity: 0.9;
+  box-shadow: var(--shadow-md);
+}
+
+.filterBtnActive {
+  width: auto;
+  padding: 0 0.7rem;
+}
+
+/* ── Filters panel ── */
+.filters {
+  max-width: 640px;
+  margin: 0 auto 1.25rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filterLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-400);
+  min-width: fit-content;
+}
+
+.filterTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.filterTag {
+  padding: 0.25rem 0.6rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-gray-500);
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.filterTag:hover {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
+
+.filterTagActive {
+  background: var(--color-green-light);
+  color: var(--color-green);
+  border-color: var(--color-green);
+  font-weight: 700;
+}
+
+.filterClear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  align-self: flex-start;
+  padding: 0.2rem 0.5rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-gray-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.filterClear:hover {
+  color: var(--color-gray-500);
+}
+
 .suggestText {
   text-align: center;
   font-size: var(--font-size-sm);
@@ -422,16 +527,28 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .toolbar {
-    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  .filterBtn {
+    order: -1;
   }
 
   .searchWrapper {
-    width: 100%;
+    order: 0;
+    flex-basis: calc(100% - 34px - 0.75rem);
   }
 
   .builderBtn {
+    order: 1;
     width: 100%;
     justify-content: center;
+  }
+
+  .filterGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
   }
 
   .alphabet {

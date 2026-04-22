@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'AMSh305Xacw',
   key: 'D',
+  tags: ['oração', 'missa', 'perdão'],
   lyricsWithChords: `S[D]enhor, tende pi[G]edade e per[A]doai noss[D]a culpa [G]
 E perdo[A]ai nossa [D]culpa
 Porq[G]ue nós [A]somos vosso [D]povo [Bm]

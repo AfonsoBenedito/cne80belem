@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'AxiRaYoxERE',
   key: 'C',
+  tags: ['oração', 'missa', 'ofertório'],
   lyricsWithChords: `[C]Sei Senhor, que na [Am]vida,
 nem sempre temos [Dm]tudo, [F]tudo [G]dado.
 [C]Por isso, aqui [Am]estou

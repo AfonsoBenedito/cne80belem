@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'DfFHbhxry2w',
   key: 'D',
+  tags: ['oração', 'missa', 'comunhão'],
   lyricsWithChords: `[D]A tua pala[F#m]vra, Se[Bm]nhor,
 é para nós [G]testemunho, é [A]amor.
 

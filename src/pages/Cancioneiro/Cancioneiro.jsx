@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMusic, FaChevronRight, FaSearch, FaBookOpen, FaLightbulb, FaTimes, FaPaperPlane } from 'react-icons/fa';
+import { FaMusic, FaChevronRight, FaSearch, FaBookOpen, FaLightbulb, FaTimes, FaPaperPlane, FaFilter } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
+import { tagCategories } from '../../config/tags';
 import { normalize } from '../../utils/normalize';
 import SongbookBuilder from '../../components/SongbookBuilder/SongbookBuilder';
 import styles from './Cancioneiro.module.css';
@@ -11,14 +12,26 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export default function Cancioneiro() {
   const [search, setSearch] = useState('');
+  const [activeTags, setActiveTags] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
   const [showBuilder, setShowBuilder] = useState(false);
   const [showSuggest, setShowSuggest] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
 
+  function toggleTag(tag) {
+    setActiveTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+  }
+
   const filtered = useMemo(() => {
     setVisibleCount(10);
-    return sorted.filter((s) => normalize(s.title).includes(normalize(search)));
-  }, [search]);
+    return sorted.filter((s) => {
+      if (!normalize(s.title).includes(normalize(search))) return false;
+      if (activeTags.length > 0 && !activeTags.every((t) => s.tags?.includes(t))) return false;
+      return true;
+    });
+  }, [search, activeTags]);
 
   const availableLetters = useMemo(
     () => new Set(filtered.map((s) => s.title[0].toUpperCase())),
@@ -58,6 +71,13 @@ export default function Cancioneiro() {
         </header>
 
         <div className={styles.toolbar}>
+          <button
+            className={`${styles.filterBtn} ${activeTags.length > 0 ? styles.filterBtnActive : ''}`}
+            onClick={() => setShowFilters((s) => !s)}
+          >
+            <FaFilter size={12} />
+            {activeTags.length > 0 && <span>{activeTags.length}</span>}
+          </button>
           <div className={styles.searchWrapper}>
             <FaSearch size={14} className={styles.searchIcon} />
             <input
@@ -76,6 +96,32 @@ export default function Cancioneiro() {
             Faz o teu Cancioneiro
           </button>
         </div>
+
+        {showFilters && (
+          <div className={styles.filters}>
+            {tagCategories.map((cat) => (
+              <div key={cat.key} className={styles.filterGroup}>
+                <span className={styles.filterLabel}>{cat.label}</span>
+                <div className={styles.filterTags}>
+                  {cat.tags.map((tag) => (
+                    <button
+                      key={tag.value}
+                      className={`${styles.filterTag} ${activeTags.includes(tag.value) ? styles.filterTagActive : ''}`}
+                      onClick={() => toggleTag(tag.value)}
+                    >
+                      {tag.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+            {activeTags.length > 0 && (
+              <button className={styles.filterClear} onClick={() => setActiveTags([])}>
+                <FaTimes size={10} /> Limpar filtros
+              </button>
+            )}
+          </div>
+        )}
 
         <div className={styles.content}>
           <nav className={styles.alphabet}>

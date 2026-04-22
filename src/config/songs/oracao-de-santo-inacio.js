@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'xpuB46CQ2ls',
   key: 'A',
+  tags: ['oração', 'missa', 'ofertório'],
   lyricsWithChords: `
     [A]Tomai Senh[Bm]or, e re[C#m]cebei                [Bm]
     t[F#m]oda a minha liberd[E]ade,[F#m]

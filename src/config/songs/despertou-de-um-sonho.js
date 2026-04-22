@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'v6gFSwUWU18',
   key: 'G',
+  tags: ['animação', 'acampamento', 'encontro'],
   lyricsWithChords: `[G]Despertou de um [C]sonho... um homem [G]viu... 
 E fez nas[C]cer em cada [G]olhar a [Bm]semente da[C] nova[Am] alegria[D].
 [G]Dando a mão a quem [C]precisa, [G]sempre certos da d[C]ivisa,

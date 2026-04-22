@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'aGcfWBbas8U',
   key: 'G',
+  tags: ['louvor', 'missa', 'entrada'],
   lyricsWithChords: `{R}Em nome do [G]Pai, em nome do [C]Filho,
 em nome do Esp[G]írito Santo, [D]estamos aqu[G]i,
 
