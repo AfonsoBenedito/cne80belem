@@ -134,6 +134,17 @@ export default function CancaoDetail() {
                     src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(song.soundcloudUrl)}&color=%23129648&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`}
                   />
                 </div>
+              ) : song.tiktokUrl ? (
+                <div className={styles.tiktokWrapper}>
+                  <iframe
+                    src={`https://www.tiktok.com/player/v1/${song.tiktokUrl.match(/video\/(\d+)/)?.[1]}`}
+                    title={song.title}
+                    className={styles.tiktok}
+                    scrolling="no"
+                    allow="encrypted-media"
+                    allowFullScreen
+                  />
+                </div>
               ) : (
                 <div className={styles.videoEmpty}>
                   <FaMusic size={32} />
