@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: '1qk0mI6kZJI?start=28',
   key: 'D',
+  tags: ['oração', 'missa', 'comunhão'],
   lyricsWithChords: `[D]Eu sinto que vem do Céu um sopro [A]leve
 Um vento quente que nos a[G]quece
 Um sopro vivo que vem de [D]Deus

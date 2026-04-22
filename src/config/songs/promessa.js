@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'CITMNsLDFUU',
   key: 'C',
+  tags: ['oração', 'promessa'],
   lyricsWithChords: `[C]Minha promessa atende, [Am]meu Deus, De[G]us meu
 E [C]sobre mim estende [G]o m[G7]anto [C]Teu
 

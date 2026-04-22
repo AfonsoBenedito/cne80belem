@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'OF2zq0rn1ME',
   key: 'G',
+  tags: ['animação', 'acampamento', 'encontro'],
   lyricsWithChords: `{Intro: G Dm C Am}
 
 Se a tua [D]voz trouxer mil v[C]ozes para can[G]tar

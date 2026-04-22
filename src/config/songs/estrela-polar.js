@@ -5,6 +5,7 @@ export default {
   youtubeId: '1y07suA6SBU',
   key: 'Em',
   capo: 2,
+  tags: ['oração', 'missa'],
   lyricsWithChords: `{Intro: Em C D Em Bm C D}
 
 [Em]Esta sede de te encontrar em [G]mim

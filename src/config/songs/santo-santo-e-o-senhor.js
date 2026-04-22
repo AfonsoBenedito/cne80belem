@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: '5PDSoW2lKD4',
   key: 'E',
+  tags: ['oração', 'missa', 'santo'],
   lyricsWithChords: `{R}Santo, Santo é o Senh[E]or, Senhor Deus do un[A]iverso,
 o céu e a terra pro[B]clamam a Vossa [E]gló--[A]-ó---[E]ria.
 

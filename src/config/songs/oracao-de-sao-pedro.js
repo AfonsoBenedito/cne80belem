@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'quqZKmuj0LY',
   key: 'C',
+  tags: ['oração', 'missa'],
   lyricsWithChords: `{Intro: C Dm Em F}
 
 [C]Foi por Ti que [Em]um dia [Dm]fui p'ra a[F]lém da praia

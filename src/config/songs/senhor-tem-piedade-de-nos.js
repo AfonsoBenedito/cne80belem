@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'yIlf9Kyn6cE',
   key: 'C',
+  tags: ['oração', 'missa', 'perdão'],
   lyricsWithChords: `[C]Senhor, piedade de [F]nós [C]
 Somos o Teu [F]povo peca[G]dor
 

@@ -184,6 +184,14 @@ export default function CancaoDetail() {
                   </div>
                 </div>
               )}
+
+              {song.tags?.length > 0 && (
+                <div className={styles.tags}>
+                  {song.tags.map((t) => (
+                    <span key={t} className={styles.tag}>{t}</span>
+                  ))}
+                </div>
+              )}
             </div>
           </aside>
         </div>

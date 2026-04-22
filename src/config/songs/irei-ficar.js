@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'eSs9RX1yAJ0',
   key: 'A',
+  tags: ['animação', 'acampamento', 'encontro'],
   lyricsWithChords: `{Intro: D A G (x2)}
 
 [D]Viver por [A]Ti é uma ra[G]zão

@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'OlvbpnqZKQA',
   key: 'G',
+  tags: ['oração', 'missa', 'comunhão'],
   lyricsWithChords: `Que importa, Senh[G]or,
 se é tão longe para mim
 a praia onde tenho de cheg[D]ar,

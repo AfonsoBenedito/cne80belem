@@ -4,6 +4,7 @@ export default {
   author: 'Alto Risco',
   youtubeId: 'byHjPS3ygBI',
   key: 'C',
+  tags: ['animação', 'acampamento'],
   lyricsWithChords: `[C]Ligo o motor, é [G]meia noite
 [Am]E para onde vou [F]ainda não sei
 [C]Sou procurado, [G]sou um fora da [F]lei [G]

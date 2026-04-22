@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'IieUUcEeNwE',
   key: 'G',
+  tags: ['animação', 'acampamento', 'encontro'],
   lyricsWithChords: `Não dei[G]xes cair teus o[Am7]lhos
 Não te [Bm7]deixes engan[C9]ar
 [G]Olha de frente os es[D]colhos

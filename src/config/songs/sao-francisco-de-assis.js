@@ -4,6 +4,7 @@ export default {
   author: '',
   youtubeId: 'PKAIedUxNUA',
   key: 'C',
+  tags: ['animação', 'acampamento', 'encontro'],
   lyricsWithChords: `{R}[C]São Francisco de Assis
 Ensi[F]na cada lobi[G]to
 Como [C]há-de ser fel[Am]iz.
