@@ -143,7 +143,9 @@ export default function LyricsWithChords({
                         />
                       </span>
                     )}
-                    <span>{seg.text}</span>
+                    <span>{seg.chord && !seg.text.trim()
+                      ? '\u00A0'.repeat(Math.max(2, seg.text.length))
+                      : seg.text}</span>
                   </span>
                 ))}
               </div>
