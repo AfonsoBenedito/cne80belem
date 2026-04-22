@@ -33,6 +33,12 @@
   margin-right: 0.25rem;
 }
 
+.introAnnotation {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-400);
+}
+
 /* ── Line ── */
 .lyricLine {
   font-size: var(--font-size-base);

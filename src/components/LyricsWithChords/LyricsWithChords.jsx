@@ -96,20 +96,25 @@ export default function LyricsWithChords({
         if (markerMatch) {
           if (!showChords) return null;
           const label = markerMatch[1];
-          const chords = markerMatch[2].trim().split(/\s+/);
+          const tokens = markerMatch[2].trim().split(/\s+/);
+          const chordPattern = /^[A-G][#b]?[a-z0-9]*$/;
           return (
             <div key={si} className={styles.introLine}>
               <span className={styles.introLabel}>{label}:</span>
-              {chords.map((chord, ci) => (
-                <ChordLabel
-                  key={ci}
-                  chord={chord}
-                  semitones={semitones}
-                  solfege={solfege}
-                  variantMap={variantMap}
-                  onChangeVariant={handleChangeVariant}
-                />
-              ))}
+              {tokens.map((token, ci) =>
+                chordPattern.test(token) ? (
+                  <ChordLabel
+                    key={ci}
+                    chord={token}
+                    semitones={semitones}
+                    solfege={solfege}
+                    variantMap={variantMap}
+                    onChangeVariant={handleChangeVariant}
+                  />
+                ) : (
+                  <span key={ci} className={styles.introAnnotation}>{token}</span>
+                )
+              )}
             </div>
           );
         }
