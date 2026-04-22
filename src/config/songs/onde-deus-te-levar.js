@@ -3,6 +3,7 @@ export default {
   title: 'Onde Deus Te Levar',
   author: 'Schoenstatt',
   tiktokUrl: 'https://www.tiktok.com/@heytmusica/video/7466086215163415830',
+  youtubeId: '1MbPbjf2Isg',
   key: 'A',
   tags: ['oração'],
   lyricsWithChords: `[A]Podes achar que não t[C#m]ens p'ra onde [D]ir, nem que faz[E]er
