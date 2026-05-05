@@ -70,6 +70,11 @@ export const chordDb = {
     { fingers: [-1, -1, 5, 3, 3, 3], startFret: 3 },
     { fingers: [3, 5, 5, 3, 3, 3], startFret: 3 },
   ],
+  D7: [
+    { fingers: [-1, -1, 0, 2, 1, 2], startFret: 1 },
+    { fingers: [-1, 5, 7, 5, 7, 5], startFret: 5 },
+    { fingers: [10, 12, 10, 11, 10, 10], startFret: 10 },
+  ],
   Dm7: [
     { fingers: [-1, -1, 0, 2, 1, 1], startFret: 1 },
     { fingers: [-1, 5, 7, 5, 6, 5], startFret: 5 },
