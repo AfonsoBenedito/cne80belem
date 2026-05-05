@@ -1,4 +1,4 @@
-.PHONY: local-up local-down test-build run_all_tests
+.PHONY: local-up local-down test-build test-cancioneiro run_all_tests
 
 local-up:
 	@echo "Starting development server..."
@@ -13,7 +13,11 @@ test-build:
 	npm run build
 	@echo "Build successful!"
 
+test-cancioneiro:
+	@echo "Running cancioneiro tests..."
+	npx vitest run src/config/__tests__/cancioneiro.test.js
+
 run_all_tests:
 	@echo "Running all tests..."
-	@echo "No tests configured yet — add your test runner here."
+	npm test
 	@echo "All tests passed!"
