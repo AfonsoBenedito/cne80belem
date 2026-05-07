@@ -26,6 +26,7 @@ import oceansWhereFeetMayFail from './songs/oceans-where-feet-may-fail';
 import voaEmAltitude from './songs/voa-em-altitude';
 import perdoaSenhorONossDia from './songs/perdoa-senhor-o-nosso-dia';
 import pegadasNaAreia from './songs/pegadas-na-areia';
+import paiNossoGalego from './songs/pai-nosso-galego';
 
 export const cancoes = [
   soproLeve,
@@ -56,4 +57,5 @@ export const cancoes = [
   voaEmAltitude,
   perdoaSenhorONossDia,
   pegadasNaAreia,
+  paiNossoGalego,
 ];
