@@ -7,9 +7,10 @@ import img02 from '../../assets/images/carousel/02.jpeg';
 import img03 from '../../assets/images/carousel/03.jpg';
 import img04 from '../../assets/images/carousel/04.jpg';
 import img05 from '../../assets/images/carousel/05.jpg';
+import acagrupCover from '../../assets/images/noticias/acagrup-2026/cover.jpg';
 import styles from './Home.module.css';
 
-const carouselImages = [img01, img02, img03, img04, img05];
+const carouselImages = [img01, acagrupCover, img02, img03, img04, img05];
 
 export default function Home() {
   const photos = useMemo(() => {
