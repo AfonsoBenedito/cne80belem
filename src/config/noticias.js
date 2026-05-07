@@ -34,6 +34,15 @@ export const noticias = [
     date: '2026-03-28',
     cover: acagrupCover,
     photos: [acagrupCover, acagrup01, acagrup02, acagrup03],
+    links: {
+      facebook: 'https://www.facebook.com/CNE80BELEM/posts/pfbid0B2Km5mR9jj3ofPgWfnotJSHtwVF3Us7WVYTLMvtjZrH21uXmJ6QfGbd5bTiw5sb6l',
+      instagram: [
+        'https://www.instagram.com/cne80belem/p/DWmmXsIiBZ3/',
+        'https://www.instagram.com/cne80belem/p/DWubdMaCDJn/',
+        'https://www.instagram.com/cne80belem/p/DWzfPKKCISQ/',
+        'https://www.instagram.com/cne80belem/p/DXGzfmwiOf0/',
+      ],
+    },
     excerpt: 'Quatro dias de aventura, espírito de equipa e vida ao ar livre no Sensimbra Natura Park, de 28 a 31 de Março.',
     body: `O Agrupamento 80 já tem tudo preparado para mais uma grande edição do seu Acampamento de Agrupamento (ACAGRUP 2026), que decorrerá entre os dias 28 e 31 de Março, no Sensimbra Natura Park. O programa promete quatro dias intensos de actividades escutistas, desafios de equipa, convivência e contacto com a natureza.
 
