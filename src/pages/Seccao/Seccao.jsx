@@ -1,7 +1,6 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { FaQuoteLeft } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
-import placeholderPhoto from '../../assets/images/carousel/03.jpg';
 import styles from './Seccao.module.css';
 
 export default function Seccao() {
@@ -23,7 +22,7 @@ export default function Seccao() {
 
       {/* Group photo */}
       <section className={styles.imageSection}>
-        <img src={placeholderPhoto} alt={data.label} className={styles.groupPhoto} />
+        {data.groupPhoto && <img src={data.groupPhoto} alt={data.label} className={styles.groupPhoto} />}
       </section>
 
       {/* Description */}
