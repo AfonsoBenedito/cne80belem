@@ -28,6 +28,7 @@ import perdoaSenhorONossDia from './songs/perdoa-senhor-o-nosso-dia';
 import pedacinhoDeDeus from './songs/pedacinho-de-deus';
 import pegadasNaAreia from './songs/pegadas-na-areia';
 import paiNossoGalego from './songs/pai-nosso-galego';
+import renasceEmMim from './songs/renasce-em-mim';
 
 export const cancoes = [
   soproLeve,
@@ -60,4 +61,5 @@ export const cancoes = [
   pedacinhoDeDeus,
   pegadasNaAreia,
   paiNossoGalego,
+  renasceEmMim,
 ];
