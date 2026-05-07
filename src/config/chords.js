@@ -110,6 +110,11 @@ export const chordDb = {
     { fingers: [-1, 6, 8, 8, 8, 6], startFret: 6 },
     { fingers: [-1, -1, 1, 3, 4, 3], startFret: 1 },
   ],
+  F9: [
+    { fingers: [1, 0, 1, 2, 1, 0], startFret: 1 },
+    { fingers: [-1, -1, 3, 2, 1, 3], startFret: 1 },
+    { fingers: [1, 3, 1, 2, 1, 1], startFret: 1 },
+  ],
   D9: [
     { fingers: [-1, -1, 0, 2, 1, 0], startFret: 1 },
     { fingers: [-1, 5, 4, 5, 5, 5], startFret: 5 },
