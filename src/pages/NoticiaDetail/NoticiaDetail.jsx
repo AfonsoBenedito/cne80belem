@@ -1,6 +1,6 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { FaCalendarAlt, FaUser, FaTag, FaImages, FaTimes, FaArrowLeft, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaCalendarAlt, FaUser, FaTag, FaImages, FaTimes, FaArrowLeft, FaChevronLeft, FaChevronRight, FaInstagram, FaFacebookF, FaExternalLinkAlt } from 'react-icons/fa';
 import { noticias } from '../../config/noticias';
 import styles from './NoticiaDetail.module.css';
 
@@ -95,6 +95,35 @@ export default function NoticiaDetail() {
                       </button>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {noticia.links && (
+                <div className={styles.socialLinks}>
+                  {Object.keys(noticia.links).map((platform) => {
+                    if (platform === 'instagram') {
+                      return noticia.links.instagram.map((url, i) => (
+                        <a key={`ig-${i}`} href={url} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title={`Instagram${noticia.links.instagram.length > 1 ? ` ${i + 1}` : ''}`}>
+                          <FaInstagram size={19} />
+                        </a>
+                      ));
+                    }
+                    if (platform === 'facebook') {
+                      return (
+                        <a key="fb" href={noticia.links.facebook} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="Facebook">
+                          <FaFacebookF size={19} />
+                        </a>
+                      );
+                    }
+                    if (platform === 'url') {
+                      return (
+                        <a key="url" href={noticia.links.url} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="Link externo">
+                          <FaExternalLinkAlt size={17} />
+                        </a>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
               )}
             </aside>
