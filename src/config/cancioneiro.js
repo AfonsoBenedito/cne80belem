@@ -25,6 +25,7 @@ import ondeDeusTeLevar from './songs/onde-deus-te-levar';
 import oceansWhereFeetMayFail from './songs/oceans-where-feet-may-fail';
 import voaEmAltitude from './songs/voa-em-altitude';
 import perdoaSenhorONossDia from './songs/perdoa-senhor-o-nosso-dia';
+import pedacinhoDeDeus from './songs/pedacinho-de-deus';
 import pegadasNaAreia from './songs/pegadas-na-areia';
 import paiNossoGalego from './songs/pai-nosso-galego';
 
@@ -56,6 +57,7 @@ export const cancoes = [
   oceansWhereFeetMayFail,
   voaEmAltitude,
   perdoaSenhorONossDia,
+  pedacinhoDeDeus,
   pegadasNaAreia,
   paiNossoGalego,
 ];
