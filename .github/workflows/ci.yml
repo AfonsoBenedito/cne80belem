@@ -23,6 +23,24 @@ jobs:
       - name: Test — Cancioneiro
         run: npx vitest run src/config/__tests__/cancioneiro.test.js
 
+  test-noticias:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test — Noticias
+        run: npx vitest run src/config/__tests__/noticias.test.js
+
   build:
     runs-on: ubuntu-latest
     steps:

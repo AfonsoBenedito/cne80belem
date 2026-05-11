@@ -1,4 +1,4 @@
-.PHONY: local-up local-down test-build test-cancioneiro run_all_tests
+.PHONY: local-up local-down test-build test-cancioneiro test-noticias run_all_tests
 
 local-up:
 	@echo "Starting development server..."
@@ -16,6 +16,10 @@ test-build:
 test-cancioneiro:
 	@echo "Running cancioneiro tests..."
 	npx vitest run src/config/__tests__/cancioneiro.test.js
+
+test-noticias:
+	@echo "Running noticias tests..."
+	npx vitest run src/config/__tests__/noticias.test.js
 
 run_all_tests:
 	@echo "Running all tests..."
