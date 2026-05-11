@@ -29,6 +29,7 @@ import pedacinhoDeDeus from './songs/pedacinho-de-deus';
 import pegadasNaAreia from './songs/pegadas-na-areia';
 import paiNossoGalego from './songs/pai-nosso-galego';
 import renasceEmMim from './songs/renasce-em-mim';
+import souLobito from './songs/sou-lobito';
 
 export const cancoes = [
   soproLeve,
@@ -62,4 +63,5 @@ export const cancoes = [
   pegadasNaAreia,
   paiNossoGalego,
   renasceEmMim,
+  souLobito,
 ];
