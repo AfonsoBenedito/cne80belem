@@ -41,7 +41,8 @@ export default function Header() {
               ) : (
                 <li key={item.path} className={styles.navItem}>
                   <Link to={item.path} className={styles.navLink} onClick={closeMobile}>
-                    {item.label}
+                    <span className={styles.labelFull}>{item.label}</span>
+                    <span className={styles.labelShort}>{item.shortLabel || item.label}</span>
                   </Link>
                 </li>
               )
