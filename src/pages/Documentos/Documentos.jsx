@@ -9,7 +9,7 @@ export default function Documentos() {
   const [search, setSearch] = useState('');
 
   const handleSelect = (doc) => {
-    if (window.matchMedia('(max-width: 768px)').matches) {
+    if (navigator.maxTouchPoints > 0) {
       window.open(doc.file, '_blank', 'noopener,noreferrer');
       return;
     }
