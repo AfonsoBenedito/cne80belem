@@ -261,6 +261,11 @@
 }
 
 @media (hover: none) and (pointer: coarse) {
+  .layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
   .viewer {
     display: none;
   }
