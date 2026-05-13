@@ -83,12 +83,37 @@
   gap: 0.5rem;
 }
 
+.docRow {
+  position: relative;
+}
+
+.docDownloadBtn {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--color-gray-300);
+  border-radius: 6px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  z-index: 1;
+}
+
+.docDownloadBtn:hover {
+  color: var(--color-green);
+  background: var(--color-green-light);
+}
+
 .docItem {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  padding: 0.85rem 1rem;
+  padding: 0.85rem 2.75rem 0.85rem 1rem;
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius);
@@ -235,6 +260,6 @@
   }
 
   .viewer {
-    min-height: 500px;
+    display: none;
   }
 }
