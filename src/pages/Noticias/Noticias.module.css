@@ -461,6 +461,12 @@
   }
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .filterGroupPeriod {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
   .viewToggle {
     display: none;
