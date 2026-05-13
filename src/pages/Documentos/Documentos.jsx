@@ -9,6 +9,10 @@ export default function Documentos() {
   const [search, setSearch] = useState('');
 
   const handleSelect = (doc) => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      window.open(doc.file, '_blank', 'noopener,noreferrer');
+      return;
+    }
     setActiveDoc((prev) => (prev?.name === doc.name ? null : doc));
   };
 
@@ -43,7 +47,7 @@ export default function Documentos() {
             {/* Document list */}
             <ul className={styles.list}>
               {filtered.map((doc) => (
-              <li key={doc.name}>
+              <li key={doc.name} className={styles.docRow}>
                 <button
                   className={`${styles.docItem} ${activeDoc?.name === doc.name ? styles.docItemActive : ''}`}
                   onClick={() => handleSelect(doc)}
@@ -54,6 +58,15 @@ export default function Documentos() {
                     {doc.date && <span className={styles.docDate}>{doc.date}</span>}
                   </div>
                 </button>
+                <a
+                  href={doc.file}
+                  download
+                  className={styles.docDownloadBtn}
+                  title="Descarregar"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <FaDownload size={13} />
+                </a>
               </li>
             ))}
             {filtered.length === 0 && (
