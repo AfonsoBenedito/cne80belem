@@ -177,7 +177,7 @@ export default function Noticias({ fixedSection, hideHero }) {
                 </select>
               </div>
 
-              <div className={styles.filterGroup}>
+              <div className={`${styles.filterGroup} ${styles.filterGroupPeriod}`}>
                 <label className={styles.filterLabel}>Período</label>
                 <DatePicker
                   selectsRange
