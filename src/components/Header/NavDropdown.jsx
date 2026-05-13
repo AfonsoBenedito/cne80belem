@@ -38,7 +38,8 @@ export default function NavDropdown({ item, onNavigate }) {
         aria-expanded={open}
         aria-haspopup="true"
       >
-        {item.label}
+        <span className={styles.labelFull}>{item.label}</span>
+        <span className={styles.labelShort}>{item.shortLabel || item.label}</span>
         <svg
           className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`}
           width="12"

@@ -20,6 +20,7 @@ body {
   background-color: var(--color-white);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 ::selection {

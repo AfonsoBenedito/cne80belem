@@ -12,6 +12,7 @@ export const navigation = [
   },
   {
     label: 'I Secção - Lobitos',
+    shortLabel: 'Lobitos',
     path: '/seccao/lobitos',
     children: [
       { label: 'Secção', path: '/seccao/lobitos' },
@@ -23,6 +24,7 @@ export const navigation = [
   },
   {
     label: 'II Secção - Exploradores',
+    shortLabel: 'Exploradores',
     path: '/seccao/exploradores',
     children: [
       { label: 'Secção', path: '/seccao/exploradores' },
@@ -34,6 +36,7 @@ export const navigation = [
   },
   {
     label: 'III Secção - Pioneiros',
+    shortLabel: 'Pioneiros',
     path: '/seccao/pioneiros',
     children: [
       { label: 'Secção', path: '/seccao/pioneiros' },
@@ -45,6 +48,7 @@ export const navigation = [
   },
   {
     label: 'IV Secção - Caminheiros',
+    shortLabel: 'Caminheiros',
     path: '/seccao/caminheiros',
     children: [
       { label: 'Secção', path: '/seccao/caminheiros' },

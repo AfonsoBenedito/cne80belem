@@ -13,6 +13,7 @@
   justify-content: center;
   gap: var(--spacing-lg);
   height: 100%;
+  overflow: hidden;
 }
 
 /* Brand */
@@ -150,6 +151,10 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
+.labelShort {
+  display: none;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -158,6 +163,38 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Tablet landscape — compact nav with short labels */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .labelFull {
+    display: none;
+  }
+
+  .labelShort {
+    display: inline;
+  }
+
+  .navLink {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+  }
+
+  .navList {
+    gap: 0;
+  }
+
+  .logo {
+    height: 42px;
+  }
+
+  .brandName {
+    font-size: var(--font-size-base);
+  }
+
+  .brandSubtitle {
+    font-size: 0.65rem;
   }
 }
 
@@ -208,5 +245,13 @@
 
   .dropdownLink {
     padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .labelFull {
+    display: inline;
+  }
+
+  .labelShort {
+    display: none;
   }
 }
