@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Static pages -->
+  <url><loc>https://afonsobenedito.github.io/cne80belem/</loc><changefreq>weekly</changefreq><lastmod>2026-05-14</lastmod><priority>1.0</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias</loc><changefreq>weekly</changefreq><lastmod>2026-05-14</lastmod><priority>0.9</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.9</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/direcao</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/dirigentes-e-animadores</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/banco-de-fardas</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/documentos</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/contactos</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/reservar-alojamento</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+
+  <!-- Secções -->
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/lobitos</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/lobitos/programa</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/lobitos/provas</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/lobitos/covil</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/exploradores</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/exploradores/programa</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/exploradores/provas</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/exploradores/cabana</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/pioneiros</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/pioneiros/programa</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/pioneiros/provas</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/pioneiros/abrigo</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/caminheiros</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.8</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/caminheiros/programa</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/caminheiros/provas</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/seccao/caminheiros/base</loc><changefreq>monthly</changefreq><lastmod>2026-05-14</lastmod><priority>0.6</priority></url>
+
+  <!-- Notícias -->
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/acagrup-2026</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/acampamento-primavera-2026</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/promessas-lobitos-2026</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/raid-exploradores-sintra</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/projeto-pioneiros-belem</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/caminhada-caminheiros</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/dia-fundador-2026</loc><changefreq>never</changefreq><lastmod>2026-05-14</lastmod><priority>0.7</priority></url>
+
+  <!-- Cancioneiro -->
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/sopro-leve</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/sao-francisco-de-assis</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/pai-melhor-amigo</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/dar-mais</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/impele-a-tua-propria-canoa</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/em-nome-do-pai</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/perdoai-a-nossa-culpa</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/promessa</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/oracao-de-santo-inacio</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/santo-santo-e-o-senhor</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/nada-nos-separara</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/entrega</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/luz-terna-e-suave</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/oracao-de-sao-pedro</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/mau-elemento</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/cordeiro-de-deus</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/senhor-tem-piedade-de-nos</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/estrela-polar</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/a-tua-palavra</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/irei-ficar</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/despertou-de-um-sonho</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/passo-a-passo</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/grao-de-trigo</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/onde-deus-te-levar</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/oceans-where-feet-may-fail</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/voa-em-altitude</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/perdoa-senhor-o-nosso-dia</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/pedacinho-de-deus</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/pegadas-na-areia</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/pai-nosso-galego</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/renasce-em-mim</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+  <url><loc>https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/sou-lobito</loc><changefreq>yearly</changefreq><lastmod>2026-05-14</lastmod><priority>0.5</priority></url>
+
+</urlset>

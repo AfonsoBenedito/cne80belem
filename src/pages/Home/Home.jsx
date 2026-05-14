@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSEO } from '../../utils/useSEO';
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel';
 import { noticias } from '../../config/noticias';
@@ -13,6 +14,10 @@ import styles from './Home.module.css';
 const carouselImages = [img01, acagrupCover, img02, img03, img04, img05];
 
 export default function Home() {
+  useSEO({
+    description: 'Site oficial do Agrupamento 80 - Santa Maria de Belém, Corpo Nacional de Escutas. Acompanha as últimas notícias, eventos e atividades.',
+  });
+
   const photos = useMemo(() => {
     const seen = new Set();
     const all = [];

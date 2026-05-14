@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FaBoxOpen, FaRecycle, FaHandshake } from 'react-icons/fa';
 import { categories } from '../../config/bancoDeFardas';
 import { mainEmail } from '../../config/contacts';
+import { useSEO } from '../../utils/useSEO';
 import styles from './BancoDeFardas.module.css';
 
 const howItWorks = [
@@ -54,6 +55,11 @@ function StockCard({ name, image, stock }) {
 }
 
 export default function BancoDeFardas() {
+  useSEO({
+    title: 'Banco de Fardas',
+    description: 'Banco de fardas e equipamento escutista do Agrupamento 80. Entrega e recebe fardas em segunda mão.',
+  });
+
   const [activeTab, setActiveTab] = useState(categories[0].key);
   const activeCategory = categories.find((c) => c.key === activeTab);
 

@@ -5,6 +5,8 @@ import { cancoes } from '../../config/cancioneiro';
 import { transposeChord, chordToSolfege } from '../../config/chords';
 import LyricsWithChords from '../../components/LyricsWithChords/LyricsWithChords';
 const loadPdfGenerator = () => import('../../utils/generateSongPdf');
+import { useSEO } from '../../utils/useSEO';
+import JsonLd from '../../components/JsonLd';
 import styles from './CancaoDetail.module.css';
 
 const sortedCancoes = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
@@ -19,16 +21,16 @@ export default function CancaoDetail() {
   const [showReport, setShowReport] = useState(false);
   const [sourceOverride, setSourceOverride] = useState(null);
 
-  useEffect(() => {
-    if (!song) return;
-    const previousTitle = document.title;
-    document.title = `${song.title} | Cancioneiro`;
-    return () => { document.title = previousTitle; };
-  }, [song]);
+  const tagContext = song?.tags?.length
+    ? ` Indicado para: ${song.tags.join(', ')}.`
+    : '';
+  useSEO(song ? {
+    rawTitle: `${song.title} — Letra e Acordes | Cancioneiro CNE Escuteiros`,
+    description: `Letra e acordes de guitarra de "${song.title}"${song.author ? ` — ${song.author}` : ''}.${tagContext} Cancioneiro escuteiro CNE.`,
+    keywords: `${song.title}, letra e acordes${song.author ? `, ${song.author}` : ''}, cancioneiro escuteiros, cancioneiro CNE, músicas missa escuteiros${song.tags?.length ? `, ${song.tags.join(', ')}` : ''}`,
+  } : {});
 
-  useEffect(() => {
-    setSourceOverride(null);
-  }, [slug]);
+  useEffect(() => { setSourceOverride(null); }, [slug]);
 
   if (!song) return <Navigate to="/recursos/cancioneiro" replace />;
 
@@ -43,8 +45,31 @@ export default function CancaoDetail() {
   const currentKey = transposeChord(song.key, semitones);
   const displayKey = solfege ? chordToSolfege(currentKey) : currentKey;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'MusicComposition',
+    name: song.title,
+    inLanguage: 'pt-PT',
+    url: `https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/${song.slug}`,
+    genre: ['Escutismo', 'Música Religiosa', 'Música de Acampamento'],
+    ...(song.tags?.length && { keywords: song.tags.join(', ') }),
+    ...(song.author && { composer: { '@type': 'Person', name: song.author } }),
+  };
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Início', item: 'https://afonsobenedito.github.io/cne80belem/' },
+      { '@type': 'ListItem', position: 2, name: 'Cancioneiro', item: 'https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro' },
+      { '@type': 'ListItem', position: 3, name: song.title, item: `https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/${song.slug}` },
+    ],
+  };
+
   return (
     <main className={styles.page}>
+      <JsonLd data={jsonLd} />
+      <JsonLd data={breadcrumbLd} />
       <div className="container">
         <Link to="/recursos/cancioneiro" className={styles.backLink}>
           <FaArrowLeft size={12} /> Cancioneiro

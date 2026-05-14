@@ -2,9 +2,15 @@ import { Link } from 'react-router-dom';
 import { FaEnvelope, FaMapMarkerAlt, FaExternalLinkAlt, FaShareAlt, FaBed } from 'react-icons/fa';
 import { address, emails } from '../../config/contacts';
 import { socialLinks } from '../../config/socialLinks';
+import { useSEO } from '../../utils/useSEO';
 import styles from './Contactos.module.css';
 
 export default function Contactos() {
+  useSEO({
+    title: 'Contactos',
+    description: 'Entra em contacto com o Agrupamento 80 — Santa Maria de Belém, CNE. Email, localização e redes sociais.',
+  });
+
   return (
     <main className={styles.page}>
       <div className="container">
