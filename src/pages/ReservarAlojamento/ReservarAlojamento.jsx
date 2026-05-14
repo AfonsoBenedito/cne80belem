@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSEO } from '../../utils/useSEO';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { pt } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -21,6 +22,11 @@ const INITIAL = {
 };
 
 export default function ReservarAlojamento() {
+  useSEO({
+    title: 'Reservar Alojamento',
+    description: 'Reserva o espaço de alojamento do Agrupamento 80 — Santa Maria de Belém para o teu grupo ou organização.',
+  });
+
   const [form, setForm] = useState(INITIAL);
   const [sent, setSent] = useState(false);
 

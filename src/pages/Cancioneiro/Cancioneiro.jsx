@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import { useSEO } from '../../utils/useSEO';
+import JsonLd from '../../components/JsonLd';
 import { Link } from 'react-router-dom';
 import { FaMusic, FaChevronRight, FaSearch, FaBookOpen, FaLightbulb, FaTimes, FaPaperPlane, FaFilter } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
@@ -10,7 +12,30 @@ import styles from './Cancioneiro.module.css';
 const sorted = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Cancioneiro CNE — Músicas para Missa e Escutismo',
+  description: 'Cancioneiro escuteiro com letras e acordes de guitarra para missa, oração e escutismo.',
+  url: 'https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro',
+  itemListElement: sorted.map((song, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'MusicComposition',
+      name: song.title,
+      url: `https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro/${song.slug}`,
+    },
+  })),
+};
+
 export default function Cancioneiro() {
+  useSEO({
+    rawTitle: 'Cancioneiro CNE — Músicas com Acordes para Missa e Escutismo',
+    description: 'Cancioneiro escuteiro com letras e acordes de guitarra. Músicas para missa, oração, acampamentos e encontros de escuteiros CNE.',
+    keywords: 'cancioneiro escuteiros, cancioneiro CNE, músicas missa escuteiros, acordes escutismo, letras e acordes missa, canções escuteiros portugal, músicas acampamento escuteiros, oração escuteiros',
+  });
+
   const [search, setSearch] = useState('');
   const [activeTags, setActiveTags] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -62,6 +87,7 @@ export default function Cancioneiro() {
 
   return (
     <main className={styles.page}>
+      <JsonLd data={itemListLd} />
       <div className="container">
         <header className={styles.header}>
           <h1 className={styles.title}>Cancioneiro</h1>

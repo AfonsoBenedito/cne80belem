@@ -3,6 +3,7 @@ import { FaArrowLeft, FaChevronRight } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { provasContent } from '../../config/provasContent';
+import { useSEO } from '../../utils/useSEO';
 import styles from './ProvaDetail.module.css';
 
 export default function ProvaDetail() {
@@ -10,22 +11,28 @@ export default function ProvaDetail() {
   const section = seccoes[seccao];
   const sectionProvas = provas[seccao];
 
-  if (!section || !sectionProvas) return <Navigate to="/" replace />;
-
-  // Find the prova in the groups
+  // Find the prova in the groups (before any hooks)
   let provaItem = null;
   let provaGroup = null;
   let provaIndex = 0;
-  for (const group of sectionProvas) {
-    const idx = group.items.findIndex((p) => p.slug === slug);
-    if (idx !== -1) {
-      provaItem = group.items[idx];
-      provaGroup = group;
-      provaIndex = idx;
-      break;
+  if (sectionProvas) {
+    for (const group of sectionProvas) {
+      const idx = group.items.findIndex((p) => p.slug === slug);
+      if (idx !== -1) {
+        provaItem = group.items[idx];
+        provaGroup = group;
+        provaIndex = idx;
+        break;
+      }
     }
   }
 
+  useSEO(provaItem && section ? {
+    title: `${provaItem.name} — ${section.label}`,
+    description: `Prova ${provaItem.name} da ${section.label} do Agrupamento 80.`,
+  } : {});
+
+  if (!section || !sectionProvas) return <Navigate to="/" replace />;
   if (!provaItem) return <Navigate to={`/seccao/${seccao}/provas`} replace />;
 
   const content = provasContent[slug];

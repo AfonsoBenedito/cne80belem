@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { dirigentes, sectionBadges } from '../../config/members';
 import MemberCard from '../../components/MemberCard/MemberCard';
+import { useSEO } from '../../utils/useSEO';
 import styles from './Dirigentes.module.css';
 
 const sections = [
@@ -11,6 +12,11 @@ const sections = [
 ];
 
 export default function Dirigentes() {
+  useSEO({
+    title: 'Dirigentes e Animadores',
+    description: 'Conheça os dirigentes e animadores do Agrupamento 80 — Santa Maria de Belém, CNE.',
+  });
+
   const activeSections = sections.filter(({ key }) =>
     dirigentes.some((m) => m.section === key)
   );

@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { FaFilePdf, FaTimes, FaDownload, FaSearch } from 'react-icons/fa';
+import { useSEO } from '../../utils/useSEO';
 import { documentos } from '../../config/documentos';
 import { normalize } from '../../utils/normalize';
 import styles from './Documentos.module.css';
 
 export default function Documentos() {
+  useSEO({
+    title: 'Documentos',
+    description: 'Documentos do Agrupamento 80 — regulamento interno, ficha de inscrição, cerimonial e mais.',
+  });
+
   const [activeDoc, setActiveDoc] = useState(null);
   const [search, setSearch] = useState('');
 

@@ -1,5 +1,7 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useSEO } from '../../utils/useSEO';
+import JsonLd from '../../components/JsonLd';
 import { FaCalendarAlt, FaUser, FaTag, FaImages, FaTimes, FaArrowLeft, FaChevronLeft, FaChevronRight, FaInstagram, FaFacebookF, FaExternalLinkAlt } from 'react-icons/fa';
 import { noticias } from '../../config/noticias';
 import styles from './NoticiaDetail.module.css';
@@ -18,13 +20,37 @@ export default function NoticiaDetail() {
 
   const noticia = noticias.find((n) => n.slug === slug);
 
+  useSEO(noticia ? {
+    title: noticia.title,
+    description: noticia.excerpt,
+    image: noticia.cover,
+  } : {});
+
   if (!noticia) return <Navigate to="/agrupamento/noticias" replace />;
 
   const paragraphs = noticia.body.split('\n\n');
   const extraPhotos = noticia.photos.length > 1;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: noticia.title,
+    description: noticia.excerpt,
+    image: `${window.location.origin}${noticia.cover}`,
+    datePublished: noticia.date,
+    inLanguage: 'pt-PT',
+    author: { '@type': 'Person', name: noticia.author },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Agrupamento 80 — Santa Maria de Belém',
+      url: 'https://afonsobenedito.github.io/cne80belem',
+    },
+    url: `https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/${noticia.slug}`,
+  };
+
   return (
     <main className={styles.page}>
+      <JsonLd data={jsonLd} />
       {/* Hero */}
       <section className={styles.hero}>
         <img src={noticia.cover} alt={noticia.title} className={styles.heroBg} />

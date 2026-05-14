@@ -1,12 +1,18 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { seccoes } from '../../config/seccoes';
 import { programa } from '../../config/programa';
+import { useSEO } from '../../utils/useSEO';
 import styles from './Programa.module.css';
 
 export default function Programa() {
   const { seccao } = useParams();
   const section = seccoes[seccao];
   const cal = programa[seccao];
+
+  useSEO(section ? {
+    title: `Programa — ${section.label}`,
+    description: `Programa de atividades da ${section.label} do Agrupamento 80.`,
+  } : {});
 
   if (!section) return <Navigate to="/" replace />;
   if (!cal) return <Navigate to={`/seccao/${seccao}`} replace />;

@@ -1,11 +1,18 @@
 import { useParams, Navigate } from 'react-router-dom';
 import { FaQuoteLeft } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
+import { useSEO } from '../../utils/useSEO';
 import styles from './Seccao.module.css';
 
 export default function Seccao() {
   const { seccao } = useParams();
   const data = seccoes[seccao];
+
+  useSEO(data ? {
+    title: data.label,
+    description: data.description,
+    image: data.groupPhoto || data.image,
+  } : {});
 
   if (!data) return <Navigate to="/" replace />;
 

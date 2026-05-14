@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useSEO } from '../../utils/useSEO';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import { pt } from 'date-fns/locale';
@@ -57,6 +58,13 @@ function toDateStr(date) {
 }
 
 export default function Noticias({ fixedSection, hideHero }) {
+  useSEO({
+    title: fixedSection ? `Notícias — ${fixedSection}` : 'Notícias',
+    description: fixedSection
+      ? `Notícias e atividades da secção de ${fixedSection} do Agrupamento 80.`
+      : 'Últimas notícias e atividades do Agrupamento 80 — Santa Maria de Belém, CNE.',
+  });
+
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sectionFilter, setSectionFilter] = useState('');
   const [authorFilter, setAuthorFilter] = useState('');

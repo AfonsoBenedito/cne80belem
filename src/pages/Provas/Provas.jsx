@@ -3,6 +3,7 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaChevronRight, FaChevronDown } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
+import { useSEO } from '../../utils/useSEO';
 import styles from './Provas.module.css';
 
 export default function Provas() {
@@ -12,6 +13,11 @@ export default function Provas() {
   const [openGroups, setOpenGroups] = useState(() =>
     sectionProvas ? sectionProvas.map((g) => g.group) : []
   );
+
+  useSEO(section ? {
+    title: `Provas — ${section.label}`,
+    description: `Provas e progressão da ${section.label} do Agrupamento 80.`,
+  } : {});
 
   if (!section || !sectionProvas) return <Navigate to="/" replace />;
 

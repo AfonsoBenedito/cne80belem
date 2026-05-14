@@ -1,8 +1,14 @@
 import { direcao, chefesSecao, sectionBadges } from '../../config/members';
 import MemberCard from '../../components/MemberCard/MemberCard';
+import { useSEO } from '../../utils/useSEO';
 import styles from './Direcao.module.css';
 
 export default function Direcao() {
+  useSEO({
+    title: 'Direção',
+    description: 'Conheça a direção do Agrupamento 80 — Santa Maria de Belém, CNE.',
+  });
+
   return (
     <main className={styles.page}>
       <div className="container">
