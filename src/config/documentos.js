@@ -1,8 +1,7 @@
-import promessas26 from '../assets/files/promessas26.pdf';
 import inscricao from '../assets/files/inscricao.pdf';
 import cerimonialPromessas from '../assets/files/cerimonial_das_promessas.pdf';
 import regulamentoInterno from '../assets/files/regulamento_interno.pdf';
-import cancioneiro from '../assets/files/cancioneiro.pdf';
+import seguroEscutista from '../assets/files/seguro-escutista.pdf';
 
 export const documentos = [
   {
@@ -18,12 +17,7 @@ export const documentos = [
     file: cerimonialPromessas,
   },
   {
-    name: 'Cancioneiro',
-    file: cancioneiro,
-  },
-  {
-    name: 'Promessas 2026',
-    file: promessas26,
-    date: '2026',
+    name: 'Seguro Escutista',
+    file: seguroEscutista,
   },
 ];
