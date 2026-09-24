@@ -14,7 +14,7 @@ const sections = [
 export default function Dirigentes() {
   useSEO({
     title: 'Dirigentes e Animadores',
-    description: 'Conheça os dirigentes e animadores do Agrupamento 80 — Santa Maria de Belém, CNE.',
+    description: 'Conheça os dirigentes e animadores do Agrupamento 80 - Santa Maria de Belém, CNE.',
   });
 
   const activeSections = sections.filter(({ key }) =>

@@ -15,7 +15,7 @@ export default function Provas() {
   );
 
   useSEO(section ? {
-    title: `Provas — ${section.label}`,
+    title: `Provas - ${section.label}`,
     description: `Provas e progressão da ${section.label} do Agrupamento 80.`,
   } : {});
 
@@ -30,7 +30,7 @@ export default function Provas() {
   return (
     <main className={styles.page}>
       {/* Hero */}
-      <section className={styles.hero} style={{ background: section.color }}>
+      <section className={styles.hero} style={{ background: section.surface, color: section.onSurface }}>
         <img src={section.image} alt="" className={styles.heroBadge} />
         <div className="container">
           <p className={styles.heroLabel}>{section.label}</p>
@@ -48,13 +48,13 @@ export default function Provas() {
                 className={styles.groupHeader}
                 onClick={() => toggleGroup(group.group)}
               >
-                <h2 className={styles.groupTitle} style={{ color: section.color }}>
+                <h2 className={styles.groupTitle} style={{ color: section.ink }}>
                   {group.group}
                 </h2>
                 <FaChevronDown
                   size={16}
                   className={`${styles.groupChevron} ${isOpen ? styles.groupChevronOpen : ''}`}
-                  style={{ color: section.color }}
+                  style={{ color: section.ink }}
                 />
               </button>
 
@@ -67,7 +67,7 @@ export default function Provas() {
                   >
                     <span
                       className={styles.cardNumber}
-                      style={{ background: section.color }}
+                      style={{ background: section.surface, color: section.onSurface }}
                     >
                       {index + 1}
                     </span>

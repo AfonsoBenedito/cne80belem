@@ -45,7 +45,7 @@ function StockCard({ name, image, stock }) {
         {stock.map(({ size, qty }) => (
           <li key={size} className={styles.stockRow}>
             <span className={styles.stockQty}>{qty}</span>
-            <span className={styles.stockDash}>—</span>
+            <span className={styles.stockDash}>-</span>
             <span className={styles.stockSize}>{size}</span>
           </li>
         ))}

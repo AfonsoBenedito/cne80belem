@@ -10,7 +10,7 @@ export default function Footer() {
         <div className={styles.columns}>
           {/* Contacts */}
           <div className={styles.col}>
-            <h4 className={styles.heading}>Contactos</h4>
+            <h2 className={styles.heading}>Contactos</h2>
             <address className={styles.address}>
               <strong>Morada:</strong>
               <a
@@ -22,10 +22,11 @@ export default function Footer() {
                 {address.lines.map((line, i) => (
                   <span key={i}>{line}</span>
                 ))}
+                <span className={styles.srOnly}>(abre o mapa numa nova janela)</span>
               </a>
             </address>
             <div className={styles.email}>
-              {emails.map(({ label, email }) => (
+              {emails.map(({ email }) => (
                 <a key={email} href={`mailto:${email}`}>
                   {email}
                 </a>
@@ -40,7 +41,7 @@ export default function Footer() {
 
           {/* Social */}
           <div className={styles.colEnd}>
-            <h4 className={styles.heading}>Redes Sociais</h4>
+            <h2 className={styles.heading}>Redes Sociais</h2>
             <div className={styles.socials}>
               {socialLinks.map(({ label, url, Icon }) => (
                 <a
@@ -50,8 +51,9 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className={styles.socialBtn}
                 >
-                  <Icon size={16} />
+                  <Icon size="1.15em" aria-hidden="true" />
                   {label}
+                  <span className={styles.srOnly}>(abre numa nova janela)</span>
                 </a>
               ))}
             </div>

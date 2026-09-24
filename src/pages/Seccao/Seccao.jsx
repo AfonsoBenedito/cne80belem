@@ -19,7 +19,7 @@ export default function Seccao() {
   return (
     <main className={styles.page}>
       {/* Hero banner */}
-      <section className={styles.hero} style={{ background: data.color }}>
+      <section className={styles.hero} style={{ background: data.surface, color: data.onSurface }}>
         <img src={data.image} alt="" className={styles.heroBadge} />
         <div className="container">
           <p className={styles.heroLabel}>{data.label}</p>
@@ -39,9 +39,9 @@ export default function Seccao() {
 
           {/* Quote */}
           <blockquote className={styles.quote} style={{ borderColor: data.color }}>
-            <FaQuoteLeft className={styles.quoteIcon} style={{ color: data.color }} />
+            <FaQuoteLeft className={styles.quoteIcon} style={{ color: data.ink }} />
             <p className={styles.quoteText}>{data.quote.text}</p>
-            <cite className={styles.quoteAuthor}>— {data.quote.author}</cite>
+            <cite className={styles.quoteAuthor}>- {data.quote.author}</cite>
           </blockquote>
         </div>
       </section>

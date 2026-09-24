@@ -302,7 +302,7 @@ function drawCover(doc, songs, title, description, logoData, pageW, pageH, margi
   doc.setFont('Nunito', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(...GRAY);
-  doc.text('Agrupamento 80 — Santa Maria de Belém', pageW / 2, pageH - 11, { align: 'center' });
+  doc.text('Agrupamento 80 - Santa Maria de Belém', pageW / 2, pageH - 11, { align: 'center' });
 }
 
 // ══════════════════════════════════════════════
@@ -381,7 +381,7 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
   doc.setFont('Nunito', 'normal');
   doc.setFontSize(6);
   doc.setTextColor(...GRAY);
-  doc.text('Agrupamento 80 — Santa Maria de Belém', cx, oy + ph - 8, { align: 'center' });
+  doc.text('Agrupamento 80 - Santa Maria de Belém', cx, oy + ph - 8, { align: 'center' });
 }
 
 // ══════════════════════════════════════════════

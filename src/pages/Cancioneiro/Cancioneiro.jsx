@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useSEO } from '../../utils/useSEO';
 import JsonLd from '../../components/JsonLd';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { FaMusic, FaChevronRight, FaSearch, FaBookOpen, FaLightbulb, FaTimes, FaPaperPlane, FaFilter } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { tagCategories } from '../../config/tags';
@@ -15,7 +15,7 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 const itemListLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'Cancioneiro CNE — Músicas para Missa e Escutismo',
+  name: 'Cancioneiro CNE - Músicas para Missa e Escutismo',
   description: 'Cancioneiro escuteiro com letras e acordes de guitarra para missa, oração e escutismo.',
   url: 'https://afonsobenedito.github.io/cne80belem/recursos/cancioneiro',
   itemListElement: sorted.map((song, i) => ({
@@ -31,15 +31,17 @@ const itemListLd = {
 
 export default function Cancioneiro() {
   useSEO({
-    rawTitle: 'Cancioneiro CNE — Músicas com Acordes para Missa e Escutismo',
+    rawTitle: 'Cancioneiro CNE - Músicas com Acordes para Missa e Escutismo',
     description: 'Cancioneiro escuteiro com letras e acordes de guitarra. Músicas para missa, oração, acampamentos e encontros de escuteiros CNE.',
     keywords: 'cancioneiro escuteiros, cancioneiro CNE, músicas missa escuteiros, acordes escutismo, letras e acordes missa, canções escuteiros portugal, músicas acampamento escuteiros, oração escuteiros',
   });
 
-  const [search, setSearch] = useState('');
+  // Home links here with ?q= (a search) or ?montar=1 (open the PDF builder)
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('q') || '');
   const [activeTags, setActiveTags] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [showBuilder, setShowBuilder] = useState(false);
+  const [showBuilder, setShowBuilder] = useState(() => searchParams.get('montar') === '1');
   const [showSuggest, setShowSuggest] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
 
@@ -229,9 +231,9 @@ function SuggestModal({ onClose }) {
         body: JSON.stringify({
           _subject: `🎵 Sugestão de música: ${title}`,
           titulo: title,
-          artista: artist || '—',
-          link: link || '—',
-          notas: notes || '—',
+          artista: artist || '-',
+          link: link || '-',
+          notas: notes || '-',
         }),
       });
       if (res.ok) {

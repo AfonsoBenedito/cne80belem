@@ -20,7 +20,7 @@
   color: var(--color-gray-500);
 }
 
-/* Columns grid — adapts to active section count */
+/* Columns grid - adapts to active section count */
 .columns {
   display: grid;
   grid-template-columns: repeat(var(--col-count, 4), 1fr);
@@ -90,7 +90,7 @@
     bottom: 0;
     height: 3px;
     border-radius: 3px 3px 0 0;
-    background: var(--color-green);
+    background: var(--color-green-dark);
     pointer-events: none;
     transition: left 300ms cubic-bezier(0.4, 0, 0.2, 1), width 300ms cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
@@ -100,7 +100,7 @@
     position: relative;
     z-index: 1;
     padding: 0.5rem 1rem;
-    color: var(--color-gray-400);
+    color: var(--color-gray-500);
     font-size: var(--font-size-sm);
     font-weight: 700;
     white-space: nowrap;
@@ -112,7 +112,7 @@
   }
 
   .sectionNavItemActive {
-    color: var(--color-green);
+    color: var(--color-green-dark);
   }
 
   .columnHeader {
@@ -129,5 +129,12 @@
 @media (max-width: 520px) {
   .columns {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .sectionNavItem {
+    min-height: 44px;
   }
 }

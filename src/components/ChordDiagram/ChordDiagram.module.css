@@ -2,7 +2,8 @@
   position: absolute;
   bottom: calc(100% + 6px);
   left: 50%;
-  transform: translateX(-50%);
+  /* --popup-shift nudges the popup back inside the viewport near screen edges */
+  transform: translateX(calc(-50% + var(--popup-shift, 0px)));
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: 12px;
@@ -38,7 +39,7 @@
   height: 20px;
   border: none;
   background: none;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   cursor: pointer;
   padding: 0;
   border-radius: 4px;
@@ -47,7 +48,7 @@
 }
 
 .arrow:hover {
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .dots {
@@ -65,7 +66,7 @@
 }
 
 .dotActive {
-  background: var(--color-green);
+  background: var(--color-green-dark);
 }
 
 .svg {
@@ -82,7 +83,7 @@
 }
 
 .fretNum {
-  font-size: 8px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   font-family: var(--font-family);
   fill: var(--color-gray-500);

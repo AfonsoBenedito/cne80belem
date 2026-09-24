@@ -35,7 +35,7 @@
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: 16px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .card:hover {
@@ -51,7 +51,7 @@
   height: 56px;
   border-radius: 50%;
   background: var(--color-green-light);
-  color: var(--color-green);
+  color: var(--color-green-dark);
   margin-bottom: 1rem;
 }
 
@@ -75,7 +75,7 @@
   gap: 0.35rem;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: var(--color-green);
+  color: var(--color-green-dark);
   transition: opacity var(--transition-fast);
 }
 
@@ -97,14 +97,14 @@
   padding: 0.5rem 1rem;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: var(--color-green);
+  color: var(--color-green-dark);
   background: var(--color-green-light);
   border-radius: 100px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .socialLink:hover {
-  background: var(--color-green);
+  background: var(--color-green-dark);
   color: var(--color-white);
 }
 
@@ -118,19 +118,19 @@
   background: var(--color-green-light);
   border: 1px solid var(--color-green);
   border-radius: 8px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
   text-align: left;
 }
 
 .accommodationCta:hover {
-  background: var(--color-green);
+  background: var(--color-green-dark);
   color: var(--color-white);
   box-shadow: var(--shadow-sm);
   transform: translateY(-1px);
 }
 
 .accommodationCta > svg {
-  color: var(--color-green);
+  color: var(--color-green-dark);
   flex-shrink: 0;
 }
 
@@ -183,5 +183,22 @@
 
   .map {
     height: 300px;
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .cardLink {
+    position: relative;
+  }
+
+  .cardLink::after {
+    content: "";
+    position: absolute;
+    inset: -11px -4px;
+  }
+
+  .socialLink {
+    min-height: 44px;
   }
 }

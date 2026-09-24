@@ -64,7 +64,7 @@ describe.each(cancoes)('Song: $title', (song) => {
   // ── Media sources ──
   it('has at least one media source or none (placeholder)', () => {
     const hasMedia = song.youtubeId || song.soundcloudUrl || song.tiktokUrl;
-    // Either has media or is a valid placeholder — both are acceptable
+    // Either has media or is a valid placeholder - both are acceptable
     expect(typeof hasMedia === 'string' || !hasMedia).toBe(true);
   });
 

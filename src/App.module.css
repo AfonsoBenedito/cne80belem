@@ -1,0 +1,9 @@
+/* Holds the footer below the fold while a route's chunk loads */
+.routeFallback {
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* The skip-link target takes focus programmatically; no ring on a whole region */
+.skipTarget:focus {
+  outline: none;
+}

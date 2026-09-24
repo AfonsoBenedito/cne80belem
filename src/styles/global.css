@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 @import './variables.css';
 
 *,
@@ -28,6 +27,25 @@ body {
   color: inherit;
 }
 
+/* Brand focus ring for keyboard users; dark surfaces (hero, footer) override the colour */
+:focus-visible {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 2px;
+}
+
+input,
+textarea {
+  caret-color: var(--color-green-dark);
+}
+
+/* Every control has its own :active state; the browser's blue tap flash only fights it */
+a,
+button,
+summary,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ── Custom scrollbars ── */
 ::-webkit-scrollbar {
   width: 6px;
@@ -44,7 +62,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-green);
+  background: var(--color-green-dark);
 }
 
 /* Firefox */
@@ -73,9 +91,37 @@ button {
   font-family: inherit;
 }
 
+/* Instant press feedback on pointer-down - feedback lives on the press, not the release */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Large text wants tighter leading and slightly negative tracking */
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
 .container {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
+}
+
+/* Reduced motion: keep feedback, drop movement */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

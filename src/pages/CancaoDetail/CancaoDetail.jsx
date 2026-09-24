@@ -25,8 +25,8 @@ export default function CancaoDetail() {
     ? ` Indicado para: ${song.tags.join(', ')}.`
     : '';
   useSEO(song ? {
-    rawTitle: `${song.title} — Letra e Acordes | Cancioneiro CNE Escuteiros`,
-    description: `Letra e acordes de guitarra de "${song.title}"${song.author ? ` — ${song.author}` : ''}.${tagContext} Cancioneiro escuteiro CNE.`,
+    rawTitle: `${song.title} - Letra e Acordes | Cancioneiro CNE Escuteiros`,
+    description: `Letra e acordes de guitarra de "${song.title}"${song.author ? ` - ${song.author}` : ''}.${tagContext} Cancioneiro escuteiro CNE.`,
     keywords: `${song.title}, letra e acordes${song.author ? `, ${song.author}` : ''}, cancioneiro escuteiros, cancioneiro CNE, músicas missa escuteiros${song.tags?.length ? `, ${song.tags.join(', ')}` : ''}`,
   } : {});
 

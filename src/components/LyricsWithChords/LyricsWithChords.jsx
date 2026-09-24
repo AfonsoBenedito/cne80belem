@@ -1,21 +1,74 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { transposeChord, chordToSolfege } from '../../config/chords';
 import ChordDiagram from '../ChordDiagram/ChordDiagram';
 import styles from './LyricsWithChords.module.css';
 
+const EDGE_MARGIN = 8;
+
+// A chord opens its diagram three ways: mouse hover previews it; a tap, click or Enter pins it
+// open (the only path on touch and keyboard); Escape or a tap elsewhere closes it.
 function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) {
   const transposed = transposeChord(chord, semitones);
   const display = solfege ? chordToSolfege(transposed) : transposed;
   const [hovering, setHovering] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const anchorRef = useRef(null);
+  const buttonRef = useRef(null);
+  const open = hovering || pinned;
+
+  useEffect(() => {
+    if (!pinned) return;
+    const onPointerDown = (e) => {
+      if (!anchorRef.current?.contains(e.target)) setPinned(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [pinned]);
+
+  // Keep the popup inside the viewport when the chord sits near a screen edge
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    anchor.style.setProperty('--popup-shift', '0px');
+    if (!open) return;
+    const popup = anchor.lastElementChild;
+    if (!popup || popup === buttonRef.current) return;
+    const r = popup.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    let shift = 0;
+    if (r.left < EDGE_MARGIN) shift = EDGE_MARGIN - r.left;
+    else if (r.right > vw - EDGE_MARGIN) shift = vw - EDGE_MARGIN - r.right;
+    anchor.style.setProperty('--popup-shift', `${shift}px`);
+  }, [open]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape' && open) {
+      e.stopPropagation();
+      setPinned(false);
+      setHovering(false);
+      buttonRef.current?.focus();
+    }
+  };
 
   return (
     <span
-      className={styles.chordAnchor}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
+      ref={anchorRef}
+      className={`${styles.chordAnchor} ${open ? styles.chordOpen : ''}`}
+      onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHovering(true); }}
+      onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHovering(false); }}
+      onKeyDown={handleKeyDown}
     >
-      <span className={styles.chord}>{display}</span>
-      {hovering && (
+      <button
+        ref={buttonRef}
+        type="button"
+        className={styles.chord}
+        aria-expanded={open}
+        aria-label={`Acorde ${display}: mostrar diagrama`}
+        onClick={() => setPinned((p) => !p)}
+      >
+        {display}
+      </button>
+      {open && (
         <ChordDiagram
           transposedChord={transposed}
           variantIndex={variantMap[transposed] || 0}
@@ -42,7 +95,7 @@ function parseSegments(line) {
     if (i % 2 === 0) {
       // Even index = text segment
       if (i === 0 && parts[i]) {
-        // Text before the first chord — no chord attached
+        // Text before the first chord - no chord attached
         segments.push({ chord: null, text: parts[i] });
       }
       // If i > 0, this text belongs to the chord from parts[i-1],
@@ -52,6 +105,16 @@ function parseSegments(line) {
       const chordName = parts[i];
       const text = (i + 1 < parts.length) ? parts[i + 1] : '';
       segments.push({ chord: chordName, text });
+    }
+  }
+
+  // A chord with no lyric after it (e.g. "…do [G]mundo  [Em]") must stay on the word
+  // before it; otherwise the spaces between them let the chord wrap onto its own row.
+  // Only that one junction is made non-breaking, so the rest of the line still wraps.
+  for (let i = 1; i < segments.length; i++) {
+    if (segments[i].chord && !segments[i].text.trim()) {
+      const prev = segments[i - 1];
+      prev.text = prev.text.replace(/\s+$/, (ws) => '\u00A0'.repeat(ws.length));
     }
   }
 

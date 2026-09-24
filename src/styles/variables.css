@@ -1,7 +1,13 @@
 :root {
-  /* Primary Colors */
+  /* Primary Colors
+     --color-green is the CNE identity green: large headings (≥24px, or ≥18.66px bold),
+     the wordmark, icons, borders. It fails AA for small text (3.83:1), so small green
+     text and any fill carrying white text use --color-green-dark (5.44:1);
+     hover/pressed fills step to --color-green-deep (7.10:1). */
   --color-green: #129648;
   --color-green-dark: #0e7a3a;
+  --color-green-deep: #0b6630;
+  --color-green-night: #0a4d27;
   --color-green-light: #e8f5ee;
   --color-yellow: #FFD700;
   --color-yellow-dark: #e6c200;
@@ -10,10 +16,13 @@
   /* Neutrals */
   --color-white: #ffffff;
   --color-black: #1a1a1a;
+  --color-gray-50: #fafafa;
   --color-gray-100: #f5f5f5;
   --color-gray-200: #e5e5e5;
   --color-gray-300: #d4d4d4;
-  --color-gray-500: #737373;
+  --color-gray-400: #a3a3a3; /* borders and decorative marks only - 2.5:1, never text */
+  --color-gray-500: #6e6e6e; /* lightest gray passing 4.5:1 on every light surface (white, gray-50/100, green/yellow tints) */
+  --color-gray-600: #525252;
   --color-gray-700: #404040;
   --color-gray-900: #171717;
 
@@ -49,4 +58,8 @@
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+  /* Interactive states: only compositor/paint-friendly properties - never layout */
+  --transition-interactive: color 150ms ease, background-color 150ms ease,
+    border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease,
+    opacity 150ms ease;
 }

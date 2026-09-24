@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const SITE_NAME = 'Agrupamento 80 — Santa Maria de Belém';
+const SITE_NAME = 'Agrupamento 80 - Santa Maria de Belém';
 const BASE_URL = 'https://afonsobenedito.github.io/cne80belem';
 const DEFAULT_IMG = `${BASE_URL}/favicon.png`;
 
@@ -21,7 +21,7 @@ function setMeta(attr, name, content) {
  *
  * @param {object} opts
  * @param {string} [opts.title]       Page-specific title (appended with SITE_NAME)
- * @param {string} [opts.rawTitle]    Verbatim title — skips SITE_NAME suffix
+ * @param {string} [opts.rawTitle]    Verbatim title - skips SITE_NAME suffix
  * @param {string} [opts.description] Meta description
  * @param {string} [opts.image]       Absolute or root-relative OG image URL
  * @param {string} [opts.keywords]    Comma-separated keywords (used by Bing etc.)

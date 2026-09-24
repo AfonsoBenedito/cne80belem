@@ -49,7 +49,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border-radius: 100px;
   margin-bottom: 0.75rem;
 }
@@ -109,7 +109,7 @@
   gap: 0.4rem;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: var(--color-green);
+  color: var(--color-green-dark);
   transition: opacity var(--transition-fast);
 }
 
@@ -129,7 +129,7 @@
   gap: 0.4rem;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: var(--color-green);
+  color: var(--color-green-dark);
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-gray-200);
@@ -149,7 +149,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: var(--color-green);
+  background: var(--color-green-dark);
   color: var(--color-white);
   display: flex;
   align-items: center;
@@ -220,12 +220,12 @@
 }
 
 .socialLink {
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
   transition: color var(--transition-fast);
 }
 
 .socialLink:hover {
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 /* ── Article ── */
@@ -326,7 +326,7 @@
   padding: 0;
   background: none;
   opacity: 0.5;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .lightboxDot:hover {
@@ -365,5 +365,25 @@
   .heroMeta {
     flex-wrap: wrap;
     gap: 0.75rem;
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .socialLink {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .backLink {
+    position: relative;
+  }
+
+  .backLink::after {
+    content: "";
+    position: absolute;
+    inset: -11px -4px;
   }
 }

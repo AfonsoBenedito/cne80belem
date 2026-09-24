@@ -4,6 +4,7 @@ import { useSEO } from '../../utils/useSEO';
 import JsonLd from '../../components/JsonLd';
 import { FaCalendarAlt, FaUser, FaTag, FaImages, FaTimes, FaArrowLeft, FaChevronLeft, FaChevronRight, FaInstagram, FaFacebookF, FaExternalLinkAlt } from 'react-icons/fa';
 import { noticias } from '../../config/noticias';
+import { srcSetFor } from '../../utils/responsiveImage';
 import styles from './NoticiaDetail.module.css';
 
 function formatDate(dateStr) {
@@ -42,7 +43,7 @@ export default function NoticiaDetail() {
     author: { '@type': 'Person', name: noticia.author },
     publisher: {
       '@type': 'Organization',
-      name: 'Agrupamento 80 — Santa Maria de Belém',
+      name: 'Agrupamento 80 - Santa Maria de Belém',
       url: 'https://afonsobenedito.github.io/cne80belem',
     },
     url: `https://afonsobenedito.github.io/cne80belem/agrupamento/noticias/${noticia.slug}`,
@@ -53,7 +54,14 @@ export default function NoticiaDetail() {
       <JsonLd data={jsonLd} />
       {/* Hero */}
       <section className={styles.hero}>
-        <img src={noticia.cover} alt={noticia.title} className={styles.heroBg} />
+        <img
+          src={noticia.cover}
+          srcSet={srcSetFor(noticia.cover)}
+          sizes="100vw"
+          alt={noticia.title}
+          className={styles.heroBg}
+          fetchPriority="high"
+        />
         <div className={styles.heroOverlay} />
         <div className={`container ${styles.heroContent}`}>
           <div className={styles.heroInfo}>
@@ -117,7 +125,14 @@ export default function NoticiaDetail() {
                         className={styles.thumb}
                         onClick={() => setLightboxIndex(i)}
                       >
-                        <img src={photo} alt={`Foto ${i + 1}`} />
+                        <img
+                          src={photo}
+                          srcSet={srcSetFor(photo)}
+                          sizes="160px"
+                          alt={`Foto ${i + 1}`}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </button>
                     ))}
                   </div>
@@ -185,6 +200,8 @@ export default function NoticiaDetail() {
 
           <img
             src={noticia.photos[lightboxIndex]}
+            srcSet={srcSetFor(noticia.photos[lightboxIndex])}
+            sizes="75vw"
             alt={`Foto ${lightboxIndex + 1}`}
             className={styles.lightboxImg}
             onClick={(e) => e.stopPropagation()}
@@ -209,7 +226,7 @@ export default function NoticiaDetail() {
                 className={`${styles.lightboxDot} ${i === lightboxIndex ? styles.lightboxDotActive : ''}`}
                 onClick={() => setLightboxIndex(i)}
               >
-                <img src={photo} alt={`Foto ${i + 1}`} />
+                <img src={photo} srcSet={srcSetFor(photo)} sizes="80px" alt={`Foto ${i + 1}`} decoding="async" />
               </button>
             ))}
           </div>

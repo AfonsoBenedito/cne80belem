@@ -8,7 +8,7 @@ import styles from './Contactos.module.css';
 export default function Contactos() {
   useSEO({
     title: 'Contactos',
-    description: 'Entra em contacto com o Agrupamento 80 — Santa Maria de Belém, CNE. Email, localização e redes sociais.',
+    description: 'Entra em contacto com o Agrupamento 80 - Santa Maria de Belém, CNE. Email, localização e redes sociais.',
   });
 
   return (

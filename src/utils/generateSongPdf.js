@@ -243,7 +243,7 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
     doc.setFontSize(7);
     doc.setTextColor(...GRAY);
     doc.text(
-      'Agrupamento 80 — Santa Maria de Belém  •  Cancioneiro',
+      'Agrupamento 80 - Santa Maria de Belém  •  Cancioneiro',
       marginLeft,
       pageH - 10,
     );

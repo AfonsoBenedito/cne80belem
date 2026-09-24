@@ -28,7 +28,7 @@
   z-index: 1;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  color: inherit;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 0.25rem;
@@ -39,7 +39,7 @@
   z-index: 1;
   font-size: var(--font-size-2xl);
   font-weight: 800;
-  color: var(--color-white);
+  color: inherit;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   max-width: 700px;
   margin: 0 auto;
@@ -104,7 +104,7 @@
   font-weight: 500;
   color: var(--color-gray-600);
   border-left: 3px solid transparent;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
   line-height: 1.3;
 }
 
@@ -192,7 +192,7 @@
   padding: 1rem 1.25rem;
   border-radius: 12px;
   border: 2px solid var(--color-gray-200);
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
   max-width: 48%;
 }
 
@@ -211,7 +211,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 .navTitle {

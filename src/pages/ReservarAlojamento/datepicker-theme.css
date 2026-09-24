@@ -37,7 +37,7 @@
   width: 2.2rem;
   line-height: 2.2rem;
   border-radius: 8px;
-  transition: all 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease;
   color: #1a1a1a;
 }
 
@@ -111,7 +111,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease;
 }
 
 .react-datepicker__time-list-item:hover {

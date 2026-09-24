@@ -28,7 +28,7 @@
   z-index: 1;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  color: inherit;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 0.25rem;
@@ -39,7 +39,7 @@
   z-index: 1;
   font-size: var(--font-size-3xl);
   font-weight: 800;
-  color: var(--color-white);
+  color: inherit;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
@@ -48,7 +48,7 @@
   z-index: 1;
   font-size: var(--font-size-base);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: inherit;
   margin-top: 0.5rem;
 }
 
@@ -131,7 +131,7 @@
 .dayRange {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 /* ── Day cell ── */
@@ -176,7 +176,7 @@
   border-radius: 50%;
   font-size: 10px;
   font-weight: 800;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   background: var(--color-gray-100);
   flex-shrink: 0;
 }
@@ -190,11 +190,11 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 .dayNextMonth {
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
 }
 
 /* ── Events ── */
@@ -217,7 +217,7 @@
 
 .subtitle {
   font-size: 10px;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   font-style: italic;
   text-align: center;
 }
@@ -228,7 +228,7 @@
   padding-top: 1rem;
   border-top: 1px solid var(--color-gray-200);
   font-size: var(--font-size-sm);
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   font-style: italic;
   text-align: center;
 }

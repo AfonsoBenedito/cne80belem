@@ -6,6 +6,7 @@ import { pt } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt, FaUser, FaSlidersH, FaTimes, FaTh, FaList } from 'react-icons/fa';
 import { noticias, sections, authors } from '../../config/noticias';
+import { srcSetFor } from '../../utils/responsiveImage';
 import styles from './Noticias.module.css';
 
 function getScoutYear() {
@@ -59,10 +60,10 @@ function toDateStr(date) {
 
 export default function Noticias({ fixedSection, hideHero }) {
   useSEO({
-    title: fixedSection ? `Notícias — ${fixedSection}` : 'Notícias',
+    title: fixedSection ? `Notícias - ${fixedSection}` : 'Notícias',
     description: fixedSection
       ? `Notícias e atividades da secção de ${fixedSection} do Agrupamento 80.`
-      : 'Últimas notícias e atividades do Agrupamento 80 — Santa Maria de Belém, CNE.',
+      : 'Últimas notícias e atividades do Agrupamento 80 - Santa Maria de Belém, CNE.',
   });
 
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -151,7 +152,7 @@ export default function Noticias({ fixedSection, hideHero }) {
           </div>
         </div>
 
-        {/* Filter panel — pushes content down */}
+        {/* Filter panel - pushes content down */}
         {filtersOpen && (
           <div className={styles.filterPanel}>
             <div className={styles.filterRow}>
@@ -237,7 +238,14 @@ export default function Noticias({ fixedSection, hideHero }) {
                 className={view === 'cards' ? styles.card : styles.listCard}
               >
                 <div className={view === 'cards' ? styles.cardImage : styles.listImage}>
-                  <img src={noticia.cover} alt={noticia.title} />
+                  <img
+                    src={noticia.cover}
+                    srcSet={srcSetFor(noticia.cover)}
+                    sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 400px"
+                    alt={noticia.title}
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <span className={styles.cardSection}>{noticia.section}</span>
                 </div>
                 <div className={view === 'cards' ? styles.cardBody : styles.listBody}>
