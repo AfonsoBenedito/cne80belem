@@ -5,25 +5,50 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: var(--color-green);
+  background: var(--color-green-dark);
   color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 90;
-  transition: background var(--transition-fast), transform var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.fab:hover {
-  background: var(--color-green-dark);
-  transform: scale(1.08);
+@media (hover: hover) {
+  .fab:hover {
+    background: var(--color-green-deep);
+    transform: scale(1.08);
+  }
 }
 
-.fabScrolled {
-  background: var(--color-green);
+.fab:active {
+  background: var(--color-green-deep);
+  transform: scale(0.95);
 }
 
+/* Over the footer's green: the footer's own action colours and its white focus ring */
+.fabOnDark {
+  background: var(--color-white);
+  color: var(--color-green-deep);
+}
+
+.fabOnDark:focus-visible {
+  outline-color: var(--color-white);
+}
+
+@media (hover: hover) {
+  .fabOnDark:hover {
+    background: var(--color-green-light);
+  }
+}
+
+.fabOnDark:active {
+  background: var(--color-green-light);
+}
+
+/* The two icons share one spot and swap with a quarter turn: the leaving icon turns out
+   the way the arriving one turns in, so it reads as one glyph changing shape */
 .iconWrap {
   position: relative;
   width: 18px;
@@ -33,12 +58,35 @@
 .icon {
   position: absolute;
   inset: 0;
-  transition: opacity 300ms ease, transform 300ms ease;
   opacity: 0;
+  transform: scale(0.5) rotate(90deg);
+  transition: opacity 220ms ease-out, transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.iconUp {
   transform: scale(0.5) rotate(-90deg);
 }
 
 .iconVisible {
   opacity: 1;
-  transform: scale(1) rotate(0deg);
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon,
+  .iconUp,
+  .iconVisible {
+    transform: none;
+  }
+}
+
+/* Phones: tighter to the corner, clear of the home indicator. Footer.module.css
+   reserves matching space under the last line so the button never covers it. */
+@media (max-width: 768px) {
+  .fab {
+    width: 48px;
+    height: 48px;
+    right: 1rem;
+    bottom: max(1rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+  }
 }

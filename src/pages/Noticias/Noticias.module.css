@@ -39,18 +39,18 @@
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius);
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .filterToggle:hover {
   border-color: var(--color-green);
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .filterToggleActive {
   border-color: var(--color-green);
   background: var(--color-green-light);
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .filterBadge {
@@ -62,7 +62,7 @@
   font-size: 0.65rem;
   font-weight: 800;
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border-radius: 50%;
 }
 
@@ -128,23 +128,23 @@
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
   border-radius: 100px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .preset:hover {
-  color: var(--color-green);
+  color: var(--color-green-dark);
   border-color: var(--color-green);
 }
 
 .presetActive {
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border-color: var(--color-green);
 }
 
 .presetActive:hover {
   color: var(--color-white);
-  background: var(--color-green-dark);
+  background: var(--color-green-deep);
   border-color: var(--color-green-dark);
 }
 
@@ -275,7 +275,7 @@
   background: var(--color-white);
   color: var(--color-gray-500);
   border: none;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .viewBtn:not(:last-child) {
@@ -283,11 +283,11 @@
 }
 
 .viewBtn:hover {
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .viewBtnActive {
-  background: var(--color-green);
+  background: var(--color-green-dark);
   color: var(--color-white);
 }
 
@@ -296,11 +296,6 @@
 }
 
 /* ── Result count ── */
-.resultCount {
-  font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
-  margin-bottom: 1.5rem;
-}
 
 /* ── Empty ── */
 .empty {
@@ -358,7 +353,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border-radius: 100px;
 }
 
@@ -491,5 +486,17 @@
 
   .filterPanel {
     padding: 1rem;
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .viewBtn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .filterToggle {
+    min-height: 44px;
   }
 }

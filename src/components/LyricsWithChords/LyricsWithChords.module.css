@@ -36,7 +36,7 @@
 .introAnnotation {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 /* ── Line ── */
@@ -82,21 +82,35 @@
   display: inline-block;
 }
 
+/* A real button (tap, click, Enter) dressed as the chord badge */
 .chord {
   display: inline-block;
+  font-family: inherit;
   font-size: var(--font-size-xs);
   font-weight: 800;
-  color: var(--color-green);
+  line-height: inherit;
+  color: var(--color-green-dark);
   background: var(--color-green-light);
   padding: 0.1em 0.35em;
   border-radius: 4px;
-  cursor: default;
+  cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  transition: var(--transition-interactive);
 }
 
-/* Show popup on hover */
-.chordAnchor:hover > div {
+.chord:hover,
+.chordOpen .chord {
+  color: var(--color-white);
+  background: var(--color-green-dark);
+}
+
+.chord:focus-visible {
+  outline-offset: 1px;
+}
+
+/* The diagram (ChordDiagram root) shows while hovered or pinned open */
+.chordOpen > div {
   opacity: 1;
   pointer-events: auto;
 }
@@ -122,5 +136,21 @@
 
   .lyricLineWithChords:first-child {
     padding-top: 1.2em;
+  }
+}
+
+/* Touch: chords are buttons, but a 44px area would swallow the lyric line above and
+   neighbouring chords. Grow each to at least the WCAG 2.5.8 minimum of 24×24 instead. */
+@media (pointer: coarse) {
+  .chord {
+    position: relative;
+  }
+
+  .chord::after {
+    content: "";
+    position: absolute;
+    inset: -7px -6px;
+    min-width: 24px;
+    min-height: 24px;
   }
 }

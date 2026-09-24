@@ -51,7 +51,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-green-light);
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .avatarIcon {
@@ -78,7 +78,7 @@
   font-size: var(--font-size-xs);
   font-weight: 700;
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   padding: 0.2rem 0.75rem;
   border-radius: 100px;
   margin-top: 0.25rem;

@@ -10,7 +10,7 @@ export default function Programa() {
   const cal = programa[seccao];
 
   useSEO(section ? {
-    title: `Programa — ${section.label}`,
+    title: `Programa - ${section.label}`,
     description: `Programa de atividades da ${section.label} do Agrupamento 80.`,
   } : {});
 
@@ -20,7 +20,7 @@ export default function Programa() {
   return (
     <main className={styles.page}>
       {/* Hero */}
-      <section className={styles.hero} style={{ background: section.color }}>
+      <section className={styles.hero} style={{ background: section.surface, color: section.onSurface }}>
         <img src={section.image} alt="" className={styles.heroBadge} />
         <div className="container">
           <p className={styles.heroLabel}>{section.label}</p>
@@ -36,7 +36,7 @@ export default function Programa() {
             <div key={month.name} className={styles.month}>
               <h2
                 className={styles.monthName}
-                style={{ background: section.color }}
+                style={{ background: section.surface, color: section.onSurface }}
               >
                 {month.name}
               </h2>
@@ -56,20 +56,20 @@ export default function Programa() {
                             <span className={styles.dayGroup}>
                               <span
                                 className={styles.dayNumber}
-                                style={{ background: section.color }}
+                                style={{ background: section.surface, color: section.onSurface }}
                               >
                                 {entry.dayStart}
                               </span>
-                              <span className={styles.dayRange}>—</span>
+                              <span className={styles.dayRange}>-</span>
                               <span
                                 className={styles.dayNumber}
-                                style={{ background: section.color }}
+                                style={{ background: section.surface, color: section.onSurface }}
                               >
                                 {entry.dayEnd}
                               </span>
                             </span>
                             <span className={styles.dayWeekday}>
-                              {entry.weekdayStart} — {entry.weekdayEnd}
+                              {entry.weekdayStart} - {entry.weekdayEnd}
                             </span>
                           </div>
                           <ul className={styles.events}>
@@ -105,7 +105,7 @@ export default function Programa() {
                             <div className={styles.dayHeader}>
                               <span
                                 className={styles.dayNumber}
-                                style={hasEvents ? { background: section.color } : undefined}
+                                style={hasEvents ? { background: section.surface, color: section.onSurface } : undefined}
                               >
                                 {entry.day}
                               </span>

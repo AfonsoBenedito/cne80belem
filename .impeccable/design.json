@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-24T17:04:09.000Z",
+  "title": "Design System: Agrupamento 80 — Santa Maria de Belém",
+  "extensions": {
+    "colorMeta": {
+      "verde-escutista": {
+        "role": "primary",
+        "displayName": "Verde Escutista",
+        "canonical": "#129648",
+        "tonalRamp": [
+          "#06331a",
+          "#0a4d27",
+          "#0e7a3a",
+          "#129648",
+          "#2fae62",
+          "#66c78d",
+          "#a8e0bd",
+          "#e8f5ee"
+        ]
+      },
+      "amarelo-flor-de-lis": {
+        "role": "secondary",
+        "displayName": "Amarelo Flor-de-Lis",
+        "canonical": "#FFD700",
+        "tonalRamp": [
+          "#4d4000",
+          "#806b00",
+          "#b39600",
+          "#e6c200",
+          "#FFD700",
+          "#ffe14d",
+          "#ffef99",
+          "#fff9db"
+        ]
+      },
+      "preto-tinta": {
+        "role": "neutral",
+        "displayName": "Preto Tinta",
+        "canonical": "#1a1a1a",
+        "tonalRamp": [
+          "#171717",
+          "#404040",
+          "#525252",
+          "#6e6e6e",
+          "#a3a3a3",
+          "#d4d4d4",
+          "#e5e5e5",
+          "#fafafa"
+        ]
+      },
+      "verde-mata": {
+        "role": "primary",
+        "displayName": "Verde Mata",
+        "canonical": "#0e7a3a"
+      },
+      "verde-profundo": {
+        "role": "primary",
+        "displayName": "Verde Profundo",
+        "canonical": "#0b6630"
+      },
+      "verde-noite": {
+        "role": "primary",
+        "displayName": "Verde Noite",
+        "canonical": "#0a4d27"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero/carousel titles over photography, with text shadow for legibility."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles, set in Verde Escutista, centered."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, section headings, modal headers."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text at 1.6 line-height; 600 weight for emphasis."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase badges and chips only — the one place tracking goes positive."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "The one-sentence standfirst under the hero: 600, 1.25rem (1.125rem on phones), 1.45, Cinza Escuro, balanced, centred."
+      },
+      "diagram-fret": {
+        "displayName": "Diagram fret number",
+        "purpose": "The starting-fret marker inside a chord diagram (700, --font-size-xs, Cinza Médio); the smallest step on the ramp."
+      }
+    },
+    "shadows": [
+      {
+        "name": "hairline",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.05)",
+        "purpose": "Sticky header and subtle resting separation (--shadow-sm)."
+      },
+      {
+        "name": "floating",
+        "value": "0 4px 6px rgba(0, 0, 0, 0.1)",
+        "purpose": "Mobile nav panel, mid-level popovers (--shadow-md)."
+      },
+      {
+        "name": "lifted",
+        "value": "0 10px 25px rgba(0, 0, 0, 0.15)",
+        "purpose": "Hovered cards, dropdown menus, modal panels (--shadow-lg)."
+      },
+      {
+        "name": "fab",
+        "value": "0 4px 16px rgba(0, 0, 0, 0.2)",
+        "purpose": "The one always-elevated element; it floats over content by definition."
+      },
+      {
+        "name": "photo-scrim",
+        "value": "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 72%, rgba(0,0,0,0.06) 100%)",
+        "purpose": "Hero carousel scrim; darkens only where the copy sits (phones: 0.75 / 0.55 at 45% / 0.25 at 75% / 0.1)."
+      },
+      {
+        "name": "photo-headline-text",
+        "value": "0 2px 12px rgba(0,0,0,0.5)",
+        "purpose": "text-shadow on the hero headline over photography."
+      },
+      {
+        "name": "photo-supporting-text",
+        "value": "0 1px 8px rgba(0,0,0,0.55)",
+        "purpose": "text-shadow on the hero supporting line."
+      },
+      {
+        "name": "photo-dot",
+        "value": "0 1px 3px rgba(0,0,0,0.35)",
+        "purpose": "Keeps the white carousel page dots visible over pale photos."
+      }
+    ],
+    "motion": [
+      {
+        "name": "transition-fast",
+        "value": "150ms ease",
+        "purpose": "Hover/press color and transform shifts."
+      },
+      {
+        "name": "transition-base",
+        "value": "250ms ease",
+        "purpose": "Card lifts and larger state changes."
+      },
+      {
+        "name": "transition-interactive",
+        "value": "color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease, opacity 150ms ease",
+        "purpose": "The only sanctioned multi-property interactive transition — compositor/paint-safe properties, never layout, never `all`."
+      },
+      {
+        "name": "panel-in",
+        "value": "300ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Modal panel materialize: fade + translateY(12px) scale(0.98); bottom sheets rise 48px on mobile."
+      },
+      {
+        "name": "overlay-in",
+        "value": "200ms ease-out",
+        "purpose": "Modal overlay fade-in."
+      },
+      {
+        "name": "carousel-settle",
+        "value": "transform 700ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Slide settle for autoplay and dots; shorter when a swipe hands over its velocity."
+      },
+      {
+        "name": "photo-develop",
+        "value": "opacity 450ms ease-out, filter 1200ms cubic-bezier(0.16, 1, 0.3, 1), transform 1200ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Home story photos develop like prints (grayscale 1.04 scale → colour at rest) the first time they are loaded and on screen; 90ms apart in reading order; instant under reduced motion."
+      },
+      {
+        "name": "ladder-draw",
+        "value": "transform 600ms cubic-bezier(0.16, 1, 0.3, 1), 110ms stagger",
+        "purpose": "Age ruler bars draw in each time the ruler rises into view from above."
+      },
+      {
+        "name": "ladder-retract",
+        "value": "transform 380ms cubic-bezier(0.7, 0, 0.84, 0), 70ms stagger, last bar first",
+        "purpose": "Age ruler bars retract when scrolling back up drops the ruler below the trigger line."
+      },
+      {
+        "name": "fab-morph",
+        "value": "opacity 220ms ease-out, transform 360ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The FAB's envelope turns into the up arrow past 300px of scroll (quarter-turn and scale crossover; crossfade under reduced motion)."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "nav-collapse",
+        "value": "1024px"
+      },
+      {
+        "name": "tablet",
+        "value": "768px"
+      },
+      {
+        "name": "phone",
+        "value": "600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Verde Mata pill CTA; darkens on hover, scales to 0.97 on press.",
+      "html": "<button class=\"ds-btn-primary\">Ver Cancioneiro</button>",
+      "css": ".ds-btn-primary { background: var(--color-green-dark, #0e7a3a); color: #fff; padding: 0.75rem 2rem; border: none; border-radius: 100px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background-color 150ms ease, transform 150ms ease; } .ds-btn-primary:hover { background: var(--color-green-deep, #0b6630); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-green, #129648); outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-filter",
+      "description": "Toolbar toggle; tints green on hover, fills Verde Nevoeiro when active.",
+      "html": "<div style=\"display:flex;gap:0.5rem\"><button class=\"ds-chip\">Filtrar</button><button class=\"ds-chip ds-chip-active\">Lobitos</button></div>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; font-family: 'Nunito', sans-serif; font-size: 0.875rem; font-weight: 700; color: var(--color-gray-700, #404040); background: #fff; border: 1px solid var(--color-gray-200, #e5e5e5); border-radius: 8px; cursor: pointer; transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, transform 150ms ease; } .ds-chip:hover { border-color: var(--color-green-dark, #0e7a3a); color: var(--color-green-dark, #0e7a3a); } .ds-chip:active { transform: scale(0.97); } .ds-chip-active { border-color: var(--color-green-dark, #0e7a3a); background: var(--color-green-light, #e8f5ee); color: var(--color-green-dark, #0e7a3a); }"
+    },
+    {
+      "name": "Content Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Flat at rest with a hairline border; lifts −4px with shadow on hover while the cover zooms.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-media\"><span class=\"ds-card-badge\">Exploradores</span></div><div class=\"ds-card-body\"><h3 class=\"ds-card-title\">Acampamento de Verão</h3><p class=\"ds-card-excerpt\">Três dias de aventura na serra com as quatro secções.</p></div></article>",
+      "css": ".ds-card { max-width: 320px; background: #fff; border: 1px solid var(--color-gray-200, #e5e5e5); border-radius: 12px; overflow: hidden; font-family: 'Nunito', sans-serif; transition: box-shadow 250ms ease, transform 250ms ease; } .ds-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.15); transform: translateY(-4px); } .ds-card-media { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(135deg, #129648, #0e7a3a); } .ds-card-badge { position: absolute; top: 0.75rem; left: 0.75rem; padding: 0.2rem 0.7rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; background: var(--color-green-dark, #0e7a3a); border-radius: 100px; } .ds-card-body { padding: 1.25rem; } .ds-card-title { margin: 0 0 0.5rem; font-size: 1.25rem; font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; color: var(--color-black, #1a1a1a); } .ds-card-excerpt { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-gray-500, #6e6e6e); }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Icon-led field; the border quietly turns Verde Escutista on focus.",
+      "html": "<div class=\"ds-search\"><svg class=\"ds-search-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><line x1=\"21\" y1=\"21\" x2=\"16.5\" y2=\"16.5\"/></svg><input class=\"ds-search-input\" type=\"text\" placeholder=\"Procurar canção…\" /></div>",
+      "css": ".ds-search { position: relative; max-width: 320px; } .ds-search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--color-gray-500, #6e6e6e); pointer-events: none; } .ds-search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; font-family: 'Nunito', sans-serif; font-size: 0.875rem; border: 1px solid var(--color-gray-200, #e5e5e5); border-radius: 10px; background: #fff; color: var(--color-black, #1a1a1a); outline: none; transition: border-color 150ms ease; box-sizing: border-box; } .ds-search-input:focus { border-color: var(--color-green-dark, #0e7a3a); }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Quiet gray link that turns green over a Verde Nevoeiro tint on hover/active.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">Agrupamento</a><a class=\"ds-nav-link ds-nav-link-active\" href=\"#\">Recursos</a><a class=\"ds-nav-link\" href=\"#\">Contactos</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 0.25rem; font-family: 'Nunito', sans-serif; } .ds-nav-link { padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; color: var(--color-gray-700, #404040); text-decoration: none; border-radius: 8px; transition: color 150ms ease, background-color 150ms ease; white-space: nowrap; } .ds-nav-link:hover, .ds-nav-link:active, .ds-nav-link-active { color: var(--color-green-dark, #0e7a3a); background-color: var(--color-green-light, #e8f5ee); }"
+    },
+    {
+      "name": "Floating Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "52px Verde Mata circle, always present: an envelope (email) near the top, an up arrow (back to top) past 300px. Over the footer it turns white with a Verde Profundo icon.",
+      "html": "<div class=\"ds-fab-row\"><button class=\"ds-fab\" aria-label=\"Enviar email\"><svg viewBox=\"0 0 512 512\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z\"/></svg></button><div class=\"ds-fab-dark\"><button class=\"ds-fab ds-fab--on-dark\" aria-label=\"Voltar ao topo\"><svg viewBox=\"0 0 448 512\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z\"/></svg></button></div></div>",
+      "css": ".ds-fab-row { display: flex; gap: 24px; align-items: center; } .ds-fab-dark { padding: 16px; background: linear-gradient(170deg, var(--color-green-deep, #0b6630), var(--color-green-night, #0a4d27)); border-radius: 12px; } .ds-fab { width: 52px; height: 52px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; background: var(--color-green-dark, #0e7a3a); color: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.2); cursor: pointer; transition: background-color 150ms ease, transform 150ms ease; } .ds-fab:hover { background: var(--color-green-deep, #0b6630); transform: scale(1.08); } .ds-fab:active { transform: scale(0.95); } .ds-fab:focus-visible { outline: 2px solid var(--color-green-dark, #0e7a3a); outline-offset: 2px; } .ds-fab--on-dark { background: #fff; color: var(--color-green-deep, #0b6630); } .ds-fab--on-dark:hover { background: var(--color-green-light, #e8f5ee); } .ds-fab--on-dark:focus-visible { outline-color: #fff; }"
+    },
+    {
+      "name": "Light Button (over photography)",
+      "kind": "button",
+      "refersTo": "button-light",
+      "description": "Translucent white pill used over hero imagery; solidifies on hover.",
+      "html": "<div class=\"ds-photo-ground\"><button class=\"ds-btn-light\">Saber Mais</button></div>",
+      "css": ".ds-photo-ground { padding: 1.5rem; background: linear-gradient(to bottom, rgba(0,0,0,0.45), rgba(0,0,0,0.65)); border-radius: 12px; display: inline-block; } .ds-btn-light { padding: 0.75rem 2rem; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; color: var(--color-black, #1a1a1a); background: rgba(255, 255, 255, 0.85); border: none; border-radius: 100px; cursor: pointer; transition: background-color 150ms ease, transform 150ms ease; } .ds-btn-light:hover { background: #fff; } .ds-btn-light:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Footer Newsletter Field",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "The footer's one form, on the green ground: white uppercase heading, a joined field and white Subscrever button; white focus border; the error chip carries a white edge, success does not.",
+      "html": "<div class=\"ds-foot\"><p class=\"ds-foot-heading\">Recebe as nossas notícias</p><div class=\"ds-foot-group\"><input class=\"ds-foot-input\" type=\"email\" placeholder=\"O teu email\" aria-label=\"Email\"><button class=\"ds-foot-btn\">Subscrever</button></div><p class=\"ds-foot-chip ds-foot-chip--error\">Não foi possível subscrever agora. Tenta outra vez daqui a pouco.</p></div>",
+      "css": ".ds-foot { padding: 24px; max-width: 360px; background: linear-gradient(170deg, var(--color-green-deep, #0b6630), var(--color-green-night, #0a4d27)); color: #fff; border-radius: 12px; font-family: var(--font-family, Nunito, sans-serif); } .ds-foot-heading { margin: 0 0 8px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; } .ds-foot-group { display: flex; border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; overflow: hidden; transition: border-color 150ms ease; } .ds-foot-group:focus-within { border-color: #fff; } .ds-foot-input { flex: 1; min-width: 0; min-height: 2.5rem; padding: 0 16px; border: none; outline: none; background: rgba(255,255,255,0.08); color: #fff; font: inherit; font-size: 0.875rem; } .ds-foot-input::placeholder { color: rgba(255,255,255,0.88); } .ds-foot-btn { min-height: 2.5rem; padding: 0 24px; border: none; background: #fff; color: var(--color-green-deep, #0b6630); font: inherit; font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: background-color 150ms ease; } .ds-foot-btn:hover { background: var(--color-green-light, #e8f5ee); } .ds-foot-btn:focus-visible { outline: 2px solid var(--color-green-deep, #0b6630); outline-offset: -4px; } .ds-foot-chip { margin: 8px 0 0; padding: 8px 16px; font-size: 0.875rem; font-weight: 600; line-height: 1.4; background: var(--color-green-night, #0a4d27); border-radius: 8px; } .ds-foot-chip--error { border: 1px solid #fff; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Caderno de Campo",
+    "overview": "This is a scout's field notebook made digital: a working tool first, decorated second. Every surface assumes it may be read on a phone, outdoors, mid-activity — the cancioneiro sung around a fire, the programa checked on a trail. The system is warm and welcoming to the families evaluating the agrupamento, fresh and optimistic like the movement itself, and trustworthy enough to carry the CNE name. Practicality always wins: clarity of type, generous touch targets, and instant feedback outrank any flourish.\n\nThe palette is CNE identity worn honestly — Verde Escutista does the wayfinding, Amarelo Flor-de-Lis provides the rare spark, and everything else is quiet paper-and-ink neutrals. Nunito, rounded and friendly at every weight, keeps the voice approachable without losing officialdom. Depth is ambient and restrained: surfaces sit nearly flat at rest and lift only in response to the user.",
+    "keyCharacteristics": [
+      "Tool-first pragmatism: content and controls stay legible in the field, on small screens, in sunlight.",
+      "One green voice: Verde Escutista is identity, wayfinding, and action — used with intent, never as wallpaper.",
+      "Friendly and tactile: pill buttons, soft radii, instant press feedback (`scale(0.97)` on `:active`).",
+      "Ambient depth: 1px hairline borders at rest; shadows appear on hover, overlays, and floating chrome.",
+      "Motion is compositor-friendly, brief (150–300ms), and fully disabled under `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The One Yellow Rule",
+        "body": "Amarelo Flor-de-Lis appears at most once per viewport, on dark ground or as a filled shape. Its rarity is what makes it ceremonial; yellow text on white is banned outright. In the hero it is the carousel progress pill. The footer carries no yellow at all: its headings, focus ring and status icons are white on the green, and the Subscrever action is white with Verde Profundo text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Small Green Rule",
+        "body": "Brand green is for size, Verde Mata is for reading. If green text is under 24px (18.66px bold), or white text sits on a green fill, it is Verde Mata or deeper. The one exception is the wordmark.",
+        "section": "colors"
+      },
+      {
+        "name": "The Verde Wayfinding Rule",
+        "body": "Green means \"this is ours\" or \"this responds\". Headings, actions, and active states — never large decorative fills or full-bleed green sections.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tighter-As-It-Grows Rule",
+        "body": "Large text gets negative tracking and tight leading (h1–h3: 1.25 / −0.01em; display: 1.05 / −0.02em). Positive letter-spacing is reserved for small uppercase labels.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ambient Response Rule",
+        "body": "Shadows are earned by state, not worn at rest. If an element isn't floating, hovered, or modal, a 1px border is its only edge.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** use the tokens in `src/styles/variables.css` for every color, spacing, font size, radius, and shadow — no hardcoded values.",
+      "**Do** use `--transition-interactive` for all hover/press/focus states — it transitions only compositor/paint-safe properties.",
+      "**Do** give every pressable element instant press feedback (`scale(0.97)` on `:active`); links styled as buttons need it added explicitly.",
+      "**Do** verify every surface at 1024px, 768px, and 600px, and give every control a 44px touch target in a `@media (pointer: coarse)` block (`min-height: 44px`, or an invisible `::after` inset when the visual is small by design); chords over lyrics are the one 24px exception.",
+      "**Do** respect `prefers-reduced-motion` (motion collapses to ~0ms globally), `prefers-reduced-transparency`, and `prefers-contrast: more` (header falls back to solid white).",
+      "**Do** guard hover-dependent interactions with `@media (hover: none)` / `isTouchDevice()` — hover+click on one element causes double-tap bugs on mobile."
+    ],
+    "donts": [
+      "**Don't** use `transition: all` — ever. It animates layout properties and causes jank.",
+      "**Don't** set Amarelo Flor-de-Lis text on white backgrounds; the contrast fails. Yellow lives on dark photography, deep greens, or as filled shapes carrying dark text.",
+      "**Don't** put small text in Verde Escutista or white text on a Verde Escutista fill (3.83:1). Use Verde Mata (The Small Green Rule).",
+      "**Don't** use Cinza Suave (#a3a3a3) or lighter for text; it is 2.5:1.",
+      "**Don't** nest `backdrop-filter` materials (the mobile nav panel is solid white on purpose).",
+      "**Don't** animate layout properties (width, height, top, margin); move things with `transform` and fade with `opacity`.",
+      "**Don't** introduce a second font family or positive letter-spacing on large text.",
+      "**Don't** add resting shadows to in-flow content; elevation is a response, not a costume (The Ambient Response Rule)."
+    ]
+  }
+}

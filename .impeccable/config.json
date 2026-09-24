@@ -1,0 +1,33 @@
+{
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0, 0, 0, 0.5)",
+        "createdAt": "2026-09-24T17:03:18.585Z",
+        "reason": "Agent: photography shadow on the hero carousel, documented in DESIGN.md Elevation & Depth > Over photography; user chose to record these values (2026-09-24)"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0, 0, 0, 0.55)",
+        "createdAt": "2026-09-24T17:03:18.638Z",
+        "reason": "Agent: photography shadow on the hero carousel, documented in DESIGN.md Elevation & Depth > Over photography; user chose to record these values (2026-09-24)"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0, 0, 0, 0.35)",
+        "createdAt": "2026-09-24T17:03:18.684Z",
+        "reason": "Agent: photography shadow on the hero carousel, documented in DESIGN.md Elevation & Depth > Over photography; user chose to record these values (2026-09-24)"
+      }
+    ]
+  }
+}

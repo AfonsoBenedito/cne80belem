@@ -28,7 +28,7 @@ export default function ProvaDetail() {
   }
 
   useSEO(provaItem && section ? {
-    title: `${provaItem.name} — ${section.label}`,
+    title: `${provaItem.name} - ${section.label}`,
     description: `Prova ${provaItem.name} da ${section.label} do Agrupamento 80.`,
   } : {});
 
@@ -47,7 +47,7 @@ export default function ProvaDetail() {
   return (
     <main className={styles.page}>
       {/* Hero */}
-      <section className={styles.hero} style={{ background: section.color }}>
+      <section className={styles.hero} style={{ background: section.surface, color: section.onSurface }}>
         <img src={section.image} alt="" className={styles.heroBadge} />
         <div className="container">
           <p className={styles.heroLabel}>{provaGroup.group}</p>
@@ -60,7 +60,7 @@ export default function ProvaDetail() {
         <Link
           to={`/seccao/${seccao}/provas`}
           className={styles.backLink}
-          style={{ color: section.color }}
+          style={{ color: section.ink }}
         >
           <FaArrowLeft size={12} /> Todas as provas
         </Link>
@@ -71,7 +71,7 @@ export default function ProvaDetail() {
             <div className={styles.sidebarCard}>
               <h3
                 className={styles.sidebarTitle}
-                style={{ color: section.color }}
+                style={{ color: section.ink }}
               >
                 {provaGroup.group}
               </h3>
@@ -83,7 +83,7 @@ export default function ProvaDetail() {
                       className={`${styles.sidebarLink} ${item.slug === slug ? styles.sidebarLinkActive : ''}`}
                       style={
                         item.slug === slug
-                          ? { color: section.color, borderColor: section.color }
+                          ? { color: section.ink, borderColor: section.color }
                           : undefined
                       }
                     >
@@ -91,7 +91,7 @@ export default function ProvaDetail() {
                         className={styles.sidebarNumber}
                         style={
                           item.slug === slug
-                            ? { background: section.color }
+                            ? { background: section.surface, color: section.onSurface }
                             : undefined
                         }
                       >
@@ -113,7 +113,7 @@ export default function ProvaDetail() {
                   {s.heading && (
                     <h2
                       className={styles.sectionHeading}
-                      style={{ color: section.color }}
+                      style={{ color: section.ink }}
                     >
                       {s.heading}
                     </h2>
@@ -147,7 +147,7 @@ export default function ProvaDetail() {
                   <span className={styles.navLabel}>Anterior</span>
                   <span
                     className={styles.navTitle}
-                    style={{ color: section.color }}
+                    style={{ color: section.ink }}
                   >
                     {prev.title}
                   </span>
@@ -164,7 +164,7 @@ export default function ProvaDetail() {
                   <span className={styles.navLabel}>Seguinte</span>
                   <span
                     className={styles.navTitle}
-                    style={{ color: section.color }}
+                    style={{ color: section.ink }}
                   >
                     {next.title}
                   </span>

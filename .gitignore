@@ -25,6 +25,4 @@ dist-ssr
 *.sw?
 
 # Claude
-CLAUDE.md
-CANCIONEIRO.md
-PDFGEN.md
+.claude/

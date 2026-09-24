@@ -2,14 +2,21 @@
   position: relative;
   width: 100%;
   height: calc(100vh - var(--header-height));
+  height: calc(100svh - var(--header-height));
   overflow: hidden;
   background-color: var(--color-black);
 }
 
+/* Transition and transform are driven from JS so a settle can start from the live position */
 .track {
   display: flex;
   height: 100%;
-  transition: transform 600ms ease-in-out;
+  touch-action: pan-y;
+}
+
+.trackDragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .slide {
@@ -23,26 +30,28 @@
   object-fit: cover;
 }
 
-/* Dark overlay */
+/* Scrim only where the words sit: the photo stays open above, dark enough below
+   (and to the left on desktop) for white text over any slide */
 .overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.35) 0%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0.65) 100%
+    to top,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.4) 40%,
+    rgba(0, 0, 0, 0.1) 72%,
+    rgba(0, 0, 0, 0.06) 100%
   );
   pointer-events: none;
 }
 
-/* Static text */
+/* Copy anchors to the lower left, aligned with the page container, clear of the
+   faces that fill the centre of group photos */
 .content {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  left: max(var(--spacing-xl), calc((100% - var(--max-width)) / 2 + var(--spacing-lg)));
+  bottom: 5.5rem;
+  width: min(36rem, calc(100% - 2 * var(--spacing-xl)));
   color: var(--color-white);
   z-index: 2;
 }
@@ -50,26 +59,29 @@
 .title {
   font-size: clamp(1.6rem, 5vw, 4rem);
   font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em; /* display text tracks tighter as it grows */
+  text-wrap: balance;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-  letter-spacing: 1px;
-  white-space: nowrap;
 }
 
+/* Light-on-dark body: a touch more leading and tracking than on paper */
 .subtitle {
-  font-size: clamp(0.85rem, 2.5vw, 1.5rem);
+  max-width: 30rem;
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-lg);
   font-weight: 600;
-  margin-top: var(--spacing-sm);
-  color: var(--color-yellow);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  white-space: nowrap;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
 }
 
 /* Buttons */
 .buttons {
   display: flex;
   gap: 0.6rem;
-  justify-content: center;
-  margin-top: 1.75rem;
+  margin-top: var(--spacing-lg);
 }
 
 .btnGreen {
@@ -77,13 +89,13 @@
   font-size: var(--font-size-base);
   font-weight: 700;
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border-radius: 100px;
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
 .btnGreen:hover {
-  background: var(--color-green-dark);
+  background: var(--color-green-deep);
 }
 
 .btnWhite {
@@ -91,64 +103,184 @@
   font-size: var(--font-size-base);
   font-weight: 700;
   color: var(--color-black);
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--color-white);
   border-radius: 100px;
-  transition: background var(--transition-fast);
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
 .btnWhite:hover {
-  background: var(--color-white);
+  background: var(--color-gray-100);
 }
 
-/* Dots */
-.dots {
+.btnGreen:active,
+.btnWhite:active {
+  transform: scale(0.97);
+}
+
+/* Over photography the brand-green ring disappears; white reads on any slide */
+.btnGreen:focus-visible,
+.btnWhite:focus-visible {
+  outline-color: var(--color-white);
+  outline-offset: 3px;
+}
+
+/* ── Controls: page dots + pause ── */
+.controls {
   position: absolute;
-  bottom: var(--spacing-lg);
+  bottom: var(--spacing-md);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: var(--spacing-sm);
+  align-items: center;
+  gap: var(--spacing-xs);
   z-index: 3;
 }
 
+.dots {
+  display: flex;
+  align-items: center;
+}
+
+/* The button is the 44px-tall hit area; the visible mark sits inside it */
 .dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 2px solid var(--color-white);
+  display: grid;
+  place-items: center;
+  height: 44px;
+  padding: 0 6px;
+  background: none;
+}
+
+.dot:focus-visible {
+  outline: none;
+}
+
+.dot:focus-visible .dotMark {
+  outline: 2px solid var(--color-white);
+  outline-offset: 3px;
+}
+
+.dotMark {
+  position: relative;
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   transition: background-color var(--transition-fast);
 }
 
-.dot:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+.dot:hover .dotMark {
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
-.dotActive {
+/* Active page becomes a pill that fills while the slide is shown */
+.dotMarkActive,
+.dot:hover .dotMarkActive {
+  width: 30px;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.progress {
+  position: absolute;
+  inset: 0;
   background-color: var(--color-yellow);
-  border-color: var(--color-yellow);
+  transform-origin: left center;
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
+/* Held by the user: the track brightens so a paused pill never reads as "about to fill" */
+.dotMarkHeld,
+.dot:hover .dotMarkHeld {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+/* Paused mid-slide, the fill freezes where it is - the state is visible at a glance */
+.progressRunning {
+  transform: scaleX(0);
+  animation: slideProgress 5000ms linear forwards;
+}
+
+@keyframes slideProgress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* No autoplay under reduced motion (see Carousel.jsx); the active pill is simply full */
+@media (prefers-reduced-motion: reduce) {
+  .progressRunning {
+    animation: none !important;
+    transform: scaleX(1);
+  }
+}
+
+/* Phones: centred over the lower third, full width of the gutter */
+@media (max-width: 768px) {
+  /* The copy fills more of a short hero, so the scrim reaches higher */
+  .overlay {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(0, 0, 0, 0.55) 45%,
+      rgba(0, 0, 0, 0.25) 75%,
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+
+  .content {
+    left: 50%;
+    bottom: 4rem;
+    width: calc(100% - 2 * var(--spacing-lg));
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
   .title {
-    font-size: clamp(1.8rem, 8vw, 2.25rem);
-    white-space: nowrap;
-    margin-bottom: 0;
+    font-size: var(--font-size-3xl);
+  }
+
+  /* Centred lines read best balanced, with no stranded last line */
+  .subtitle {
+    margin-inline: auto;
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-base);
+    text-wrap: balance;
+  }
+
+  .buttons {
+    justify-content: center;
+  }
+}
+
+/* Short viewports (landscape phones): tighten so the copy never climbs into the header */
+@media (max-height: 520px) and (min-width: 769px) {
+  .content {
+    bottom: 3.75rem;
+  }
+
+  .title {
+    font-size: var(--font-size-3xl);
   }
 
   .subtitle {
-    font-size: 1.1rem;
-    margin-top: -0.4rem;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-base);
+  }
+
+  .buttons {
+    margin-top: var(--spacing-md);
   }
 }
 
 @media (max-width: 768px) {
   .carousel {
     height: 60vh;
+    height: 60svh;
   }
 
   .buttons {
-    margin-top: 1.25rem;
+    margin-top: var(--spacing-md);
   }
 
   .btnGreen,
@@ -158,12 +290,36 @@
     white-space: nowrap;
   }
 
-  .dots {
-    bottom: var(--spacing-md);
+  .controls {
+    bottom: var(--spacing-xs);
   }
 
   .dot {
-    width: 10px;
-    height: 10px;
+    padding: 0 5px;
+  }
+
+  .dotMark {
+    width: 8px;
+    height: 8px;
+  }
+
+  .dotMarkActive {
+    width: 24px;
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .btnGreen,
+  .btnWhite {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* 24px-wide targets: the WCAG 2.5.8 minimum, without spreading the dot row */
+  .dot {
+    min-width: 24px;
+    justify-content: center;
   }
 }

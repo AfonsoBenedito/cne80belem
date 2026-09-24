@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
+  animation: overlayIn 200ms ease-out;
 }
 
 /* ── Panel ── */
@@ -20,6 +21,27 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: panelIn 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
 }
 
 .panelHeader {
@@ -36,7 +58,7 @@
   gap: 0.5rem;
   font-size: var(--font-size-lg);
   font-weight: 800;
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .closeBtn {
@@ -50,7 +72,7 @@
   border-radius: 8px;
   color: var(--color-gray-500);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .closeBtn:hover {
@@ -103,7 +125,7 @@
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   pointer-events: none;
 }
 
@@ -163,7 +185,7 @@
   cursor: pointer;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
   text-align: left;
 }
 
@@ -182,15 +204,15 @@
 }
 
 .songCheck {
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .songAdd {
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 .songItem:hover .songAdd {
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 /* ── Settings ── */
@@ -245,22 +267,22 @@
   font-size: var(--font-size-xs);
   font-weight: 700;
   border: 1px solid var(--color-gray-200);
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background: var(--color-white);
   color: var(--color-gray-500);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .layoutBtn:hover {
   border-color: var(--color-green);
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 .layoutBtnActive {
   background: var(--color-green-light);
   border-color: var(--color-green);
-  color: var(--color-green);
+  color: var(--color-green-dark);
 }
 
 /* ── Options row (capa + switches) ── */
@@ -270,7 +292,6 @@
   gap: 0.75rem 1rem;
   flex-wrap: wrap;
 }
-
 
 /* ── Switch toggle ── */
 .switchGroup {
@@ -294,13 +315,13 @@
 .switchSideLabel {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
   transition: color var(--transition-fast);
   user-select: none;
 }
 
 .switchSideLabelActive {
-  color: var(--color-gray-500);
+  color: var(--color-gray-900);
 }
 
 .switch {
@@ -309,14 +330,14 @@
   height: 18px;
   background: var(--color-gray-200);
   border: none;
-  border-radius: 9px;
+  border-radius: 100px;
   cursor: pointer;
   transition: background var(--transition-fast);
   flex-shrink: 0;
 }
 
 .switchOn {
-  background: var(--color-green);
+  background: var(--color-green-dark);
 }
 
 .switchThumb {
@@ -361,10 +382,10 @@
   height: 22px;
   border: none;
   background: none;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   cursor: pointer;
   border-radius: 4px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .removeLogoBtn:hover {
@@ -382,13 +403,13 @@
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .clearBtn:hover {
@@ -421,22 +442,15 @@
   cursor: grabbing;
 }
 
-.selectedItemDragging {
-  opacity: 0.5;
-  background: var(--color-green-light);
-  border-color: var(--color-green);
-  box-shadow: var(--shadow-md);
-}
-
 .grip {
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   flex-shrink: 0;
 }
 
 .selectedNum {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   min-width: 1.25rem;
 }
 
@@ -455,10 +469,10 @@
   height: 22px;
   border: none;
   background: none;
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   cursor: pointer;
   border-radius: 4px;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .removeBtn:hover {
@@ -468,7 +482,7 @@
 
 .emptyMsg {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   text-align: center;
   padding: 2rem 0;
 }
@@ -485,11 +499,11 @@
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .generateBtn:hover:not(:disabled) {
@@ -513,6 +527,8 @@
     max-width: 100%;
     height: 95vh;
     border-radius: 16px 16px 0 0;
+    /* Bottom sheet enters along its dismissal axis */
+    animation-name: sheetIn;
   }
 
   .panelHeader {

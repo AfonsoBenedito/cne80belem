@@ -43,7 +43,7 @@
   left: 0.85rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   font-size: 0.8rem;
   pointer-events: none;
 }
@@ -61,7 +61,7 @@
 }
 
 .searchInput::placeholder {
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
 }
 
 .searchInput:focus {
@@ -71,7 +71,7 @@
 
 .noResults {
   font-size: var(--font-size-sm);
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
   text-align: center;
   padding: 1rem 0;
 }
@@ -97,14 +97,14 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
   border-radius: 6px;
   transition: color var(--transition-fast), background var(--transition-fast);
   z-index: 1;
 }
 
 .docDownloadBtn:hover {
-  color: var(--color-green);
+  color: var(--color-green-dark);
   background: var(--color-green-light);
 }
 
@@ -119,7 +119,7 @@
   border-radius: var(--border-radius);
   font-family: inherit;
   text-align: left;
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .docItem:hover {
@@ -198,13 +198,13 @@
   font-size: var(--font-size-xs);
   font-weight: 700;
   color: var(--color-white);
-  background: var(--color-green);
+  background: var(--color-green-dark);
   border-radius: var(--border-radius);
   transition: background var(--transition-fast);
 }
 
 .downloadBtn:hover {
-  background: var(--color-green-dark);
+  background: var(--color-green-deep);
 }
 
 .closeBtn {
@@ -216,7 +216,7 @@
   background: none;
   color: var(--color-gray-500);
   border-radius: var(--border-radius);
-  transition: all var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
 .closeBtn:hover {
@@ -240,7 +240,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  color: var(--color-gray-300);
+  color: var(--color-gray-500);
 }
 
 .emptyIcon {
@@ -268,5 +268,23 @@
 
   .viewer {
     display: none;
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .docDownloadBtn {
+    position: relative;
+  }
+
+  .docDownloadBtn::after {
+    content: "";
+    position: absolute;
+    inset: -8px;
+  }
+
+  /* iOS zooms any focused input under 16px */
+  .searchInput {
+    font-size: var(--font-size-base);
   }
 }

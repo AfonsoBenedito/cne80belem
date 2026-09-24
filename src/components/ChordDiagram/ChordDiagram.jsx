@@ -1,5 +1,5 @@
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { chordDb, lookupChord } from '../../config/chords';
+import { lookupChord } from '../../config/chords';
 import styles from './ChordDiagram.module.css';
 
 const STRING_COUNT = 6;
@@ -167,8 +167,10 @@ export default function ChordDiagram({ transposedChord, variantIndex, onChangeVa
     <div className={styles.popup}>
       <div className={styles.inner}>
         <button
+          type="button"
           className={styles.arrow}
-          onMouseDown={(e) => { e.stopPropagation(); onChangeVariant(-1); }}
+          aria-label="Forma anterior do acorde"
+          onClick={(e) => { e.stopPropagation(); onChangeVariant(-1); }}
         >
           <FaChevronLeft size={10} />
         </button>
@@ -178,8 +180,10 @@ export default function ChordDiagram({ transposedChord, variantIndex, onChangeVa
           startFret={v.startFret}
         />
         <button
+          type="button"
           className={styles.arrow}
-          onMouseDown={(e) => { e.stopPropagation(); onChangeVariant(1); }}
+          aria-label="Forma seguinte do acorde"
+          onClick={(e) => { e.stopPropagation(); onChangeVariant(1); }}
         >
           <FaChevronRight size={10} />
         </button>

@@ -24,7 +24,7 @@ const INITIAL = {
 export default function ReservarAlojamento() {
   useSEO({
     title: 'Reservar Alojamento',
-    description: 'Reserva o espaço de alojamento do Agrupamento 80 — Santa Maria de Belém para o teu grupo ou organização.',
+    description: 'Reserva o espaço de alojamento do Agrupamento 80 - Santa Maria de Belém para o teu grupo ou organização.',
   });
 
   const [form, setForm] = useState(INITIAL);
@@ -48,7 +48,7 @@ export default function ReservarAlojamento() {
     e.preventDefault();
 
     const subject = encodeURIComponent(
-      `Reserva de Alojamento — ${form.organization}`,
+      `Reserva de Alojamento - ${form.organization}`,
     );
 
     const timeFromStr = form.timeFrom ? ` às ${fmtTime(form.timeFrom)}` : '';

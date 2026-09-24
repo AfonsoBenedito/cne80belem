@@ -1,107 +1,400 @@
-.home {}
+/* Home reads down one left edge, matching the hero's lower-left anchor, with one centred pause:
+   lead paragraph (centred) → latest stories → closing invitation. */
 
+/* ── Lead ── */
+/* Half a section gap above: the lead continues the hero, and the section rhythm starts after it */
 .welcome {
-  padding: var(--spacing-3xl) 0 0;
-  text-align: center;
+  padding-block: var(--spacing-xl) 0;
 }
 
-.title {
+.lead {
+  max-width: 40rem;
+  margin-inline: auto;
+  text-align: center;
+  color: var(--color-gray-700);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: 1.45;
+  text-wrap: balance; /* one short sentence: even lines, no stranded "teus amigos." */
+}
+
+/* ── Latest stories ── */
+.news {
+  padding-block: var(--spacing-3xl) 0;
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-green);
+}
+
+.seeAll {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-green-dark);
+  transition: var(--transition-interactive);
+}
+
+.seeAll:hover {
+  color: var(--color-green-deep);
+}
+
+.seeAll svg {
+  transition: transform var(--transition-fast);
+}
+
+.seeAll:hover svg {
+  transform: translateX(3px);
+}
+
+/* The latest story leads at double weight; the next four sit in a 2×2 beside it */
+.stories {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: repeat(2, 1fr); /* equal rows, so the lead's extra height splits evenly */
+  gap: var(--spacing-xl) var(--spacing-lg);
+  list-style: none;
+}
+
+.storyLead {
+  grid-row: span 2;
+}
+
+.storyLink {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.storyMedia {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  background: var(--color-gray-100);
+  transition: transform 150ms ease-out;
+}
+
+.storyLink:active .storyMedia {
+  transform: scale(0.98);
+  transition-duration: 80ms;
+}
+
+/* Photos stretch to fill their grid cell, so the lead and both rows beside it end together */
+.storyLead .storyMedia,
+.story .storyMedia {
+  flex: 1;
+  aspect-ratio: auto;
+}
+
+.storyLead .storyMedia {
+  min-height: 18rem;
+}
+
+.story .storyMedia {
+  min-height: 11rem;
+}
+
+/* Absolute so the photo's natural height never sizes the grid rows */
+.storyMedia img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Photos develop like prints: a pale monochrome rises from the grey card, then colour
+   floods in as the print settles. Runs once per photo, once it has loaded and is on screen;
+   Home.jsx drops both classes when it ends, handing the photo back to the hover zoom. */
+.storyMedia img.developing {
+  opacity: 0;
+  filter: grayscale(1) contrast(0.85) brightness(1.1);
+  transform: scale(1.04);
+}
+
+.storyMedia img.developed {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition: opacity 450ms ease-out, filter 1200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storyMedia img.developing {
+    filter: none;
+    transform: none;
+  }
+
+  /* Overrides the inline stagger: nothing moves, so there is nothing to sequence */
+  .storyMedia img.developed {
+    transition-delay: 0ms !important;
+  }
+}
+
+.storyTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+  color: var(--color-black);
+  transition: color var(--transition-fast);
+}
+
+.storyLead .storyTitle {
+  -webkit-line-clamp: 3;
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-xl);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.storyDate {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-gray-500);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (hover: hover) {
+  .storyLink:hover .storyMedia img {
+    transform: scale(1.04);
+  }
+
+  .storyLink:hover .storyTitle {
+    color: var(--color-green-dark);
+  }
+}
+
+.storyLink:focus-visible {
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+/* ── Closing invitation ── */
+.join {
+  padding-block: var(--spacing-3xl) 0;
+}
+
+/* The photo supports the invitation rather than competing with it */
+.joinInner {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 28rem);
+  align-items: center;
+  gap: var(--spacing-2xl);
+}
+
+.joinTitle {
   font-size: var(--font-size-3xl);
   font-weight: 800;
   color: var(--color-green);
 }
 
-.subtitle {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--color-yellow-dark);
-  margin-top: var(--spacing-xs);
-}
-
-.description {
-  max-width: 600px;
-  margin: var(--spacing-lg) auto 0;
-  color: var(--color-gray-500);
+.joinLine {
+  margin-top: var(--spacing-sm);
+  color: var(--color-gray-700);
   font-size: var(--font-size-lg);
-  line-height: 1.8;
+  line-height: 1.6;
 }
 
-/* ── Photo gallery ── */
-.gallery {
+/* Three steps in order: the numbers carry the sequence, so they stay */
+.steps {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: var(--spacing-xl);
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  list-style: none;
 }
 
-.galleryItem {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  width: calc((100% - 1.5rem) / 3);
-}
-
-.galleryImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.galleryItem:hover .galleryImg {
-  transform: scale(1.05);
-}
-
-.galleryOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 50%);
+.step {
   display: flex;
-  align-items: flex-end;
-  padding: 0.75rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  align-items: flex-start;
+  gap: var(--spacing-md);
 }
 
-.galleryItem:hover .galleryOverlay {
-  opacity: 1;
+.stepNum {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-green-dark);
+  background: var(--color-green-light);
+  font-variant-numeric: tabular-nums;
 }
 
-.galleryCaption {
-  font-size: var(--font-size-xs);
+.stepText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 0.3rem;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-black);
+}
+
+.stepLink {
+  align-self: flex-start;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-green-dark);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-green-dark) 35%, transparent);
+  text-underline-offset: 3px;
+  transition: var(--transition-interactive);
+}
+
+.stepLink:hover {
+  color: var(--color-green-deep);
+  text-decoration-color: currentColor;
+}
+
+.promessa {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+}
+
+.joinCta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--spacing-lg);
+  padding: 0.75rem 2rem;
+  font-size: var(--font-size-base);
   font-weight: 700;
   color: var(--color-white);
-  line-height: 1.3;
+  background: var(--color-green-dark);
+  border-radius: 100px;
+  transition: var(--transition-interactive);
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
-  .welcome {
-    padding: var(--spacing-xl) 0 0;
-  }
+.joinCta:hover {
+  background: var(--color-green-deep);
+}
 
-  .description {
-    font-size: var(--font-size-base);
-    margin-top: var(--spacing-md);
-  }
+.joinCta:active {
+  transform: scale(0.97);
+}
 
-  .gallery {
-    display: grid;
+.joinPhoto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* ── Tablet: the lead story spans the full width above a 2×2 ── */
+@media (max-width: 1024px) {
+  .stories {
     grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    margin-top: var(--spacing-lg);
+    grid-template-rows: none;
   }
 
-  .galleryItem {
-    width: 100%;
+  .storyLead {
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 
-  .galleryItem:nth-child(n+5) {
-    display: none;
+  .storyLead .storyMedia {
+    flex: none;
+    aspect-ratio: 16 / 9;
+    min-height: 0;
   }
 
-  .galleryOverlay {
-    opacity: 1;
+  .story .storyMedia {
+    flex: none;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+}
+
+/* ── Phones ── */
+@media (max-width: 768px) {
+  .welcome {
+    padding-block: var(--spacing-lg) 0;
+  }
+
+  .news,
+  .join {
+    padding-block: var(--spacing-2xl) 0;
+  }
+
+  .lead {
+    font-size: var(--font-size-lg);
+  }
+
+  .stories {
+    gap: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .storyTitle {
+    font-size: var(--font-size-sm);
+  }
+
+  .storyLead .storyTitle {
+    font-size: var(--font-size-lg);
+  }
+
+  .joinInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  .joinTitle {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
+@media (pointer: coarse) {
+  .seeAll {
+    position: relative;
+  }
+
+  .seeAll::after {
+    content: "";
+    position: absolute;
+    inset: -13px -6px;
+  }
+
+  .joinCta {
+    min-height: 44px;
+  }
+
+  .stepLink {
+    position: relative;
+  }
+
+  .stepLink::after {
+    content: "";
+    position: absolute;
+    inset: -12px -6px;
   }
 }

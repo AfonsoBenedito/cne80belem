@@ -4,7 +4,27 @@
   z-index: 100;
   background-color: var(--color-white);
   box-shadow: var(--shadow-sm);
-  height: var(--header-height);
+  /* A minimum, not a fixed height: larger text grows the bar instead of spilling out of it */
+  min-height: var(--header-height);
+  padding-block: var(--spacing-xs);
+  container: header / inline-size;
+}
+
+/* Translucent chrome: content scrolls under the header as a floating material layer */
+@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+  .header {
+    background-color: rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .header {
+    background-color: var(--color-white);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 .inner {
@@ -12,7 +32,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-lg);
-  height: 100%;
+  min-height: calc(var(--header-height) - 2 * var(--spacing-xs));
 }
 
 /* Brand */
@@ -24,6 +44,7 @@
 }
 
 .logo {
+  flex-shrink: 0;
   height: 52px;
   width: auto;
 }
@@ -31,6 +52,7 @@
 .brandText {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   line-height: 1.2;
 }
 
@@ -40,9 +62,10 @@
   color: var(--color-green);
 }
 
+/* Cinza Escuro, not Médio: the header is translucent, and over a hero photo the lighter grey fell to 3.3:1 */
 .brandSubtitle {
   font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
+  color: var(--color-gray-700);
   font-weight: 600;
 }
 
@@ -76,9 +99,30 @@
   white-space: nowrap;
 }
 
-.navLink:hover {
-  color: var(--color-green);
+/* Hover only where a pointer can hover (a tapped link would stay tinted on touch); an open
+   dropdown's trigger carries the same tint from its real state */
+@media (hover: hover) {
+  .navLink:hover {
+    color: var(--color-green-dark);
+    background-color: var(--color-green-light);
+  }
+}
+
+.navLink:active,
+.navLink[aria-expanded="true"] {
+  color: var(--color-green-dark);
   background-color: var(--color-green-light);
+}
+
+/* You are here: the current page, or the menu that holds it, reads in Verde Profundo (Verde Mata
+   dropped under 4.5:1 once a photo scrolled under the translucent bar) */
+.navLink[aria-current],
+.dropdownLink[aria-current="page"] {
+  color: var(--color-green-deep);
+}
+
+.dropdownLink[aria-current="page"] {
+  font-weight: 700;
 }
 
 /* Chevron */
@@ -91,31 +135,111 @@
 }
 
 /* Dropdown */
+/* Links sit inset with rounded corners, like the Secções panel, so hover tints and focus rings
+   stay inside the panel; the panel takes its longest label's width */
 .dropdownMenu {
   position: absolute;
   top: 100%;
   left: 0;
+  width: max-content;
   min-width: 200px;
   background: var(--color-white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
-  padding: var(--spacing-xs) 0;
+  padding: var(--spacing-xs);
   animation: fadeIn 150ms ease;
   z-index: 50;
 }
 
 .dropdownLink {
   display: block;
-  padding: var(--spacing-sm) var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius);
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-gray-700);
   transition: color var(--transition-fast), background-color var(--transition-fast);
 }
 
-.dropdownLink:hover {
-  color: var(--color-green);
+@media (hover: hover) {
+  .dropdownLink:hover {
+    color: var(--color-green-dark);
+    background-color: var(--color-green-light);
+  }
+}
+
+.dropdownLink:active {
+  color: var(--color-green-dark);
   background-color: var(--color-green-light);
+}
+
+/* Secções: one panel, a column per secção, each keeping all of its pages */
+.megaMenu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  translate: -50% 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(9.5rem, 1fr));
+  gap: var(--spacing-xs) var(--spacing-md);
+  width: max-content;
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 150ms ease;
+  z-index: 50;
+}
+
+.megaLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-gray-900);
+}
+
+.megaDot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.megaMenu .dropdownLink {
+  padding: var(--spacing-xs) var(--spacing-md);
+}
+
+/* Skip link: off-screen until keyboard focus, then a pill in the top-left corner */
+.skipLink {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  z-index: 200;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--color-green-dark);
+  border-radius: 100px;
+  /* Transparent as well as off-screen: an overscroll bounce at the top of the page reveals
+     the strip above the header. Opacity keeps it focusable and announced. */
+  opacity: 0;
+  transform: translateY(-200%);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.skipLink:focus-visible {
+  opacity: 1;
+  transform: translateY(0);
+  outline-color: var(--color-green-deep);
 }
 
 /* Hamburger */
@@ -124,10 +248,12 @@
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  margin-right: -10px; /* optical: bars stay aligned to the container edge */
   background: none;
-  padding: 6px;
+  padding: 10px;
 }
 
 .hamburger span {
@@ -150,10 +276,6 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-.labelShort {
-  display: none;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -165,42 +287,18 @@
   }
 }
 
-/* Tablet landscape — compact nav with short labels */
-@media (min-width: 1025px) and (max-width: 1200px) {
-  .labelFull {
-    display: none;
-  }
-
-  .labelShort {
-    display: inline;
-  }
-
-  .navLink {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-xs);
-  }
-
-  .navList {
-    gap: 0;
-  }
-
-  .logo {
-    height: 42px;
-  }
-
-  .brandName {
-    font-size: var(--font-size-base);
-  }
-
-  .brandSubtitle {
-    font-size: 0.65rem;
-  }
-}
-
-/* Mobile */
-@media (max-width: 1024px) {
+/* Compact: the hamburger takes over at 1024px wide, or earlier whenever the brand and the four
+   links no longer fit at the current text size (about 43rem of content), so a larger default
+   font or text-only zoom collapses the bar instead of breaking it */
+@container header (width <= 1024px) or (width < 50rem) {
   .inner {
     justify-content: space-between;
+  }
+
+  /* Compact bar: the brand gives way before the hamburger does, wrapping its name if it must */
+  .brand {
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   .hamburger {
@@ -210,14 +308,16 @@
   .nav {
     display: none;
     position: absolute;
-    top: var(--header-height);
+    top: 100%;
     left: 0;
     right: 0;
     background: var(--color-white);
     box-shadow: var(--shadow-md);
     padding: var(--spacing-md);
     max-height: calc(100vh - var(--header-height));
+    max-height: calc(100dvh - var(--header-height));
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .navOpen {
@@ -237,20 +337,49 @@
 
   .dropdownMenu {
     position: static;
+    width: auto;
     box-shadow: none;
-    padding-left: var(--spacing-lg);
+    padding: 0 0 0 var(--spacing-lg);
     animation: none;
   }
 
   .dropdownLink {
-    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--spacing-xs) var(--spacing-md);
   }
 
-  .labelFull {
-    display: inline;
+  /* Secções: the four columns stack into labelled groups inside the panel */
+  .megaMenu {
+    position: static;
+    display: block;
+    translate: none;
+    width: auto;
+    padding: 0 0 var(--spacing-sm) var(--spacing-lg);
+    box-shadow: none;
+    animation: none;
   }
 
-  .labelShort {
-    display: none;
+  .megaGroup + .megaGroup {
+    margin-top: var(--spacing-sm);
+  }
+
+  .megaLabel {
+    padding: var(--spacing-sm) var(--spacing-md) var(--spacing-xs);
+  }
+}
+
+/* Touch input: 44px targets wherever the bar is, including tablets wide enough for the full nav
+   (the compact panel already sets them; this covers the desktop bar and its menus on touch) */
+@media (pointer: coarse) {
+  .navLink {
+    min-height: 44px;
+  }
+
+  .dropdownLink {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
   }
 }

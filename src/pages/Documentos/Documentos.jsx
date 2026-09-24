@@ -8,7 +8,7 @@ import styles from './Documentos.module.css';
 export default function Documentos() {
   useSEO({
     title: 'Documentos',
-    description: 'Documentos do Agrupamento 80 — regulamento interno, ficha de inscrição, cerimonial e mais.',
+    description: 'Documentos do Agrupamento 80 - regulamento interno, ficha de inscrição, cerimonial e mais.',
   });
 
   const [activeDoc, setActiveDoc] = useState(null);

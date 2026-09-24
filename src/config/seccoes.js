@@ -6,11 +6,20 @@ import lobitosGroup from '../assets/images/sections/lobitos-group.jpg';
 import exploradoresGroup from '../assets/images/sections/exploradores-group.png';
 import pioneirosGroup from '../assets/images/sections/pioneiros-group.jpeg';
 
+// color: identity (borders, decorative icons). surface/onSurface: any fill that carries text.
+// ink: section-coloured text on white or light tints. Pairs are checked for WCAG AA (4.5:1).
+// ageMin/ageMax repeat the ages in `description` as data (Home's age ladder); keep both in sync.
 export const seccoes = {
   lobitos: {
     key: 'lobitos',
     label: 'I Secção - Lobitos',
+    ageMin: 6,
+    ageMax: 10,
+    tagline: 'Aprendem através do jogo e vivem aventuras em bando.',
     color: '#f6db7e',
+    surface: '#f6db7e',
+    onSurface: '#564d2c',
+    ink: '#807242',
     image: lobitosImg,
     groupPhoto: lobitosGroup,
     description:
@@ -23,7 +32,13 @@ export const seccoes = {
   exploradores: {
     key: 'exploradores',
     label: 'II Secção - Exploradores',
+    ageMin: 10,
+    ageMax: 14,
+    tagline: 'Vivem o escutismo em patrulha e superam desafios na natureza.',
     color: '#549b8b',
+    surface: '#42796c',
+    onSurface: '#ffffff',
+    ink: '#42796c',
     image: exploradoresImg,
     groupPhoto: exploradoresGroup,
     description:
@@ -36,7 +51,13 @@ export const seccoes = {
   pioneiros: {
     key: 'pioneiros',
     label: 'III Secção - Pioneiros',
+    ageMin: 14,
+    ageMax: 17,
+    tagline: 'Planificam os seus próprios projetos e assumem responsabilidades.',
     color: '#217a9a',
+    surface: '#217a9a',
+    onSurface: '#ffffff',
+    ink: '#207695',
     image: pioneirosImg,
     groupPhoto: pioneirosGroup,
     description:
@@ -49,7 +70,13 @@ export const seccoes = {
   caminheiros: {
     key: 'caminheiros',
     label: 'IV Secção - Caminheiros',
+    ageMin: 17,
+    ageMax: 22,
+    tagline: 'Vivem o escutismo como serviço à comunidade e ao mundo.',
     color: '#ec4c4b',
+    surface: '#c43f3e',
+    onSurface: '#ffffff',
+    ink: '#c43f3e',
     image: caminheirosImg,
     description:
       'Os Caminheiros são os mais velhos do Agrupamento, com idades entre os 17 e os 22 anos. Vivem o Escutismo como um compromisso de serviço à comunidade e ao mundo. Através de projetos de voluntariado, viagens e reflexão, preparam-se para serem cidadãos ativos e construtores de um mundo melhor.',

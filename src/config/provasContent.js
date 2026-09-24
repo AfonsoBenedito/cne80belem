@@ -19,7 +19,7 @@ export const provasContent = {
       },
       {
         heading: 'Princípios fundamentais',
-        text: 'O Escutismo baseia-se em princípios de serviço ao próximo, vida ao ar livre, aprendizagem pela ação e desenvolvimento integral do jovem — corpo, mente, carácter e espírito. O método escutista assenta no sistema de patrulhas/equipas, na vida na natureza, na mística e simbologia próprias, e no compromisso pessoal assumido através da Promessa.',
+        text: 'O Escutismo baseia-se em princípios de serviço ao próximo, vida ao ar livre, aprendizagem pela ação e desenvolvimento integral do jovem - corpo, mente, carácter e espírito. O método escutista assenta no sistema de patrulhas/equipas, na vida na natureza, na mística e simbologia próprias, e no compromisso pessoal assumido através da Promessa.',
       },
     ],
   },
@@ -51,7 +51,7 @@ export const provasContent = {
       },
       {
         heading: 'Carreira militar',
-        text: 'Aos 19 anos, ingressou no exército britânico e serviu na Índia e em África. Tornou-se famoso durante a Guerra dos Boers (1899-1900), ao defender a cidade de Mafeking com uma guarnição muito reduzida durante 217 dias, usando táticas criativas — incluindo o recrutamento de rapazes jovens para serviços de mensageiro e vigia, o que mais tarde inspiraria o Escutismo.',
+        text: 'Aos 19 anos, ingressou no exército britânico e serviu na Índia e em África. Tornou-se famoso durante a Guerra dos Boers (1899-1900), ao defender a cidade de Mafeking com uma guarnição muito reduzida durante 217 dias, usando táticas criativas - incluindo o recrutamento de rapazes jovens para serviços de mensageiro e vigia, o que mais tarde inspiraria o Escutismo.',
       },
       {
         heading: 'O fundador do Escutismo',
@@ -59,7 +59,7 @@ export const provasContent = {
       },
       {
         heading: 'Legado',
-        text: 'Casou com Olave St Clair Soames em 1912, que se tornou Chefe-Guia Mundial. B-P recebeu o título de Lord Baden-Powell of Gilwell em 1929. Retirou-se para o Quénia, onde faleceu a 8 de janeiro de 1941, em Nyeri. Na sua lápide está gravado o sinal de "Missão Cumprida" — um círculo com um ponto no centro. Deixou uma última mensagem aos escuteiros de todo o mundo, exortando-os a serem felizes e a deixarem o mundo um pouco melhor do que o encontraram.',
+        text: 'Casou com Olave St Clair Soames em 1912, que se tornou Chefe-Guia Mundial. B-P recebeu o título de Lord Baden-Powell of Gilwell em 1929. Retirou-se para o Quénia, onde faleceu a 8 de janeiro de 1941, em Nyeri. Na sua lápide está gravado o sinal de "Missão Cumprida" - um círculo com um ponto no centro. Deixou uma última mensagem aos escuteiros de todo o mundo, exortando-os a serem felizes e a deixarem o mundo um pouco melhor do que o encontraram.',
       },
     ],
   },
@@ -77,7 +77,7 @@ export const provasContent = {
       },
       {
         heading: 'Os Princípios',
-        text: 'Os Princípios do Escuta são três deveres fundamentais:\n\n• Dever para com Deus — o Escuta vive a sua Fé e procura conhecer e amar a Deus.\n• Dever para com os outros — o Escuta participa no desenvolvimento da sociedade, respeita a dignidade das outras pessoas e a integridade do mundo natural.\n• Dever para consigo próprio — o Escuta é responsável pelo seu próprio desenvolvimento.',
+        text: 'Os Princípios do Escuta são três deveres fundamentais:\n\n• Dever para com Deus - o Escuta vive a sua Fé e procura conhecer e amar a Deus.\n• Dever para com os outros - o Escuta participa no desenvolvimento da sociedade, respeita a dignidade das outras pessoas e a integridade do mundo natural.\n• Dever para consigo próprio - o Escuta é responsável pelo seu próprio desenvolvimento.',
       },
       {
         heading: 'A Promessa',
@@ -91,7 +91,7 @@ export const provasContent = {
     sections: [
       {
         heading: 'A Oração do Escuta',
-        text: 'A Oração do Escuta é uma prece que acompanha todos os momentos da vida escutista — aberturas e encerramentos de atividades, acampamentos e celebrações. É um momento de recolhimento em que os escuteiros se unem em espírito.',
+        text: 'A Oração do Escuta é uma prece que acompanha todos os momentos da vida escutista - aberturas e encerramentos de atividades, acampamentos e celebrações. É um momento de recolhimento em que os escuteiros se unem em espírito.',
       },
       {
         heading: 'Texto da Oração',
@@ -135,7 +135,7 @@ export const provasContent = {
       },
       {
         heading: 'Distintivos de função dos dirigentes',
-        text: 'Os dirigentes (chefes) usam distintivos que identificam a sua função:\n\n• Chefe de Agrupamento — triângulo verde com a Flor de Lis.\n• Chefe de Secção — triângulo na cor da secção (amarelo para Lobitos, verde para Exploradores, azul para Pioneiros, vermelho para Caminheiros).\n• Adjuntos — distintivo semelhante com pequenas variações.\n• Assistente Religioso — cruz sobre a Flor de Lis.\n\nOs dirigentes usam ainda barras de atividade e de formação que atestam a sua experiência e qualificação.',
+        text: 'Os dirigentes (chefes) usam distintivos que identificam a sua função:\n\n• Chefe de Agrupamento - triângulo verde com a Flor de Lis.\n• Chefe de Secção - triângulo na cor da secção (amarelo para Lobitos, verde para Exploradores, azul para Pioneiros, vermelho para Caminheiros).\n• Adjuntos - distintivo semelhante com pequenas variações.\n• Assistente Religioso - cruz sobre a Flor de Lis.\n\nOs dirigentes usam ainda barras de atividade e de formação que atestam a sua experiência e qualificação.',
       },
     ],
   },
@@ -149,11 +149,11 @@ export const provasContent = {
       },
       {
         heading: 'Significado dos três dedos',
-        text: 'Os três dedos levantados representam os três pontos da Promessa escutista — os três deveres fundamentais:\n\n1. Dever para com Deus — cumprir os seus deveres religiosos.\n2. Dever para com os outros — servir a Pátria e o próximo.\n3. Dever para consigo próprio — viver segundo a Lei do Escuta.\n\nO polegar sobre o mindinho simboliza que o mais forte protege o mais fraco.',
+        text: 'Os três dedos levantados representam os três pontos da Promessa escutista - os três deveres fundamentais:\n\n1. Dever para com Deus - cumprir os seus deveres religiosos.\n2. Dever para com os outros - servir a Pátria e o próximo.\n3. Dever para consigo próprio - viver segundo a Lei do Escuta.\n\nO polegar sobre o mindinho simboliza que o mais forte protege o mais fraco.',
       },
       {
         heading: 'Quando se usa',
-        text: 'A saudação usa-se em momentos formais como cerimónias, aberturas e encerramentos de atividades, ao içar ou arriar a bandeira, e quando se encontra outro escuteiro. O aperto de mão escutista faz-se com a mão esquerda — a mão mais próxima do coração — simbolizando confiança e amizade.',
+        text: 'A saudação usa-se em momentos formais como cerimónias, aberturas e encerramentos de atividades, ao içar ou arriar a bandeira, e quando se encontra outro escuteiro. O aperto de mão escutista faz-se com a mão esquerda - a mão mais próxima do coração - simbolizando confiança e amizade.',
       },
     ],
   },
@@ -167,7 +167,7 @@ export const provasContent = {
       },
       {
         heading: 'Significado de cada parte',
-        text: '• "Pela minha honra" — é um compromisso pessoal, baseado na integridade e na palavra dada.\n• "Com a graça de Deus" — reconhece que precisamos da ajuda de Deus para cumprir os nossos compromissos.\n• "Fazer todo o possível" — não se exige perfeição, mas sim o máximo esforço pessoal.\n• "Deveres para com Deus e para com a minha Pátria" — viver a Fé e ser um bom cidadão.\n• "Auxiliar o meu próximo em todas as circunstâncias" — o serviço aos outros é o coração do Escutismo.\n• "Obedecer à Lei do Escuta" — viver de acordo com os 10 artigos da Lei.',
+        text: '• "Pela minha honra" - é um compromisso pessoal, baseado na integridade e na palavra dada.\n• "Com a graça de Deus" - reconhece que precisamos da ajuda de Deus para cumprir os nossos compromissos.\n• "Fazer todo o possível" - não se exige perfeição, mas sim o máximo esforço pessoal.\n• "Deveres para com Deus e para com a minha Pátria" - viver a Fé e ser um bom cidadão.\n• "Auxiliar o meu próximo em todas as circunstâncias" - o serviço aos outros é o coração do Escutismo.\n• "Obedecer à Lei do Escuta" - viver de acordo com os 10 artigos da Lei.',
       },
       {
         heading: 'A cerimónia da Promessa',
@@ -211,7 +211,7 @@ export const provasContent = {
       },
       {
         heading: 'Outros cargos',
-        text: 'Cada Equipa distribui ainda outros cargos entre os seus membros, de acordo com as necessidades e competências de cada um:\n\n• Secretário — responsável pelas atas e registos da Equipa.\n• Tesoureiro — gere os fundos da Equipa.\n• Intendente — responsável pelo material e pela logística.\n• Animador — promove a boa disposição, a mística e o espírito de Equipa.\n• Enfermeiro — conhece primeiros socorros e zela pela saúde dos elementos.\n\nA rotação de cargos é encorajada para que todos desenvolvam diferentes competências.',
+        text: 'Cada Equipa distribui ainda outros cargos entre os seus membros, de acordo com as necessidades e competências de cada um:\n\n• Secretário - responsável pelas atas e registos da Equipa.\n• Tesoureiro - gere os fundos da Equipa.\n• Intendente - responsável pelo material e pela logística.\n• Animador - promove a boa disposição, a mística e o espírito de Equipa.\n• Enfermeiro - conhece primeiros socorros e zela pela saúde dos elementos.\n\nA rotação de cargos é encorajada para que todos desenvolvam diferentes competências.',
       },
     ],
   },
@@ -221,15 +221,15 @@ export const provasContent = {
     sections: [
       {
         heading: 'O Icthus',
-        text: 'O símbolo principal dos Pioneiros é o Icthus (peixe), símbolo dos primeiros cristãos. A palavra ΙΧΘΥΣ (em grego) é um acrónimo de "Iesous Christos Theou Yios Soter" (Jesus Cristo, Filho de Deus, Salvador). Representa a identidade cristã dos Pioneiros e a sua capacidade de "nadar contra a corrente" — ou seja, de viver os valores do Evangelho mesmo quando o mundo propõe o contrário.',
+        text: 'O símbolo principal dos Pioneiros é o Icthus (peixe), símbolo dos primeiros cristãos. A palavra ΙΧΘΥΣ (em grego) é um acrónimo de "Iesous Christos Theou Yios Soter" (Jesus Cristo, Filho de Deus, Salvador). Representa a identidade cristã dos Pioneiros e a sua capacidade de "nadar contra a corrente" - ou seja, de viver os valores do Evangelho mesmo quando o mundo propõe o contrário.',
       },
       {
         heading: 'A Gota de Água',
-        text: 'A Gota de Água é outro símbolo forte dos Pioneiros. Representa a capacidade de cada jovem, mesmo parecendo pequeno e insignificante, de provocar mudança — como uma gota de água que, ao cair, gera ondas que se propagam. Simboliza o impacto que cada Pioneiro pode ter na sua comunidade.',
+        text: 'A Gota de Água é outro símbolo forte dos Pioneiros. Representa a capacidade de cada jovem, mesmo parecendo pequeno e insignificante, de provocar mudança - como uma gota de água que, ao cair, gera ondas que se propagam. Simboliza o impacto que cada Pioneiro pode ter na sua comunidade.',
       },
       {
         heading: 'A Rosa dos Ventos e a Machada',
-        text: 'A Rosa dos Ventos simboliza a orientação e a capacidade de encontrar o caminho certo, de tomar decisões e de definir um rumo para a vida. A Machada representa o trabalho, o esforço e a capacidade de "desbravar caminho" — de superar obstáculos e de construir algo novo. Juntos, estes símbolos representam o espírito pioneiro de aventura, serviço e compromisso.',
+        text: 'A Rosa dos Ventos simboliza a orientação e a capacidade de encontrar o caminho certo, de tomar decisões e de definir um rumo para a vida. A Machada representa o trabalho, o esforço e a capacidade de "desbravar caminho" - de superar obstáculos e de construir algo novo. Juntos, estes símbolos representam o espírito pioneiro de aventura, serviço e compromisso.',
       },
       {
         heading: 'A cor azul',
@@ -242,7 +242,7 @@ export const provasContent = {
     title: 'Conheces o Patrono dos Pioneiros e o da tua Equipa?',
     sections: [
       {
-        heading: 'São Pedro — Patrono dos Pioneiros',
+        heading: 'São Pedro - Patrono dos Pioneiros',
         text: 'O patrono dos Pioneiros do CNE é São Pedro, o apóstolo a quem Jesus disse: "Tu és Pedro, e sobre esta Pedra edificarei a minha Igreja." São Pedro era um pescador da Galileia que foi chamado por Jesus para ser "pescador de homens". É um exemplo de coragem, de fé e de liderança ao serviço dos outros.',
       },
       {
@@ -251,7 +251,7 @@ export const provasContent = {
       },
       {
         heading: 'O patrono da Equipa',
-        text: 'Cada Equipa de Pioneiros escolhe também o seu próprio patrono — uma figura (santa, histórica ou inspiradora) que serve de modelo e inspiração para a vida da Equipa. O patrono da Equipa deve ser estudado e conhecido por todos os seus membros, e o seu exemplo deve orientar a ação e o espírito da Equipa. A celebração do dia do patrono é um momento importante na vida da Equipa.',
+        text: 'Cada Equipa de Pioneiros escolhe também o seu próprio patrono - uma figura (santa, histórica ou inspiradora) que serve de modelo e inspiração para a vida da Equipa. O patrono da Equipa deve ser estudado e conhecido por todos os seus membros, e o seu exemplo deve orientar a ação e o espírito da Equipa. A celebração do dia do patrono é um momento importante na vida da Equipa.',
       },
     ],
   },
@@ -261,7 +261,7 @@ export const provasContent = {
     sections: [
       {
         heading: 'A vida em Equipa',
-        text: 'A Equipa é o coração da vida dos Pioneiros. É na Equipa que cada jovem aprende a viver com os outros, a respeitar diferenças, a tomar decisões em conjunto e a assumir responsabilidades. Trabalhar em Equipa não significa que todos fazem o mesmo — significa que cada um contribui com as suas competências e talentos para o bem comum.',
+        text: 'A Equipa é o coração da vida dos Pioneiros. É na Equipa que cada jovem aprende a viver com os outros, a respeitar diferenças, a tomar decisões em conjunto e a assumir responsabilidades. Trabalhar em Equipa não significa que todos fazem o mesmo - significa que cada um contribui com as suas competências e talentos para o bem comum.',
       },
       {
         heading: 'Reuniões de Equipa',
@@ -269,7 +269,7 @@ export const provasContent = {
       },
       {
         heading: 'Competências de Equipa',
-        text: 'Viver em Equipa desenvolve competências essenciais para a vida:\n\n• Comunicação — saber ouvir e expressar ideias com clareza.\n• Cooperação — trabalhar em conjunto para atingir objetivos comuns.\n• Gestão de conflitos — resolver desentendimentos de forma construtiva.\n• Liderança partilhada — cada membro pode liderar em diferentes momentos.\n• Responsabilidade — cumprir as tarefas que lhe foram confiadas.\n\nEstas competências são desenvolvidas no dia-a-dia da Equipa, em atividades, acampamentos e projetos.',
+        text: 'Viver em Equipa desenvolve competências essenciais para a vida:\n\n• Comunicação - saber ouvir e expressar ideias com clareza.\n• Cooperação - trabalhar em conjunto para atingir objetivos comuns.\n• Gestão de conflitos - resolver desentendimentos de forma construtiva.\n• Liderança partilhada - cada membro pode liderar em diferentes momentos.\n• Responsabilidade - cumprir as tarefas que lhe foram confiadas.\n\nEstas competências são desenvolvidas no dia-a-dia da Equipa, em atividades, acampamentos e projetos.',
       },
     ],
   },
@@ -279,15 +279,15 @@ export const provasContent = {
     sections: [
       {
         heading: 'O Empreendimento',
-        text: 'A atividade típica dos Pioneiros é o Empreendimento — um projeto concebido, planificado e executado pela Equipa. O Empreendimento é um desafio que os Pioneiros assumem e que pode ter as mais diversas formas: um projeto de serviço à comunidade, uma construção, uma expedição, uma ação de sensibilização, entre outros.',
+        text: 'A atividade típica dos Pioneiros é o Empreendimento - um projeto concebido, planificado e executado pela Equipa. O Empreendimento é um desafio que os Pioneiros assumem e que pode ter as mais diversas formas: um projeto de serviço à comunidade, uma construção, uma expedição, uma ação de sensibilização, entre outros.',
       },
       {
         heading: 'Fases do Empreendimento',
-        text: 'O Empreendimento desenvolve-se em quatro fases:\n\n1. Descoberta — identificar uma necessidade, um desafio ou uma oportunidade.\n2. Aventura — planificar o projeto, distribuir tarefas e preparar a execução.\n3. Expressão — executar o projeto e vivê-lo intensamente.\n4. Avaliação — analisar o que correu bem e o que pode ser melhorado.\n\nCada fase é vivida pela Equipa, com o apoio e orientação dos Chefes.',
+        text: 'O Empreendimento desenvolve-se em quatro fases:\n\n1. Descoberta - identificar uma necessidade, um desafio ou uma oportunidade.\n2. Aventura - planificar o projeto, distribuir tarefas e preparar a execução.\n3. Expressão - executar o projeto e vivê-lo intensamente.\n4. Avaliação - analisar o que correu bem e o que pode ser melhorado.\n\nCada fase é vivida pela Equipa, com o apoio e orientação dos Chefes.',
       },
       {
         heading: 'Outras atividades',
-        text: 'Além do Empreendimento, os Pioneiros vivem outras atividades significativas:\n\n• Acampamentos — momentos de convívio, aventura e contacto com a natureza.\n• Raids — percursos de orientação e sobrevivência que testam competências.\n• Atividades de serviço — ações concretas de ajuda à comunidade.\n• Campos de trabalho — projetos de voluntariado de maior duração.\n• Celebrações — momentos de partilha, reflexão e vivência da fé.',
+        text: 'Além do Empreendimento, os Pioneiros vivem outras atividades significativas:\n\n• Acampamentos - momentos de convívio, aventura e contacto com a natureza.\n• Raids - percursos de orientação e sobrevivência que testam competências.\n• Atividades de serviço - ações concretas de ajuda à comunidade.\n• Campos de trabalho - projetos de voluntariado de maior duração.\n• Celebrações - momentos de partilha, reflexão e vivência da fé.',
       },
     ],
   },
@@ -297,11 +297,11 @@ export const provasContent = {
     sections: [
       {
         heading: 'O sistema FACEIS',
-        text: 'A progressão pessoal dos Pioneiros organiza-se em torno do sistema FACEIS — um acrónimo que representa as seis áreas de desenvolvimento integral do jovem:\n\n• F — Física (desenvolvimento do corpo)\n• A — Afetiva (gestão das emoções e relações)\n• C — Carácter (formação da personalidade e valores)\n• E — Espiritual (vivência da fé e da espiritualidade)\n• I — Intelectual (desenvolvimento do pensamento e do conhecimento)\n• S — Social (participação na comunidade e cidadania)',
+        text: 'A progressão pessoal dos Pioneiros organiza-se em torno do sistema FACEIS - um acrónimo que representa as seis áreas de desenvolvimento integral do jovem:\n\n• F - Física (desenvolvimento do corpo)\n• A - Afetiva (gestão das emoções e relações)\n• C - Carácter (formação da personalidade e valores)\n• E - Espiritual (vivência da fé e da espiritualidade)\n• I - Intelectual (desenvolvimento do pensamento e do conhecimento)\n• S - Social (participação na comunidade e cidadania)',
       },
       {
         heading: 'As etapas de progressão',
-        text: 'A progressão dos Pioneiros divide-se em três etapas:\n\n1. Integração — adaptação à secção e à Equipa. O Pioneiro conhece a dinâmica da secção e começa a participar ativamente.\n2. Conhecimento — o Pioneiro escolhe trilhos de desenvolvimento em cada área FACEIS, trabalhando competências específicas com autonomia crescente.\n3. Compromisso — fase de consolidação, em que o Pioneiro assume responsabilidades de liderança e serviço, preparando-se para a passagem aos Caminheiros.',
+        text: 'A progressão dos Pioneiros divide-se em três etapas:\n\n1. Integração - adaptação à secção e à Equipa. O Pioneiro conhece a dinâmica da secção e começa a participar ativamente.\n2. Conhecimento - o Pioneiro escolhe trilhos de desenvolvimento em cada área FACEIS, trabalhando competências específicas com autonomia crescente.\n3. Compromisso - fase de consolidação, em que o Pioneiro assume responsabilidades de liderança e serviço, preparando-se para a passagem aos Caminheiros.',
       },
       {
         heading: 'Escolher os Trilhos',
@@ -319,7 +319,7 @@ export const provasContent = {
       },
       {
         heading: 'Exemplos de projetos',
-        text: '• ACANAC (Acampamento Nacional) — o grande encontro nacional do CNE, que reúne milhares de escuteiros de todo o país.\n• Eurojam / Jamboree — encontros internacionais que promovem a fraternidade entre escuteiros de diferentes países e culturas.\n• Campos de Férias e Campos de Trabalho — projetos de voluntariado e serviço à comunidade, muitas vezes em parceria com outras organizações.\n• Projetos diocesanos e regionais — atividades organizadas pela Junta Regional ou pelo Núcleo, como raids, encontros de formação e retiros espirituais.',
+        text: '• ACANAC (Acampamento Nacional) - o grande encontro nacional do CNE, que reúne milhares de escuteiros de todo o país.\n• Eurojam / Jamboree - encontros internacionais que promovem a fraternidade entre escuteiros de diferentes países e culturas.\n• Campos de Férias e Campos de Trabalho - projetos de voluntariado e serviço à comunidade, muitas vezes em parceria com outras organizações.\n• Projetos diocesanos e regionais - atividades organizadas pela Junta Regional ou pelo Núcleo, como raids, encontros de formação e retiros espirituais.',
       },
       {
         heading: 'O valor dos projetos',

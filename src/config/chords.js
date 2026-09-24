@@ -1,7 +1,7 @@
 // Guitar chord fingering data
 // Each chord has up to 3 variations
-// fingers: [E, A, D, G, B, e] — fret numbers, -1 = muted, 0 = open
-// barres: [{ fret, fromString, toString }] — barre indicators
+// fingers: [E, A, D, G, B, e] - fret numbers, -1 = muted, 0 = open
+// barres: [{ fret, fromString, toString }] - barre indicators
 // startFret: starting fret for display (default 1)
 
 export const chordDb = {
@@ -181,7 +181,7 @@ export function lookupChord(chord) {
 // Chromatic scale for transposing (sharps preferred)
 export const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-// Enharmonic equivalents — normalise flats to sharps for lookup
+// Enharmonic equivalents - normalise flats to sharps for lookup
 const ENHARMONIC = { 'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#' };
 
 /**

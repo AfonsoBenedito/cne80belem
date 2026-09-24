@@ -6,7 +6,7 @@ import styles from './Direcao.module.css';
 export default function Direcao() {
   useSEO({
     title: 'Direção',
-    description: 'Conheça a direção do Agrupamento 80 — Santa Maria de Belém, CNE.',
+    description: 'Conheça a direção do Agrupamento 80 - Santa Maria de Belém, CNE.',
   });
 
   return (
@@ -15,7 +15,7 @@ export default function Direcao() {
         <header className={styles.header}>
           <h1 className={styles.title}>Direção</h1>
           <p className={styles.subtitle}>
-            Conheça a equipa que lidera o Agrupamento 80 — Santa Maria de Belém.
+            Conheça a equipa que lidera o Agrupamento 80 - Santa Maria de Belém.
           </p>
         </header>
 
