@@ -5,7 +5,7 @@ export default {
   tiktokUrl: 'https://www.tiktok.com/@heytmusica/video/7467252821092568342',
   youtubeId: 'qJN1heoU4ns',
   key: 'A',
-  tags: ['animação', 'escutismo'],
+  tags: ['animação'],
   lyricsWithChords: `[A]Não fiques na praia com o barco amarrado, e medo do mar
 Tudo aqui é mira[D]gem, mas na outra
 [E]Margem alguém a es[A]perar

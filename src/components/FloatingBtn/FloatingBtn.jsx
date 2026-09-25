@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaEnvelope, FaArrowUp } from 'react-icons/fa';
 import { mainEmail } from '../../config/contacts';
 import styles from './FloatingBtn.module.css';
@@ -12,22 +13,42 @@ export default function FloatingBtn() {
   // Green on the green footer reads as a blob; over it the button takes the footer's own white
   const [overFooter, setOverFooter] = useState(false);
   const ref = useRef(null);
+  // On phones the Cancioneiro list has its own way around (sticky search, A-Z picker) and a "+"
+  // on the right of every row, which this button would sit on
+  const { pathname } = useLocation();
+  const onSongList = pathname.replace(/\/$/, '') === '/recursos/cancioneiro';
 
+  const sentinelRef = useRef(null);
+
+  // Observers instead of a scroll handler: nothing runs while scrolling until a line is crossed.
+  // A 1px marker SCROLL_THRESHOLD down the page says when there is somewhere to go back to.
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > SCROLL_THRESHOLD);
-      const footer = document.querySelector('footer');
-      const btn = ref.current?.getBoundingClientRect();
-      if (footer && btn) setOverFooter(footer.getBoundingClientRect().top < (btn.top + btn.bottom) / 2);
-    };
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
+    const io = new IntersectionObserver(([e]) => setScrolled(e.boundingClientRect.top < 0));
+    if (sentinelRef.current) io.observe(sentinelRef.current);
+    return () => io.disconnect();
   }, []);
+
+  // The footer is "under" the button once its top passes the button's centre line, so the
+  // observer's viewport is cut off at that line. Rebuilt on resize and on each page, since the
+  // button moves (or is hidden on the phone song list) and a hidden button measures as zero.
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer || !ref.current) return;
+    let io;
+    const watch = () => {
+      io?.disconnect();
+      const r = ref.current.getBoundingClientRect();
+      const fromBottom = Math.round(window.innerHeight - (r.top + r.bottom) / 2);
+      io = new IntersectionObserver(([e]) => setOverFooter(e.isIntersecting), { rootMargin: `0px 0px -${fromBottom}px 0px` });
+      io.observe(footer);
+    };
+    watch();
+    window.addEventListener('resize', watch);
+    return () => {
+      io?.disconnect();
+      window.removeEventListener('resize', watch);
+    };
+  }, [pathname]);
 
   const handleClick = () => {
     if (!scrolled) {
@@ -43,10 +64,12 @@ export default function FloatingBtn() {
   const label = scrolled ? 'Voltar ao topo' : `Enviar email para ${mainEmail}`;
 
   return (
+    <>
+    <span ref={sentinelRef} className={styles.sentinel} style={{ top: SCROLL_THRESHOLD }} aria-hidden="true" />
     <button
       ref={ref}
       type="button"
-      className={`${styles.fab} ${overFooter ? styles.fabOnDark : ''}`}
+      className={`${styles.fab} ${overFooter ? styles.fabOnDark : ''} ${onSongList ? styles.fabHideOnPhone : ''}`}
       onClick={handleClick}
       aria-label={label}
       title={label}
@@ -56,5 +79,6 @@ export default function FloatingBtn() {
         <FaArrowUp size={18} className={`${styles.icon} ${styles.iconUp} ${scrolled ? styles.iconVisible : ''}`} />
       </span>
     </button>
+    </>
   );
 }

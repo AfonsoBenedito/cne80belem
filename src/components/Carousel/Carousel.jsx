@@ -156,6 +156,13 @@ export default function Carousel({ images, onFirstImageLoad }) {
     }
   }
 
+  // Hover pauses only where the pointer is there on purpose (the dots and the two buttons). The
+  // hero fills most of a desktop screen, so pausing on the whole photo meant it rarely moved.
+  const hoverPause = {
+    onPointerEnter: (e) => { if (e.pointerType === 'mouse') setHovered(true); },
+    onPointerLeave: (e) => { if (e.pointerType === 'mouse') setHovered(false); },
+  };
+
   const handleBlur = (e) => {
     if (!rootRef.current?.contains(e.relatedTarget)) setFocused(false);
   };
@@ -166,8 +173,6 @@ export default function Carousel({ images, onFirstImageLoad }) {
       className={styles.carousel}
       aria-roledescription="carrossel"
       aria-label="Fotografias do Agrupamento 80"
-      onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHovered(true); }}
-      onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHovered(false); }}
       onFocus={(e) => { if (e.target.matches(':focus-visible')) setFocused(true); }}
       onBlur={handleBlur}
     >
@@ -221,13 +226,15 @@ export default function Carousel({ images, onFirstImageLoad }) {
         <p className={styles.subtitle}>
           Agrupamento 80 · Santa Maria de Belém - escutismo para crianças e jovens dos 6 aos 22 anos.
         </p>
-        <div className={styles.buttons}>
+        <div className={styles.buttons} {...hoverPause}>
           <Link to="/contactos" className={styles.btnGreen}>Inscreve-te</Link>
           <Link to="/agrupamento/noticias" className={styles.btnWhite}>Notícias</Link>
         </div>
       </div>
 
-      <div className={styles.controls}>
+      <div className={styles.controls} {...hoverPause}>
+        {/* A pause from the active dot lasts until it is tapped again, so it is never silent */}
+        {autoplay && userPaused && <span className={styles.heldHint} aria-hidden="true">Em pausa</span>}
         <div className={styles.dots}>
           {images.map((_, index) => {
             const active = index === current;

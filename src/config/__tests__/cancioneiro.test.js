@@ -4,7 +4,7 @@ import { chordDb, lookupChord } from '../chords';
 
 const VALID_ROOTS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B'];
 const VALID_KEYS = [...VALID_ROOTS, ...VALID_ROOTS.map(r => r + 'm')];
-const CHORD_REGEX = /\[([A-G][#b]?[a-z0-9]*)\]/g;
+const CHORD_REGEX = /\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g;
 const INSTRUMENTAL_REGEX = /^\{(Intro|Bridge|Final|Outro):\s*.+\}$/;
 const KEBAB_CASE_REGEX = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -92,7 +92,8 @@ describe.each(cancoes)('Song: $title', (song) => {
     const brackets = song.lyricsWithChords.match(/\[[^\]]*\]/g) || [];
     for (const bracket of brackets) {
       const inner = bracket.slice(1, -1);
-      expect(inner).toMatch(/^[A-G][#b]?[a-z0-9]*$/);
+      // Slash chords (D/F#) are allowed; they still need a diagram (next test)
+      expect(inner).toMatch(/^[A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?$/);
     }
   });
 

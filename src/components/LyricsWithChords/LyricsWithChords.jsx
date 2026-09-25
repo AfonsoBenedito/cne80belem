@@ -25,11 +25,13 @@ function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) 
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [pinned]);
 
-  // Keep the popup inside the viewport when the chord sits near a screen edge
+  // Keep the popup inside the viewport: nudged sideways near a screen edge, and opened below the
+  // chord when above would put it under the sticky header or off the top of the screen
   useLayoutEffect(() => {
     const anchor = anchorRef.current;
     if (!anchor) return;
     anchor.style.setProperty('--popup-shift', '0px');
+    delete anchor.dataset.below;
     if (!open) return;
     const popup = anchor.lastElementChild;
     if (!popup || popup === buttonRef.current) return;
@@ -39,6 +41,11 @@ function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) 
     if (r.left < EDGE_MARGIN) shift = EDGE_MARGIN - r.left;
     else if (r.right > vw - EDGE_MARGIN) shift = vw - EDGE_MARGIN - r.right;
     anchor.style.setProperty('--popup-shift', `${shift}px`);
+
+    const ceiling = (document.querySelector('header')?.getBoundingClientRect().bottom ?? 0) + EDGE_MARGIN;
+    const chord = anchor.getBoundingClientRect();
+    const roomBelow = window.innerHeight - chord.bottom - EDGE_MARGIN;
+    if (r.top < ceiling && roomBelow > chord.top - ceiling) anchor.dataset.below = '';
   }, [open]);
 
   const handleKeyDown = (e) => {
@@ -57,11 +64,14 @@ function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) 
       onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHovering(true); }}
       onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHovering(false); }}
       onKeyDown={handleKeyDown}
+      // Moving to another chord (or out of the lyrics) closes a diagram pinned from the keyboard
+      onBlur={(e) => { if (pinned && !e.currentTarget.contains(e.relatedTarget)) setPinned(false); }}
     >
       <button
         ref={buttonRef}
         type="button"
         className={styles.chord}
+        data-chord=""
         aria-expanded={open}
         aria-label={`Acorde ${display}: mostrar diagrama`}
         onClick={() => setPinned((p) => !p)}
@@ -87,7 +97,7 @@ function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) 
 function parseSegments(line) {
   const segments = [];
   // Split by chord markers, keeping the captured chord name
-  const parts = line.split(/\[([A-G][#b]?[a-z0-9]*)\]/);
+  const parts = line.split(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/);
   // parts alternates: text, chordName, text, chordName, text, ...
   // parts[0] is text before first chord (may be empty)
 
@@ -127,7 +137,7 @@ function parseSegments(line) {
 }
 
 function stripChords(line) {
-  return line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+  return line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
 }
 
 export default function LyricsWithChords({
@@ -148,8 +158,43 @@ export default function LyricsWithChords({
 
   const stanzas = lyricsWithChords.split('\n\n');
 
+  // The chords are one tab stop, not one each (a song can have 90): Tab lands on the current
+  // chord, arrows and Home/End move between chords, and a click or tap moves the stop there too.
+  // Kept in the DOM so ChordLabel's hover/tap/Enter/Escape behaviour is untouched.
+  const lyricsRef = useRef(null);
+  const activeChord = useRef(0);
+  useEffect(() => {
+    const chords = lyricsRef.current?.querySelectorAll('button[data-chord]') ?? [];
+    if (activeChord.current >= chords.length) activeChord.current = 0;
+    chords.forEach((c, i) => { c.tabIndex = i === activeChord.current ? 0 : -1; });
+  });
+
+  function moveTo(chords, i) {
+    chords[activeChord.current]?.setAttribute('tabindex', '-1');
+    activeChord.current = i;
+    chords[i].tabIndex = 0;
+    chords[i].focus();
+  }
+
+  function onChordKey(e) {
+    if (!e.target.matches?.('button[data-chord]')) return;
+    const chords = [...lyricsRef.current.querySelectorAll('button[data-chord]')];
+    const i = chords.indexOf(e.target);
+    const next = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: chords.length - 1 }[e.key];
+    if (next === undefined || next < 0 || next >= chords.length) return;
+    e.preventDefault();
+    moveTo(chords, next);
+  }
+
+  function onChordFocus(e) {
+    if (!e.target.matches?.('button[data-chord]')) return;
+    const chords = [...lyricsRef.current.querySelectorAll('button[data-chord]')];
+    const i = chords.indexOf(e.target);
+    if (i !== activeChord.current) moveTo(chords, i);
+  }
+
   return (
-    <div className={styles.lyrics}>
+    <div className={styles.lyrics} ref={lyricsRef} onKeyDown={onChordKey} onFocus={onChordFocus}>
       {stanzas.map((rawStanza, si) => {
         const isChorus = rawStanza.startsWith('{R}');
         const stanza = isChorus ? rawStanza.slice(3) : rawStanza;
@@ -160,7 +205,7 @@ export default function LyricsWithChords({
           if (!showChords) return null;
           const label = markerMatch[1];
           const tokens = markerMatch[2].trim().split(/\s+/);
-          const chordPattern = /^[A-G][#b]?[a-z0-9]*$/;
+          const chordPattern = /^[A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?$/;
           return (
             <div key={si} className={styles.introLine}>
               <span className={styles.introLabel}>{label}:</span>

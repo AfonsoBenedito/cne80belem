@@ -19,6 +19,16 @@ export const tagCategories = [
     ],
   },
   {
+    key: 'seccao',
+    label: 'Secção',
+    tags: [
+      { value: 'lobitos', label: 'Lobitos' },
+      { value: 'exploradores', label: 'Exploradores' },
+      { value: 'pioneiros', label: 'Pioneiros' },
+      { value: 'caminheiros', label: 'Caminheiros' },
+    ],
+  },
+  {
     key: 'momento-missa',
     label: 'Momento da Missa',
     tags: [

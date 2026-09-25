@@ -22,7 +22,7 @@ function drawChordBadge(doc, chord, cx, y, chordFontSize) {
 
 function parseSegments(line) {
   const segments = [];
-  const parts = line.split(/\[([A-G][#b]?[a-z0-9]*)\]/);
+  const parts = line.split(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/);
 
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
@@ -216,7 +216,7 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
       doc.setFontSize(lyricsFontSize);
       doc.setTextColor(...(isChorus ? GREEN_DARK : BLACK));
 
-      const plainText = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+      const plainText = line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
       doc.text(plainText, x, y);
       y += lineHeight;
     });
