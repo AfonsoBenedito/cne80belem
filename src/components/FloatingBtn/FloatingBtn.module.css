@@ -90,3 +90,18 @@
     bottom: max(1rem, calc(env(safe-area-inset-bottom) + 0.5rem));
   }
 }
+
+@media (max-width: 768px) {
+  .fabHideOnPhone {
+    display: none;
+  }
+}
+
+/* Marks SCROLL_THRESHOLD down the page (set inline) for the back-to-top observer */
+.sentinel {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}

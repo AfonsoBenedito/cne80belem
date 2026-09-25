@@ -132,42 +132,6 @@ export default function Home() {
         </div>
       </section>
 
-      {stories.length > 0 && (
-        <section className={styles.news} aria-labelledby="home-news-title">
-          <div className="container">
-            <div className={styles.sectionHead}>
-              <h2 id="home-news-title" className={styles.sectionTitle}>Últimas aventuras</h2>
-              <Link to="/agrupamento/noticias" className={styles.seeAll}>
-                Ver todas as notícias <FaArrowRight size={12} aria-hidden="true" />
-              </Link>
-            </div>
-
-            <ul ref={storiesRef} className={styles.stories}>
-              {stories.map((story, i) => (
-                <li key={story.slug} className={i === 0 ? styles.storyLead : styles.story}>
-                  <Link to={`/agrupamento/noticias/${story.slug}`} className={styles.storyLink}>
-                    <span className={styles.storyMedia}>
-                      {/* The title below names the link; a matching alt would be read twice */}
-                      <img
-                        src={heroLoaded ? story.src : undefined}
-                        srcSet={heroLoaded ? srcSetFor(story.src) : undefined}
-                        sizes={i === 0 ? '(max-width: 1024px) 100vw, 640px' : '(max-width: 1024px) 50vw, 300px'}
-                        className={heroLoaded ? styles.developing : undefined}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </span>
-                    <h3 className={styles.storyTitle}>{story.title}</h3>
-                    <time dateTime={story.date} className={styles.storyDate}>{formatDate(story.date)}</time>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-
       <AgeLadder />
 
       <section className={styles.join} aria-labelledby="home-join-title">
@@ -213,6 +177,42 @@ export default function Home() {
           />
         </div>
       </section>
+
+      {stories.length > 0 && (
+        <section className={styles.news} aria-labelledby="home-news-title">
+          <div className="container">
+            <div className={styles.sectionHead}>
+              <h2 id="home-news-title" className={styles.sectionTitle}>Últimas aventuras</h2>
+              <Link to="/agrupamento/noticias" className={styles.seeAll}>
+                Ver todas as notícias <FaArrowRight size={12} aria-hidden="true" />
+              </Link>
+            </div>
+
+            <ul ref={storiesRef} className={styles.stories}>
+              {stories.map((story, i) => (
+                <li key={story.slug} className={i === 0 ? styles.storyLead : styles.story}>
+                  <Link to={`/agrupamento/noticias/${story.slug}`} className={styles.storyLink}>
+                    <span className={styles.storyMedia}>
+                      {/* The title below names the link; a matching alt would be read twice */}
+                      <img
+                        src={heroLoaded ? story.src : undefined}
+                        srcSet={heroLoaded ? srcSetFor(story.src) : undefined}
+                        sizes={i === 0 ? '(max-width: 1024px) 100vw, 640px' : '(max-width: 1024px) 50vw, 300px'}
+                        className={heroLoaded ? styles.developing : undefined}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </span>
+                    <h3 className={styles.storyTitle}>{story.title}</h3>
+                    <time dateTime={story.date} className={styles.storyDate}>{formatDate(story.date)}</time>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <CancioneiroBand />
     </main>

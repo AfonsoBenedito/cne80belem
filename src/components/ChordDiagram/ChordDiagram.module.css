@@ -6,7 +6,7 @@
   transform: translateX(calc(-50% + var(--popup-shift, 0px)));
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: 0.4rem 0.25rem 0.3rem;
   z-index: 100;
@@ -42,7 +42,7 @@
   color: var(--color-gray-500);
   cursor: pointer;
   padding: 0;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   transition: color var(--transition-fast);
   flex-shrink: 0;
 }
@@ -75,6 +75,9 @@
   display: block;
 }
 
+/* SVG text is sized in the diagram's own units (viewBox 80 × 108 drawn at 80 × 108px), so these
+   stay fixed: a rem size would grow with the reader's text setting and leave the fixed grid.
+   A documented exception to the type ramp (DESIGN.md › Typography). */
 .chordLabel {
   font-size: 10px;
   font-weight: 800;

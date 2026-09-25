@@ -191,6 +191,10 @@ const ENHARMONIC = { 'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#' 
 export function transposeChord(chord, semitones) {
   if (semitones === 0) return chord;
 
+  // Slash chords move both notes: D/F# up a tone is E/G#
+  const slash = chord.indexOf('/');
+  if (slash > 0) return `${transposeChord(chord.slice(0, slash), semitones)}/${transposeChord(chord.slice(slash + 1), semitones)}`;
+
   // Parse root note and suffix (m, 7, m7, 9, etc.)
   const match = chord.match(/^([A-G][#b]?)(.*)/);
   if (!match) return chord;
@@ -212,6 +216,8 @@ const TO_SOLFEGE = { C: 'Dó', D: 'Ré', E: 'Mi', F: 'Fá', G: 'Sol', A: 'Lá', 
  * e.g. 'C#m7' => 'Dó#m7', 'Am' => 'Lám'
  */
 export function chordToSolfege(chord) {
+  const slash = chord.indexOf('/');
+  if (slash > 0) return `${chordToSolfege(chord.slice(0, slash))}/${chordToSolfege(chord.slice(slash + 1))}`;
   const match = chord.match(/^([A-G])([#b]?)(.*)/);
   if (!match) return chord;
   const [, root, accidental, suffix] = match;

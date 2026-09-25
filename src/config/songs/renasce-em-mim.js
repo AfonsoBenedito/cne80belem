@@ -4,7 +4,7 @@ export default {
   author: 'Escuteiros',
   youtubeId: 'TNsrGKxIdvk',
   key: 'G',
-  tags: ['oração', 'escutismo'],
+  tags: ['oração'],
   lyricsWithChords: `Se um [C]dia fi[G]casse sem [D]ti
 Olh[C]aria as es[G]trelas do [D]céu
 P'ra lem[C]brar que vi[G]veste por [D]mim

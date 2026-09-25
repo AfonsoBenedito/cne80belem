@@ -4,7 +4,7 @@ export default {
   author: 'Escuteiros',
   youtubeId: 'WJmQcI03SlA',
   key: 'C',
-  tags: ['oração', 'escutismo'],
+  tags: ['oração'],
   lyricsWithChords: `[C]Se sentes dentro de [Em]ti
 A von[Dm]tade de a[G]mar,
 Em [C]gestos que criem [Em]fontes,

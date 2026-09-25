@@ -17,15 +17,66 @@
   margin-top: 0.5rem;
   font-size: var(--font-size-lg);
   color: var(--color-gray-500);
+  text-wrap: balance;
 }
 
 /* ── Toolbar ── */
+/* Stays under the header while the list scrolls, so search is always a thumb away */
 .toolbar {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 20;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   max-width: 640px;
   margin: 0 auto 1.25rem;
+  padding-block: var(--spacing-sm);
+  background: var(--color-white);
+}
+
+.searchRow {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Phones only; desktop has the A-Z sidebar */
+.letterSelect {
+  display: none;
+}
+
+/* Our own clear button, in place of the browser's small blue one */
+.searchInput::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.searchClear {
+  position: absolute;
+  top: 50%;
+  right: 0.4rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-gray-500);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+@media (hover: hover) {
+  .searchClear:hover {
+    color: var(--color-gray-900);
+    background: var(--color-gray-100);
+  }
 }
 
 /* ── Search ── */
@@ -45,71 +96,82 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.75rem 2.75rem 0.75rem 2.5rem;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   border: 1px solid var(--color-gray-200);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--color-white);
   color: var(--color-black);
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: var(--transition-interactive);
+}
+
+/* Room for the clear button only once there's something to clear */
+.searchInput:placeholder-shown {
+  padding-right: 0.75rem;
 }
 
 .searchInput:focus {
-  border-color: var(--color-green);
+  /* Border and ring together read as a 2px Verde Mata edge: the field's only focus cue */
+  border-color: var(--color-green-dark);
+  box-shadow: 0 0 0 1px var(--color-green-dark);
 }
 
 /* ── Builder button ── */
 .builderBtn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.1rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-white);
   background: var(--color-green-dark);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   white-space: nowrap;
   transition: var(--transition-interactive);
 }
 
-.builderBtn:hover {
-  opacity: 0.9;
-  box-shadow: var(--shadow-md);
+@media (hover: hover) {
+  .builderBtn:hover {
+    opacity: 0.9;
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .filterBtn {
+  position: relative;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  width: 34px;
-  height: 34px;
+  width: 2.75rem;
+  height: 2.75rem;
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   font-weight: 700;
   color: var(--color-white);
   background: var(--color-green-dark);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-interactive);
 }
 
-.filterBtn:hover {
-  opacity: 0.9;
-  box-shadow: var(--shadow-md);
+@media (hover: hover) {
+  .filterBtn:hover {
+    opacity: 0.9;
+    box-shadow: var(--shadow-md);
+  }
 }
 
-.filterBtnActive {
-  width: auto;
-  padding: 0 0.7rem;
-}
 
 /* ── Filters panel ── */
 .filters {
@@ -118,7 +180,7 @@
   padding: 0.75rem 1rem;
   background: var(--color-gray-50);
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -144,21 +206,26 @@
 }
 
 .filterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.25rem 0.6rem;
   font-family: var(--font-family);
   font-size: var(--font-size-xs);
   font-weight: 600;
-  color: var(--color-gray-500);
-  background: var(--color-gray-100);
+  color: var(--color-gray-700);
+  background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: var(--transition-interactive);
 }
 
-.filterTag:hover {
-  border-color: var(--color-green);
-  color: var(--color-green-dark);
+@media (hover: hover) {
+  .filterTag:hover {
+    border-color: var(--color-green);
+    color: var(--color-green-dark);
+  }
 }
 
 .filterTagActive {
@@ -166,6 +233,28 @@
   color: var(--color-green-dark);
   border-color: var(--color-green);
   font-weight: 700;
+}
+
+/* How many songs the chip leads to, given the other choices */
+.filterCount {
+  font-weight: 700;
+  color: var(--color-gray-500);
+  font-variant-numeric: tabular-nums;
+}
+
+.filterTagActive .filterCount {
+  color: var(--color-green-dark);
+}
+
+/* Would empty the list: shown for context, not pressable */
+.filterTag[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.filterHint {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
 }
 
 .filterClear {
@@ -184,8 +273,27 @@
   transition: color var(--transition-fast);
 }
 
-.filterClear:hover {
-  color: var(--color-gray-500);
+@media (hover: hover) {
+  .filterClear:hover {
+    color: var(--color-gray-900);
+  }
+}
+
+/* Clear on the left, "Mostrar N canções" on the right (phones only) */
+.filterFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.filterDone {
+  display: none;
+}
+
+/* Desktop: with no filter on, the footer would only hold the hidden phone button */
+.filterFooter:not(:has(.filterClear)) {
+  display: none;
 }
 
 .suggestText {
@@ -211,38 +319,8 @@
 }
 
 /* ── Suggest modal ── */
-.suggestOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  animation: overlayIn 200ms ease-out;
-}
-
 .suggestPanel {
-  background: var(--color-white);
-  border-radius: 16px;
-  width: 100%;
   max-width: 420px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  animation: panelIn 300ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes overlayIn {
-  from {
-    opacity: 0;
-  }
-}
-
-@keyframes panelIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-  }
 }
 
 .suggestHeader {
@@ -270,7 +348,7 @@
   height: 30px;
   border: none;
   background: var(--color-gray-100);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   color: var(--color-gray-500);
   cursor: pointer;
   transition: var(--transition-interactive);
@@ -307,17 +385,19 @@
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   border: 1px solid var(--color-gray-200);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--color-white);
   color: var(--color-black);
   outline: none;
-  transition: border-color var(--transition-fast);
+  transition: var(--transition-interactive);
   resize: none;
 }
 
 .suggestInput:focus,
 .suggestTextarea:focus {
-  border-color: var(--color-green);
+  /* Border and ring together read as a 2px Verde Mata edge: the field's only focus cue */
+  border-color: var(--color-green-dark);
+  box-shadow: 0 0 0 1px var(--color-green-dark);
 }
 
 .suggestSubmitBtn {
@@ -333,7 +413,7 @@
   color: var(--color-white);
   background: var(--color-green-dark);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-interactive);
 }
@@ -348,10 +428,16 @@
   cursor: not-allowed;
 }
 
+/* The same callout as the builder's PDF error: the palette's warm surface, not an off-system red */
 .suggestError {
-  font-size: var(--font-size-xs);
-  color: #d32f2f;
-  text-align: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-gray-900);
+  background: var(--color-yellow-light);
+  border: 1px solid var(--color-yellow-dark);
+  border-radius: var(--radius-sm);
 }
 
 .suggestSuccess {
@@ -381,7 +467,7 @@
   color: var(--color-gray-500);
   background: var(--color-gray-100);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-interactive);
 }
@@ -392,10 +478,72 @@
 }
 
 .empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl) var(--spacing-md);
   text-align: center;
-  color: var(--color-gray-500);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+}
+
+.emptyTitle {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-gray-700);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.emptyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-height: 2.5rem;
+  padding: 0 var(--spacing-md);
+  font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  padding: 2rem 0;
+  font-weight: 700;
+  color: var(--color-gray-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+@media (hover: hover) {
+  .emptyBtn:hover {
+    border-color: var(--color-green);
+    color: var(--color-green-dark);
+  }
+}
+
+.emptyBtn:active {
+  transform: scale(0.97);
+}
+
+.emptyBtnPrimary {
+  color: var(--color-white);
+  background: var(--color-green-dark);
+  border-color: var(--color-green-dark);
+}
+
+@media (hover: hover) {
+  .emptyBtnPrimary:hover {
+    color: var(--color-white);
+    background: var(--color-green-deep);
+    border-color: var(--color-green-deep);
+  }
 }
 
 /* ── Content wrapper ── */
@@ -403,12 +551,15 @@
   position: relative;
   max-width: 640px;
   margin: 0 auto;
+  /* "Mostrar N canções" lands the list below the sticky header and search row */
+  scroll-margin-top: calc(var(--header-height) + 4.75rem);
 }
 
 /* ── Alphabet sidebar ── */
 .alphabet {
   position: sticky;
-  top: 1rem;
+  /* Below the sticky header, or the first letters scroll under it */
+  top: calc(var(--header-height) + var(--spacing-md));
   float: left;
   margin-left: -40px;
   display: flex;
@@ -430,7 +581,7 @@
   color: var(--color-green-dark);
   background: none;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   cursor: pointer;
   transition: var(--transition-interactive);
 }
@@ -457,69 +608,103 @@
   min-width: 0;
 }
 
-/* ── Show more ── */
-.showMoreBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: var(--color-green-dark);
-  background: var(--color-green-light);
-  border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: var(--transition-interactive);
-}
-
-.showMoreBtn:hover {
-  border-color: var(--color-green);
-  box-shadow: var(--shadow-md);
-}
-
-/* ── Card ── */
-.card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
+/* ── Song list: one panel, hairline rows, like the contents page of a caderno ── */
+.list {
+  list-style: none;
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
+}
+
+/* A song row: the link to the song, and beside it the button that adds it to your songbook */
+.row {
+  display: flex;
+  align-items: stretch;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-gray-100);
+}
+
+/* The panel's corners belong to its first and last rows, so hover tints don't square them off */
+.row:first-child > .card { border-top-left-radius: 11px; }
+.row:first-child > .addBtn { border-top-right-radius: 11px; }
+.row:last-child > .card { border-bottom-left-radius: 11px; }
+.row:last-child > .addBtn { border-bottom-right-radius: 11px; }
+
+.card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: 0.7rem var(--spacing-md);
+  /* A jump from the A-Z index lands below the sticky header and the sticky search row */
+  scroll-margin-top: calc(var(--header-height) + 4.75rem);
   transition: var(--transition-interactive);
 }
 
-.card:hover {
-  border-color: var(--color-green);
-  box-shadow: var(--shadow-md);
-  transform: translateX(4px);
+@media (hover: hover) {
+  .card:hover {
+    background: var(--color-gray-50);
+  }
+
+  .card:hover .cardArrow {
+    transform: translateX(3px);
+    color: var(--color-green-dark);
+  }
+
+  .card:hover .cardTitle {
+    color: var(--color-green-dark);
+  }
 }
 
-.cardIcon {
+.card:active {
+  background: var(--color-green-light);
+}
+
+/* The song's key, where the repeated note icon used to be: the one fact a guitarist needs first */
+.cardKey {
+  order: -1;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--color-green-light);
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
   color: var(--color-green-dark);
-  flex-shrink: 0;
+  background: var(--color-green-light);
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
 }
 
 .cardInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
 .cardTitle {
   font-size: var(--font-size-base);
   font-weight: 700;
+  line-height: 1.3;
   color: var(--color-black);
+  transition: color var(--transition-fast);
+}
+
+/* Author · capo · occasion, one quiet line that never wraps the row taller */
+.cardMeta {
+  overflow: hidden;
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  color: var(--color-gray-500);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .cardArrow {
@@ -528,30 +713,115 @@
   transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
-.card:hover .cardArrow {
-  transform: translateX(3px);
+.addBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
   color: var(--color-green-dark);
+  background: none;
+  border: none;
+  border-left: 1px solid var(--color-gray-100);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+@media (hover: hover) {
+  .addBtn:hover {
+    background: var(--color-green-light);
+  }
+}
+
+.addBtn:active {
+  background: var(--color-green-light);
+}
+
+.addBtnOn {
+  color: var(--color-white);
+  background: var(--color-green-dark);
+}
+
+@media (hover: hover) {
+  .addBtnOn:hover {
+    background: var(--color-green-deep);
+  }
+}
+
+.addBtnOn:active {
+  background: var(--color-green-deep);
+}
+
+/* How many songs are waiting in your songbook */
+/* Counts sit on the button's corner, so a filter turned on or a song added never changes the
+   buttons' width and the search field between them stays put */
+.countBadge {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.45rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.35rem;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-green-deep);
+  background: var(--color-white);
+  border: 1px solid var(--color-green-dark);
+  border-radius: var(--radius-pill);
+  pointer-events: none;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .toolbar {
-    flex-wrap: wrap;
+  /* A bottom sheet on phones, full width */
+  .suggestPanel {
+    max-width: none;
   }
 
-  .filterBtn {
-    order: -1;
+  /* The toolbar dissolves so its search row can stick to the page on its own, while the builder
+     button below it scrolls away: the phone keeps one row of chrome, not two */
+  .toolbar {
+    display: contents;
+  }
+
+  .searchRow {
+    position: sticky;
+    top: var(--header-height);
+    z-index: 20;
+    gap: var(--spacing-sm);
+    padding-block: var(--spacing-sm);
+    background: var(--color-white);
   }
 
   .searchWrapper {
-    order: 0;
-    flex-basis: calc(100% - 34px - 0.75rem);
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .letterSelect {
+    display: block;
+    flex-shrink: 0;
+    width: 4.25rem;
+    height: 2.75rem;
+    padding: 0 var(--spacing-sm);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-green-dark);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
   }
 
   .builderBtn {
-    order: 1;
     width: 100%;
     justify-content: center;
+    margin-block: var(--spacing-xs) 1.25rem;
   }
 
   .filterGroup {
@@ -560,18 +830,54 @@
     gap: 0.3rem;
   }
 
+  /* The open panel is taller than the screen: its way back to the list rides along at the bottom */
+  .filterFooter,
+  .filterFooter:not(:has(.filterClear)) {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    margin: var(--spacing-xs) calc(-1 * var(--spacing-md)) -0.75rem;
+    padding: var(--spacing-sm) var(--spacing-md);
+    padding-bottom: calc(var(--spacing-sm) + env(safe-area-inset-bottom, 0px));
+    background: var(--color-gray-50);
+    border-top: 1px solid var(--color-gray-200);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+
+  .filterDone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    min-height: 2.75rem;
+    padding: 0 var(--spacing-md);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-white);
+    background: var(--color-green-dark);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-interactive);
+  }
+
+  .filterDone:active {
+    transform: scale(0.97);
+  }
+
   .alphabet {
     display: none;
   }
 
   .card {
-    padding: 0.85rem 1rem;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
+    padding: 0.6rem var(--spacing-sm);
   }
 
-  .cardIcon {
-    width: 38px;
-    height: 38px;
+  .cardKey {
+    min-width: 2.25rem;
+    height: 2.25rem;
   }
 
   .cardTitle {
@@ -592,8 +898,12 @@
   }
 
   .letterBtn {
-    width: 36px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .alphabet {
+    margin-left: -48px;
   }
 
   .filterBtn {
@@ -609,4 +919,29 @@
   .builderBtn {
     min-height: 44px;
   }
+
+  .searchClear {
+    width: 2.75rem;
+    height: 2.75rem;
+    right: 0;
+  }
+
+  .filterTag,
+  .filterClear,
+  .emptyBtn {
+    min-height: 44px;
+  }
 }
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+

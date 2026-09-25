@@ -1,15 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo, FaExclamationCircle, FaTimes, FaPaperPlane, FaYoutube, FaSoundcloud, FaTiktok } from 'react-icons/fa';
+import { FaArrowLeft, FaMusic, FaGuitar, FaPlus, FaMinus, FaDownload, FaUndo, FaExclamationCircle, FaTimes, FaPaperPlane, FaYoutube, FaSoundcloud, FaTiktok, FaBookOpen, FaCheck, FaPlay } from 'react-icons/fa';
 import { cancoes } from '../../config/cancioneiro';
 import { transposeChord, chordToSolfege } from '../../config/chords';
 import LyricsWithChords from '../../components/LyricsWithChords/LyricsWithChords';
 const loadPdfGenerator = () => import('../../utils/generateSongPdf');
 import { useSEO } from '../../utils/useSEO';
+import { useSongbookDraft, toggleSong as toggleDraftSong } from '../../utils/songbookSelection';
+import { useModalDialog } from '../../utils/useModalDialog';
+import { tagCategories } from '../../config/tags';
 import JsonLd from '../../components/JsonLd';
 import styles from './CancaoDetail.module.css';
+import dialog from '../../styles/dialog.module.css';
 
 const sortedCancoes = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
+const tagLabels = new Map(tagCategories.flatMap((c) => c.tags.map((t) => [t.value, t.label])));
+const SOURCE_NAMES = { youtube: 'YouTube', soundcloud: 'SoundCloud', tiktok: 'TikTok' };
 
 export default function CancaoDetail() {
   const { slug } = useParams();
@@ -20,6 +26,27 @@ export default function CancaoDetail() {
   const [solfege, setSolfege] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [sourceOverride, setSourceOverride] = useState(null);
+  // The players (YouTube ~1.2 MB, TikTok ~2 MB) load only when someone asks for them. Keyed by
+  // song so moving to the next song starts from the light preview again.
+  const [playingSlug, setPlayingSlug] = useState(null);
+  const playing = playingSlug === slug;
+  const focusPlayer = useRef(false);
+  const playerRef = (el) => {
+    if (el && focusPlayer.current) {
+      focusPlayer.current = false;
+      el.focus();
+    }
+  };
+  function startPlayer() {
+    focusPlayer.current = true;
+    setPlayingSlug(slug);
+  }
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfError, setPdfError] = useState('');
+  const [draftMessage, setDraftMessage] = useState('');
+  // A ref, not the state: taps in the same frame would all still read pdfBusy as false
+  const pdfRunning = useRef(false);
+  const { slugs: draftSlugs } = useSongbookDraft();
 
   const tagContext = song?.tags?.length
     ? ` Indicado para: ${song.tags.join(', ')}.`
@@ -41,6 +68,33 @@ export default function CancaoDetail() {
   const currentIndex = sortedCancoes.findIndex((s) => s.slug === slug);
   const prev = currentIndex > 0 ? sortedCancoes[currentIndex - 1] : null;
   const next = currentIndex < sortedCancoes.length - 1 ? sortedCancoes[currentIndex + 1] : null;
+
+  // Same announcement as the list's "+", so the change is heard, not only seen
+  function toggleDraft() {
+    const adding = !draftSlugs.includes(song.slug);
+    toggleDraftSong(song.slug);
+    const n = draftSlugs.length + (adding ? 1 : -1);
+    setDraftMessage(`«${song.title}» ${adding ? 'adicionada ao' : 'retirada do'} teu cancioneiro (${n} ${n === 1 ? 'canção' : 'canções'})`);
+  }
+
+  async function downloadPdf() {
+    if (pdfRunning.current) return;
+    pdfRunning.current = true;
+    setPdfBusy(true);
+    setPdfError('');
+    try {
+      const { generateSongPdf } = await loadPdfGenerator();
+      await generateSongPdf(song, semitones, showChords);
+    } catch (err) {
+      // A failed dynamic import is a TypeError about fetching the module
+      setPdfError(/fetch|import|module/i.test(err?.message || '')
+        ? 'Não foi possível preparar o PDF. Verifica a ligação à internet e tenta outra vez.'
+        : 'Não foi possível preparar o PDF. Tenta outra vez daqui a pouco.');
+    } finally {
+      pdfRunning.current = false;
+      setPdfBusy(false);
+    }
+  }
 
   const currentKey = transposeChord(song.key, semitones);
   const displayKey = solfege ? chordToSolfege(currentKey) : currentKey;
@@ -66,13 +120,65 @@ export default function CancaoDetail() {
     ],
   };
 
+  // The key and naming controls. Desktop keeps them in the sticky sidebar under the video; phones
+  // get them right under the song's title (the sidebar follows the lyrics there), so each place
+  // renders its own copy and CSS shows one
+  const chordBar = (placement) => (
+    <div className={`${styles.sidebarControls} ${placement}`}>
+      <div className={styles.transposeGroup}>
+        <span className={styles.transposeLabel}>Tom:</span>
+        <button
+          className={styles.transposeBtn}
+          onClick={() => setSemitones((s) => (s - 1) % 12)}
+          aria-label="Descer meio tom"
+        >
+          <FaMinus size={10} aria-hidden="true" />
+        </button>
+        <span className={styles.transposeKey}>{displayKey}</span>
+        <button
+          className={styles.transposeBtn}
+          onClick={() => setSemitones((s) => (s + 1) % 12)}
+          aria-label="Subir meio tom"
+        >
+          <FaPlus size={10} aria-hidden="true" />
+        </button>
+        {semitones !== 0 && (
+          <button
+            className={styles.transposeReset}
+            onClick={() => setSemitones(0)}
+            title="Voltar ao tom original"
+            aria-label={`Voltar ao tom original (${solfege ? chordToSolfege(song.key) : song.key})`}
+          >
+            <FaUndo size={9} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      <div className={styles.sidebarDivider} />
+
+      <div className={styles.solfegeToggle}>
+        <span className={`${styles.solfegeLabel} ${!solfege ? styles.solfegeLabelActive : ''}`}>C D E</span>
+        <button
+          className={`${styles.solfegeSwitch} ${solfege ? styles.solfegeSwitchOn : ''}`}
+          onClick={() => setSolfege((s) => !s)}
+          role="switch"
+          aria-checked={solfege}
+          aria-label="Acordes em Dó Ré Mi"
+        >
+          <span className={styles.solfegeThumb} />
+        </button>
+        <span className={`${styles.solfegeLabel} ${solfege ? styles.solfegeLabelActive : ''}`}>Dó Ré Mi</span>
+      </div>
+    </div>
+  );
+
   return (
     <main className={styles.page}>
       <JsonLd data={jsonLd} />
       <JsonLd data={breadcrumbLd} />
       <div className="container">
         <Link to="/recursos/cancioneiro" className={styles.backLink}>
-          <FaArrowLeft size={12} /> Cancioneiro
+          <FaArrowLeft size={12} aria-hidden="true" /> Cancioneiro
         </Link>
 
         <header className={styles.header}>
@@ -86,23 +192,41 @@ export default function CancaoDetail() {
           <button
             className={`${styles.controlBtn} ${showChords ? styles.controlBtnActive : ''}`}
             onClick={() => setShowChords(!showChords)}
+            aria-pressed={showChords}
           >
-            <FaGuitar size={14} />
-            {showChords ? 'Esconder Acordes' : 'Mostrar Acordes'}
+            <FaGuitar size={14} aria-hidden="true" />
+            Acordes
           </button>
 
           <button
             className={styles.controlBtn}
-            onClick={async () => {
-              const { generateSongPdf } = await loadPdfGenerator();
-              generateSongPdf(song, semitones, showChords);
-            }}
+            onClick={downloadPdf}
+            aria-label={pdfBusy ? 'A preparar o PDF' : 'Descarregar PDF'}
+            aria-disabled={pdfBusy || undefined}
           >
-            <FaDownload size={12} />
-            PDF
+            <FaDownload size={12} aria-hidden="true" />
+            {pdfBusy ? 'A preparar...' : 'PDF'}
           </button>
 
+          {/* Adds this song to the songbook the Cancioneiro's builder prints */}
+          <button
+            className={`${styles.controlBtn} ${draftSlugs.includes(song.slug) ? styles.controlBtnActive : ''}`}
+            onClick={toggleDraft}
+            aria-pressed={draftSlugs.includes(song.slug)}
+          >
+            {draftSlugs.includes(song.slug) ? <FaCheck size={12} aria-hidden="true" /> : <FaBookOpen size={12} aria-hidden="true" />}
+            {draftSlugs.includes(song.slug) ? 'No teu cancioneiro' : 'Adicionar ao teu cancioneiro'}
+          </button>
+          {draftSlugs.length > 0 && (
+            <Link to="/recursos/cancioneiro?montar=1" className={styles.draftLink}>
+              Abrir o teu cancioneiro ({draftSlugs.length})
+            </Link>
+          )}
+
         </div>
+        {showChords && chordBar(styles.chordBarTop)}
+        {pdfError && <p className={styles.pdfError} role="alert">{pdfError}</p>}
+        <p className={styles.srOnly} aria-live="polite">{draftMessage}</p>
 
         <div className={styles.layout}>
           {/* Lyrics */}
@@ -115,34 +239,12 @@ export default function CancaoDetail() {
             />
 
             <p className={styles.reportText}>
-              Encontraste algum erro?{' '}
+              Encontraste um erro na letra ou nos acordes?{' '}
               <button className={styles.reportLink} onClick={() => setShowReport(true)}>
-                Reporta aqui <FaExclamationCircle size={11} />
+                Reportar erro <FaExclamationCircle size={11} aria-hidden="true" />
               </button>
             </p>
 
-            {/* Prev / Next */}
-            <nav className={styles.nav}>
-              {prev ? (
-                <Link to={`/recursos/cancioneiro/${prev.slug}`} className={styles.navLink}>
-                  <span className={styles.navLabel}>Anterior</span>
-                  <span className={styles.navTitle}>{prev.title}</span>
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link
-                  to={`/recursos/cancioneiro/${next.slug}`}
-                  className={`${styles.navLink} ${styles.navLinkNext}`}
-                >
-                  <span className={styles.navLabel}>Seguinte</span>
-                  <span className={styles.navTitle}>{next.title}</span>
-                </Link>
-              ) : (
-                <span />
-              )}
-            </nav>
           </article>
 
           {/* Video sidebar */}
@@ -155,19 +257,24 @@ export default function CancaoDetail() {
                       key={source}
                       className={`${styles.mediaTab} ${activeSource === source ? styles.mediaTabActive : ''}`}
                       onClick={() => setSourceOverride(source)}
+                      aria-pressed={activeSource === source}
                     >
-                      {source === 'youtube' && <FaYoutube />}
-                      {source === 'soundcloud' && <FaSoundcloud />}
-                      {source === 'tiktok' && <FaTiktok />}
+                      {source === 'youtube' && <FaYoutube aria-hidden="true" />}
+                      {source === 'soundcloud' && <FaSoundcloud aria-hidden="true" />}
+                      {source === 'tiktok' && <FaTiktok aria-hidden="true" />}
+                      {SOURCE_NAMES[source]}
                     </button>
                   ))}
                 </div>
               )}
 
-              {activeSource === 'youtube' ? (
+              {activeSource && !playing ? (
+                <MediaFacade source={activeSource} song={song} onPlay={startPlayer} />
+              ) : activeSource === 'youtube' ? (
                 <div className={styles.videoWrapper}>
                   <iframe
-                    src={`https://www.youtube.com/embed/${song.youtubeId}`}
+                    ref={playerRef}
+                    src={`https://www.youtube.com/embed/${song.youtubeId}?autoplay=1`}
                     title={song.title}
                     className={styles.video}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -177,16 +284,18 @@ export default function CancaoDetail() {
               ) : activeSource === 'soundcloud' ? (
                 <div className={styles.soundcloudWrapper}>
                   <iframe
+                    ref={playerRef}
                     title={song.title}
                     className={styles.soundcloud}
                     scrolling="no"
                     allow="autoplay"
-                    src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(song.soundcloudUrl)}&color=%23129648&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`}
+                    src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(song.soundcloudUrl)}&color=%23129648&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`}
                   />
                 </div>
               ) : activeSource === 'tiktok' ? (
                 <div className={styles.tiktokWrapper}>
                   <iframe
+                    ref={playerRef}
                     src={`https://www.tiktok.com/player/v1/${song.tiktokUrl.match(/video\/(\d+)/)?.[1]}`}
                     title={song.title}
                     className={styles.tiktok}
@@ -197,68 +306,88 @@ export default function CancaoDetail() {
                 </div>
               ) : (
                 <div className={styles.videoEmpty}>
-                  <FaMusic size={32} />
-                  <p>Video em breve</p>
+                  <FaMusic size={32} aria-hidden="true" />
+                  <p>Ainda não há gravação desta canção.</p>
                 </div>
               )}
 
-              {showChords && (
-                <div className={styles.sidebarControls}>
-                  <div className={styles.transposeGroup}>
-                    <span className={styles.transposeLabel}>Tom:</span>
-                    <button
-                      className={styles.transposeBtn}
-                      onClick={() => setSemitones((s) => s - 1)}
-                    >
-                      <FaMinus size={10} />
-                    </button>
-                    <span className={styles.transposeKey}>{displayKey}</span>
-                    <button
-                      className={styles.transposeBtn}
-                      onClick={() => setSemitones((s) => s + 1)}
-                    >
-                      <FaPlus size={10} />
-                    </button>
-                    {semitones !== 0 && (
-                      <button
-                        className={styles.transposeReset}
-                        onClick={() => setSemitones(0)}
-                        title="Tom original"
-                      >
-                        <FaUndo size={9} />
-                      </button>
-                    )}
-                  </div>
-
-                  <div className={styles.sidebarDivider} />
-
-                  <div className={styles.solfegeToggle}>
-                    <span className={`${styles.solfegeLabel} ${!solfege ? styles.solfegeLabelActive : ''}`}>C D E</span>
-                    <button
-                      className={`${styles.solfegeSwitch} ${solfege ? styles.solfegeSwitchOn : ''}`}
-                      onClick={() => setSolfege((s) => !s)}
-                      aria-label="Alternar notação solfejo"
-                    >
-                      <span className={styles.solfegeThumb} />
-                    </button>
-                    <span className={`${styles.solfegeLabel} ${solfege ? styles.solfegeLabelActive : ''}`}>Dó Ré Mi</span>
-                  </div>
-                </div>
-              )}
+              {showChords && chordBar(styles.chordBarSide)}
 
               {song.tags?.length > 0 && (
                 <div className={styles.tags}>
-                  {song.tags.map((t) => (
-                    <span key={t} className={styles.tag}>{t}</span>
+                  {/* Each tag opens the Cancioneiro filtered by it */}
+                  {song.tags.filter((t) => tagLabels.has(t)).map((t) => (
+                    <Link
+                      key={t}
+                      to={`/recursos/cancioneiro?tags=${encodeURIComponent(t)}`}
+                      className={styles.tag}
+                      aria-label={`Mais canções de ${tagLabels.get(t)}`}
+                    >
+                      {tagLabels.get(t)}
+                    </Link>
                   ))}
                 </div>
               )}
             </div>
           </aside>
+
+          {/* Prev / Next: its own grid area, so phones can show it after the video */}
+          <nav className={styles.nav} aria-label="Canção anterior e seguinte">
+            {prev ? (
+              <Link to={`/recursos/cancioneiro/${prev.slug}`} className={styles.navLink}>
+                <span className={styles.navLabel}>Anterior</span>
+                <span className={styles.navTitle}>{prev.title}</span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next ? (
+              <Link
+                to={`/recursos/cancioneiro/${next.slug}`}
+                className={`${styles.navLink} ${styles.navLinkNext}`}
+              >
+                <span className={styles.navLabel}>Seguinte</span>
+                <span className={styles.navTitle}>{next.title}</span>
+              </Link>
+            ) : (
+              <span />
+            )}
+          </nav>
         </div>
       </div>
       {showReport && <ReportModal songTitle={song.title} onClose={() => setShowReport(false)} />}
     </main>
+  );
+}
+
+// A light stand-in for the player: the video's own thumbnail on YouTube, a plain panel for the
+// others. One tap loads the real player in its place.
+function MediaFacade({ source, song, onPlay }) {
+  const Icon = { youtube: FaYoutube, tiktok: FaTiktok, soundcloud: FaSoundcloud }[source];
+  const verb = source === 'soundcloud' ? 'Ouvir' : 'Ver';
+  return (
+    <button
+      type="button"
+      className={`${styles.facade} ${source === 'youtube' ? '' : styles.facadePlain}`}
+      onClick={onPlay}
+      aria-label={`${verb} a gravação de «${song.title}» no ${SOURCE_NAMES[source]}`}
+    >
+      {source === 'youtube' && (
+        <img
+          src={`https://i.ytimg.com/vi/${song.youtubeId}/hqdefault.jpg`}
+          alt=""
+          className={styles.facadeImg}
+          loading="lazy"
+          decoding="async"
+        />
+      )}
+      <span className={styles.facadePlay} aria-hidden="true">
+        <FaPlay size={16} />
+      </span>
+      <span className={styles.facadeLabel} aria-hidden="true">
+        <Icon size={12} /> {verb} no {SOURCE_NAMES[source]}
+      </span>
+    </button>
   );
 }
 
@@ -267,15 +396,22 @@ function ReportModal({ songTitle, onClose }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const panelRef = useRef(null);
+  useModalDialog(panelRef, onClose);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // "required" lets a field of spaces through
+    if (!description.trim()) {
+      setError('Escreve o que está errado antes de enviar.');
+      return;
+    }
     setSubmitting(true);
     setError('');
     try {
       const res = await fetch('https://formspree.io/f/mpqoggqp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           _subject: `⚠️ Erro reportado: ${songTitle}`,
           musica: songTitle,
@@ -284,41 +420,51 @@ function ReportModal({ songTitle, onClose }) {
       });
       if (res.ok) {
         setSubmitted(true);
+        requestAnimationFrame(() => panelRef.current?.focus({ preventScroll: true }));
       } else {
-        setError('Erro ao enviar. Tenta novamente.');
+        setError('Não foi possível enviar o aviso. Tenta outra vez daqui a pouco.');
       }
     } catch {
-      setError('Erro de ligação. Verifica a internet.');
+      setError('Sem ligação à internet. O que escreveste continua aqui; tenta outra vez.');
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <div className={styles.reportOverlay} onClick={onClose}>
-      <div className={styles.reportPanel} onClick={(e) => e.stopPropagation()}>
+    <div className={dialog.overlay} onClick={onClose}>
+      <div
+        ref={panelRef}
+        className={`${dialog.panel} ${dialog.panelScroll} ${styles.reportPanel}`}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-title"
+        tabIndex={-1}
+      >
         <div className={styles.reportHeader}>
-          <h2 className={styles.reportTitle}>
-            <FaExclamationCircle size={16} /> Reportar Erro
+          <h2 className={styles.reportTitle} id="report-title">
+            <FaExclamationCircle size={16} aria-hidden="true" /> Reportar um erro
           </h2>
-          <button className={styles.reportClose} onClick={onClose}>
-            <FaTimes size={14} />
+          <button className={styles.reportClose} onClick={onClose} aria-label="Fechar">
+            <FaTimes size={14} aria-hidden="true" />
           </button>
         </div>
 
         {submitted ? (
-          <div className={styles.reportSuccess}>
-            <p>Obrigado!</p>
+          <div className={styles.reportSuccess} role="status">
+            <p>Obrigado pelo aviso!</p>
             <p className={styles.reportSuccessSub}>
-              O erro foi reportado com sucesso. Vamos corrigi-lo em breve.
+              Vamos rever «{songTitle}» e corrigir o que estiver errado.
             </p>
             <button className={styles.reportDoneBtn} onClick={onClose}>Fechar</button>
           </div>
         ) : (
           <form className={styles.reportForm} onSubmit={handleSubmit}>
             <div className={styles.reportField}>
-              <label className={styles.reportLabel}>Música</label>
+              <label className={styles.reportLabel} htmlFor="report-cancao">Canção</label>
               <input
+                id="report-cancao"
                 type="text"
                 value={songTitle}
                 disabled
@@ -326,20 +472,22 @@ function ReportModal({ songTitle, onClose }) {
               />
             </div>
             <div className={styles.reportField}>
-              <label className={styles.reportLabel}>Descreve o erro *</label>
+              <label className={styles.reportLabel} htmlFor="report-descricao">O que está errado?</label>
               <textarea
+                id="report-descricao"
                 required
+                maxLength={2000}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Ex: O acorde na segunda estrofe deveria ser Am em vez de Em..."
+                placeholder="Ex: na segunda estrofe, o acorde em «caminho» é Am e não Em"
                 className={styles.reportTextarea}
                 rows={4}
               />
             </div>
-            {error && <p className={styles.reportError}>{error}</p>}
+            {error && <p className={styles.reportError} role="alert">{error}</p>}
             <button type="submit" className={styles.reportSubmitBtn} disabled={submitting}>
-              <FaPaperPlane size={12} />
-              {submitting ? 'A enviar...' : 'Enviar'}
+              <FaPaperPlane size={12} aria-hidden="true" />
+              {submitting ? 'A enviar...' : 'Enviar aviso'}
             </button>
           </form>
         )}

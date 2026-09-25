@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { transposeChord, chordToSolfege } from '../config/chords';
 import { registerNunito } from './pdfFonts';
+import { normalize } from './normalize';
 import faviconUrl from '/favicon.png';
 
 const GREEN = [84, 155, 139];
@@ -10,6 +11,50 @@ const GRAY = [115, 115, 115];
 const GRAY_LIGHT = [220, 220, 220];
 const LIGHT_GREEN = [230, 243, 240];
 const WHITE = [255, 255, 255];
+
+// Cuts text to maxW with an ellipsis, in whatever font and size are set
+function fitText(doc, text, maxW) {
+  if (doc.getTextWidth(text) <= maxW) return text;
+  let t = text;
+  while (t.length > 1 && doc.getTextWidth(`${t}…`) > maxW) t = t.slice(0, -1);
+  return `${t.trimEnd()}…`;
+}
+
+// "Missa de Páscoa" → missa-de-pascoa; a title with no usable letters falls back to cancioneiro
+function fileSlug(title) {
+  return normalize(title).replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'cancioneiro';
+}
+
+// The cover's numbered song list. One centred column while it fits between top and bottom; past
+// that it flows into two or three columns, and only then shrinks, so any number of songs stays on
+// the cover. Titles too long for their column are cut with an ellipsis.
+function drawCoverIndex(doc, songs, { cx, top, bottom, width, fontSize, lineH, indent, dotGap, titleGap }) {
+  const avail = Math.max(bottom - top, lineH);
+  const fits = (cols) => (Math.ceil(songs.length / cols) - 1) * lineH <= avail;
+  const cols = [1, 2, 3].find(fits) || 3;
+  const rows = Math.ceil(songs.length / cols);
+  const scale = fits(cols) ? 1 : Math.max(avail / ((rows - 1) * lineH), 0.6);
+  const size = fontSize * scale;
+  const step = lineH * scale;
+  const colW = width / cols;
+
+  doc.setFontSize(size);
+  songs.forEach((song, i) => {
+    const col = Math.floor(i / rows);
+    const y = top + (i % rows) * step;
+    const x = cols === 1 ? cx - indent : cx - width / 2 + col * colW;
+    const titleX = x + titleGap * scale;
+    const titleW = (cols === 1 ? cx + width / 2 : x + colW - 3) - titleX;
+    doc.setFont('Nunito', 'bold');
+    doc.setTextColor(...GREEN);
+    doc.text(String(i + 1).padStart(2, '0'), x, y);
+    doc.setTextColor(...GRAY_LIGHT);
+    doc.text('·', x + dotGap * scale, y);
+    doc.setFont('Nunito', 'normal');
+    doc.setTextColor(...BLACK);
+    doc.text(fitText(doc, song.title, titleW), titleX, y);
+  });
+}
 
 function drawChordBadge(doc, chord, cx, y, chordFontSize) {
   doc.setFont('Nunito', 'bold');
@@ -24,7 +69,7 @@ function drawChordBadge(doc, chord, cx, y, chordFontSize) {
 
 function parseSegments(line) {
   const segments = [];
-  const parts = line.split(/\[([A-G][#b]?[a-z0-9]*)\]/);
+  const parts = line.split(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/);
 
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
@@ -212,7 +257,7 @@ function renderSongColumns(doc, song, marginLeft, colWidth, colGap, numCols, sta
       doc.setFontSize(lyricsFontSize);
       doc.setTextColor(...(isChorus ? GREEN_DARK : BLACK));
 
-      const plainText = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+      const plainText = line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
       const wrappedLines = doc.splitTextToSize(plainText, effectiveColWidth);
       wrappedLines.forEach((wl) => {
         advance(lineHeight);
@@ -282,18 +327,9 @@ function drawCover(doc, songs, title, description, logoData, pageW, pageH, margi
   doc.setLineWidth(0.3);
   doc.line(pageW / 2 - 30, descEndY + 10, pageW / 2 + 30, descEndY + 10);
 
-  const indexStartY = descEndY + 20;
-  doc.setFontSize(8.5);
-  songs.forEach((song, i) => {
-    const itemY = indexStartY + i * 6;
-    doc.setFont('Nunito', 'bold');
-    doc.setTextColor(...GREEN);
-    doc.text(String(i + 1).padStart(2, '0'), pageW / 2 - 32, itemY);
-    doc.setTextColor(...GRAY_LIGHT);
-    doc.text('·', pageW / 2 - 23, itemY);
-    doc.setFont('Nunito', 'normal');
-    doc.setTextColor(...BLACK);
-    doc.text(song.title, pageW / 2 - 19, itemY);
+  drawCoverIndex(doc, songs, {
+    cx: pageW / 2, top: descEndY + 20, bottom: pageH - 22, width: pageW - 50,
+    fontSize: 8.5, lineH: 6, indent: 32, dotGap: 9, titleGap: 13,
   });
 
   doc.setDrawColor(...GREEN);
@@ -317,7 +353,7 @@ function drawPageFooter(doc, pdfTitle, pageNum, marginLeft, marginRight, pageW, 
   doc.setFont('Nunito', 'normal');
   doc.setFontSize(7);
   doc.setTextColor(...GRAY);
-  doc.text(`${pdfTitle}  •  Agrupamento 80`, marginLeft, pageH - 9);
+  doc.text(fitText(doc, `${pdfTitle}  •  Agrupamento 80`, pageW - marginLeft - marginRight - 15), marginLeft, pageH - 9);
 
   doc.setFont('Nunito', 'bold');
   doc.setTextColor(...GREEN);
@@ -361,18 +397,9 @@ function renderBookletCover(doc, songs, title, description, logoData, ox, oy, pw
   doc.setLineWidth(0.2);
   doc.line(cx - 22, endY + 6, cx + 22, endY + 6);
 
-  let listY = endY + 14;
-  doc.setFontSize(7);
-  songs.forEach((song, i) => {
-    doc.setFont('Nunito', 'bold');
-    doc.setTextColor(...GREEN);
-    doc.text(String(i + 1).padStart(2, '0'), cx - 28, listY);
-    doc.setTextColor(...GRAY_LIGHT);
-    doc.text('·', cx - 20, listY);
-    doc.setFont('Nunito', 'normal');
-    doc.setTextColor(...BLACK);
-    doc.text(song.title, cx - 16, listY);
-    listY += 4.5;
+  drawCoverIndex(doc, songs, {
+    cx, top: endY + 14, bottom: oy + ph - 17, width: pw - margin * 2,
+    fontSize: 7, lineH: 4.5, indent: 28, dotGap: 8, titleGap: 12,
   });
 
   doc.setDrawColor(...GREEN);
@@ -412,7 +439,7 @@ function measureBookletStanzaH(doc, rawStanza, contentW, withChords = true) {
 
     doc.setFont('Nunito', 'bold');
     doc.setFontSize(fontSize);
-    const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+    const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
     const wrappedLines = doc.splitTextToSize(plain, contentW);
     h += wrappedLines.length * lh;
   });
@@ -520,7 +547,7 @@ function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, sta
       doc.setFont('Nunito', 'bold');
       doc.setFontSize(fontSize);
       doc.setTextColor(...(isChorus ? GREEN_DARK : BLACK));
-      const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+      const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
       const wrappedLines = doc.splitTextToSize(plain, contentW);
       wrappedLines.forEach((wl) => {
         if (y > maxY) return;
@@ -587,7 +614,7 @@ function measureSongHeight(doc, song, colWidth, opts) {
       }
       doc.setFont('Nunito', 'bold');
       doc.setFontSize(lyricsFontSize);
-      const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*)\]/g, '');
+      const plain = line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
       const wrappedLines = doc.splitTextToSize(plain, effectiveColWidth);
       h += wrappedLines.length * lineHeight;
     });
@@ -597,7 +624,15 @@ function measureSongHeight(doc, song, colWidth, opts) {
   return h;
 }
 
-export async function generateCompilationPdf({ songs, title, description, layout, includeChords = true, solfege = false, customLogo }) {
+// Nunito has no emoji: jsPDF would print them as stray symbols
+const stripEmoji = (text = '') => text
+  .replace(/\p{Extended_Pictographic}|[\u{1F1E6}-\u{1F1FF}]|\uFE0F|\u200D/gu, '')
+  .replace(/\s{2,}/g, ' ')
+  .trim();
+
+export async function generateCompilationPdf({ songs, title: rawTitle, description: rawDescription, layout, includeChords = true, solfege = false, customLogo }) {
+  const title = stripEmoji(rawTitle) || 'Cancioneiro';
+  const description = stripEmoji(rawDescription);
   const logoData = await loadImage(faviconUrl);
   const coverLogo = customLogo || logoData;
 
@@ -685,8 +720,7 @@ export async function generateCompilationPdf({ songs, title, description, layout
       }
     });
 
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    doc.save(`${slug || 'cancioneiro'}-livro.pdf`);
+    doc.save(`${fileSlug(title)}-livro.pdf`);
     return;
   }
 
@@ -735,6 +769,5 @@ export async function generateCompilationPdf({ songs, title, description, layout
     drawPageFooter(doc, title, i - 1, marginLeft, marginRight, pageW, pageH);
   }
 
-  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  doc.save(`${slug || 'cancioneiro'}.pdf`);
+  doc.save(`${fileSlug(title)}.pdf`);
 }

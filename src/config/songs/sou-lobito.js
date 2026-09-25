@@ -4,7 +4,7 @@ export default {
   author: 'CNE',
   youtubeId: 'b-oXbatHEfg',
   key: 'C',
-  tags: ['lobitos', 'escutismo'],
+  tags: ['lobitos'],
   lyricsWithChords: `Sou l[C]obito asseado de ca[G]belo aos cara[C]cóis,
 quando sou bem comportado vou à[G] terra dos cow[C]boys.
 
