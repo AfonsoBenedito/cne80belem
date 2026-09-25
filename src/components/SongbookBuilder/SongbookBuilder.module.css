@@ -376,6 +376,7 @@
   background: var(--color-white);
   border-radius: 50%;
   transition: transform var(--transition-fast);
+  box-shadow: var(--shadow-thumb);
 }
 
 .switchOn .switchThumb {

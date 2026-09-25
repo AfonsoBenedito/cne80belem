@@ -4,6 +4,14 @@ import styles from './ChordDiagram.module.css';
 
 const STRING_COUNT = 6;
 const FRET_COUNT = 4;
+// Low to high, as a guitarist names them
+const STRING_NAMES = ['Mi grave', 'Lá', 'Ré', 'Sol', 'Si', 'Mi agudo'];
+
+// What a screen reader hears instead of the drawing
+function describe(name, fingers) {
+  const strings = fingers.map((fret, i) => `${STRING_NAMES[i]} ${fret === -1 ? 'não tocar' : fret === 0 ? 'solta' : `casa ${fret}`}`);
+  return `${name}: ${strings.join(', ')}`;
+}
 
 function detectBarres(fingers, startFret) {
   const barres = [];
@@ -29,7 +37,7 @@ function detectBarres(fingers, startFret) {
   return barres;
 }
 
-function DiagramSVG({ name, fingers, startFret = 1 }) {
+function DiagramSVG({ name, fingers, startFret = 1, label }) {
   const showNut = startFret <= 2;
   const w = 80;
   const h = 108;
@@ -48,7 +56,7 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
   });
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className={styles.svg}>
+    <svg viewBox={`0 0 ${w} ${h}`} className={styles.svg} role="img" aria-label={label}>
       {/* Chord name */}
       <text x={w / 2} y={12} textAnchor="middle" className={styles.chordLabel}>
         {name}
@@ -61,7 +69,7 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
           y={padTop}
           width={stringGap * 5 + 2}
           height={3}
-          fill="#1a1a1a"
+          className={styles.ink}
           rx={1}
         />
       ) : (
@@ -83,7 +91,7 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
           y1={padTop + i * fretH}
           x2={padLeft + stringGap * 5}
           y2={padTop + i * fretH}
-          stroke="#ccc"
+          className={styles.fret}
           strokeWidth={i === 0 && !showNut ? 1.5 : 1}
         />
       ))}
@@ -96,7 +104,7 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
           y1={padTop}
           x2={padLeft + i * stringGap}
           y2={padTop + FRET_COUNT * fretH}
-          stroke="#999"
+          className={styles.string}
           strokeWidth={1}
         />
       ))}
@@ -115,7 +123,7 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
             width={x2 - x1 + 9}
             height={9}
             rx={4.5}
-            fill="#1a1a1a"
+            className={styles.ink}
           />
         );
       })}
@@ -136,7 +144,10 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
             </text>
           );
         }
-        if (fret === 0) return null;
+        // Open string: a ring above the nut, the counterpart of × for a muted one
+        if (fret === 0) {
+          return <circle key={i} cx={x} cy={padTop - 7.5} r={3} className={styles.open} />;
+        }
         // Skip individual dots for strings covered by a barre
         if (barreStringSet.has(`${fret}-${i}`)) return null;
         const displayFret = showNut ? fret : fret - startFret + 1;
@@ -147,7 +158,7 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
             cx={x}
             cy={cy}
             r={4.5}
-            fill="#1a1a1a"
+            className={styles.ink}
           />
         );
       })}
@@ -155,7 +166,8 @@ function DiagramSVG({ name, fingers, startFret = 1 }) {
   );
 }
 
-export default function ChordDiagram({ transposedChord, variantIndex, onChangeVariant }) {
+// transposedChord looks up the shape; displayName is how the chord reads on the page (Dó Ré Mi)
+export default function ChordDiagram({ transposedChord, displayName = transposedChord, variantIndex, onChangeVariant }) {
   const variations = lookupChord(transposedChord);
   if (!variations) return null;
 
@@ -172,12 +184,13 @@ export default function ChordDiagram({ transposedChord, variantIndex, onChangeVa
           aria-label="Forma anterior do acorde"
           onClick={(e) => { e.stopPropagation(); onChangeVariant(-1); }}
         >
-          <FaChevronLeft size={10} />
+          <FaChevronLeft size={10} aria-hidden="true" />
         </button>
         <DiagramSVG
-          name={transposedChord}
+          name={displayName}
           fingers={v.fingers}
           startFret={v.startFret}
+          label={describe(displayName, v.fingers)}
         />
         <button
           type="button"
@@ -185,10 +198,11 @@ export default function ChordDiagram({ transposedChord, variantIndex, onChangeVa
           aria-label="Forma seguinte do acorde"
           onClick={(e) => { e.stopPropagation(); onChangeVariant(1); }}
         >
-          <FaChevronRight size={10} />
+          <FaChevronRight size={10} aria-hidden="true" />
         </button>
       </div>
-      <div className={styles.dots}>
+      {total > 1 && <span className={styles.srOnly} aria-live="polite">Forma {idx + 1} de {total}</span>}
+      <div className={styles.dots} aria-hidden="true">
         {Array.from({ length: total }).map((_, i) => (
           <span key={i} className={`${styles.dot} ${i === idx ? styles.dotActive : ''}`} />
         ))}

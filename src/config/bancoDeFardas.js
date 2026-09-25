@@ -33,7 +33,7 @@ export const categories = [
   {
     key: 'uniforme',
     label: 'Peças do Uniforme',
-    lastUpdated: '12.mar.2026',
+    lastUpdated: '2026-03-12', // ISO date (YYYY-MM-DD); shown as "12 de março de 2026"
     items: [
       { name: 'Camisas', image: camisaImg, stock: buildStock(standardSizes) },
       { name: 'Calções', image: calcoesImg, stock: buildStock(standardSizes) },
@@ -52,7 +52,7 @@ export const categories = [
   {
     key: 'equipamentos',
     label: 'Outros Equipamentos',
-    lastUpdated: '12.mar.2026',
+    lastUpdated: '2026-03-12', // ISO date (YYYY-MM-DD); shown as "12 de março de 2026"
     items: [
       { name: 'Mochilas', image: mochilaImg, stock: buildStock(bagSizes) },
       { name: 'Sacos-de-Cama', image: sacoCamaImg, stock: buildStock(['Pequeno', 'Médio', 'Grande']) },

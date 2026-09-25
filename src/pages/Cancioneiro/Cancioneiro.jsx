@@ -9,6 +9,7 @@ import { normalize } from '../../utils/normalize';
 import { matchesTags, facetCount, isKnownTag } from '../../utils/songFilters';
 import SongbookBuilder from '../../components/SongbookBuilder/SongbookBuilder';
 import { useModalDialog } from '../../utils/useModalDialog';
+import { useFlipList } from '../../utils/useFlipList';
 import { useSongbookDraft, toggleSong as toggleDraftSong } from '../../utils/songbookSelection';
 import styles from './Cancioneiro.module.css';
 import dialog from '../../styles/dialog.module.css';
@@ -87,9 +88,12 @@ export default function Cancioneiro() {
   const [draftMessage, setDraftMessage] = useState('');
 
   // Adding from the list fills the same songbook the builder opens with
+  // The last row toggled; only its icon plays the tick-in, not every row already in the draft
+  const [justToggled, setJustToggled] = useState(null);
   function toggleDraft(song) {
     const adding = !draftSlugs.includes(song.slug);
     toggleDraftSong(song.slug);
+    setJustToggled(song.slug);
     const n = draftSlugs.length + (adding ? 1 : -1);
     setDraftMessage(`«${song.title}» ${adding ? 'adicionada ao' : 'retirada do'} teu cancioneiro (${n} ${n === 1 ? 'canção' : 'canções'})`);
   }
@@ -178,8 +182,28 @@ export default function Cancioneiro() {
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
       el.focus({ preventScroll: true });
+      markLanding(el, reduced);
     });
   }
+
+  // The row a jump lands on takes a short green wash once the scroll has stopped, so the eye
+  // finds it at the end of a long smooth scroll (the focus ring alone is easy to miss)
+  function markLanding(el, reduced) {
+    el.classList.remove(styles.landed);
+    const play = () => {
+      window.removeEventListener('scrollend', play);
+      clearTimeout(fallback);
+      void el.offsetWidth; // restart the animation when the same letter is chosen twice
+      el.classList.add(styles.landed);
+    };
+    // Browsers without scrollend (and an instant, reduced-motion jump) use the timer
+    const fallback = setTimeout(play, reduced ? 0 : 700);
+    if (!reduced && 'onscrollend' in window) window.addEventListener('scrollend', play);
+  }
+
+  // Filtering or searching slides the songs that stay and fades in the ones that arrive
+  const listRef = useRef(null);
+  useFlipList(listRef, filtered);
 
   // Group filtered songs to detect first occurrence of each letter
   const firstOfLetter = useMemo(() => {
@@ -373,12 +397,12 @@ export default function Cancioneiro() {
               </div>
             )}
             {filtered.length > 0 && (
-            <ul className={styles.list}>
+            <ul className={styles.list} ref={listRef}>
             {filtered.map((song) => {
               const inDraft = draftSlugs.includes(song.slug);
               const meta = rowMeta(song);
               return (
-                <li key={song.slug} className={styles.row}>
+                <li key={song.slug} className={styles.row} data-flip-key={song.slug}>
                   <Link
                     id={firstOfLetter[song.slug] ? `letter-${firstOfLetter[song.slug]}` : undefined}
                     to={`/recursos/cancioneiro/${song.slug}`}
@@ -396,7 +420,7 @@ export default function Cancioneiro() {
                   </Link>
                   {/* Beside the link, not inside it: a button can't live in a link */}
                   <button
-                    className={`${styles.addBtn} ${inDraft ? styles.addBtnOn : ''}`}
+                    className={`${styles.addBtn} ${inDraft ? styles.addBtnOn : ''} ${justToggled === song.slug ? styles.addBtnPop : ''}`}
                     onClick={() => toggleDraft(song)}
                     // The name says what a tap does; the tick shows the state
                     aria-label={inDraft ? `Retirar «${song.title}» do teu cancioneiro` : `Adicionar «${song.title}» ao teu cancioneiro`}

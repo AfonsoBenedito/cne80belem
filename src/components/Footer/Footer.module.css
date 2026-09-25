@@ -85,6 +85,8 @@
 /* ── Email ── */
 .email {
   margin-top: var(--spacing-md);
+  /* A long address wraps instead of widening the page on phones */
+  overflow-wrap: anywhere;
 }
 
 .email a {

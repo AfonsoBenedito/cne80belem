@@ -13,8 +13,19 @@
   margin-bottom: 0;
 }
 
+/* The chorus is named, not coloured: a "Refrão" label and heavier dark text, so the green stays
+   the chords' colour and the chorus still reads in print and to screen readers */
 .stanzaChorus .lyricLine {
   font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.chorusLabel {
+  margin-bottom: 0.2rem;
+  font-size: calc(var(--font-size-xs) * var(--lyrics-scale, 1));
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--color-green-dark);
 }
 
@@ -41,20 +52,25 @@
 
 /* ── Line ── */
 .lyricLine {
-  font-size: var(--font-size-base);
+  /* --lyrics-scale is the reader's text size (A− / A+ on the song page) */
+  font-size: calc(var(--font-size-base) * var(--lyrics-scale, 1));
   color: var(--color-gray-700);
   line-height: 1.8;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
 
+/* Every row of a chorded line, not only the first, needs room above it for its chords: when a
+   long line wraps on a phone, the second row's chords otherwise sit on the first row's text. The
+   taller line-height gives each row that room; the margin only tops up the first. */
 .lyricLineWithChords {
-  margin-top: 1.4em;
+  line-height: 2.5;
+  margin-top: 0.5em;
 }
 
 .lyricLineWithChords:first-child {
   margin-top: 0;
-  padding-top: 1.4em;
+  padding-top: 0.5em;
 }
 
 /* ── Segment: inline unit with chord above text ── */
@@ -63,9 +79,26 @@
   display: inline;
 }
 
+/* A short syllable under a wider chord (see LyricsWithChords): the same width rule as .chordSpace.
+   line-height: normal keeps the box as tall as its text, so its chord sits at the same height as
+   the chords on ordinary text instead of a half-leading higher, into the row above. */
+.segmentShort {
+  display: inline-block;
+  line-height: normal;
+  min-width: calc(var(--font-size-xs) * var(--lyrics-scale, 1) * (var(--chord-chars) * 0.63 + 1.2));
+}
+
 
 .segmentPlain {
   display: inline;
+}
+
+/* Under a chord with no lyric: as wide as the chord badge plus a gap (a bold chord character is
+   about 0.63 of the chord's size; the extra covers the badge padding and the gap). Held as padding
+   on ordinary inline text, never an inline-block: a line may wrap before an inline-block, which
+   dropped the chord onto a row of its own under the line. */
+.chordSpace {
+  padding-right: calc(var(--font-size-xs) * var(--lyrics-scale, 1) * (var(--chord-chars) * 0.63 + 1.2) - 0.3em);
 }
 
 .chordAbove {
@@ -86,7 +119,7 @@
 .chord {
   display: inline-block;
   font-family: inherit;
-  font-size: var(--font-size-xs);
+  font-size: calc(var(--font-size-xs) * var(--lyrics-scale, 1));
   font-weight: 800;
   line-height: inherit;
   color: var(--color-green-dark);
@@ -133,23 +166,12 @@
     padding: 1.25rem;
   }
 
-  .lyricLine {
-    font-size: var(--font-size-sm);
-  }
-
   /* Chords keep the 12px they have on desktop: the one thing a guitarist reads mid-song, from a
      phone at arm's length. Only the badge padding tightens. */
   .chord {
     padding: 0.05em 0.2em;
   }
 
-  .lyricLineWithChords {
-    margin-top: 1.2em;
-  }
-
-  .lyricLineWithChords:first-child {
-    padding-top: 1.2em;
-  }
 }
 
 /* Touch: chords are buttons, but a 44px area would swallow the lyric line above and

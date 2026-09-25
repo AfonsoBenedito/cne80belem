@@ -289,6 +289,47 @@
   transition: var(--transition-interactive);
 }
 
+/* A− / A+: one bordered pair, the second A a step larger so the direction reads at a glance */
+.sizeGroup {
+  display: inline-flex;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  overflow: hidden;
+}
+
+.sizeBtn {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  min-width: 2.5rem;
+  padding: 0.45rem 0.6rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-gray-700);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.sizeBtn + .sizeBtn {
+  border-left: 1px solid var(--color-gray-200);
+}
+
+.sizeBtnUp {
+  font-size: var(--font-size-base);
+}
+
+/* At the smallest or largest size: greyed by its fill (text stays at gray-500, the lightest
+   allowed for text) */
+.sizeBtn[aria-disabled="true"] {
+  color: var(--color-gray-500);
+  background: var(--color-gray-100);
+  cursor: default;
+}
+
 .controlBtnActive {
   background: var(--color-green-light);
   color: var(--color-green-dark);
@@ -340,7 +381,7 @@
   background: var(--color-white);
   border-radius: 50%;
   transition: transform var(--transition-fast);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-thumb);
 }
 
 .solfegeSwitchOn .solfegeThumb {
@@ -406,14 +447,11 @@
   min-width: 0;
 }
 
-/* Phone copy of the key/naming bar, under the title */
-.sidebarControls.chordBarTop {
-  display: none;
-}
 
 .videoSticky {
   position: sticky;
-  top: calc(var(--header-height) + 1.5rem);
+  /* Clears the sticky settings bar above the lyrics */
+  top: calc(var(--header-height) + 5rem);
 }
 
 /* ── Recording preview (stands in for the player until tapped) ── */
@@ -565,22 +603,79 @@
   background: var(--color-green-light);
 }
 
-.sidebarControls {
+/* The reading settings: one bar above the lyrics at every width, sticky under the header so the
+   key and text size can change mid-song without scrolling back up. Wraps on phones. */
+.settings {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
+  gap: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: 1.25rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-gray-100);
   border-radius: var(--radius-md);
 }
 
-.sidebarDivider {
-  width: 1px;
-  align-self: stretch;
-  background: var(--color-gray-200);
+/* Desktop: the one-row bar sticks flush under the header (a gap above it let the lyrics show
+   through). Phones: it wraps to two rows, too tall to keep on screen, so .compactBar takes over */
+@media (min-width: 769px) {
+  .settings {
+    position: sticky;
+    top: var(--header-height);
+    z-index: 5;
+  }
 }
+
+/* Phones only: key and text size in one row under the header, shown once the full bar has
+   scrolled away. Fixed, so showing it never moves the lyrics; it slides down from the header. */
+.compactBar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .compactBar {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-md);
+    padding-left: max(var(--spacing-md), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--spacing-md), env(safe-area-inset-right, 0px));
+    background: var(--color-gray-100);
+    border-bottom: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-100%);
+    visibility: hidden;
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 220ms;
+  }
+
+  .compactBarShown {
+    transform: none;
+    visibility: visible;
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+  }
+
+  /* The size pair sits at the far end of the compact bar too */
+  .compactBar .sizeGroup {
+    margin-left: auto;
+  }
+}
+
+/* The size pair sits at the end of the bar */
+.settings .sizeGroup {
+  margin-left: auto;
+}
+
+/* Reset keeps its place in the original key, invisible and out of the tab order */
+.transposeResetIdle {
+  visibility: hidden;
+}
+
 
 .videoEmpty {
   display: flex;
@@ -660,16 +755,7 @@
     row-gap: 1.5rem;
   }
 
-  .sidebarControls.chordBarTop {
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: var(--spacing-sm);
-    margin: 0 0 1.25rem;
-  }
 
-  .sidebarControls.chordBarSide {
-    display: none;
-  }
 
   .videoSticky {
     position: static;
@@ -689,6 +775,7 @@
 
 /* Press feedback on every pressable control, mouse and touch alike */
 .controlBtn:active,
+.sizeBtn:not([aria-disabled="true"]):active,
 .tag:active,
 .transposeBtn:active,
 .transposeReset:active,
@@ -701,6 +788,11 @@
 
 /* Hover only where a pointer can hover: on touch it would stick after a tap */
 @media (hover: hover) {
+  .sizeBtn:not([aria-disabled="true"]):hover {
+    color: var(--color-green-dark);
+    background: var(--color-green-light);
+  }
+
   .backLink:hover {
     opacity: 0.7;
   }
@@ -751,10 +843,14 @@
   }
 }
 
-/* Very narrow phones: the key and the naming take a row each, so the divider has nothing to divide */
+
+/* Narrow phones: "Adicionar ao teu cancioneiro" and "No teu cancioneiro" wrap the row differently,
+   so the button takes a line of its own and the row keeps one shape whichever it says */
 @media (max-width: 360px) {
-  .chordBarTop .sidebarDivider {
-    display: none;
+  .draftBtn {
+    order: -1;
+    flex-basis: 100%;
+    justify-content: center;
   }
 }
 
@@ -807,8 +903,13 @@
   }
 
   .controlBtn,
-  .reportSubmitBtn {
+  .reportSubmitBtn,
+  .sizeBtn {
     min-height: 44px;
+  }
+
+  .sizeBtn {
+    min-width: 44px;
   }
 
   .mediaTab {

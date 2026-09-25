@@ -5,7 +5,7 @@
   /* --popup-shift nudges the popup back inside the viewport near screen edges */
   transform: translateX(calc(-50% + var(--popup-shift, 0px)));
   background: var(--color-white);
-  border: 1px solid var(--color-gray-200);
+  /* Lifted by its shadow alone: a hairline border under a wide shadow read as two edges */
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: 0.4rem 0.25rem 0.3rem;
@@ -97,4 +97,48 @@
   font-weight: 700;
   font-family: var(--font-family);
   fill: var(--color-gray-500);
+}
+
+/* The drawing's colours: dots, barres and the nut in ink; frets lighter than strings */
+.ink {
+  fill: var(--color-black);
+}
+
+.fret {
+  stroke: var(--color-gray-300);
+}
+
+.string {
+  stroke: var(--color-gray-400);
+}
+
+.open {
+  fill: none;
+  stroke: var(--color-gray-500);
+  stroke-width: 1.2;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Touch: the shape arrows stay 20px to fit beside the diagram; their hit areas reach 44px */
+@media (pointer: coarse) {
+  .arrow {
+    position: relative;
+  }
+
+  .arrow::after {
+    content: "";
+    position: absolute;
+    inset: -12px;
+  }
 }

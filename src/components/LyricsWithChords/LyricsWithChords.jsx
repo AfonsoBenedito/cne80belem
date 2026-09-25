@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { Fragment, useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { transposeChord, chordToSolfege } from '../../config/chords';
 import ChordDiagram from '../ChordDiagram/ChordDiagram';
 import styles from './LyricsWithChords.module.css';
@@ -9,7 +9,7 @@ const EDGE_MARGIN = 8;
 // open (the only path on touch and keyboard); Escape or a tap elsewhere closes it.
 function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) {
   const transposed = transposeChord(chord, semitones);
-  const display = solfege ? chordToSolfege(transposed) : transposed;
+  const display = chordName(chord, semitones, solfege);
   const [hovering, setHovering] = useState(false);
   const [pinned, setPinned] = useState(false);
   const anchorRef = useRef(null);
@@ -81,6 +81,7 @@ function ChordLabel({ chord, semitones, solfege, variantMap, onChangeVariant }) 
       {open && (
         <ChordDiagram
           transposedChord={transposed}
+          displayName={display}
           variantIndex={variantMap[transposed] || 0}
           onChangeVariant={(dir) => onChangeVariant(transposed, dir)}
         />
@@ -121,9 +122,11 @@ function parseSegments(line) {
   // A chord with no lyric after it (e.g. "…do [G]mundo  [Em]") must stay on the word
   // before it; otherwise the spaces between them let the chord wrap onto its own row.
   // Only that one junction is made non-breaking, so the rest of the line still wraps.
+  // Between two lyric-less chords (an instrumental run: "[G]   [C]   [F]") the space stays
+  // breakable, so a run wider than the line wraps between chords instead of being forced apart.
   for (let i = 1; i < segments.length; i++) {
-    if (segments[i].chord && !segments[i].text.trim()) {
-      const prev = segments[i - 1];
+    const prev = segments[i - 1];
+    if (segments[i].chord && !segments[i].text.trim() && prev.text.trim()) {
       prev.text = prev.text.replace(/\s+$/, (ws) => '\u00A0'.repeat(ws.length));
     }
   }
@@ -136,6 +139,11 @@ function parseSegments(line) {
   return segments;
 }
 
+function chordName(chord, semitones, solfege) {
+  const transposed = transposeChord(chord, semitones);
+  return solfege ? chordToSolfege(transposed) : transposed;
+}
+
 function stripChords(line) {
   return line.replace(/\[([A-G][#b]?[a-z0-9]*(?:\/[A-G][#b]?)?)\]/g, '');
 }
@@ -145,6 +153,7 @@ export default function LyricsWithChords({
   showChords,
   semitones,
   solfege,
+  scale = 1,
 }) {
   const [variantMap, setVariantMap] = useState({});
 
@@ -194,7 +203,13 @@ export default function LyricsWithChords({
   }
 
   return (
-    <div className={styles.lyrics} ref={lyricsRef} onKeyDown={onChordKey} onFocus={onChordFocus}>
+    <div
+      className={styles.lyrics}
+      ref={lyricsRef}
+      onKeyDown={onChordKey}
+      onFocus={onChordFocus}
+      style={scale !== 1 ? { '--lyrics-scale': scale } : undefined}
+    >
       {stanzas.map((rawStanza, si) => {
         const isChorus = rawStanza.startsWith('{R}');
         const stanza = isChorus ? rawStanza.slice(3) : rawStanza;
@@ -229,6 +244,7 @@ export default function LyricsWithChords({
 
         return (
         <div key={si} className={`${styles.stanza} ${isChorus ? styles.stanzaChorus : ''}`}>
+          {isChorus && <p className={styles.chorusLabel}>Refrão</p>}
           {stanza.split('\n').map((line, li) => {
             if (!showChords) {
               return (
@@ -243,8 +259,25 @@ export default function LyricsWithChords({
 
             return (
               <div key={li} className={`${styles.lyricLine} ${hasChords ? styles.lyricLineWithChords : ''}`}>
-                {segments.map((seg, si2) => (
-                  <span key={si2} className={seg.chord ? styles.segment : styles.segmentPlain}>
+                {segments.map((seg, si2) => {
+                  // A syllable narrower than its chord (a short word, no spaces to wrap at) holds the
+                  // chord's width, so the next chord starts after this one instead of on top of it
+                  const name = seg.chord && chordName(seg.chord, semitones, solfege);
+                  const core = seg.text.replace(/\s+$/, '');
+                  // Only a whole word may hold the chord's width: an inline-block can wrap on its own,
+                  // so a syllable inside a word (ca·mi·nhar) must stay plain text or the word would split.
+                  // Plain spaces only: a non-breaking space (see parseSegments) is glue, not a word gap.
+                  const startsWord = si2 === 0 || /[ \t]$/.test(segments[si2 - 1].text);
+                  const endsWord = si2 === segments.length - 1 || /[ \t]/.test(seg.text.slice(core.length));
+                  const short = seg.chord && core && !/\s/.test(core) && core.length <= name.length + 1 && startsWord && endsWord;
+                  // Spaces at the edge of an inline-block collapse, so the trailing one goes outside
+                  const trail = short ? seg.text.slice(core.length) : '';
+                  return (
+                  <Fragment key={si2}>
+                  <span
+                    className={`${seg.chord ? styles.segment : styles.segmentPlain} ${short ? styles.segmentShort : ''}`}
+                    style={short ? { '--chord-chars': name.length } : undefined}
+                  >
                     {seg.chord && (
                       <span className={styles.chordAbove}>
                         <ChordLabel
@@ -256,11 +289,23 @@ export default function LyricsWithChords({
                         />
                       </span>
                     )}
-                    <span>{seg.chord && !seg.text.trim()
-                      ? '\u00A0'.repeat(Math.max(2, seg.text.length))
-                      : seg.text}</span>
+                    {seg.chord && !seg.text.trim() ? (
+                      // No lyric under this chord: hold room for its own name (as displayed,
+                      // after transposing or Dó Ré Mi), so the next chord can't sit on top of it
+                      <span
+                        className={styles.chordSpace}
+                        style={{ '--chord-chars': name.length }}
+                      >
+                        {'\u00A0'}
+                      </span>
+                    ) : (
+                      <span>{short ? core : seg.text}</span>
+                    )}
                   </span>
-                ))}
+                  {trail && <span>{trail}</span>}
+                  </Fragment>
+                  );
+                })}
               </div>
             );
           })}

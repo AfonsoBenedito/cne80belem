@@ -33,13 +33,13 @@ export default function CancioneiroBand() {
           </p>
 
           <form className={styles.search} role="search" onSubmit={handleSubmit}>
-            <label htmlFor="band-song-search" className={styles.srOnly}>Procurar canção</label>
+            <label htmlFor="band-song-search" className={styles.srOnly}>Procurar canção pelo título</label>
             <FaSearch className={styles.searchIcon} size={14} aria-hidden="true" />
             <input
               id="band-song-search"
               type="search"
               enterKeyHint="search"
-              placeholder="Procurar canção…"
+              placeholder="Procurar pelo título"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className={styles.searchInput}
@@ -48,7 +48,7 @@ export default function CancioneiroBand() {
           </form>
 
           <Link to={`${BASE}?montar=1`} className={styles.builder}>
-            <FaBookOpen size={14} aria-hidden="true" /> Monta o teu cancioneiro em PDF
+            <FaBookOpen size={14} aria-hidden="true" /> Faz o teu Cancioneiro em PDF
           </Link>
         </div>
 
