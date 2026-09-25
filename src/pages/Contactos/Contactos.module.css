@@ -1,5 +1,6 @@
 .page {
-  padding: 3rem 0 4rem;
+  /* The footer's own top margin is the gap below */
+  padding: 3rem 0 0;
 }
 
 .header {
@@ -22,37 +23,27 @@
 /* ── Cards grid ── */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  /* One equal column per section present, so a missing one never leaves a blank third */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
 }
 
 .card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  padding: 2rem 1.5rem;
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-200);
-  border-radius: 16px;
-  transition: var(--transition-interactive);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.cardIcon {
-  display: flex;
-  align-items: center;
+  /* The columns differ in length (one email line, four address lines, a row of buttons);
+     centred vertically they sit balanced instead of the short ones hanging from the top */
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-green-light);
-  color: var(--color-green-dark);
-  margin-bottom: 1rem;
+  text-align: center;
+  padding: 1.75rem 1.5rem;
+}
+
+.card + .card {
+  border-left: 1px solid var(--color-gray-200);
 }
 
 .cardTitle {
@@ -60,6 +51,14 @@
   font-weight: 800;
   color: var(--color-black);
   margin-bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardTitleIcon {
+  flex-shrink: 0;
+  color: var(--color-green-dark);
 }
 
 .cardText {
@@ -76,17 +75,54 @@
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-green-dark);
-  transition: opacity var(--transition-fast);
+  text-underline-offset: 3px;
+  transition: var(--transition-interactive);
 }
 
-.cardLink:hover {
-  opacity: 0.7;
+.cardLink:active,
+.socialLink:active {
+  transform: scale(0.97);
 }
+
+/* Hover only where a pointer can hover (it would stick after a tap). The links darken and
+   underline instead of fading: a 70% fade took the green text below AA contrast. */
+@media (hover: hover) {
+  .cardLink:hover {
+    color: var(--color-green-deep);
+    text-decoration: underline;
+  }
+
+  .socialLink:hover {
+    color: var(--color-white);
+    background: var(--color-green-dark);
+  }
+}
+
+/* A long address wraps inside the card instead of pushing it wider */
+.emailItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.emailItem + .emailItem {
+  margin-top: var(--spacing-sm);
+}
+
+.emailLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+}
+
 
 /* ── Social links ── */
 .socialList {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -99,73 +135,112 @@
   font-weight: 700;
   color: var(--color-green-dark);
   background: var(--color-green-light);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   transition: var(--transition-interactive);
 }
 
-.socialLink:hover {
-  background: var(--color-green-dark);
-  color: var(--color-white);
+
+/* ── Shortcuts ("Queres…") ── */
+.shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  list-style: none;
 }
 
-/* ── Accommodation CTA ── */
-.accommodationCta {
-  display: inline-flex;
+.shortcuts > li {
+  display: flex;
+}
+
+.stay {
+  flex: 1;
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  padding: 0.5rem 0.85rem;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
   background: var(--color-green-light);
-  border: 1px solid var(--color-green);
-  border-radius: 8px;
+  border-radius: var(--radius-xl);
   transition: var(--transition-interactive);
-  text-align: left;
 }
 
-.accommodationCta:hover {
-  background: var(--color-green-dark);
-  color: var(--color-white);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
-}
-
-.accommodationCta > svg {
-  color: var(--color-green-dark);
+.stayIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-}
-
-.accommodationCta:hover > svg {
+  width: 44px;
+  height: 44px;
   color: var(--color-white);
+  background: var(--color-green-dark);
+  border-radius: 50%;
 }
 
-.accommodationCta > div {
+.stayBody {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
 }
 
-.accommodationTitle {
-  font-size: var(--font-size-sm);
+.stayTitle {
+  font-size: var(--font-size-base);
   font-weight: 800;
-  color: var(--color-black);
+  color: var(--color-gray-900);
 }
 
-.accommodationText {
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
+.stayText {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-700);
 }
 
-.accommodationCta:hover .accommodationTitle,
-.accommodationCta:hover .accommodationText {
-  color: var(--color-white);
+.stayArrow {
+  flex-shrink: 0;
+  color: var(--color-green-dark);
+  transition: transform var(--transition-fast);
+}
+
+.stay:active {
+  transform: scale(0.99);
+}
+
+@media (hover: hover) {
+  .stay:hover {
+    background: var(--color-green-dark);
+  }
+
+  .stay:hover .stayTitle,
+  .stay:hover .stayText,
+  .stay:hover .stayArrow {
+    color: var(--color-white);
+  }
+
+  .stay:hover .stayIcon {
+    color: var(--color-green-dark);
+    background: var(--color-white);
+  }
+
+  .stay:hover .stayArrow {
+    transform: translateX(3px);
+  }
 }
 
 /* ── Map ── */
 .mapWrapper {
   margin-top: 2.5rem;
-  border-radius: 16px;
+  /* Shown while the map loads, or if it can't, instead of a bare white box */
+  background: var(--color-gray-100);
+  border-radius: var(--radius-xl);
   overflow: hidden;
   border: 1px solid var(--color-gray-200);
+}
+
+/* The wrapper clips its rounded corners, which would cut off a ring on the map itself; the page
+   sets this class while focus is inside the map (see Contactos.jsx) */
+.mapFocused {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 2px;
 }
 
 .map {
@@ -173,12 +248,62 @@
   height: 400px;
   border: none;
   display: block;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+}
+
+.mapLoaded {
+  opacity: 1;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
+  /* Phones: the panel stacks its three columns as rows split by hairlines, left-aligned */
   .grid {
-    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    align-items: flex-start;
+    padding: var(--spacing-md);
+    text-align: left;
+  }
+
+  .card + .card {
+    border-left: none;
+    border-top: 1px solid var(--color-gray-200);
+  }
+
+  .cardTitle {
+    margin-bottom: 0.35rem;
+  }
+
+  .cardText {
+    margin-bottom: 0.4rem;
+  }
+
+  .emailItem {
+    align-items: flex-start;
+  }
+
+  .socialList {
+    justify-content: flex-start;
+  }
+
+  /* Tight between the shortcuts, wider between them and the contact panel: two groups, not one list */
+  .shortcuts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+  }
+
+  .stay {
+    padding: var(--spacing-md);
+  }
+
+  .socialLink {
+    padding: 0.5rem 0.8rem;
   }
 
   .map {
@@ -201,4 +326,16 @@
   .socialLink {
     min-height: 44px;
   }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

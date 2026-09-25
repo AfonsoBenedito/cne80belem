@@ -17,6 +17,8 @@ export default function FloatingBtn() {
   // on the right of every row, which this button would sit on
   const { pathname } = useLocation();
   const onSongList = pathname.replace(/\/$/, '') === '/recursos/cancioneiro';
+  // Contactos is the email: its own Email card sits right there, and the button covered the map
+  const onContactos = pathname.replace(/\/$/, '') === '/contactos';
 
   const sentinelRef = useRef(null);
 
@@ -65,7 +67,9 @@ export default function FloatingBtn() {
 
   return (
     <>
+    {/* The marker stays even where the button doesn't: its observer is set up once, on first load */}
     <span ref={sentinelRef} className={styles.sentinel} style={{ top: SCROLL_THRESHOLD }} aria-hidden="true" />
+    {!onContactos && (
     <button
       ref={ref}
       type="button"
@@ -79,6 +83,7 @@ export default function FloatingBtn() {
         <FaArrowUp size={18} className={`${styles.icon} ${styles.iconUp} ${scrolled ? styles.iconVisible : ''}`} />
       </span>
     </button>
+    )}
     </>
   );
 }

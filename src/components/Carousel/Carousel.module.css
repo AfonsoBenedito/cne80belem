@@ -35,13 +35,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.72) 0%,
-    rgba(0, 0, 0, 0.4) 40%,
-    rgba(0, 0, 0, 0.1) 72%,
-    rgba(0, 0, 0, 0.06) 100%
-  );
+  background: var(--photo-scrim);
   pointer-events: none;
 }
 
@@ -62,7 +56,7 @@
   line-height: 1.05;
   letter-spacing: -0.02em; /* display text tracks tighter as it grows */
   text-wrap: balance;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  text-shadow: var(--photo-text-shadow-lg);
 }
 
 /* Light-on-dark body: a touch more leading and tracking than on paper */
@@ -74,7 +68,7 @@
   line-height: 1.55;
   letter-spacing: 0.005em;
   text-wrap: pretty;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+  text-shadow: var(--photo-text-shadow);
 }
 
 /* Buttons */
@@ -90,7 +84,7 @@
   font-weight: 700;
   color: var(--color-white);
   background: var(--color-green-dark);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -104,7 +98,7 @@
   font-weight: 700;
   color: var(--color-black);
   background: var(--color-white);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
@@ -154,9 +148,9 @@
   font-weight: 700;
   line-height: 1.3;
   color: var(--color-gray-900);
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: var(--photo-dot-strong);
   border-radius: var(--radius-pill);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--photo-mark-shadow);
   white-space: nowrap;
 }
 
@@ -183,22 +177,22 @@
   display: block;
   width: 10px;
   height: 10px;
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   overflow: hidden;
-  background-color: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  background-color: var(--photo-dot);
+  box-shadow: var(--photo-mark-shadow);
   transition: background-color var(--transition-fast);
 }
 
 .dot:hover .dotMark {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: var(--photo-dot-strong);
 }
 
 /* Active page becomes a pill that fills while the slide is shown */
 .dotMarkActive,
 .dot:hover .dotMarkActive {
   width: 30px;
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: var(--photo-dot-track);
 }
 
 .progress {
@@ -211,7 +205,7 @@
 /* Held by the user: the track brightens so a paused pill never reads as "about to fill" */
 .dotMarkHeld,
 .dot:hover .dotMarkHeld {
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: var(--photo-dot-held);
 }
 
 /* Paused mid-slide, the fill freezes where it is - the state is visible at a glance */
@@ -238,13 +232,7 @@
 @media (max-width: 768px) {
   /* The copy fills more of a short hero, so the scrim reaches higher */
   .overlay {
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.75) 0%,
-      rgba(0, 0, 0, 0.55) 45%,
-      rgba(0, 0, 0, 0.25) 75%,
-      rgba(0, 0, 0, 0.1) 100%
-    );
+    background: var(--photo-scrim-tall);
   }
 
   .content {

@@ -752,6 +752,29 @@
   background: var(--color-green-deep);
 }
 
+/* The icon of a row just toggled arrives with a small turn and settle: the "+" becoming a tick
+   (or back) reads as the song going in, not a glyph swapping */
+.addBtnPop svg {
+  animation: iconIn 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes iconIn {
+  from {
+    transform: scale(0.4) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+/* Where an A-Z jump landed: a Verde Nevoeiro wash that rises and fades */
+.landed {
+  animation: landed 1.4s ease-out;
+}
+
+@keyframes landed {
+  15% { background-color: var(--color-green-light); }
+  100% { background-color: transparent; }
+}
+
 /* How many songs are waiting in your songbook */
 /* Counts sit on the button's corner, so a filter turned on or a song added never changes the
    buttons' width and the search field between them stays put */
@@ -945,3 +968,15 @@
   border: 0;
 }
 
+
+/* Reduced motion: the landing wash is a colour change, not movement, so it keeps its length
+   (the global rule would cut it to nothing); the icon's turn is dropped */
+@media (prefers-reduced-motion: reduce) {
+  .landed {
+    animation-duration: 1.4s !important;
+  }
+
+  .addBtnPop svg {
+    animation: none;
+  }
+}

@@ -60,11 +60,11 @@
 }
 
 .stretch:first-child .bar {
-  border-radius: 100px 0 0 100px;
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
 }
 
 .stretch:last-child .bar {
-  border-radius: 0 100px 100px 0;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
 }
 
 .barName {
@@ -199,11 +199,11 @@
   }
 
   .stretch:first-child .bar {
-    border-radius: 100px 100px 0 0;
+    border-radius: var(--radius-pill) var(--radius-pill) 0 0;
   }
 
   .stretch:last-child .bar {
-    border-radius: 0 0 100px 100px;
+    border-radius: 0 0 var(--radius-pill) var(--radius-pill);
   }
 
   .barName {

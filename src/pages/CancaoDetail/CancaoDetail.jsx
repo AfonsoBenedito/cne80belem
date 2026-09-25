@@ -15,6 +15,19 @@ import dialog from '../../styles/dialog.module.css';
 
 const sortedCancoes = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
 const tagLabels = new Map(tagCategories.flatMap((c) => c.tags.map((t) => [t.value, t.label])));
+// Reader's lyrics size, kept across songs and visits
+const TEXT_SIZES = [0.875, 1, 1.125, 1.25, 1.5];
+const TEXT_SIZE_KEY = 'cancioneiro-tamanho-letra';
+function readTextSize() {
+  try {
+    const saved = localStorage.getItem(TEXT_SIZE_KEY);
+    const i = saved === null ? NaN : Number(saved);
+    return Number.isInteger(i) && i >= 0 && i < TEXT_SIZES.length ? i : 1;
+  } catch {
+    return 1;
+  }
+}
+
 const SOURCE_NAMES = { youtube: 'YouTube', soundcloud: 'SoundCloud', tiktok: 'TikTok' };
 
 export default function CancaoDetail() {
@@ -22,7 +35,14 @@ export default function CancaoDetail() {
   const song = sortedCancoes.find((s) => s.slug === slug);
 
   const [showChords, setShowChords] = useState(true);
+  // Every song opens in its own key: a transposition is dropped as soon as the song changes
+  // (prev/next, a link, Back), so it never carries over, not even on the way back
   const [semitones, setSemitones] = useState(0);
+  const [keySlug, setKeySlug] = useState(slug);
+  if (keySlug !== slug) {
+    setKeySlug(slug);
+    setSemitones(0);
+  }
   const [solfege, setSolfege] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [sourceOverride, setSourceOverride] = useState(null);
@@ -42,8 +62,29 @@ export default function CancaoDetail() {
     setPlayingSlug(slug);
   }
   const [pdfBusy, setPdfBusy] = useState(false);
+  const settingsRef = useRef(null);
+  const [barAway, setBarAway] = useState(false);
+  useEffect(() => {
+    const el = settingsRef.current;
+    if (!el) return;
+    const header = document.querySelector('header')?.getBoundingClientRect().height || 0;
+    const io = new IntersectionObserver(
+      ([e]) => setBarAway(!e.isIntersecting && e.boundingClientRect.top < header),
+      { rootMargin: `-${Math.round(header)}px 0px 0px 0px` },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [slug]);
   const [pdfError, setPdfError] = useState('');
   const [draftMessage, setDraftMessage] = useState('');
+  const [sizeIdx, setSizeIdx] = useState(readTextSize);
+  function changeTextSize(dir) {
+    const next = sizeIdx + dir;
+    if (next < 0 || next >= TEXT_SIZES.length) return;
+    setSizeIdx(next);
+    try { localStorage.setItem(TEXT_SIZE_KEY, String(next)); } catch { /* private mode: this visit only */ }
+    setDraftMessage(`Letra a ${Math.round(TEXT_SIZES[next] * 100)}%`);
+  }
   // A ref, not the state: taps in the same frame would all still read pdfBusy as false
   const pdfRunning = useRef(false);
   const { slugs: draftSlugs } = useSongbookDraft();
@@ -120,55 +161,109 @@ export default function CancaoDetail() {
     ],
   };
 
-  // The key and naming controls. Desktop keeps them in the sticky sidebar under the video; phones
-  // get them right under the song's title (the sidebar follows the lyrics there), so each place
-  // renders its own copy and CSS shows one
-  const chordBar = (placement) => (
-    <div className={`${styles.sidebarControls} ${placement}`}>
-      <div className={styles.transposeGroup}>
-        <span className={styles.transposeLabel}>Tom:</span>
-        <button
-          className={styles.transposeBtn}
-          onClick={() => setSemitones((s) => (s - 1) % 12)}
-          aria-label="Descer meio tom"
-        >
-          <FaMinus size={10} aria-hidden="true" />
-        </button>
-        <span className={styles.transposeKey}>{displayKey}</span>
-        <button
-          className={styles.transposeBtn}
-          onClick={() => setSemitones((s) => (s + 1) % 12)}
-          aria-label="Subir meio tom"
-        >
-          <FaPlus size={10} aria-hidden="true" />
-        </button>
-        {semitones !== 0 && (
-          <button
-            className={styles.transposeReset}
-            onClick={() => setSemitones(0)}
-            title="Voltar ao tom original"
-            aria-label={`Voltar ao tom original (${solfege ? chordToSolfege(song.key) : song.key})`}
-          >
-            <FaUndo size={9} aria-hidden="true" />
-          </button>
-        )}
-      </div>
+  // How the song reads: chords on/off, key, naming and text size, in one bar above the lyrics
+  // (sticky under the header on desktop). Actions (PDF, songbook) stay in their own row.
+  const tomGroup = (
+    <div className={styles.transposeGroup}>
+      <span className={styles.transposeLabel}>Tom:</span>
+      <button
+        className={styles.transposeBtn}
+        onClick={() => setSemitones((s) => (s - 1) % 12)}
+        aria-label="Descer meio tom"
+      >
+        <FaMinus size={10} aria-hidden="true" />
+      </button>
+      <span className={styles.transposeKey}>{displayKey}</span>
+      <button
+        className={styles.transposeBtn}
+        onClick={() => setSemitones((s) => (s + 1) % 12)}
+        aria-label="Subir meio tom"
+      >
+        <FaPlus size={10} aria-hidden="true" />
+      </button>
+      {/* Always in the row, hidden in the original key, so transposing never reflows the bar */}
+      <button
+        className={`${styles.transposeReset} ${semitones === 0 ? styles.transposeResetIdle : ''}`}
+        onClick={() => setSemitones(0)}
+        title="Voltar ao tom original"
+        aria-label={`Voltar ao tom original (${solfege ? chordToSolfege(song.key) : song.key})`}
+        aria-hidden={semitones === 0 || undefined}
+        tabIndex={semitones === 0 ? -1 : undefined}
+      >
+        <FaUndo size={9} aria-hidden="true" />
+      </button>
+    </div>
+  );
 
-      <div className={styles.sidebarDivider} />
+  // aria-disabled, not disabled, so focus stays put at the smallest or largest size
+  const sizeGroup = (
+    <div className={styles.sizeGroup} role="group" aria-label="Tamanho da letra">
+      <button
+        className={styles.sizeBtn}
+        onClick={() => changeTextSize(-1)}
+        aria-disabled={sizeIdx === 0 || undefined}
+        aria-label="Letra mais pequena"
+      >
+        A<span aria-hidden="true">−</span>
+      </button>
+      <button
+        className={`${styles.sizeBtn} ${styles.sizeBtnUp}`}
+        onClick={() => changeTextSize(1)}
+        aria-disabled={sizeIdx === TEXT_SIZES.length - 1 || undefined}
+        aria-label="Letra maior"
+      >
+        A<span aria-hidden="true">+</span>
+      </button>
+    </div>
+  );
 
-      <div className={styles.solfegeToggle}>
-        <span className={`${styles.solfegeLabel} ${!solfege ? styles.solfegeLabelActive : ''}`}>C D E</span>
-        <button
-          className={`${styles.solfegeSwitch} ${solfege ? styles.solfegeSwitchOn : ''}`}
-          onClick={() => setSolfege((s) => !s)}
-          role="switch"
-          aria-checked={solfege}
-          aria-label="Acordes em Dó Ré Mi"
-        >
-          <span className={styles.solfegeThumb} />
-        </button>
-        <span className={`${styles.solfegeLabel} ${solfege ? styles.solfegeLabelActive : ''}`}>Dó Ré Mi</span>
-      </div>
+  const settingsBar = (
+    <div className={styles.settings} ref={settingsRef} role="group" aria-label="Como ler a canção">
+      <button
+        className={`${styles.controlBtn} ${showChords ? styles.controlBtnActive : ''}`}
+        onClick={() => setShowChords(!showChords)}
+        aria-pressed={showChords}
+      >
+        <FaGuitar size={14} aria-hidden="true" />
+        Acordes
+      </button>
+
+      {showChords && (
+        <>
+          {tomGroup}
+
+          <div className={styles.solfegeToggle}>
+            <span className={`${styles.solfegeLabel} ${!solfege ? styles.solfegeLabelActive : ''}`}>C D E</span>
+            <button
+              className={`${styles.solfegeSwitch} ${solfege ? styles.solfegeSwitchOn : ''}`}
+              onClick={() => setSolfege((s) => !s)}
+              role="switch"
+              aria-checked={solfege}
+              aria-label="Acordes em Dó Ré Mi"
+            >
+              <span className={styles.solfegeThumb} />
+            </button>
+            <span className={`${styles.solfegeLabel} ${solfege ? styles.solfegeLabelActive : ''}`}>Dó Ré Mi</span>
+          </div>
+        </>
+      )}
+
+      {sizeGroup}
+    </div>
+  );
+
+  // Phones: once the full bar has scrolled away, a one-row bar with only what changes mid-song
+  // (key and text size) slides in under the header. Fixed, so it never moves the lyrics.
+  const compactBar = (
+    <div
+      className={`${styles.compactBar} ${barAway ? styles.compactBarShown : ''}`}
+      role="group"
+      aria-label="Tom e tamanho da letra"
+      aria-hidden={!barAway || undefined}
+      inert={!barAway || undefined}
+    >
+      {showChords && tomGroup}
+      {sizeGroup}
     </div>
   );
 
@@ -187,17 +282,8 @@ export default function CancaoDetail() {
           {song.capo && <p className={styles.capo}>Capo na {song.capo}ª casa</p>}
         </header>
 
-        {/* Chord controls */}
+        {/* Actions */}
         <div className={styles.controls}>
-          <button
-            className={`${styles.controlBtn} ${showChords ? styles.controlBtnActive : ''}`}
-            onClick={() => setShowChords(!showChords)}
-            aria-pressed={showChords}
-          >
-            <FaGuitar size={14} aria-hidden="true" />
-            Acordes
-          </button>
-
           <button
             className={styles.controlBtn}
             onClick={downloadPdf}
@@ -210,21 +296,21 @@ export default function CancaoDetail() {
 
           {/* Adds this song to the songbook the Cancioneiro's builder prints */}
           <button
-            className={`${styles.controlBtn} ${draftSlugs.includes(song.slug) ? styles.controlBtnActive : ''}`}
+            className={`${styles.controlBtn} ${styles.draftBtn} ${draftSlugs.includes(song.slug) ? styles.controlBtnActive : ''}`}
             onClick={toggleDraft}
             aria-pressed={draftSlugs.includes(song.slug)}
           >
             {draftSlugs.includes(song.slug) ? <FaCheck size={12} aria-hidden="true" /> : <FaBookOpen size={12} aria-hidden="true" />}
             {draftSlugs.includes(song.slug) ? 'No teu cancioneiro' : 'Adicionar ao teu cancioneiro'}
           </button>
-          {draftSlugs.length > 0 && (
-            <Link to="/recursos/cancioneiro?montar=1" className={styles.draftLink}>
-              Abrir o teu cancioneiro ({draftSlugs.length})
-            </Link>
-          )}
+          {/* Always there (so adding a song never inserts a line above the lyrics) */}
+          <Link to="/recursos/cancioneiro?montar=1" className={styles.draftLink}>
+            {draftSlugs.length > 0 ? `Abrir o teu cancioneiro (${draftSlugs.length})` : 'Faz o teu Cancioneiro'}
+          </Link>
 
         </div>
-        {showChords && chordBar(styles.chordBarTop)}
+        {settingsBar}
+        {compactBar}
         {pdfError && <p className={styles.pdfError} role="alert">{pdfError}</p>}
         <p className={styles.srOnly} aria-live="polite">{draftMessage}</p>
 
@@ -236,6 +322,7 @@ export default function CancaoDetail() {
               showChords={showChords}
               semitones={semitones}
               solfege={solfege}
+              scale={TEXT_SIZES[sizeIdx]}
             />
 
             <p className={styles.reportText}>
@@ -310,8 +397,6 @@ export default function CancaoDetail() {
                   <p>Ainda não há gravação desta canção.</p>
                 </div>
               )}
-
-              {showChords && chordBar(styles.chordBarSide)}
 
               {song.tags?.length > 0 && (
                 <div className={styles.tags}>

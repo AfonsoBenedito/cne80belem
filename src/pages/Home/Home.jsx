@@ -138,7 +138,7 @@ export default function Home() {
         <div className={`container ${styles.joinInner}`}>
           <div className={styles.joinText}>
             <h2 id="home-join-title" className={styles.joinTitle}>Queres fazer parte?</h2>
-            <p className={styles.joinLine}>Fala connosco e vem conhecer o agrupamento.</p>
+            <p className={styles.joinLine}>Três passos, ao teu ritmo.</p>
             <ol className={styles.steps}>
               <li className={styles.step}>
                 <span className={styles.stepNum} aria-hidden="true">1</span>
