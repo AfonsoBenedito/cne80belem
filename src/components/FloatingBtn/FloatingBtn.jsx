@@ -19,6 +19,8 @@ export default function FloatingBtn() {
   const onSongList = pathname.replace(/\/$/, '') === '/recursos/cancioneiro';
   // Contactos is the email: its own Email card sits right there, and the button covered the map
   const onContactos = pathname.replace(/\/$/, '') === '/contactos';
+  // Prova pages and the Programa are read on a phone: the button sat on their text
+  const onReadingPage = /^\/seccao\/[^/]+\/(provas\/[^/]+|programa)\/?$/.test(pathname);
 
   const sentinelRef = useRef(null);
 
@@ -69,7 +71,7 @@ export default function FloatingBtn() {
     <>
     {/* The marker stays even where the button doesn't: its observer is set up once, on first load */}
     <span ref={sentinelRef} className={styles.sentinel} style={{ top: SCROLL_THRESHOLD }} aria-hidden="true" />
-    {!onContactos && (
+    {!onContactos && !onReadingPage && (
     <button
       ref={ref}
       type="button"
