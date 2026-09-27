@@ -1,136 +1,161 @@
-/* ── react-datepicker green theme overrides ── */
+/* ── react-datepicker theme for Reservar Alojamento ──
+   Scoped to `.alojamentoCalendar` (set as calendarClassName on this page's pickers): a bare
+   `.react-datepicker…` rule here would restyle every date picker on the site once this page had
+   loaded, as Notícias' unscoped theme once did to this one. Values come from the design tokens. */
 
-.react-datepicker {
-  font-family: 'Nunito', sans-serif;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.alojamentoCalendar.react-datepicker {
+  font-family: var(--font-family);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-.react-datepicker__header {
-  background: #e8f5ee;
-  border-bottom: 1px solid #e5e5e5;
-  padding-top: 0.75rem;
+.alojamentoCalendar .react-datepicker__header {
+  background: var(--color-green-light);
+  border-bottom: 1px solid var(--color-gray-200);
+  padding-top: var(--spacing-sm);
 }
 
-.react-datepicker__current-month,
-.react-datepicker-time__header {
-  font-family: 'Nunito', sans-serif;
+.alojamentoCalendar .react-datepicker__current-month,
+.alojamentoCalendar .react-datepicker-time__header {
+  font-family: var(--font-family);
   font-weight: 800;
-  font-size: 0.95rem;
-  color: #129648;
+  font-size: var(--font-size-base);
+  color: var(--color-green-dark);
 }
 
-.react-datepicker__day-name {
-  font-family: 'Nunito', sans-serif;
+.alojamentoCalendar .react-datepicker__day-name {
+  font-family: var(--font-family);
   font-weight: 700;
-  color: #737373;
-  font-size: 0.8rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
   width: 2.2rem;
   line-height: 2.2rem;
 }
 
-.react-datepicker__day {
-  font-family: 'Nunito', sans-serif;
+.alojamentoCalendar .react-datepicker__day {
+  font-family: var(--font-family);
   font-weight: 600;
   width: 2.2rem;
   line-height: 2.2rem;
-  border-radius: 8px;
-  transition: background-color 150ms ease, color 150ms ease;
-  color: #1a1a1a;
+  border-radius: var(--radius-sm);
+  color: var(--color-gray-900);
+  transition: var(--transition-interactive);
 }
 
-.react-datepicker__day:hover {
-  background: #e8f5ee;
-  color: #129648;
-  border-radius: 8px;
-}
-
-.react-datepicker__day--selected,
-.react-datepicker__day--keyboard-selected {
-  background: #129648 !important;
-  color: #ffffff !important;
-  border-radius: 8px;
+.alojamentoCalendar .react-datepicker__day--selected,
+.alojamentoCalendar .react-datepicker__day--keyboard-selected {
+  background: var(--color-green-dark) !important;
+  color: var(--color-white) !important;
   font-weight: 800;
 }
 
-.react-datepicker__day--selected:hover {
-  background: #0e7a3a !important;
-}
-
-.react-datepicker__day--today {
+.alojamentoCalendar .react-datepicker__day--today {
   font-weight: 800;
-  color: #129648;
+  color: var(--color-green-dark);
 }
 
-.react-datepicker__day--today.react-datepicker__day--selected {
-  color: #ffffff !important;
+.alojamentoCalendar .react-datepicker__day--today.react-datepicker__day--selected {
+  color: var(--color-white) !important;
 }
 
-.react-datepicker__day--disabled {
-  color: #d4d4d4 !important;
+/* Past days can't be picked: pale on purpose (disabled controls are exempt from contrast) */
+.alojamentoCalendar .react-datepicker__day--disabled {
+  color: var(--color-gray-300) !important;
 }
 
-.react-datepicker__day--disabled:hover {
-  background: transparent;
-  color: #d4d4d4;
-}
-
-.react-datepicker__day--in-range,
-.react-datepicker__day--in-selecting-range {
-  background: #e8f5ee;
-  color: #129648;
+.alojamentoCalendar .react-datepicker__day--in-range,
+.alojamentoCalendar .react-datepicker__day--in-selecting-range {
+  background: var(--color-green-light);
+  color: var(--color-green-dark);
 }
 
 /* Navigation arrows */
-.react-datepicker__navigation-icon::before {
-  border-color: #129648;
+.alojamentoCalendar .react-datepicker__navigation-icon::before {
+  border-color: var(--color-green-dark);
 }
 
-.react-datepicker__navigation:hover *::before {
-  border-color: #0e7a3a;
-}
-
-/* Time list (for time-only picker) */
-.react-datepicker__time-container {
-  border-left: 1px solid #e5e5e5;
+/* Time list (for the time-only pickers) */
+.alojamentoCalendar .react-datepicker__time-container {
+  border-left: 1px solid var(--color-gray-200);
   width: 110px;
 }
 
-.react-datepicker__time-container
-  .react-datepicker__time
-  .react-datepicker__time-box {
+.alojamentoCalendar .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
   width: 110px;
 }
 
-.react-datepicker__time-list-item {
-  font-family: 'Nunito', sans-serif;
+.alojamentoCalendar .react-datepicker__time-list-item {
+  font-family: var(--font-family);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: var(--transition-interactive);
 }
 
-.react-datepicker__time-list-item:hover {
-  background: #e8f5ee !important;
-  color: #129648 !important;
-}
-
-.react-datepicker__time-list-item--selected {
-  background: #129648 !important;
-  color: #ffffff !important;
+.alojamentoCalendar .react-datepicker__time-list-item--selected {
+  background: var(--color-green-dark) !important;
+  color: var(--color-white) !important;
   font-weight: 800;
 }
 
-/* Triangle/arrow */
-.react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::before,
-.react-datepicker-popper[data-placement^='bottom'] .react-datepicker__triangle::after {
-  border-bottom-color: #e8f5ee;
+.alojamentoCalendar .react-datepicker__triangle {
+  display: none;
 }
 
-.react-datepicker__triangle {
-  display: none;
+/* Hover only where a pointer can hover; on touch it stuck on the last day tapped */
+@media (hover: hover) {
+  .alojamentoCalendar .react-datepicker__day:not(.react-datepicker__day--disabled):hover {
+    background: var(--color-green-light);
+    color: var(--color-green-dark);
+  }
+
+  .alojamentoCalendar .react-datepicker__day--selected:hover {
+    background: var(--color-green-deep) !important;
+  }
+
+  .alojamentoCalendar .react-datepicker__day--disabled:hover {
+    background: transparent;
+  }
+
+  .alojamentoCalendar .react-datepicker__navigation:hover *::before {
+    border-color: var(--color-green-deep);
+  }
+
+  .alojamentoCalendar .react-datepicker__time-list-item:hover {
+    background: var(--color-green-light) !important;
+    color: var(--color-green-dark) !important;
+  }
+}
+
+/* Touch: 44px rows in the time list and 40px days, so a finger lands on the intended one */
+@media (pointer: coarse) {
+  .alojamentoCalendar .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+    height: 44px;
+    padding: 0 var(--spacing-sm);
+  }
+
+  .alojamentoCalendar .react-datepicker__day {
+    width: 2.5rem;
+    line-height: 2.5rem;
+  }
+
+  .alojamentoCalendar .react-datepicker__day-name {
+    width: 2.5rem;
+  }
+}
+
+/* The smallest phones: a slightly narrower day so the month keeps a margin to the screen edge */
+@media (pointer: coarse) and (max-width: 360px) {
+  .alojamentoCalendar .react-datepicker__day,
+  .alojamentoCalendar .react-datepicker__day-name {
+    width: 2.15rem;
+  }
+
+  .alojamentoCalendar .react-datepicker__day {
+    line-height: 2.15rem;
+  }
 }

@@ -292,12 +292,24 @@ One word per idea, across the list, the builder, the song pages and their forms:
 - Sentence case on buttons and dialog titles ("Sugerir uma canção", "Reportar um erro", "Enviar sugestão"). Required fields carry no asterisk; optional ones say "(opcional)".
 - Send errors say what failed and what's kept: "Sem ligação à internet. O que escreveste continua aqui; tenta outra vez." Success names the thing received and promises nothing about timing.
 
+### Direção (and `MemberCard`)
+The leaders first (3 over 2, 260px cards), then the Chefes de Secção. `MemberCard` (shared with Dirigentes) is a white card with a round photo (100px), the name, the role as Verde Profundo semibold text right under it (a title, not a tag: the only pill is the secção's), and the dates, each value kept on one line. There is no hover lift, since the card isn't a link.
+- **Secção in words:** a chefe's card takes `seccao` (a `seccoes.js` entry) and shows the secção name as a pill in its `surface` / `onSurface`. The emblem in the corner is decorative (`alt=""`), so it's never the only cue.
+- **Outline:** the leaders sit under a screen-reader-only h2 "Direção de Agrupamento" so the names (h3) follow an h2.
+- **Phones (≤600px), opt-in via `phone`:** `row` puts the photo (64px) beside name, role and dates; `tile` is a small centred card, two to a row. Direção uses `row` for the leaders and `tile` for the chefes; Dirigentes uses `compact` (the small tile at every width: 80px photo and name): desktop is a secção per column with its people two to a row; tablets (≤1024px) a secção per row with as many tiles as fit; phones two to a row, under a small emblem + name heading per secção; the portrait-phone tab bar jumps between secções and follows the one in view via an IntersectionObserver, instantly under reduced motion).
+- **Dates:** written the pt-PT way, lowercase month, no leading zero ("1 de fevereiro de 1980").
+
 ### Contactos
 Reference first, then actions, then the map.
 - **Contact panel:** one white panel (Cinza Linha border, `--radius-xl`) with a column per section present: Email, Morada, Redes Sociais, split by hairlines. A section whose config list is empty is left out, and the others share the width. Headings carry a small green icon inline, with no round icon discs. Column content is centred vertically, so the short Email column doesn't hang from the top. On phones (≤768px) the columns stack as rows split by hairlines, left-aligned.
 - **Outros pedidos:** the only cards on the page, three Verde Nevoeiro rows (dark-green icon disc, title, one line, then an arrow for a page or an envelope for email). "Fazer parte" opens an email with "Inscrição no Agrupamento 80" as the subject, "Banco de Fardas" and "Reservar Alojamento" open their pages. On hover the row fills dark green, on hover-capable pointers only. Phones: stacked, 8px apart and 24px below the panel.
 - **Map:** the Google embed, lazy-loaded, fading in over a gray-100 placeholder once loaded. Its rounded wrapper would clip a focus ring, so the page draws the ring on the wrapper while focus is inside the map (it listens for the window losing focus to the iframe).
 - **Links:** "Ver no Google Maps", Facebook and Instagram say "(abre numa nova janela)" to screen readers. The floating button is hidden on this page.
+
+### Reservar Alojamento
+A one-column form that prepares an email, and says so: the button is "Preparar email", and the confirmation reads "O teu email está pronto… Só falta carregar em enviar." It never says "enviado". Under it, a fallback for when no mail app opened: the address, the request text ready to copy ("Copiar pedido", or the text selected if the clipboard is blocked), and "Abrir o email outra vez". A long request adds a note that the email may open cut short.
+- **Fields:** 16px, 48px tall, with autofill hints. Focus is a 2px dark-green edge (border + 1px ring). Errors use the Amarelo Fundo callout. A name of only spaces is caught, and moving the entry date past the exit date clears the exit.
+- **Date and time pickers:** each date label is linked to its field and the time fields are named ("Hora de entrada/saída"). On desktop the calendar opens under the field and is kept on screen by a small middleware. On touch screens it opens as a centred overlay without raising the keyboard, with 44px time rows and 40px days (34px at 360px wide and below). The theme is `datepicker-theme.css`, token-based and scoped to `.alojamentoCalendar`: a date-picker theme must never be a bare global, as Notícias' once restyled this page's calendar.
 
 ### Banco de Fardas inventory
 The inventory is the page's job; the explanation ("Como funciona?") stays short above it (three steps side by side down to 601px, icon-beside-text rows on phones).

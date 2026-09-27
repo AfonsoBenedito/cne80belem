@@ -11,15 +11,14 @@ const sections = [
   { key: 'caminheiros', label: 'Caminheiros' },
 ];
 
+// Only secções with someone in them get a column (and a tab)
+const activeSections = sections.filter(({ key }) => dirigentes.some((m) => m.section === key));
+
 export default function Dirigentes() {
   useSEO({
     title: 'Dirigentes e Animadores',
-    description: 'Conheça os dirigentes e animadores do Agrupamento 80 - Santa Maria de Belém, CNE.',
+    description: 'Conhece os dirigentes e animadores do Agrupamento 80 - Santa Maria de Belém, CNE.',
   });
-
-  const activeSections = sections.filter(({ key }) =>
-    dirigentes.some((m) => m.section === key)
-  );
 
   const [activeSection, setActiveSection] = useState(activeSections[0]?.key ?? null);
   const navRef = useRef(null);
@@ -29,36 +28,38 @@ export default function Dirigentes() {
   useLayoutEffect(() => {
     const activeEl = itemRefs.current[activeSection];
     if (!activeEl) return;
-    setSliderStyle({ left: activeEl.offsetLeft, width: activeEl.offsetWidth });
+    // Glides on transform only (no layout per frame); the width snaps to the new tab's
+    setSliderStyle({ width: activeEl.offsetWidth, transform: `translateX(${activeEl.offsetLeft}px)` });
   }, [activeSection]);
 
+  // Header plus the sticky tab bar: where a jumped-to secção should start
   const getOffset = () =>
-    72 + (navRef.current ? navRef.current.offsetHeight : 56);
+    (document.querySelector('header')?.offsetHeight ?? 0) + (navRef.current?.offsetHeight ?? 0);
 
   const handleNavClick = (e, key) => {
     e.preventDefault();
     const el = document.getElementById(`section-${key}`);
     if (!el) return;
-    const offset = getOffset();
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: 'smooth' });
+    const top = el.getBoundingClientRect().top + window.scrollY - getOffset();
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
   };
 
+  // The tab follows the secção under the bar. An observer watches a thin band just below the
+  // header and tab bar, instead of measuring every column on each scroll event.
   useEffect(() => {
-    const keys = activeSections.map(({ key }) => key);
-
-    const handleScroll = () => {
-      const offset = getOffset();
-      let current = keys[0];
-      for (const key of keys) {
-        const el = document.getElementById(`section-${key}`);
-        if (el && el.getBoundingClientRect().top <= offset + 32) current = key;
-      }
-      setActiveSection(current);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const els = activeSections.map(({ key }) => document.getElementById(`section-${key}`)).filter(Boolean);
+    if (!els.length) return;
+    const offset = getOffset();
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setActiveSection(hit.target.dataset.section);
+      },
+      { rootMargin: `-${offset}px 0px -${Math.max(window.innerHeight - offset - 48, 0)}px 0px` },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
   }, []);
 
   return (
@@ -71,7 +72,8 @@ export default function Dirigentes() {
           </p>
         </header>
 
-        <nav ref={navRef} className={styles.sectionNav}>
+        {/* Named, so screen readers can tell it from the header and footer navigation */}
+        <nav ref={navRef} className={styles.sectionNav} aria-label="Secções">
           {sliderStyle && <span className={styles.sectionNavSlider} style={sliderStyle} />}
           {activeSections.map(({ key, label }) => (
             <a
@@ -79,9 +81,11 @@ export default function Dirigentes() {
               ref={(el) => { itemRefs.current[key] = el; }}
               href={`#section-${key}`}
               onClick={(e) => handleNavClick(e, key)}
+              // The green underline shows the secção in view; this says it to a screen reader
+              aria-current={activeSection === key ? 'true' : undefined}
               className={`${styles.sectionNavItem} ${activeSection === key ? styles.sectionNavItemActive : ''}`}
             >
-              <img src={sectionBadges[key]} alt={label} className={styles.sectionNavBadge} />
+              <img src={sectionBadges[key]} alt="" className={styles.sectionNavBadge} />
               {label}
             </a>
           ))}
@@ -93,12 +97,13 @@ export default function Dirigentes() {
             return (
               <div key={key} id={`section-${key}`} data-section={key} className={styles.column}>
                 <div className={styles.columnHeader}>
-                  <img src={sectionBadges[key]} alt={label} className={styles.columnBadge} />
+                  {/* The heading beside it names the secção; the emblem is decoration */}
+                  <img src={sectionBadges[key]} alt="" className={styles.columnBadge} />
                   <h2 className={styles.columnTitle}>{label}</h2>
                 </div>
                 <div className={styles.cards}>
                   {members.map((member) => (
-                    <MemberCard key={member.name} {...member} />
+                    <MemberCard key={member.name} {...member} compact />
                   ))}
                 </div>
               </div>

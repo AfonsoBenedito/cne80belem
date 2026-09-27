@@ -1,14 +1,35 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSEO } from '../../utils/useSEO';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { pt } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 import './datepicker-theme.css';
-import { FaBed, FaPaperPlane } from 'react-icons/fa';
+import { FaBed, FaEnvelope, FaCopy, FaCheck } from 'react-icons/fa';
 import { mainEmail } from '../../config/contacts';
 import styles from './ReservarAlojamento.module.css';
 
 registerLocale('pt', pt);
+
+// The calendar opens under its field and, on a phone, ran past the left edge of the screen.
+// This keeps it inside the viewport (8px margin) by moving it sideways, never off-screen.
+const keepOnScreen = {
+  name: 'keepOnScreen',
+  fn({ x, y, rects, elements }) {
+    const pad = 8;
+    const vw = document.documentElement.clientWidth;
+    // x is relative to the calendar's offset parent; convert to screen space and back
+    const toScreen = elements.reference.getBoundingClientRect().left - rects.reference.x;
+    const left = Math.min(Math.max(x + toScreen, pad), vw - rects.floating.width - pad);
+    return { x: left - toScreen, y };
+  },
+};
+const pickerModifiers = [keepOnScreen];
+
+// Touch screens: the calendar and time list open as a centred overlay (a popup under the field
+// was covered by the keyboard), and the fields don't raise the keyboard at all, since dates and
+// times are picked, not typed
+const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+const touchPicker = isTouch ? { withPortal: true, customInput: <input inputMode="none" /> } : {};
 
 const INITIAL = {
   organization: '',
@@ -28,7 +49,17 @@ export default function ReservarAlojamento() {
   });
 
   const [form, setForm] = useState(INITIAL);
-  const [sent, setSent] = useState(false);
+  // The page can't send anything itself: it opens the visitor's mail app with the request
+  // written out. `draft` keeps that request so it can be copied if no mail app opened.
+  const [draft, setDraft] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [orgError, setOrgError] = useState('');
+  const orgRef = useRef(null);
+  const draftTextRef = useRef(null);
+  // After "Preparar email" the form is replaced: focus goes to the confirmation so keyboard and
+  // screen-reader users land on what happened, not at the top of the page
+  const doneRef = useRef(null);
+  useEffect(() => { if (draft) doneRef.current?.focus(); }, [draft]);
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -46,25 +77,30 @@ export default function ReservarAlojamento() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    // "required" lets a name of only spaces through
+    if (!form.organization.trim()) {
+      setOrgError('Escreve o nome da organização.');
+      orgRef.current?.focus();
+      return;
+    }
 
-    const subject = encodeURIComponent(
-      `Reserva de Alojamento - ${form.organization}`,
-    );
+    const subject = `Reserva de Alojamento - ${form.organization}`;
 
     const timeFromStr = form.timeFrom ? ` às ${fmtTime(form.timeFrom)}` : '';
     const timeToStr = form.timeTo ? ` às ${fmtTime(form.timeTo)}` : '';
 
-    const body = encodeURIComponent(
+    const body =
       `Organização: ${form.organization}\n` +
       `Email: ${form.email}\n` +
       `Telefone: ${form.phone}\n` +
       `Data de entrada: ${fmtDate(form.dateFrom)}${timeFromStr}\n` +
       `Data de saída: ${fmtDate(form.dateTo)}${timeToStr}\n\n` +
-      `Mensagem:\n${form.message}`,
-    );
+      `Mensagem:\n${form.message}`;
 
-    window.location.href = `mailto:${mainEmail}?subject=${subject}&body=${body}`;
-    setSent(true);
+    const href = `mailto:${mainEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setDraft({ subject, body, href });
+    setCopied(false);
+    window.location.href = href;
   }
 
   return (
@@ -72,22 +108,69 @@ export default function ReservarAlojamento() {
       <div className="container">
         <header className={styles.header}>
           <div className={styles.icon}>
-            <FaBed size={28} />
+            <FaBed size={28} aria-hidden="true" />
           </div>
           <h1 className={styles.title}>Reservar Alojamento</h1>
           <p className={styles.subtitle}>
-            Preenche o formulário abaixo para solicitar a reserva do nosso espaço.
+            Preenche o formulário e preparamos o email do pedido de reserva do nosso espaço, pronto a enviar.
           </p>
         </header>
 
-        {sent ? (
-          <div className={styles.success}>
-            <FaPaperPlane size={32} />
-            <h2>Pedido enviado!</h2>
-            <p>O teu cliente de email deverá abrir com a mensagem pré-preenchida. Obrigado pelo contacto!</p>
+        {draft ? (
+          // Says what actually happened: the email is written, not sent. The visitor still has
+          // to press send, and gets the address and text in case no mail app opened.
+          <div className={styles.success} role="status">
+            <FaEnvelope size={32} aria-hidden="true" />
+            <h2 ref={doneRef} tabIndex={-1} className={styles.doneTitle}>O teu email está pronto</h2>
+            <p>
+              Abrimos o teu programa de email com o pedido preenchido. Só falta carregar em enviar.
+            </p>
+            {/* Some mail apps cut a long mailto link short; the full text below is the safe copy */}
+            {draft.href.length > 1800 && (
+              <p className={styles.longNote}>
+                A mensagem é longa: se o email abrir incompleto, copia o texto abaixo.
+              </p>
+            )}
+            <div className={styles.fallback}>
+              <p className={styles.fallbackLead}>
+                Não abriu? Envia o pedido para <strong className={styles.fallbackEmail}>{mainEmail}</strong>:
+              </p>
+              <textarea
+                className={styles.fallbackText}
+                readOnly
+                rows={8}
+                ref={draftTextRef}
+                value={`Assunto: ${draft.subject}\n\n${draft.body}`}
+                aria-label="Texto do pedido"
+                onFocus={(e) => e.target.select()}
+              />
+              <div className={styles.fallbackActions}>
+                <button
+                  type="button"
+                  className={styles.resetBtn}
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(`${draft.subject}\n\n${draft.body}`);
+                      setCopied('done');
+                    } catch {
+                      // Clipboard blocked (permissions, older browsers): select the text instead,
+                      // so one Ctrl/Cmd+C (or the phone's Copy) finishes the job
+                      draftTextRef.current?.focus();
+                      draftTextRef.current?.select();
+                      setCopied('selected');
+                    }
+                  }}
+                >
+                  {copied === 'done' ? <FaCheck size={12} aria-hidden="true" /> : <FaCopy size={12} aria-hidden="true" />}
+                  {copied === 'done' ? 'Pedido copiado' : copied === 'selected' ? 'Texto selecionado: copia-o' : 'Copiar pedido'}
+                </button>
+                <a className={styles.resetBtn} href={draft.href}>Abrir o email outra vez</a>
+              </div>
+            </div>
             <button
-              className={styles.resetBtn}
-              onClick={() => { setForm(INITIAL); setSent(false); }}
+              type="button"
+              className={styles.newRequest}
+              onClick={() => { setForm(INITIAL); setDraft(null); }}
             >
               Fazer novo pedido
             </button>
@@ -98,14 +181,19 @@ export default function ReservarAlojamento() {
               <label className={styles.label} htmlFor="organization">Organização</label>
               <input
                 id="organization"
+                ref={orgRef}
+                aria-invalid={orgError ? 'true' : undefined}
+                aria-describedby={orgError ? 'organizationError' : undefined}
                 name="organization"
+                autoComplete="organization"
                 type="text"
                 required
                 placeholder="Agrupamento, Organização, Movimento, ..."
                 className={styles.input}
                 value={form.organization}
-                onChange={handleChange}
+                onChange={(e) => { handleChange(e); if (orgError) setOrgError(''); }}
               />
+              {orgError && <p id="organizationError" className={styles.fieldError} role="alert">{orgError}</p>}
             </div>
 
             <div className={styles.row}>
@@ -114,6 +202,7 @@ export default function ReservarAlojamento() {
                 <input
                   id="email"
                   name="email"
+                  autoComplete="email"
                   type="email"
                   required
                   placeholder="email@exemplo.pt"
@@ -128,6 +217,7 @@ export default function ReservarAlojamento() {
                 <input
                   id="phone"
                   name="phone"
+                  autoComplete="tel"
                   type="tel"
                   required
                   placeholder="912 345 678"
@@ -140,11 +230,27 @@ export default function ReservarAlojamento() {
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Data de entrada</label>
+                {/* Required fields carry no mark; optional ones say so (the time is optional) */}
+                <div className={styles.labelRow}>
+                  <label className={styles.label} htmlFor="dateFrom">Data de entrada</label>
+                  <span className={styles.optional} aria-hidden="true">hora opcional</span>
+                </div>
+                {/* The time field sits beside the date under one visible label; this names it */}
+                <span id="timeFromLabel" className={styles.srOnly}>Hora de entrada (opcional)</span>
                 <div className={styles.dateTimeRow}>
                   <DatePicker
                     selected={form.dateFrom}
-                    onChange={(date) => setForm((prev) => ({ ...prev, dateFrom: date }))}
+                    id="dateFrom"
+                    popperModifiers={pickerModifiers}
+                    calendarClassName="alojamentoCalendar"
+                    {...touchPicker}
+                    // A new entry after the chosen exit clears the exit, rather than keeping an
+                    // impossible stay
+                    onChange={(date) => setForm((prev) => ({
+                      ...prev,
+                      dateFrom: date,
+                      dateTo: prev.dateTo && date && prev.dateTo < date ? null : prev.dateTo,
+                    }))}
                     dateFormat="dd/MM/yyyy"
                     locale="pt"
                     placeholderText="dd/mm/aaaa"
@@ -155,6 +261,10 @@ export default function ReservarAlojamento() {
                   />
                   <DatePicker
                     selected={form.timeFrom}
+                    ariaLabelledBy="timeFromLabel"
+                    popperModifiers={pickerModifiers}
+                    calendarClassName="alojamentoCalendar"
+                    {...touchPicker}
                     onChange={(date) => setForm((prev) => ({ ...prev, timeFrom: date }))}
                     showTimeSelect
                     showTimeSelectOnly
@@ -170,10 +280,18 @@ export default function ReservarAlojamento() {
               </div>
 
               <div className={styles.field}>
-                <label className={styles.label}>Data de saída</label>
+                <div className={styles.labelRow}>
+                  <label className={styles.label} htmlFor="dateTo">Data de saída</label>
+                  <span className={styles.optional} aria-hidden="true">hora opcional</span>
+                </div>
+                <span id="timeToLabel" className={styles.srOnly}>Hora de saída (opcional)</span>
                 <div className={styles.dateTimeRow}>
                   <DatePicker
                     selected={form.dateTo}
+                    id="dateTo"
+                    popperModifiers={pickerModifiers}
+                    calendarClassName="alojamentoCalendar"
+                    {...touchPicker}
                     onChange={(date) => setForm((prev) => ({ ...prev, dateTo: date }))}
                     dateFormat="dd/MM/yyyy"
                     locale="pt"
@@ -185,6 +303,10 @@ export default function ReservarAlojamento() {
                   />
                   <DatePicker
                     selected={form.timeTo}
+                    ariaLabelledBy="timeToLabel"
+                    popperModifiers={pickerModifiers}
+                    calendarClassName="alojamentoCalendar"
+                    {...touchPicker}
                     onChange={(date) => setForm((prev) => ({ ...prev, timeTo: date }))}
                     showTimeSelect
                     showTimeSelectOnly
@@ -201,7 +323,7 @@ export default function ReservarAlojamento() {
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label} htmlFor="message">Mensagem</label>
+              <label className={styles.label} htmlFor="message">Mensagem <span className={styles.optional}>(opcional)</span></label>
               <textarea
                 id="message"
                 name="message"
@@ -214,8 +336,8 @@ export default function ReservarAlojamento() {
             </div>
 
             <button type="submit" className={styles.submitBtn}>
-              <FaPaperPlane size={14} />
-              Enviar Pedido
+              <FaEnvelope size={14} aria-hidden="true" />
+              Preparar email
             </button>
           </form>
         )}
