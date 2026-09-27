@@ -1,7 +1,9 @@
-import lobitosImg from '../assets/images/sections/lobitos.png';
-import exploradoresImg from '../assets/images/sections/exploradores.png';
-import pioneirosImg from '../assets/images/sections/pioneiros.png';
-import caminheirosImg from '../assets/images/sections/caminheiros.jpg';
+// The emblems only ever show here as 36-44px badges: a 96px copy covers 2x screens
+// (the secção pages import the full-size files themselves)
+import lobitosImg from '../assets/images/sections/lobitos.png?w=96&format=webp';
+import exploradoresImg from '../assets/images/sections/exploradores.png?w=96&format=webp';
+import pioneirosImg from '../assets/images/sections/pioneiros.png?w=96&format=webp';
+import caminheirosImg from '../assets/images/sections/caminheiros.jpg?w=96&format=webp';
 
 import diogoCardosoImg from '../assets/images/members/diogo_cardoso.jpg';
 import cocasImg from '../assets/images/members/cocas.jpg';
@@ -30,35 +32,35 @@ export const direcao = [
   {
     name: 'Marco Silveira',
     role: 'Chefe de Agrupamento',
-    birthDate: '01 de Fevereiro de 1980',
+    birthDate: '1 de fevereiro de 1980',
     memberSince: '1992',
     photo: marcoSilveiraImg,
   },
   {
     name: 'Diogo Cardoso',
     role: 'Chefe de Agrupamento Adjunto',
-    birthDate: '28 de Julho de 1986',
+    birthDate: '28 de julho de 1986',
     memberSince: '1992',
     photo: diogoCardosoImg,
   },
   {
     name: 'Paulo "Cocas" Couceiro',
     role: 'Tesoureiro de Agrupamento',
-    birthDate: '25 de Dezembro de 0000',
+    birthDate: '25 de dezembro de 0000',
     memberSince: '5 d.c.',
     photo: cocasImg,
   },
   {
     name: 'Bernardo Santos',
     role: 'Secretário de Agrupamento',
-    birthDate: '01 de Maio de 1980',
+    birthDate: '1 de maio de 1980',
     memberSince: '2002',
     photo: bernardoSantosImg,
   },
   {
     name: 'Cón. José Manuel Ferreira',
     role: 'Assistente de Agrupamento',
-    birthDate: '20 de Julho de 1953',
+    birthDate: '20 de julho de 1953',
     memberSince: '1994',
     photo: joseFerreiraImg,
   },

@@ -188,59 +188,67 @@
   box-shadow: var(--shadow-lg) !important;
 }
 
-:global(.react-datepicker__header) {
+/* Scoped to this page's calendar: as bare :global rules they restyled every date picker on
+   the site once this page had loaded (Reservar Alojamento's weekday names went white) */
+.calendar :global(.react-datepicker__header) {
   background: var(--color-green) !important;
   border-bottom: none !important;
   border-radius: 12px 12px 0 0 !important;
   padding-top: 0.75rem !important;
 }
 
-:global(.react-datepicker__current-month),
-:global(.react-datepicker__day-name) {
+.calendar :global(.react-datepicker__current-month),
+.calendar :global(.react-datepicker__day-name) {
   color: var(--color-white) !important;
   font-family: var(--font-family) !important;
 }
 
-:global(.react-datepicker__current-month) {
+/* The weekday row sits below the green header (not inside it) in this react-datepicker version,
+   so white names vanished on the white calendar body */
+.calendar :global(.react-datepicker__day-name) {
+  color: var(--color-gray-500) !important;
+}
+
+.calendar :global(.react-datepicker__current-month) {
   font-weight: 700 !important;
   font-size: var(--font-size-sm) !important;
 }
 
-:global(.react-datepicker__day-name) {
+.calendar :global(.react-datepicker__day-name) {
   font-size: var(--font-size-xs) !important;
   font-weight: 600 !important;
 }
 
-:global(.react-datepicker__day) {
+.calendar :global(.react-datepicker__day) {
   font-family: var(--font-family) !important;
   font-size: var(--font-size-sm) !important;
   border-radius: 50% !important;
   transition: background 150ms ease, color 150ms ease !important;
 }
 
-:global(.react-datepicker__day:hover) {
+.calendar :global(.react-datepicker__day:hover) {
   background: var(--color-green-light) !important;
   color: var(--color-green) !important;
 }
 
-:global(.react-datepicker__day--selected),
-:global(.react-datepicker__day--range-start),
-:global(.react-datepicker__day--range-end) {
+.calendar :global(.react-datepicker__day--selected),
+.calendar :global(.react-datepicker__day--range-start),
+.calendar :global(.react-datepicker__day--range-end) {
   background: var(--color-green) !important;
   color: var(--color-white) !important;
 }
 
-:global(.react-datepicker__day--in-range),
-:global(.react-datepicker__day--in-selecting-range) {
+.calendar :global(.react-datepicker__day--in-range),
+.calendar :global(.react-datepicker__day--in-selecting-range) {
   background: var(--color-green-light) !important;
   color: var(--color-green) !important;
 }
 
-:global(.react-datepicker__navigation) {
+.calendar :global(.react-datepicker__navigation) {
   top: 10px !important;
 }
 
-:global(.react-datepicker__navigation-icon::before) {
+.calendar :global(.react-datepicker__navigation-icon::before) {
   border-color: var(--color-white) !important;
 }
 
