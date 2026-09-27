@@ -19,12 +19,90 @@
   color: var(--color-gray-500);
 }
 
+/* ── Secção chips ── */
+.sectionChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-right: var(--spacing-sm);
+}
+
+.sectionChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+/* The pressed chip takes its secção's surface/onSurface (set inline); "Todas" the site green */
+.sectionChip[aria-pressed='true'] {
+  color: var(--color-white);
+  background: var(--color-green-dark);
+  border-color: transparent;
+}
+
+.chipDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sectionChip[aria-pressed='true'] .chipDot {
+  box-shadow: 0 0 0 2px var(--color-white);
+}
+
+.resultCount {
+  margin-left: auto;
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
 /* ── Toolbar ── */
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm) 0.75rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.toolbarActions {
+  flex: 1 1 auto;
+  display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+}
+
+/* Buttons keep their label on one line; the group wraps instead */
+.toolbarActions button {
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .clearLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .clearBtn {
+    min-width: 44px;
+    justify-content: center;
+  }
 }
 
 .filterToggle {
@@ -42,10 +120,6 @@
   transition: var(--transition-interactive);
 }
 
-.filterToggle:hover {
-  border-color: var(--color-green);
-  color: var(--color-green-dark);
-}
 
 .filterToggleActive {
   border-color: var(--color-green);
@@ -59,7 +133,7 @@
   justify-content: center;
   width: 20px;
   height: 20px;
-  font-size: 0.65rem;
+  font-size: var(--font-size-xs);
   font-weight: 800;
   color: var(--color-white);
   background: var(--color-green-dark);
@@ -80,18 +154,15 @@
   transition: color var(--transition-fast);
 }
 
-.clearBtn:hover {
-  color: #e74c3c;
-}
 
 /* ── Filter panel (in-flow) ── */
 .filterPanel {
   background: var(--color-gray-100);
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.25rem;
   margin-bottom: 1.5rem;
-  animation: slideDown 200ms ease;
+  animation: slideDown var(--transition-base);
 }
 
 @keyframes slideDown {
@@ -113,6 +184,7 @@
 /* Presets */
 .presets {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.75rem;
   padding-top: 0.75rem;
@@ -120,6 +192,7 @@
 }
 
 .preset {
+  white-space: nowrap;
   padding: 0.35rem 0.85rem;
   font-size: var(--font-size-xs);
   font-weight: 700;
@@ -127,14 +200,10 @@
   color: var(--color-gray-500);
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
   transition: var(--transition-interactive);
 }
 
-.preset:hover {
-  color: var(--color-green-dark);
-  border-color: var(--color-green);
-}
 
 .presetActive {
   color: var(--color-white);
@@ -142,11 +211,6 @@
   border-color: var(--color-green);
 }
 
-.presetActive:hover {
-  color: var(--color-white);
-  background: var(--color-green-deep);
-  border-color: var(--color-green-dark);
-}
 
 .filterGroup {
   display: flex;
@@ -184,7 +248,7 @@
 .calendar {
   font-family: var(--font-family) !important;
   border: 1px solid var(--color-gray-200) !important;
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
   box-shadow: var(--shadow-lg) !important;
 }
 
@@ -193,7 +257,7 @@
 .calendar :global(.react-datepicker__header) {
   background: var(--color-green) !important;
   border-bottom: none !important;
-  border-radius: 12px 12px 0 0 !important;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
   padding-top: 0.75rem !important;
 }
 
@@ -223,7 +287,7 @@
   font-family: var(--font-family) !important;
   font-size: var(--font-size-sm) !important;
   border-radius: 50% !important;
-  transition: background 150ms ease, color 150ms ease !important;
+  transition: var(--transition-interactive) !important;
 }
 
 .calendar :global(.react-datepicker__day:hover) {
@@ -258,7 +322,7 @@
 
 :global(.react-datepicker__close-icon::after) {
   background: var(--color-gray-500) !important;
-  font-size: 12px !important;
+  font-size: var(--font-size-xs) !important;
   width: 18px !important;
   height: 18px !important;
   line-height: 1 !important;
@@ -268,7 +332,6 @@
 /* ── View toggle ── */
 .viewToggle {
   display: flex;
-  margin-left: auto;
   border: 1px solid var(--color-gray-200);
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -290,18 +353,12 @@
   border-right: 1px solid var(--color-gray-200);
 }
 
-.viewBtn:hover {
-  color: var(--color-green-dark);
-}
 
 .viewBtnActive {
   background: var(--color-green-dark);
   color: var(--color-white);
 }
 
-.viewBtnActive:hover {
-  color: var(--color-white);
-}
 
 /* ── Result count ── */
 
@@ -313,6 +370,21 @@
   font-size: var(--font-size-lg);
 }
 
+/* The way out, right under the message */
+.emptyBtn {
+  margin-top: var(--spacing-md);
+  padding: 0.6rem 1.4rem;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-green-dark);
+  background: var(--color-white);
+  border: 1px solid var(--color-green-dark);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
 /* ── Grid ── */
 .grid {
   display: grid;
@@ -322,16 +394,46 @@
 
 /* ── Card ── */
 .card {
+  position: relative;
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
 
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+/* The newest story leads: a full-width card, photo beside the text */
+.cardLead {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+
+.cardLead .cardImage {
+  aspect-ratio: auto;
+  min-height: 320px;
+}
+
+/* The photo fills its half without setting the card's height (a portrait cover stretched it) */
+.cardLead .cardImage img {
+  position: absolute;
+  inset: 0;
+}
+
+.cardLead .cardBody {
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+.cardLead .cardTitle {
+  font-size: var(--font-size-2xl);
+  line-height: 1.25;
+  -webkit-line-clamp: 3;
+}
+
+.cardLead .cardExcerpt {
+  font-size: var(--font-size-base);
+  -webkit-line-clamp: 4;
 }
 
 .cardImage {
@@ -344,25 +446,22 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 400ms ease;
+  transition: transform var(--transition-base);
 }
 
-.card:hover .cardImage img {
-  transform: scale(1.05);
-}
 
 .cardSection {
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
   padding: 0.2rem 0.7rem;
-  font-size: 0.65rem;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-white);
   background: var(--color-green-dark);
-  border-radius: 100px;
+  border-radius: var(--radius-pill);
 }
 
 .cardBody {
@@ -415,18 +514,15 @@
 }
 
 .listCard {
+  position: relative;
   display: flex;
   background: var(--color-white);
   border: 1px solid var(--color-gray-200);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
 
-.listCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
 
 .listImage {
   position: relative;
@@ -437,15 +533,15 @@
 }
 
 .listImage img {
+  /* Fills the column without setting the row's height (a portrait cover stretched its row) */
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 400ms ease;
+  transition: transform var(--transition-base);
 }
 
-.listCard:hover .listImage img {
-  transform: scale(1.05);
-}
 
 .listBody {
   padding: 1.25rem 1.5rem;
@@ -459,16 +555,65 @@
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
+  /* Too narrow for chips and toolbar on one line: the chips take a row of their own, so the
+     view switch never wraps alone and the chips don't break across two rows */
+  .sectionChips {
+    flex-basis: 100%;
+    margin-right: 0;
+  }
+
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
-}
 
-@media (hover: none) and (pointer: coarse) {
-  .filterGroupPeriod {
-    display: none;
+  .cardLead .cardTitle {
+    font-size: var(--font-size-xl);
   }
 }
+
+/* Hover only where a pointer can hover: on touch it stuck after a tap */
+@media (hover: hover) {
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  .card:hover .cardImage img,
+  .listCard:hover .listImage img {
+    transform: scale(1.05);
+  }
+
+  .listCard:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .filterToggle:hover,
+  .sectionChip:not([aria-pressed='true']):hover,
+  .preset:not(.presetActive):hover {
+    border-color: var(--color-green-dark);
+    color: var(--color-green-dark);
+  }
+
+  .clearBtn:hover,
+  .viewBtn:not(.viewBtnActive):hover {
+    color: var(--color-green-dark);
+  }
+
+  .presetActive:hover,
+  .emptyBtn:hover {
+    color: var(--color-white);
+    background: var(--color-green-deep);
+  }
+}
+
+.sectionChip:active,
+.preset:active,
+.filterToggle:active,
+.emptyBtn:active {
+  transform: scale(0.97);
+}
+
 
 @media (max-width: 600px) {
   .viewToggle {
@@ -476,7 +621,29 @@
   }
 
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Phones: the lead story is an ordinary card, just first */
+  .cardLead {
+    display: block;
+  }
+
+  .cardLead .cardImage {
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+  }
+
+  .cardLead .cardImage img {
+    position: static;
+  }
+
+  .cardLead .cardBody {
+    padding: 1.25rem;
+  }
+
+  .cardLead .cardTitle {
+    font-size: var(--font-size-lg);
   }
 
   .listCard {
@@ -486,6 +653,31 @@
   .listImage {
     width: 100%;
     min-height: 180px;
+  }
+
+  /* Phones: the secção chips are one row that scrolls sideways (wrapped, they took three rows
+     and pushed the first story ~520px down). The row runs to the screen edges, with a fade
+     there hinting at more. */
+  .sectionChips {
+    flex: 0 0 calc(100% + 2 * var(--spacing-lg));
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    /* 5px above and below: the scroller clips overflow, and the focus ring reaches 4px out
+       (2px outline + 2px offset); the negative margin keeps the layout where it was */
+    margin: -3px calc(-1 * var(--spacing-lg));
+    padding: 5px var(--spacing-lg);
+    scroll-padding-inline: var(--spacing-lg);
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black var(--spacing-lg), black calc(100% - var(--spacing-lg)), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, black var(--spacing-lg), black calc(100% - var(--spacing-lg)), transparent 100%);
+  }
+
+  .sectionChips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sectionChip {
+    flex-shrink: 0;
   }
 
   .filterRow {
@@ -504,7 +696,45 @@
     min-height: 44px;
   }
 
-  .filterToggle {
+  .filterToggle,
+  .sectionChip,
+  .preset,
+  .emptyBtn,
+  .clearBtn {
     min-height: 44px;
   }
+
+  /* 16px so iOS doesn't zoom on focus, 44px to tap */
+  .filterSelect {
+    min-height: 44px;
+    font-size: var(--font-size-base);
+  }
+
+  /* Calendar days big enough for a finger in the touch overlay */
+  .calendar :global(.react-datepicker__day),
+  .calendar :global(.react-datepicker__day-name) {
+    width: 2.5rem !important;
+    line-height: 2.5rem !important;
+  }
+}
+
+/* The smallest phones: slightly narrower days so the month keeps a margin to the screen edge */
+@media (pointer: coarse) and (max-width: 360px) {
+  .calendar :global(.react-datepicker__day),
+  .calendar :global(.react-datepicker__day-name) {
+    width: 2.15rem !important;
+    line-height: 2.15rem !important;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

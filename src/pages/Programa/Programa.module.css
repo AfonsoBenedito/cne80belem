@@ -1,11 +1,11 @@
 .page {
-  padding-bottom: 4rem;
+  padding-bottom: var(--spacing-3xl);
 }
 
-/* ── Hero ── */
+/* ── Hero: left-aligned on the page's edge, like the prova pages ── */
 .hero {
   position: relative;
-  text-align: center;
+  text-align: left;
   padding: 3.5rem 0;
   overflow: hidden;
 }
@@ -31,7 +31,7 @@
   color: inherit;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .heroTitle {
@@ -40,24 +40,242 @@
   font-size: var(--font-size-3xl);
   font-weight: 800;
   color: inherit;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .heroSub {
   position: relative;
   z-index: 1;
   font-size: var(--font-size-base);
+  font-weight: 700;
+  color: inherit;
+  margin-top: var(--spacing-sm);
+}
+
+.heroLead {
+  position: relative;
+  z-index: 1;
+  font-size: var(--font-size-base);
   font-weight: 600;
   color: inherit;
-  margin-top: 0.5rem;
+}
+
+/* ── Back to the secção ── */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: var(--spacing-xl);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  transition: var(--transition-interactive);
+}
+
+.backLink:active {
+  transform: scale(0.98);
+}
+
+/* ── Year + trimester choice ── */
+.periodWrap {
+  container-type: inline-size;
+}
+
+
+/* One toolbar: the three trimesters centred on the page, the year on the right (outer columns
+   of equal share keep the trimesters centred). It stacks on phones. */
+.periodPicker {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, 36rem) minmax(max-content, 1fr);
+  align-items: end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.trimesterField {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.trimesterField > .yearLabel {
+  text-align: center;
+}
+
+.yearPicker {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+  justify-self: end;
+}
+
+.yearLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-700);
+}
+
+.yearSelectWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.yearSelect {
+  appearance: none;
+  min-height: 3.5rem;
+  padding: 0 2.25rem 0 var(--spacing-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gray-900);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.yearChevron {
+  position: absolute;
+  right: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-700);
+  pointer-events: none;
+}
+
+/* Three equal buttons in a row */
+.trimesters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.trimesterBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 3.5rem;
+  padding: var(--spacing-sm);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  color: var(--color-gray-700);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.trimesterBtn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Not out yet: shown so the year's shape is clear, but it can't be opened */
+.trimesterBtn:disabled {
+  background: var(--color-gray-50);
+  border-style: dashed;
+  color: var(--color-gray-500);
+  cursor: not-allowed;
+}
+
+.trimesterName {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.trimesterPeriod {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* Very narrow screens: "1.º" alone (the group is labelled "Trimestre"); the word stays for
+   screen readers. Full, it broke as "1.º / Trimestre" inside the button */
+@media (max-width: 400px) {
+  .trimesterName {
+    font-size: var(--font-size-base);
+  }
+
+  .trimesterWord {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+.trimesterBtnOn .trimesterPeriod {
+  color: inherit;
+}
+
+/* 52rem ≈ the 36rem trimesters plus room for the year on either side. In rem, so it scales with
+   the text size: at 200% the toolbar stacks instead of shoving the trimesters off centre. */
+@container (max-width: 52rem) {
+  /* Stacked: the year on its own line (right), then the trimesters across the full width.
+     Side by side in too little room, the select pushed them off centre. */
+  .periodPicker {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .trimesterField {
+    grid-column: auto;
+  }
+
+  /* The year sits on one line above the trimesters, at the right: label, then the select.
+     It wraps (label over select) when large text leaves no room; unwrapped, the label ran off
+     the left edge at 200% */
+  .yearPicker {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    align-self: flex-end;
+    max-width: 100%;
+    gap: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .yearSelect {
+    min-height: 44px;
+  }
+}
+
+/* ── Past months toggle (phones only) ── */
+.pastToggle {
+  display: none;
+}
+
+.pastChevron {
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.pastChevronOpen {
+  transform: rotate(180deg);
 }
 
 /* ── Calendar grid ── */
 .calendar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-top: 2.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
 }
 
 /* ── Month ── */
@@ -66,14 +284,30 @@
   flex-direction: column;
 }
 
+/* Months side by side end on one line: each month's frame runs to the tallest one's bottom,
+   and its last day grows to fill it (no empty band under the last row) */
+.month .weeks {
+  flex: 1;
+}
+
+.weeks > :last-child,
+.weeks > :last-child > :last-child {
+  flex: 1;
+}
+
 .monthName {
   font-size: var(--font-size-lg);
   font-weight: 800;
   text-align: center;
   padding: 0.6rem;
-  border-radius: 10px 10px 0 0;
-  color: var(--color-white);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   margin: 0;
+}
+
+/* A month that is over: gray bar over its gray days */
+.monthNameOver {
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
 }
 
 .weeks {
@@ -81,15 +315,22 @@
   flex-direction: column;
   border: 1px solid var(--color-gray-200);
   border-top: none;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
   overflow: hidden;
 }
 
 /* ── Week row ── */
+/* Days of one week stack, each at the month's full width: side by side (the 20/21 March
+   week) a month column split into two cells of ~180px, and their activities wrapped a word
+   or two per line. A dashed rule keeps the two days reading as one week. */
 .week {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   border-bottom: 1px solid var(--color-gray-200);
+}
+
+.week > .day + .day {
+  border-top: 1px dashed var(--color-gray-200);
 }
 
 .week:last-child,
@@ -99,33 +340,27 @@
 
 /* ── Merged multi-day row ── */
 .weekMerged {
+  display: flex;
+  flex-direction: column;
   border-bottom: 1px solid var(--color-gray-200);
 }
 
 .dayMerged {
-  padding: 0.6rem 0.65rem;
-  min-height: 80px;
+  padding: var(--spacing-sm) 0.75rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--spacing-sm);
 }
 
 .dayMerged .event {
-  font-size: var(--font-size-sm);
   font-weight: 800;
-}
-
-.dayMerged .dayNumber {
-  width: 22px;
-  height: 22px;
-  font-size: 10px;
-  color: var(--color-white);
 }
 
 .dayGroup {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--spacing-xs);
 }
 
 .dayRange {
@@ -136,16 +371,10 @@
 
 /* ── Day cell ── */
 .day {
-  padding: 0.6rem 0.65rem;
-  min-height: 80px;
-  border-right: 1px solid var(--color-gray-200);
+  padding: var(--spacing-sm) 0.75rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-}
-
-.day:last-child {
-  border-right: none;
+  gap: var(--spacing-sm);
 }
 
 .dayActive {
@@ -154,58 +383,82 @@
 
 .dayEmpty {
   background: var(--color-gray-100);
-  opacity: 0.5;
 }
 
 .dayHighlight {
   font-weight: 700;
 }
 
-.dayHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* The next day (or the one on now) carries the secção colour as its frame */
+.dayNext {
+  outline: 2px solid;
+  outline-offset: -2px;
 }
 
+/* Date first, as one group: the number and its weekday side by side, not in opposite corners */
+.dayHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* rem, not px: the day labels were 10px and didn't grow with the text size */
 .dayNumber {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  font-size: 10px;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.3rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
   font-weight: 800;
-  color: var(--color-gray-500);
-  background: var(--color-gray-100);
+  color: var(--color-gray-700);
+  background: var(--color-gray-200);
   flex-shrink: 0;
 }
 
-.dayActive .dayNumber {
-  color: var(--color-white);
-}
-
 .dayWeekday {
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-gray-500);
 }
 
-.dayNextMonth {
+/* Past days go gray; the text stays at full contrast (fading it would drop below 4.5:1) */
+.dayPast {
+  background: var(--color-gray-50);
+}
+
+.dayPast .event,
+.dayPast .eventTime {
+  font-weight: 600;
   color: var(--color-gray-500);
 }
 
 /* ── Events ── */
+/* Left-aligned under the date. Timed days get two columns (time, activity) so the hours
+   line up; centred multi-line text had a ragged edge on both sides */
 .events {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
-  flex: 1;
-  justify-content: center;
-  text-align: center;
+  gap: var(--spacing-xs);
+  text-align: left;
+}
+
+.eventsTimed .event {
+  display: grid;
+  grid-template-columns: 3.1em minmax(0, 1fr);
+  column-gap: var(--spacing-sm);
+}
+
+.eventTime {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  color: var(--color-gray-700);
 }
 
 .event {
@@ -213,34 +466,48 @@
   font-weight: 700;
   line-height: 1.45;
   color: var(--color-black);
+  /* Breaks a word only when it can't fit (200% text); hyphens: auto split "Agrupamento"
+     in the two-day March row even at normal size */
+  overflow-wrap: break-word;
 }
 
 .subtitle {
-  font-size: 10px;
+  font-size: var(--font-size-xs);
   color: var(--color-gray-500);
   font-style: italic;
-  text-align: center;
 }
 
-/* ── Note ── */
-.note {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-gray-200);
-  font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
-  font-style: italic;
-  text-align: center;
+@media (hover: hover) {
+  .yearSelect:hover {
+    border-color: var(--color-gray-300);
+    background: var(--color-gray-50);
+  }
+
+  .trimesterBtn:not(.trimesterBtnOn):not(:disabled):hover {
+    border-color: var(--color-gray-300);
+    background: var(--color-gray-50);
+    color: var(--color-gray-900);
+  }
+
+  .backLink:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .pastToggle:hover {
+    color: var(--color-gray-900);
+  }
 }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .calendar {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Three months in two columns left Março alone beside a blank half; it takes the full row */
+  .month:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 
@@ -249,12 +516,94 @@
     padding: 2.5rem 0;
   }
 
-  .calendar {
-    margin-top: 1.5rem;
+  .heroTitle {
+    font-size: var(--font-size-2xl);
   }
 
-  .day {
-    min-height: 70px;
-    padding: 0.5rem;
+  /* Months already over fold away, so the page opens at the current one */
+  .pastToggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    min-height: 44px;
+    margin-top: var(--spacing-lg);
+    padding: 0 var(--spacing-md);
+    background: var(--color-gray-100);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-gray-700);
+    text-align: left;
+    transition: var(--transition-interactive);
   }
+
+  .pastToggle:active {
+    transform: scale(0.98);
+  }
+
+  .pastChevron {
+    margin-left: auto;
+  }
+
+  .monthFolded {
+    display: none;
+  }
+
+  /* With past months folding away, a 2-column grid would leave odd gaps: one column here */
+  .calendar {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: var(--spacing-lg);
+  }
+
+  .month:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  /* On a phone the buttons ("1.º / Out.–Dez.") say what they are; the label stays for screen readers */
+  .trimesterField > .yearLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .calendar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Touch input: 44px targets (the back link keeps its size and grows an invisible hit area) */
+@media (pointer: coarse) {
+  /* 16px so iOS doesn't zoom on focus (it is at least 44px tall everywhere) */
+  .yearSelect {
+    font-size: var(--font-size-base);
+  }
+
+  .backLink {
+    position: relative;
+  }
+
+  .backLink::after {
+    content: "";
+    position: absolute;
+    inset: -12px -8px;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

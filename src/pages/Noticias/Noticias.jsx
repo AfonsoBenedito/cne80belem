@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useSEO } from '../../utils/useSEO';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import { pt } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt, FaUser, FaSlidersH, FaTimes, FaTh, FaList } from 'react-icons/fa';
 import { noticias, sections, authors } from '../../config/noticias';
+import { seccoes } from '../../config/seccoes';
 import { srcSetFor } from '../../utils/responsiveImage';
 import styles from './Noticias.module.css';
 
@@ -40,22 +41,39 @@ function getLastMonth() {
 }
 
 const presets = [
-  { label: 'Último Mês', getRange: getLastMonth },
-  { label: 'Neste Trimestre', getRange: getScoutTrimester },
-  { label: 'Neste Ano', getRange: getScoutYear },
+  { label: 'Último mês', getRange: getLastMonth },
+  { label: 'Neste trimestre', getRange: getScoutTrimester },
+  { label: 'Neste ano', getRange: getScoutYear },
 ];
 
+// A news item's secção ("Lobitos") in that secção's colours; "Agrupamento" keeps the site green
+const seccaoOf = (name) => seccoes[name?.toLowerCase()];
+const badgeStyle = (name) => {
+  const s = seccaoOf(name);
+  return s ? { background: s.surface, color: s.onSurface } : undefined;
+};
+
+// Touch screens: the range calendar opens as a centred overlay and doesn't raise the keyboard
+// (it used to be hidden on touch altogether, leaving only the presets)
+const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+const touchPicker = isTouch ? { withPortal: true, customInput: <input inputMode="none" /> } : {};
+
 function formatDate(dateStr) {
+  // "2026-03-28" is read as UTC midnight: format it in UTC so it's the same day everywhere
   return new Date(dateStr).toLocaleDateString('pt-PT', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
+// Local calendar date as YYYY-MM-DD. (toISOString() converts to UTC first, so in Portugal local
+// midnight became the previous day for part of the year and the period filter was a day off.)
 function toDateStr(date) {
   if (!date) return '';
-  return date.toISOString().split('T')[0];
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
 export default function Noticias({ fixedSection, hideHero }) {
@@ -67,15 +85,30 @@ export default function Noticias({ fixedSection, hideHero }) {
   });
 
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [sectionFilter, setSectionFilter] = useState('');
+  // Secção and view live in the URL (?seccao=Lobitos&vista=lista), as the Cancioneiro's search
+  // does: a filtered list survives opening a story and pressing Back, and can be shared
+  const [params, setParams] = useSearchParams();
+  const sectionParam = params.get('seccao');
+  const sectionFilter = sections.includes(sectionParam) ? sectionParam : '';
+  const view = params.get('vista') === 'lista' ? 'list' : 'cards';
+  const setParam = (key, value) => {
+    setParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (value) next.set(key, value); else next.delete(key);
+      return next;
+    }, { replace: true });
+  };
+  const setSectionFilter = (value) => setParam('seccao', value);
+  const setView = (value) => setParam('vista', value === 'list' ? 'lista' : '');
   const [authorFilter, setAuthorFilter] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [view, setView] = useState('cards');
 
   const effectiveSection = fixedSection || sectionFilter;
-  const hasFilters = effectiveSection || authorFilter || startDate || endDate;
-  const activeCount = [effectiveSection, authorFilter, startDate].filter(Boolean).length;
+  // A secção page's own secção is fixed, not a filter the visitor set
+  const hasFilters = sectionFilter || authorFilter || startDate || endDate;
+  // The secção is chosen with the chips in view; the panel only holds author and period
+  const panelCount = [authorFilter, startDate].filter(Boolean).length;
 
   const handleDateChange = (dates) => {
     const [start, end] = dates;
@@ -116,65 +149,109 @@ export default function Noticias({ fixedSection, hideHero }) {
       )}
       <div className="container">
 
-        {/* Filter toolbar */}
+        {/* One line of controls where it fits: secção chips, then the rarer filters, the count
+            and the view switch. It wraps on narrower screens; phones scroll the chips instead. */}
         <div className={styles.toolbar}>
+          {/* Secção first, one tap away and in each secção's colours; author and period are rarer,
+              so they sit behind "Mais filtros" */}
+          {!fixedSection && (
+            <div className={styles.sectionChips} role="group" aria-label="Filtrar por secção">
+              <button
+                type="button"
+                className={styles.sectionChip}
+                aria-pressed={!sectionFilter}
+                onClick={() => setSectionFilter('')}
+              >
+                Todas
+              </button>
+              {sections.map((s) => {
+                const on = sectionFilter === s;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    className={styles.sectionChip}
+                    aria-pressed={on}
+                    style={on ? badgeStyle(s) : undefined}
+                    onClick={() => setSectionFilter(on ? '' : s)}
+                  >
+                    <span
+                      className={styles.chipDot}
+                      style={{ background: seccaoOf(s)?.color ?? 'var(--color-green)' }}
+                      aria-hidden="true"
+                    />
+                    {s}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Kept together: when the line runs out, these wrap as one group, never the switch alone */}
+          <div className={styles.toolbarActions}>
           <button
+            type="button"
             className={`${styles.filterToggle} ${filtersOpen ? styles.filterToggleActive : ''}`}
             onClick={() => setFiltersOpen((prev) => !prev)}
+            aria-expanded={filtersOpen}
+            aria-controls="noticias-filtros"
           >
-            <FaSlidersH size={14} />
-            Filtros
-            {activeCount > 0 && <span className={styles.filterBadge}>{activeCount}</span>}
+            <FaSlidersH size={14} aria-hidden="true" />
+            Mais filtros
+            {panelCount > 0 && (
+              <span className={styles.filterBadge}>
+                {panelCount}
+                <span className={styles.srOnly}> {panelCount === 1 ? 'ativo' : 'ativos'}</span>
+              </span>
+            )}
           </button>
 
           {hasFilters && (
-            <button className={styles.clearBtn} onClick={clearFilters}>
-              <FaTimes size={11} />
-              Limpar filtros
+            <button type="button" className={styles.clearBtn} onClick={clearFilters}>
+              <FaTimes size={11} aria-hidden="true" />
+              {/* On the narrowest phones only the ✕ shows; the words stay for screen readers */}
+              <span className={styles.clearLabel}>Limpar filtros</span>
             </button>
           )}
 
-          <div className={styles.viewToggle}>
+          {/* On the toolbar's line, not a row of its own: one less band of chrome before the news */}
+          <p className={styles.resultCount} aria-live="polite">
+            {filtered.length === 1 ? '1 notícia' : `${filtered.length} notícias`}
+          </p>
+
+          <div className={styles.viewToggle} role="group" aria-label="Vista">
             <button
+              type="button"
               className={`${styles.viewBtn} ${view === 'cards' ? styles.viewBtnActive : ''}`}
               onClick={() => setView('cards')}
+              aria-label="Ver em grelha"
+              aria-pressed={view === 'cards'}
               title="Ver em grelha"
             >
-              <FaTh size={14} />
+              <FaTh size={14} aria-hidden="true" />
             </button>
             <button
+              type="button"
               className={`${styles.viewBtn} ${view === 'list' ? styles.viewBtnActive : ''}`}
               onClick={() => setView('list')}
+              aria-label="Ver em lista"
+              aria-pressed={view === 'list'}
               title="Ver em lista"
             >
-              <FaList size={14} />
+              <FaList size={14} aria-hidden="true" />
             </button>
+          </div>
           </div>
         </div>
 
         {/* Filter panel - pushes content down */}
         {filtersOpen && (
-          <div className={styles.filterPanel}>
+          <div className={styles.filterPanel} id="noticias-filtros">
             <div className={styles.filterRow}>
-              {!fixedSection && (
-                <div className={styles.filterGroup}>
-                  <label className={styles.filterLabel}>Secção</label>
-                  <select
-                    value={sectionFilter}
-                    onChange={(e) => setSectionFilter(e.target.value)}
-                    className={styles.filterSelect}
-                  >
-                    <option value="">Todas</option>
-                    {sections.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
               <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>Autor</label>
+                <label className={styles.filterLabel} htmlFor="filtro-autor">Autor</label>
                 <select
+                  id="filtro-autor"
                   value={authorFilter}
                   onChange={(e) => setAuthorFilter(e.target.value)}
                   className={styles.filterSelect}
@@ -187,8 +264,9 @@ export default function Noticias({ fixedSection, hideHero }) {
               </div>
 
               <div className={`${styles.filterGroup} ${styles.filterGroupPeriod}`}>
-                <label className={styles.filterLabel}>Período</label>
+                <label className={styles.filterLabel} htmlFor="filtro-periodo">Período</label>
                 <DatePicker
+                  id="filtro-periodo"
                   selectsRange
                   startDate={startDate}
                   endDate={endDate}
@@ -200,11 +278,12 @@ export default function Noticias({ fixedSection, hideHero }) {
                   locale={pt}
                   className={styles.filterSelect}
                   calendarClassName={styles.calendar}
+                  {...touchPicker}
                 />
               </div>
             </div>
 
-            <div className={styles.presets}>
+            <div className={styles.presets} role="group" aria-label="Períodos rápidos">
               {presets.map(({ label, getRange }) => {
                 const range = getRange();
                 const isActive =
@@ -213,7 +292,9 @@ export default function Noticias({ fixedSection, hideHero }) {
                 return (
                   <button
                     key={label}
+                    type="button"
                     className={`${styles.preset} ${isActive ? styles.presetActive : ''}`}
+                    aria-pressed={isActive}
                     onClick={() => {
                       setStartDate(range.start);
                       setEndDate(range.end);
@@ -228,36 +309,53 @@ export default function Noticias({ fixedSection, hideHero }) {
         )}
 
         {filtered.length === 0 ? (
-          <p className={styles.empty}>Nenhuma notícia encontrada com os filtros selecionados.</p>
+          <div className={styles.empty}>
+            <p>Nenhuma notícia encontrada com os filtros selecionados.</p>
+            <button type="button" className={styles.emptyBtn} onClick={clearFilters}>
+              Limpar filtros
+            </button>
+          </div>
         ) : (
           <div className={view === 'cards' ? styles.grid : styles.list}>
-            {filtered.map((noticia) => (
-              <Link
-                key={noticia.slug}
-                to={`/agrupamento/noticias/${noticia.slug}`}
-                className={view === 'cards' ? styles.card : styles.listCard}
-              >
-                <div className={view === 'cards' ? styles.cardImage : styles.listImage}>
-                  <img
-                    src={noticia.cover}
-                    srcSet={srcSetFor(noticia.cover)}
-                    sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 400px"
-                    alt={noticia.title}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <span className={styles.cardSection}>{noticia.section}</span>
-                </div>
-                <div className={view === 'cards' ? styles.cardBody : styles.listBody}>
-                  <h2 className={styles.cardTitle}>{noticia.title}</h2>
-                  <p className={styles.cardExcerpt}>{noticia.excerpt}</p>
-                  <div className={styles.cardMeta}>
-                    <span><FaUser size={11} /> {noticia.author}</span>
-                    <span><FaCalendarAlt size={11} /> {formatDate(noticia.date)}</span>
+            {filtered.map((noticia, i) => {
+              // The newest story leads, as a wide card, when the grid holds enough to lead
+              const lead = view === 'cards' && i === 0 && filtered.length > 2;
+              return (
+                <Link
+                  key={noticia.slug}
+                  to={`/agrupamento/noticias/${noticia.slug}`}
+                  className={view === 'cards' ? `${styles.card} ${lead ? styles.cardLead : ''}` : styles.listCard}
+                >
+                  <div className={view === 'cards' ? styles.cardImage : styles.listImage}>
+                    <img
+                      src={noticia.cover}
+                      srcSet={srcSetFor(noticia.cover)}
+                      sizes={lead
+                        // Full width on phones; from 601px the photo is the lead card's 3fr column (~60%)
+                        ? '(max-width: 600px) 100vw, (max-width: 1024px) 60vw, 720px'
+                        : '(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 400px'}
+                      // The title right after names the story; an alt repeating it is read twice
+                      alt=""
+                      loading={lead ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
                   </div>
-                </div>
-              </Link>
-            ))}
+                  <div className={view === 'cards' ? styles.cardBody : styles.listBody}>
+                    <h2 className={styles.cardTitle}>{noticia.title}</h2>
+                    {/* After the title in the markup, so the link is read title first; placed over
+                        the photo's corner by CSS */}
+                    <span className={styles.cardSection} style={badgeStyle(noticia.section)}>
+                      {noticia.section}
+                    </span>
+                    <p className={styles.cardExcerpt}>{noticia.excerpt}</p>
+                    <div className={styles.cardMeta}>
+                      <span><FaUser size={11} aria-hidden="true" /> {noticia.author}</span>
+                      <span><FaCalendarAlt size={11} aria-hidden="true" /> {formatDate(noticia.date)}</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

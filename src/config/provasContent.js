@@ -1,5 +1,9 @@
 // ── Conteúdo detalhado de cada prova ──
-// Keyed by slug. Each entry has a title and sections (array of { heading?, text }).
+// Each entry has a title and sections (array of { heading?, text }).
+// Adesão ao Movimento is the same for every secção, so it is keyed by slug alone. Adesão à
+// Secção differs per secção (Bando, Patrulha, Equipa, Comunidade), so it is keyed
+// "<secção>/<slug>": a bare 'adesao-seccao-1' once sent every secção to the Pioneiros text.
+// A prova with no text for its secção shows "está a ser preparado" on its page.
 
 export const provasContent = {
   // ═══════════════════════════════════════
@@ -180,7 +184,7 @@ export const provasContent = {
   // ADESÃO À SECÇÃO
   // ═══════════════════════════════════════
 
-  'adesao-seccao-1': {
+  'pioneiros/adesao-seccao-1': {
     title: 'Como se organizam os Pioneiros?',
     sections: [
       {
@@ -198,7 +202,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-2': {
+  'pioneiros/adesao-seccao-2': {
     title: 'Quais são os cargos existentes na Equipa?',
     sections: [
       {
@@ -216,7 +220,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-3': {
+  'pioneiros/adesao-seccao-3': {
     title: 'Quais os símbolos e qual a mística dos Pioneiros?',
     sections: [
       {
@@ -238,7 +242,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-4': {
+  'pioneiros/adesao-seccao-4': {
     title: 'Conheces o Patrono dos Pioneiros e o da tua Equipa?',
     sections: [
       {
@@ -256,7 +260,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-5': {
+  'pioneiros/adesao-seccao-5': {
     title: 'Já sabes trabalhar e viver em Equipa?',
     sections: [
       {
@@ -274,7 +278,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-6': {
+  'pioneiros/adesao-seccao-6': {
     title: 'Já participaste numa atividade típica de secção?',
     sections: [
       {
@@ -292,7 +296,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-7': {
+  'pioneiros/adesao-seccao-7': {
     title: 'Já conheces as Áreas e os Trilhos que terás de escolher na tua etapa de Conhecimento?',
     sections: [
       {
@@ -310,7 +314,7 @@ export const provasContent = {
     ],
   },
 
-  'adesao-seccao-8': {
+  'pioneiros/adesao-seccao-8': {
     title: 'Conheces os projetos existentes para os Pioneiros?',
     sections: [
       {
@@ -328,3 +332,6 @@ export const provasContent = {
     ],
   },
 };
+
+export const getProvaContent = (seccao, slug) =>
+  provasContent[`${seccao}/${slug}`] ?? provasContent[slug] ?? null;
