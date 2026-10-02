@@ -33,6 +33,7 @@ import souLobito from './songs/sou-lobito';
 import sobemChamas from './songs/sobem-chamas';
 import caminharei from './songs/caminharei';
 import deusEstaAqui from './songs/deus-esta-aqui';
+import aleluia2 from './songs/aleluia-2';
 
 export const cancoes = [
   soproLeve,
@@ -70,4 +71,5 @@ export const cancoes = [
   sobemChamas,
   caminharei,
   deusEstaAqui,
+  aleluia2,
 ];
