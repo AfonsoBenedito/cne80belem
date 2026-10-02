@@ -34,6 +34,7 @@ export const tagCategories = [
     tags: [
       { value: 'entrada', label: 'Entrada' },
       { value: 'perdão', label: 'Perdão' },
+      { value: 'aleluia', label: 'Aleluia' },
       { value: 'ofertório', label: 'Ofertório' },
       { value: 'santo', label: 'Santo' },
       { value: 'comunhão', label: 'Comunhão' },
