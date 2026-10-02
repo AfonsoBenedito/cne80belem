@@ -9,7 +9,7 @@ export default {
 
 {R}[D]Deus [A]está [D]aqui [D7]
 Tão [G]certo como o ar [A]que res[D]piro [D7]
-Tão [G]certo como ama[A]nhã que [D]se [F#]levan[Bm]ta
+Tão [G]certo como ama[A]nhã que [D]se [F#m]levan[Bm]ta
 Tão [G]certo como este [A]canto que podes ou[D]vir
 
 Tu O podes ou[A]vir movendo-se entre os [D]ramos
