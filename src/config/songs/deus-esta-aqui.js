@@ -19,7 +19,7 @@ Tu O podes guardar para sempre no teu coração
 
 {R}[D]Deus [A]está [D]aqui [D7]
 Tão [G]certo como o ar [A]que res[D]piro [D7]
-Tão [G]certo como ama[A]nhã que [D]se [F#]levan[Bm]ta
+Tão [G]certo como ama[A]nhã que [D]se [F#m]levan[Bm]ta
 Tão [G]certo como este [A]canto que podes ou[D]vir
 
 Tu O podes notar ao teu lado neste instante
@@ -29,6 +29,6 @@ Jesus está aqui, se queres podes seguir
 
 {R}[D]Deus [A]está [D]aqui [D7]
 Tão [G]certo como o ar [A]que res[D]piro [D7]
-Tão [G]certo como ama[A]nhã que [D]se [F#]levan[Bm]ta
+Tão [G]certo como ama[A]nhã que [D]se [F#m]levan[Bm]ta
 Tão [G]certo como este [A]canto que podes ou[D]vir`,
 };
