@@ -130,32 +130,3 @@
     color: var(--color-green-dark) !important;
   }
 }
-
-/* Touch: 44px rows in the time list and 40px days, so a finger lands on the intended one */
-@media (pointer: coarse) {
-  .alojamentoCalendar .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
-    height: 44px;
-    padding: 0 var(--spacing-sm);
-  }
-
-  .alojamentoCalendar .react-datepicker__day {
-    width: 2.5rem;
-    line-height: 2.5rem;
-  }
-
-  .alojamentoCalendar .react-datepicker__day-name {
-    width: 2.5rem;
-  }
-}
-
-/* The smallest phones: a slightly narrower day so the month keeps a margin to the screen edge */
-@media (pointer: coarse) and (max-width: 360px) {
-  .alojamentoCalendar .react-datepicker__day,
-  .alojamentoCalendar .react-datepicker__day-name {
-    width: 2.15rem;
-  }
-
-  .alojamentoCalendar .react-datepicker__day {
-    line-height: 2.15rem;
-  }
-}

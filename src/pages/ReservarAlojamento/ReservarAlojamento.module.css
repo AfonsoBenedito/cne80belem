@@ -136,6 +136,28 @@
   flex: 0 0 110px;
 }
 
+/* The phone's own date and time fields (touch screens), styled like the rest: 48px, the same
+   border and type. appearance: none drops iOS's rounded grey pill; the picker still opens. */
+.nativeInput {
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: left;
+}
+
+/* iOS centres the chosen value; keep it on the left like every other field */
+.nativeInput::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+/* The native time field also carries the picker's own clock button, so it needs a little more
+   room than the calendar's text-only time field */
+.dateTimeRow > .nativeInput:last-child {
+  flex-basis: 7.5rem;
+}
+
 .datePickerWrapper {
   flex: 1;
 }
