@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { programa } from '../programa';
+import lobitos from '../programas/lobitos';
+import exploradores from '../programas/exploradores';
+import pioneiros from '../programas/pioneiros';
+import caminheiros from '../programas/caminheiros';
+
+// The page loads a secção's years on demand (programa.js); the test wants all of them at once
+const programa = { lobitos, exploradores, pioneiros, caminheiros };
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const weekdayOf = (y, m, d) => WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
@@ -44,9 +50,14 @@ describe.each(trimesters)('programa: %s', (_, cal) => {
         if (Array.isArray(week)) {
           for (const e of week) expect(e.weekday, `${e.day} ${m.name}`).toBe(weekdayOf(cal.year, m.month, e.day));
         } else {
-          expect(week.dayStart < week.dayEnd, `${week.dayStart} ${m.name}`).toBe(true);
+          // A range may end in a later month (monthEnd), even in January of the next year
+          const endMonth = week.monthEnd ?? m.month;
+          const endYear = endMonth < m.month ? cal.year + 1 : cal.year;
+          const start = Date.UTC(cal.year, m.month - 1, week.dayStart);
+          const end = Date.UTC(endYear, endMonth - 1, week.dayEnd);
+          expect(start < end, `${week.dayStart} ${m.name}`).toBe(true);
           expect(week.weekdayStart, `${week.dayStart} ${m.name}`).toBe(weekdayOf(cal.year, m.month, week.dayStart));
-          expect(week.weekdayEnd, `${week.dayEnd} ${m.name}`).toBe(weekdayOf(cal.year, m.month, week.dayEnd));
+          expect(week.weekdayEnd, `${week.dayEnd} ${m.name}`).toBe(weekdayOf(endYear, endMonth, week.dayEnd));
         }
       }
     }
