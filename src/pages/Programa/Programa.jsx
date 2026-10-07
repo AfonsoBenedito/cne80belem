@@ -1,14 +1,13 @@
-import { useState, useSyncExternalStore } from 'react';
+import { useEffect, useReducer, useState, useSyncExternalStore } from 'react';
 import { useParams, useSearchParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import NotFound from '../NotFound/NotFound';
 import { seccoes } from '../../config/seccoes';
-import { programa } from '../../config/programa';
+import { loadPrograma } from '../../config/programa';
 import { useSEO } from '../../utils/useSEO';
 import styles from './Programa.module.css';
 
 const pad = (n) => String(n).padStart(2, '0');
-const TIMED = /^(\d{1,2}h\d{2})\s*-\s*(.+)$/;
 const isoDate = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
 
 function localToday() {
@@ -38,11 +37,38 @@ function withDates(cal) {
             const date = isoDate(cal.year, month.month, e.day);
             return { ...e, start: date, end: date };
           })
-        : { ...week, start: isoDate(cal.year, month.month, week.dayStart), end: isoDate(cal.year, month.month, week.dayEnd) },
+        : {
+            ...week,
+            start: isoDate(cal.year, month.month, week.dayStart),
+            // A camp may end in the next month (monthEnd), even in January of the next year
+            end: isoDate(
+              (week.monthEnd ?? month.month) < month.month ? cal.year + 1 : cal.year,
+              week.monthEnd ?? month.month,
+              week.dayEnd,
+            ),
+          },
     ),
   }));
 }
 
+// A secção's years arrive in their own chunk the first time its page opens; after that they
+// are read from here synchronously, so switching secções shows no gap
+const loaded = new Map();
+function useProgramaYears(seccao) {
+  const [, rerender] = useReducer((n) => n + 1, 0);
+  useEffect(() => {
+    if (loaded.has(seccao)) return undefined;
+    let current = true;
+    loadPrograma(seccao).then((years) => {
+      loaded.set(seccao, years ?? []);
+      if (current) rerender();
+    });
+    return () => { current = false; };
+  }, [seccao]);
+  return loaded.get(seccao);                           // undefined while loading
+}
+
+const MONTH_NAMES = [null, 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 const shortMonth = (name) => `${name.slice(0, 3)}.`;
 
 // An address with no such secção (/seccao/foo/programa) says so, instead of jumping to Home
@@ -56,10 +82,13 @@ const NOT_FOUND = {
 export default function Programa() {
   const { seccao } = useParams();
   const section = seccoes[seccao];
-  const years = programa[seccao];
+  const years = useProgramaYears(seccao);
   const [searchParams, setSearchParams] = useSearchParams();
   // The phone "earlier months" fold is opened per trimester; switching trimester closes it
   const [showPastFor, setShowPastFor] = useState(null);
+  // The trimester the reader just left: set when they pick another, so only that change animates;
+  // cleared when the entrance ends, so history navigation and reloads don't
+  const [leftFrom, setLeftFrom] = useState(null);
   const today = useSyncExternalStore(onReturn, localToday, localToday);
 
   // Same values as the NotFound it renders: this effect runs after the child's and would win
@@ -69,9 +98,30 @@ export default function Programa() {
   } : { title: NOT_FOUND.title, description: NOT_FOUND.description, noindex: true });
 
   if (!section) return <NotFound {...NOT_FOUND} />;
-  if (!years?.length) return <Navigate to={`/seccao/${seccao}`} replace />;
-
   const shortName = section.label.split(' - ').pop();
+  // The data is on its way: the band and the way back, with room kept for the trimester line
+  if (years === undefined) {
+    return (
+      <main className={`${styles.page} ${styles.pageLoading}`} aria-busy="true">
+        <section className={styles.hero} style={{ background: section.surface, color: section.onSurface }}>
+          <img src={section.image} alt="" className={styles.heroBadge} />
+          <div className="container">
+            <p className={styles.heroLabel}>{shortName}</p>
+            <h1 className={styles.heroTitle}>Programa</h1>
+            <p className={styles.heroSub}>{'\u00A0'}</p>
+            <p className={styles.heroLead}>O que fazemos em cada semana do trimestre.</p>
+          </div>
+        </section>
+        <div className="container">
+          <Link to={`/seccao/${seccao}`} className={styles.backLink} style={{ color: section.ink }}>
+            <FaArrowLeft size={12} aria-hidden="true" /> {shortName}
+          </Link>
+        </div>
+      </main>
+    );
+  }
+  if (!years.length) return <Navigate to={`/seccao/${seccao}`} replace />;
+
   const yearSlug = (label) => label.replace('/', '-');
   // Every trimester of every year, oldest first, with its dates and a unique key
   const chrono = [...years].reverse().flatMap((y) =>
@@ -101,12 +151,15 @@ export default function Programa() {
   const cal = trimAsked ?? (shownYear === current.yearLabel ? current : yearTrims.filter(openable).at(-1));
   const months = cal.months;
   const showPast = showPastFor === cal.key;
-  const choose = (params) =>
+  const choose = (params) => {
+    setLeftFrom(cal.key);
     setSearchParams((prev) => {
       const p = new URLSearchParams(prev);
       Object.entries(params).forEach(([k, v]) => (v == null ? p.delete(k) : p.set(k, v)));
       return p;
     }, { replace: true });
+  };
+  const turn = leftFrom && leftFrom !== cal.key ? 'in' : undefined;
 
   // Within the shown trimester: all past (gray), or the month holding the next activity (the
   // months before it are over, and on phones they fold away so the page opens at the current
@@ -115,26 +168,14 @@ export default function Programa() {
   const nextMonthIndex = next && next.trimKey === cal.key ? months.findIndex((m) => m.name === next.monthName) : -1;
   const pastMonths = nextMonthIndex > 0 ? months.slice(0, nextMonthIndex) : [];
 
-  // "15h00 - Início do Trimestre" becomes a time column and the activity beside it, so times
-  // line up down the day. A line without a time (the second part of a session) sits in the
-  // activity column; a day with no times at all (a camp) has no time column.
-  const renderEvents = (entry) => {
-    const lines = entry.events.map((ev) => {
-      const m = ev.match(TIMED);
-      return m ? { time: m[1], text: m[2] } : { time: null, text: ev };
-    });
-    const timed = lines.some((l) => l.time);
-    return (
-      <ul className={`${styles.events} ${timed ? styles.eventsTimed : ''}`}>
-        {lines.map((l, i) => (
-          <li key={i} className={styles.event}>
-            {timed && <span className={styles.eventTime}>{l.time}</span>}
-            <span className={styles.eventText}>{l.text}</span>
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  // One line per part of the day's activity (the data carries no times)
+  const renderEvents = (entry) => (
+    <ul className={styles.events}>
+      {entry.events.map((ev, i) => (
+        <li key={i} className={styles.event}>{ev}</li>
+      ))}
+    </ul>
+  );
 
   // Day numbers: the secção fill is kept for the next day (and camps' ranges stay as outlines too),
   // so colour points at one thing; other days to come get an ink outline, past days go gray
@@ -180,7 +221,9 @@ export default function Programa() {
                 <select
                   className={styles.yearSelect}
                   value={yearSlug(shownYear)}
-                  onChange={(e) => choose({ ano: e.target.value, trimestre: null })}
+                  // Changing the year keeps the trimester you picked (the fallback above shows another
+                  // one when that year doesn't have it, but the pick survives to the next year)
+                  onChange={(e) => choose({ ano: e.target.value, trimestre: searchParams.get('trimestre') ?? cal.id })}
                 >
                   {yearsOpen.map((y) => (
                     <option key={y.year} value={yearSlug(y.year)}>
@@ -198,34 +241,38 @@ export default function Programa() {
               Trimestre<span className={styles.srOnly}> de {shownYear}</span>
             </span>
             <div className={styles.trimesters} role="group" aria-labelledby="programa-trimestre">
-              {yearTrims.map((t) => {
-                const on = t.key === cal.key;
-                const open = openable(t);
-                const first = t.months[0].name;
-                const last = t.months[t.months.length - 1].name;
+              {/* Always the three slots: a trimester with no programa is a blocked button too, "Em breve"
+                  while its months are still to come, "Sem programa" once they're over */}
+              {['1', '2', '3'].map((id) => {
+                const t = yearTrims.find((x) => x.id === id);
+                const on = t?.key === cal.key;
+                const open = t ? openable(t) : false;
+                const startYear = Number(shownYear.slice(0, 4));
+                const slotEnd = id === '1' ? isoDate(startYear, 12, 31) : id === '2' ? isoDate(startYear + 1, 3, 31) : isoDate(startYear + 1, 6, 30);
+                const blockedLabel = t || today <= slotEnd ? 'Em breve' : 'Sem programa';
                 return (
                   <button
-                    key={t.key}
+                    key={id}
                     type="button"
                     className={`${styles.trimesterBtn} ${on ? styles.trimesterBtnOn : ''}`}
                     style={on ? { background: section.surface, color: section.onSurface, borderColor: section.surface } : undefined}
                     aria-pressed={on}
                     disabled={!open}
-                    onClick={() => choose({ ano: yearSlug(t.yearLabel), trimestre: t.id })}
+                    onClick={() => choose({ ano: yearSlug(shownYear), trimestre: id })}
                   >
                     <span className={styles.trimesterName}>
-                      {t.id}.º<span className={styles.trimesterWord}> Trimestre</span>
+                      {id}.º<span className={styles.trimesterWord}> Trimestre</span>
                     </span>
                     <span className={styles.trimesterPeriod}>
                       {open ? (
                         <>
                           {/* May break after the dash when the text is large; never inside a month */}
-                        <span className={styles.nowrap}>{shortMonth(first)}–</span>
+                        <span className={styles.nowrap}>{shortMonth(t.months[0].name)}–</span>
                         <wbr />
-                        <span className={styles.nowrap}>{shortMonth(last)}</span> {t.year}
+                        <span className={styles.nowrap}>{shortMonth(t.months[t.months.length - 1].name)}</span> {t.year}
                         </>
                       ) : (
-                        'Em breve'
+                        blockedLabel
                       )}
                     </span>
                   </button>
@@ -254,7 +301,13 @@ export default function Programa() {
           </button>
         )}
 
-        <div className={styles.calendar}>
+        <div
+          key={cal.key}
+          className={styles.calendar}
+          data-months={months.length}
+          data-turn={turn}
+          onAnimationEnd={(e) => { if (e.target.parentElement === e.currentTarget && e.target === e.currentTarget.lastElementChild) setLeftFrom(null); }}
+        >
           {months.map((month, mi) => {
             const monthPast = mi < nextMonthIndex;
             // A month that is over goes gray with its days, instead of a full-colour bar over gray cells
@@ -308,6 +361,8 @@ export default function Programa() {
                                 >
                                   {entry.dayEnd}
                                 </time>
+                                {/* "30 – 1 Nov.": the end day is in the next month */}
+                                {entry.monthEnd && <span className={styles.dayEndMonth}>{shortMonth(MONTH_NAMES[entry.monthEnd])}</span>}
                               </span>
                               <span className={styles.dayWeekday}>
                                 {entry.weekdayStart}–{entry.weekdayEnd}
