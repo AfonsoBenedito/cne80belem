@@ -65,6 +65,9 @@
   /* Over photography (the hero carousel): scrims darken the photo under white text; shadows and
      dot fills keep marks legible on any image. DESIGN.md › Elevation › Over photography. */
   --photo-scrim: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0.1) 72%, rgba(0, 0, 0, 0.06) 100%);
+  /* Behind a block of white text over a photo, on top of the photo's own scrim: a long title
+     reaches high where --photo-scrim-tall is thin. Fades out above the block (no hard edge). */
+  --photo-scrim-text: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.3) calc(100% - var(--spacing-2xl)), rgba(0, 0, 0, 0) 100%);
   --photo-scrim-tall: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.55) 45%, rgba(0, 0, 0, 0.25) 75%, rgba(0, 0, 0, 0.1) 100%);
   --photo-text-shadow-lg: 0 2px 12px rgba(0, 0, 0, 0.5);
   --photo-text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
@@ -78,6 +81,14 @@
   /* Dialogs: the one surface that floats above a dimmed page */
   --shadow-dialog: 0 20px 60px rgba(0, 0, 0, 0.2);
   --overlay-scrim: rgba(0, 0, 0, 0.5);
+  /* Stacking: dialogs and the photo viewer sit above the sticky header (100) and the floating
+     button (90) */
+  --z-dialog: 1000;
+  /* A photo viewer: solid near-black, so only the photo is seen (a translucent fill let the page
+     read through on dark screens); its controls are faint white fills that brighten when used */
+  --overlay-scrim-photo: #0a0a0a;
+  --photo-control: rgba(255, 255, 255, 0.12);
+  --photo-control-active: rgba(255, 255, 255, 0.24);
 
   /* Transitions */
   --transition-fast: 150ms ease;

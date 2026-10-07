@@ -25,8 +25,9 @@ function setMeta(attr, name, content) {
  * @param {string} [opts.description] Meta description
  * @param {string} [opts.image]       Absolute or root-relative OG image URL
  * @param {string} [opts.keywords]    Comma-separated keywords (used by Bing etc.)
+ * @param {boolean} [opts.noindex]    Ask search engines not to index this address (not-found pages)
  */
-export function useSEO({ title, rawTitle, description, image, keywords } = {}) {
+export function useSEO({ title, rawTitle, description, image, keywords, noindex = false } = {}) {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -58,8 +59,12 @@ export function useSEO({ title, rawTitle, description, image, keywords } = {}) {
     }
     canonical.setAttribute('href', fullUrl);
 
+    // One SPA document serves every page, so the tag is added only while a not-found page shows
+    if (noindex) setMeta('name', 'robots', 'noindex');
+
     return () => {
       document.title = SITE_NAME;
+      if (noindex) document.querySelector('meta[name="robots"]')?.remove();
     };
-  }, [title, rawTitle, description, image, keywords, pathname]);
+  }, [title, rawTitle, description, image, keywords, noindex, pathname]);
 }

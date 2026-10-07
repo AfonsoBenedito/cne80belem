@@ -28,6 +28,11 @@ describe.each(Object.entries(programa))('programa: %s', (_, years) => {
 });
 
 describe.each(trimesters)('programa: %s', (_, cal) => {
+  // The page reads each trimester's last day to know if it is over; an empty one would break it
+  it('has at least one day', () => {
+    expect(cal.months.some((m) => m.weeks.length > 0)).toBe(true);
+  });
+
   it('has a year and numbered months', () => {
     expect(Number.isInteger(cal.year)).toBe(true);
     for (const m of cal.months) expect(m.month >= 1 && m.month <= 12, m.name).toBe(true);

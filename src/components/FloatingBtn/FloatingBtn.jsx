@@ -21,6 +21,9 @@ export default function FloatingBtn() {
   const onContactos = pathname.replace(/\/$/, '') === '/contactos';
   // Prova pages and the Programa are read on a phone: the button sat on their text
   const onReadingPage = /^\/seccao\/[^/]+\/(provas\/[^/]+|programa)\/?$/.test(pathname);
+  // A notícia's text and gallery fill a phone's width, so the button sat on them; on wider
+  // screens it stays, in the margin beside the reading column
+  const onNoticia = /^\/agrupamento\/noticias\/[^/]+\/?$/.test(pathname);
 
   const sentinelRef = useRef(null);
 
@@ -75,7 +78,7 @@ export default function FloatingBtn() {
     <button
       ref={ref}
       type="button"
-      className={`${styles.fab} ${overFooter ? styles.fabOnDark : ''} ${onSongList ? styles.fabHideOnPhone : ''}`}
+      className={`${styles.fab} ${overFooter ? styles.fabOnDark : ''} ${onSongList || onNoticia ? styles.fabHideOnPhone : ''}`}
       onClick={handleClick}
       aria-label={label}
       title={label}

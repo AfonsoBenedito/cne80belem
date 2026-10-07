@@ -563,6 +563,24 @@
 }
 
 @media (max-width: 600px) {
+  /* A shorter band, and the trimester named once: the pressed button already says it */
+  .hero {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .heroSub {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .heroLead {
+    margin-top: var(--spacing-xs);
+  }
+
   /* On a phone the buttons ("1.º / Out.–Dez.") say what they are; the label stays for screen readers */
   .trimesterField > .yearLabel {
     position: absolute;

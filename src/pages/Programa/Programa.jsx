@@ -1,6 +1,7 @@
 import { useState, useSyncExternalStore } from 'react';
 import { useParams, useSearchParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
+import NotFound from '../NotFound/NotFound';
 import { seccoes } from '../../config/seccoes';
 import { programa } from '../../config/programa';
 import { useSEO } from '../../utils/useSEO';
@@ -44,6 +45,14 @@ function withDates(cal) {
 
 const shortMonth = (name) => `${name.slice(0, 3)}.`;
 
+// An address with no such secção (/seccao/foo/programa) says so, instead of jumping to Home
+const NOT_FOUND = {
+  title: 'Secção não encontrada',
+  description: 'Não há nenhuma secção com este endereço. Escolhe a tua na página inicial.',
+  to: '/',
+  linkLabel: 'Voltar à página inicial',
+};
+
 export default function Programa() {
   const { seccao } = useParams();
   const section = seccoes[seccao];
@@ -53,12 +62,13 @@ export default function Programa() {
   const [showPastFor, setShowPastFor] = useState(null);
   const today = useSyncExternalStore(onReturn, localToday, localToday);
 
+  // Same values as the NotFound it renders: this effect runs after the child's and would win
   useSEO(section ? {
     title: `Programa - ${section.label}`,
     description: `Programa de atividades da ${section.label} do Agrupamento 80.`,
-  } : {});
+  } : { title: NOT_FOUND.title, description: NOT_FOUND.description, noindex: true });
 
-  if (!section) return <Navigate to="/" replace />;
+  if (!section) return <NotFound {...NOT_FOUND} />;
   if (!years?.length) return <Navigate to={`/seccao/${seccao}`} replace />;
 
   const shortName = section.label.split(' - ').pop();
@@ -178,7 +188,7 @@ export default function Programa() {
                     </option>
                   ))}
                 </select>
-                <FaChevronDown size={11} aria-hidden="true" className={styles.yearChevron} />
+                <FaChevronDown size="0.7em" aria-hidden="true" className={styles.yearChevron} />
               </span>
             </label>
           )}
@@ -237,7 +247,7 @@ export default function Programa() {
             {showPast ? 'Esconder' : 'Ver'} {pastMonths.length === 1 ? 'o mês anterior' : 'os meses anteriores'} (
             {pastMonths.map((m) => m.name).join(', ')})
             <FaChevronDown
-              size={11}
+              size="0.8em"
               aria-hidden="true"
               className={`${styles.pastChevron} ${showPast ? styles.pastChevronOpen : ''}`}
             />
@@ -248,7 +258,9 @@ export default function Programa() {
           {months.map((month, mi) => {
             const monthPast = mi < nextMonthIndex;
             // A month that is over goes gray with its days, instead of a full-colour bar over gray cells
-            const monthOver = ended || mi < nextMonthIndex;
+            // (Not when the whole trimester is over: there gray says nothing and only dulls an
+            // archive someone opened on purpose, so a finished trimester reads in full colour.)
+            const monthOver = !ended && mi < nextMonthIndex;
             return (
               <div
                 key={month.name}
@@ -267,7 +279,7 @@ export default function Programa() {
                     // Merged multi-day event (single object instead of array)
                     if (!Array.isArray(week)) {
                       const entry = week;
-                      const past = entry.end < today;
+                      const past = !ended && entry.end < today;
                       const isNext = next && entry.start === next.start;
                       return (
                         <div key={wi} className={styles.weekMerged}>
@@ -299,7 +311,7 @@ export default function Programa() {
                               </span>
                               <span className={styles.dayWeekday}>
                                 {entry.weekdayStart}–{entry.weekdayEnd}
-                                {past && pastNote}
+                                {entry.end < today && pastNote}
                                 {isNext && nextNote}
                               </span>
                             </div>
@@ -315,7 +327,7 @@ export default function Programa() {
                       <div key={wi} className={styles.week}>
                         {week.map((entry) => {
                           const hasEvents = entry.events.length > 0;
-                          const past = entry.end < today;
+                          const past = !ended && entry.end < today;
                           const isNext = next && entry.start === next.start;
                           return (
                             <div
@@ -336,7 +348,7 @@ export default function Programa() {
                                 </time>
                                 <span className={styles.dayWeekday}>
                                   {entry.weekday}
-                                  {past && pastNote}
+                                  {entry.end < today && pastNote}
                                   {isNext && nextNote}
                                 </span>
                               </div>

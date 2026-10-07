@@ -111,7 +111,14 @@ h3 {
   padding: 0 var(--spacing-lg);
 }
 
-/* Reduced motion: keep feedback, drop movement */
+/* Reduced motion: keep feedback, drop movement.
+   Transitions keep running, but only on properties that don't move anything: a change of colour,
+   fill, border, shadow or opacity still eases at its authored speed, while transforms and other
+   spatial properties change at once. A transition that moved and faded becomes a plain fade.
+   Opacity is listed first: browsers pair the authored durations with this list by position, and
+   most multi-part transitions here start with opacity (Home's photos, the floating button).
+   Keyframe animations are mostly entrances that move, so they are cut; a component that has a
+   still alternative (the notícia viewer's fade, the Cancioneiro landing wash) overrides this. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -122,6 +129,7 @@ h3 {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-property: opacity, color, background-color, border-color, outline-color,
+      text-decoration-color, box-shadow, fill, stroke !important;
   }
 }

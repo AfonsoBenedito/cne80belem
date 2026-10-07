@@ -292,6 +292,7 @@
 /* A− / A+: one bordered pair, the second A a step larger so the direction reads at a glance */
 .sizeGroup {
   display: inline-flex;
+  height: var(--bar-control);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-sm);
   background: var(--color-white);
@@ -300,10 +301,11 @@
 
 .sizeBtn {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  min-width: 2.5rem;
-  padding: 0.45rem 0.6rem;
+  min-width: var(--bar-control);
+  height: 100%;
+  padding: 0 0.6rem;
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: 800;
@@ -336,63 +338,73 @@
   border-color: var(--color-green);
 }
 
-.solfegeToggle {
+/* C D E / Dó Ré Mi: two joined buttons, the chosen one green like the Acordes toggle */
+.segmented {
+  display: inline-flex;
+  height: var(--bar-control);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  overflow: hidden;
+}
+
+.segmentBtn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  white-space: nowrap;
-}
-
-.solfegeLabel {
+  justify-content: center;
+  padding: 0 0.75rem;
+  font-family: var(--font-family);
   font-size: var(--font-size-xs);
-  font-weight: 700;
-  color: var(--color-gray-500);
-  transition: color var(--transition-fast);
-  user-select: none;
+  font-weight: 800;
   white-space: nowrap;
-}
-
-.solfegeLabelActive {
-  color: var(--color-gray-900);
-}
-
-.solfegeSwitch {
-  position: relative;
-  width: 32px;
-  height: 18px;
-  background: var(--color-gray-200);
+  color: var(--color-gray-700);
+  background: none;
   border: none;
-  border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: background var(--transition-fast);
-  padding: 0;
+  transition: var(--transition-interactive);
 }
 
-.solfegeSwitchOn {
-  background: var(--color-green-dark);
+.segmentBtn + .segmentBtn {
+  border-left: 1px solid var(--color-gray-200);
 }
 
-.solfegeThumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  background: var(--color-white);
-  border-radius: 50%;
-  transition: transform var(--transition-fast);
-  box-shadow: var(--shadow-thumb);
-}
-
-.solfegeSwitchOn .solfegeThumb {
-  transform: translateX(14px);
+.segmentBtnOn {
+  color: var(--color-green-dark);
+  background: var(--color-green-light);
 }
 
 .transposeGroup {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   white-space: nowrap;
+}
+
+/* − key +: one bordered stepper, the same height as everything else in the bar */
+/* The key is a button: in the original key it does nothing (aria-disabled, so focus stays on
+   it after a reset); transposed, it goes back to the original and shows ↺ */
+button.transposeKey {
+  font-family: var(--font-family);
+  background: none;
+  border-block: none;
+  cursor: default;
+}
+
+.transposeKeyReset {
+  color: var(--color-green-dark);
+  background: var(--color-green-light) !important;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: stretch;
+  height: var(--bar-control);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  overflow: hidden;
 }
 
 .transposeLabel {
@@ -402,44 +414,31 @@
 }
 
 .transposeKey {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-width: 2.75rem;
+  padding: 0 0.25rem;
+  border-inline: 1px solid var(--color-gray-200);
   font-size: var(--font-size-sm);
   font-weight: 800;
   color: var(--color-black);
-  min-width: 2rem;
-  text-align: center;
 }
 
 .transposeBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: var(--bar-control);
   font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  font-weight: 700;
   color: var(--color-gray-700);
-  background: var(--color-white);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-sm);
+  background: none;
+  border: none;
   cursor: pointer;
   transition: var(--transition-interactive);
 }
 
-.transposeReset {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: var(--color-green-dark);
-  background: none;
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition-interactive);
-  padding: 0;
-}
 
 /* ── Sidebar ── */
 .sidebar {
@@ -606,6 +605,7 @@
 /* The reading settings: one bar above the lyrics at every width, sticky under the header so the
    key and text size can change mid-song without scrolling back up. Wraps on phones. */
 .settings {
+  --bar-control: 2.5rem;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -634,6 +634,7 @@
 
 @media (max-width: 768px) {
   .compactBar {
+    --bar-control: 2.5rem;
     position: fixed;
     top: var(--header-height);
     left: 0;
@@ -671,9 +672,45 @@
   margin-left: auto;
 }
 
-/* Reset keeps its place in the original key, invisible and out of the tab order */
-.transposeResetIdle {
-  visibility: hidden;
+/* Acordes takes the bar's height too (it is the same kind of control as the rest) */
+.settings .controlBtn {
+  height: var(--bar-control);
+  min-height: 0;
+}
+
+/* Phones: two even rows, each pair pushed to the edges: Acordes | Tom, then names | size.
+   Wrapping freely left the four controls at four heights on two ragged rows. */
+@media (max-width: 600px) {
+  .settings {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .settings .settingsRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+}
+
+/* The narrowest phones: "Tom" stays for screen readers only, so the row still fits */
+@media (max-width: 380px) {
+  .settings .transposeLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+/* One bar on wide screens: the rows are only for phones */
+.settingsRow {
+  display: contents;
 }
 
 
@@ -775,10 +812,11 @@
 
 /* Press feedback on every pressable control, mouse and touch alike */
 .controlBtn:active,
+.segmentBtn:active,
 .sizeBtn:not([aria-disabled="true"]):active,
 .tag:active,
 .transposeBtn:active,
-.transposeReset:active,
+.transposeKeyReset:active,
 .mediaTab:active,
 .navLink:active,
 .reportSubmitBtn:active:not(:disabled),
@@ -821,14 +859,15 @@
     color: var(--color-green-dark);
   }
 
-  .transposeBtn:hover {
-    border-color: var(--color-green);
+  .transposeBtn:hover,
+  .segmentBtn:not(.segmentBtnOn):hover {
     color: var(--color-green-dark);
+    background: var(--color-green-light);
   }
 
-  .transposeReset:hover {
-    border-color: var(--color-green);
-    background: var(--color-green-light);
+  .transposeKeyReset:hover {
+    background: var(--color-green-dark);
+    color: var(--color-white);
   }
 
   .mediaTab:hover,
@@ -872,24 +911,10 @@
     inset: -14px -8px;
   }
 
-  .solfegeSwitch {
-    position: relative;
-  }
-
-  .solfegeSwitch::after {
-    content: "";
-    position: absolute;
-    inset: -13px -6px;
-  }
-
-  .transposeBtn {
-    position: relative;
-  }
-
-  .transposeBtn::after {
-    content: "";
-    position: absolute;
-    inset: -8px;
+  /* The reading bar's controls are 44px themselves, so no hit areas are needed there */
+  .settings,
+  .compactBar {
+    --bar-control: 44px;
   }
 
   .backLink {
@@ -917,7 +942,6 @@
     padding-inline: 1rem;
   }
 
-  .transposeReset,
   .reportClose,
   .tag {
     position: relative;
@@ -936,12 +960,6 @@
     content: "";
     position: absolute;
     inset: -8px -4px;
-  }
-
-  .transposeReset::after {
-    content: "";
-    position: absolute;
-    inset: -10px -6px;
   }
 
   .reportClose::after {
