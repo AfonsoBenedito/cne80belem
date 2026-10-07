@@ -25,11 +25,33 @@ const keepOnScreen = {
 };
 const pickerModifiers = [keepOnScreen];
 
-// Touch screens: the calendar and time list open as a centred overlay (a popup under the field
-// was covered by the keyboard), and the fields don't raise the keyboard at all, since dates and
-// times are picked, not typed
+// Touch screens use the phone's own date and time pickers (<input type="date"> / "time"): the
+// wheel or calendar people already know, read out properly by VoiceOver and TalkBack, in the
+// phone's language. A mouse keeps the calendar below, which is quicker to click through.
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
-const touchPicker = isTouch ? { withPortal: true, customInput: <input inputMode="none" /> } : {};
+
+// The form keeps Date objects either way (the email is written from them); native fields speak
+// "2026-10-24" and "18:30", in local time
+const pad2 = (n) => String(n).padStart(2, '0');
+const toDateValue = (d) => (d ? `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}` : '');
+const fromDateValue = (v) => {
+  if (!v) return null;
+  const [y, m, d] = v.split('-').map(Number);
+  return new Date(y, m - 1, d);
+};
+const toTimeValue = (d) => (d ? `${pad2(d.getHours())}:${pad2(d.getMinutes())}` : '');
+const fromTimeValue = (v) => {
+  if (!v) return null;
+  const [h, min] = v.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, min, 0, 0);
+  return d;
+};
+const startOfToday = () => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
 
 const INITIAL = {
   organization: '',
@@ -60,6 +82,15 @@ export default function ReservarAlojamento() {
   // screen-reader users land on what happened, not at the top of the page
   const doneRef = useRef(null);
   useEffect(() => { if (draft) doneRef.current?.focus(); }, [draft]);
+
+  // A new entry after the chosen exit clears the exit, rather than keeping an impossible stay
+  function setDateFrom(date) {
+    setForm((prev) => ({
+      ...prev,
+      dateFrom: date,
+      dateTo: prev.dateTo && date && prev.dateTo < date ? null : prev.dateTo,
+    }));
+  }
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -238,44 +269,59 @@ export default function ReservarAlojamento() {
                 {/* The time field sits beside the date under one visible label; this names it */}
                 <span id="timeFromLabel" className={styles.srOnly}>Hora de entrada (opcional)</span>
                 <div className={styles.dateTimeRow}>
-                  <DatePicker
-                    selected={form.dateFrom}
-                    id="dateFrom"
-                    popperModifiers={pickerModifiers}
-                    calendarClassName="alojamentoCalendar"
-                    {...touchPicker}
-                    // A new entry after the chosen exit clears the exit, rather than keeping an
-                    // impossible stay
-                    onChange={(date) => setForm((prev) => ({
-                      ...prev,
-                      dateFrom: date,
-                      dateTo: prev.dateTo && date && prev.dateTo < date ? null : prev.dateTo,
-                    }))}
-                    dateFormat="dd/MM/yyyy"
-                    locale="pt"
-                    placeholderText="dd/mm/aaaa"
-                    className={`${styles.input} ${styles.dateInput}`}
-                    wrapperClassName={styles.datePickerWrapper}
-                    required
-                    minDate={new Date()}
-                  />
-                  <DatePicker
-                    selected={form.timeFrom}
-                    ariaLabelledBy="timeFromLabel"
-                    popperModifiers={pickerModifiers}
-                    calendarClassName="alojamentoCalendar"
-                    {...touchPicker}
-                    onChange={(date) => setForm((prev) => ({ ...prev, timeFrom: date }))}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={30}
-                    timeCaption="Hora"
-                    dateFormat="HH:mm"
-                    locale="pt"
-                    placeholderText="HH:mm"
-                    className={`${styles.input} ${styles.timeInput}`}
-                    wrapperClassName={styles.timePickerWrapper}
-                  />
+                  {isTouch ? (
+                    <>
+                      <input
+                        type="date"
+                        id="dateFrom"
+                        required
+                        min={toDateValue(startOfToday())}
+                        value={toDateValue(form.dateFrom)}
+                        onChange={(e) => setDateFrom(fromDateValue(e.target.value))}
+                        className={`${styles.input} ${styles.nativeInput}`}
+                      />
+                      <input
+                        type="time"
+                        aria-labelledby="timeFromLabel"
+                        value={toTimeValue(form.timeFrom)}
+                        onChange={(e) => setForm((prev) => ({ ...prev, timeFrom: fromTimeValue(e.target.value) }))}
+                        className={`${styles.input} ${styles.nativeInput}`}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <DatePicker
+                        selected={form.dateFrom}
+                        id="dateFrom"
+                        popperModifiers={pickerModifiers}
+                        calendarClassName="alojamentoCalendar"
+                        onChange={setDateFrom}
+                        dateFormat="dd/MM/yyyy"
+                        locale="pt"
+                        placeholderText="dd/mm/aaaa"
+                        className={`${styles.input} ${styles.dateInput}`}
+                        wrapperClassName={styles.datePickerWrapper}
+                        required
+                        minDate={new Date()}
+                      />
+                      <DatePicker
+                        selected={form.timeFrom}
+                        ariaLabelledBy="timeFromLabel"
+                        popperModifiers={pickerModifiers}
+                        calendarClassName="alojamentoCalendar"
+                        onChange={(date) => setForm((prev) => ({ ...prev, timeFrom: date }))}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={30}
+                        timeCaption="Hora"
+                        dateFormat="HH:mm"
+                        locale="pt"
+                        placeholderText="HH:mm"
+                        className={`${styles.input} ${styles.timeInput}`}
+                        wrapperClassName={styles.timePickerWrapper}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -286,38 +332,59 @@ export default function ReservarAlojamento() {
                 </div>
                 <span id="timeToLabel" className={styles.srOnly}>Hora de saída (opcional)</span>
                 <div className={styles.dateTimeRow}>
-                  <DatePicker
-                    selected={form.dateTo}
-                    id="dateTo"
-                    popperModifiers={pickerModifiers}
-                    calendarClassName="alojamentoCalendar"
-                    {...touchPicker}
-                    onChange={(date) => setForm((prev) => ({ ...prev, dateTo: date }))}
-                    dateFormat="dd/MM/yyyy"
-                    locale="pt"
-                    placeholderText="dd/mm/aaaa"
-                    className={`${styles.input} ${styles.dateInput}`}
-                    wrapperClassName={styles.datePickerWrapper}
-                    required
-                    minDate={form.dateFrom || new Date()}
-                  />
-                  <DatePicker
-                    selected={form.timeTo}
-                    ariaLabelledBy="timeToLabel"
-                    popperModifiers={pickerModifiers}
-                    calendarClassName="alojamentoCalendar"
-                    {...touchPicker}
-                    onChange={(date) => setForm((prev) => ({ ...prev, timeTo: date }))}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={30}
-                    timeCaption="Hora"
-                    dateFormat="HH:mm"
-                    locale="pt"
-                    placeholderText="HH:mm"
-                    className={`${styles.input} ${styles.timeInput}`}
-                    wrapperClassName={styles.timePickerWrapper}
-                  />
+                  {isTouch ? (
+                    <>
+                      <input
+                        type="date"
+                        id="dateTo"
+                        required
+                        min={toDateValue(form.dateFrom || startOfToday())}
+                        value={toDateValue(form.dateTo)}
+                        onChange={(e) => setForm((prev) => ({ ...prev, dateTo: fromDateValue(e.target.value) }))}
+                        className={`${styles.input} ${styles.nativeInput}`}
+                      />
+                      <input
+                        type="time"
+                        aria-labelledby="timeToLabel"
+                        value={toTimeValue(form.timeTo)}
+                        onChange={(e) => setForm((prev) => ({ ...prev, timeTo: fromTimeValue(e.target.value) }))}
+                        className={`${styles.input} ${styles.nativeInput}`}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <DatePicker
+                        selected={form.dateTo}
+                        id="dateTo"
+                        popperModifiers={pickerModifiers}
+                        calendarClassName="alojamentoCalendar"
+                        onChange={(date) => setForm((prev) => ({ ...prev, dateTo: date }))}
+                        dateFormat="dd/MM/yyyy"
+                        locale="pt"
+                        placeholderText="dd/mm/aaaa"
+                        className={`${styles.input} ${styles.dateInput}`}
+                        wrapperClassName={styles.datePickerWrapper}
+                        required
+                        minDate={form.dateFrom || new Date()}
+                      />
+                      <DatePicker
+                        selected={form.timeTo}
+                        ariaLabelledBy="timeToLabel"
+                        popperModifiers={pickerModifiers}
+                        calendarClassName="alojamentoCalendar"
+                        onChange={(date) => setForm((prev) => ({ ...prev, timeTo: date }))}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={30}
+                        timeCaption="Hora"
+                        dateFormat="HH:mm"
+                        locale="pt"
+                        placeholderText="HH:mm"
+                        className={`${styles.input} ${styles.timeInput}`}
+                        wrapperClassName={styles.timePickerWrapper}
+                      />
+                    </>
+                  )}
                 </div>
               </div>
             </div>
