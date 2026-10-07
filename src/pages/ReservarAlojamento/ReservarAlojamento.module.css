@@ -23,10 +23,16 @@
   font-size: var(--font-size-3xl);
   font-weight: 800;
   color: var(--color-green);
+  /* At large text sizes "Alojamento" is wider than a phone: break it, hyphenated */
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .subtitle {
-  margin-top: 0.5rem;
+  /* One 97-character line ran the width of the page; two balanced lines over the form instead */
+  max-width: 36rem;
+  margin: 0.5rem auto 0;
+  text-wrap: balance;
   font-size: var(--font-size-lg);
   color: var(--color-gray-500);
 }
@@ -42,7 +48,9 @@
 
 .row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, …): a 1fr track can't shrink below its field's own width, and a field with an
+     error message pushed a phone's form past the screen edge */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.25rem;
 }
 
@@ -115,6 +123,17 @@
   border-radius: var(--radius-sm);
 }
 
+/* A note, not an error: the exit date was cleared because it fell before the new entry */
+.fieldNote {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+/* Empty, it stays in the page for the screen reader but takes no room (nor the column's gap) */
+.fieldNote:empty {
+  position: absolute;
+}
+
 .doneTitle:focus {
   outline: none;
 }
@@ -122,18 +141,20 @@
 /* ── Date & Time ── */
 .dateTimeRow {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-/* Sized by position, not by the picker's wrapper class: in the touch overlay mode the library
-   drops wrapperClassName, and the time field grew to the date's width */
+/* Side by side, the date takes the spare room (it grows 999 times faster) and the time keeps
+   its width; at a large text size there's no room for both, and the time drops under the date
+   at full width instead of pushing the form past the screen edge */
 .dateTimeRow > :first-child {
-  flex: 1;
+  flex: 999 1 9rem;
   min-width: 0;
 }
 
 .dateTimeRow > :last-child {
-  flex: 0 0 110px;
+  flex: 1 0 110px;
 }
 
 /* The phone's own date and time fields (touch screens), styled like the rest: 48px, the same
@@ -156,6 +177,13 @@
    room than the calendar's text-only time field */
 .dateTimeRow > .nativeInput:last-child {
   flex-basis: 7.5rem;
+}
+
+/* The stand-in while the calendar loads: a field box with its placeholder, same height */
+.inputLoading {
+  display: block;
+  line-height: normal;
+  color: var(--color-gray-500);
 }
 
 .datePickerWrapper {
@@ -255,7 +283,8 @@
 }
 
 .submitBtn:active,
-.resetBtn:active {
+.resetBtn:active,
+.newRequest:active {
   transform: scale(0.97);
 }
 
@@ -316,6 +345,7 @@
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
+  transition: var(--transition-interactive);
 }
 
 .success p.longNote {
@@ -326,7 +356,7 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .submitBtn {
@@ -339,6 +369,19 @@
 
   .dateTimeRow > :last-child {
     flex-basis: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* 24px sides instead of 32: the request text gets the room on a phone */
+  .success {
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+
+  /* The two buttons wrapped at two different widths; they fill the row (or share it) instead */
+  .fallbackActions .resetBtn {
+    flex: 1 1 auto;
+    justify-content: center;
   }
 }
 
@@ -358,6 +401,11 @@
 @media (pointer: coarse) {
   .resetBtn {
     min-height: 44px;
+  }
+
+  /* Tapping it focuses it (to select the text), and iOS zooms in on a field under 16px */
+  .fallbackText {
+    font-size: var(--font-size-base);
   }
 
   .newRequest {

@@ -102,10 +102,6 @@
   font-weight: 800;
 }
 
-.alojamentoCalendar .react-datepicker__triangle {
-  display: none;
-}
-
 /* Hover only where a pointer can hover; on touch it stuck on the last day tapped */
 @media (hover: hover) {
   .alojamentoCalendar .react-datepicker__day:not(.react-datepicker__day--disabled):hover {
