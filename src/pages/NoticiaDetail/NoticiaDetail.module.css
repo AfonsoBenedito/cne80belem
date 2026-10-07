@@ -1,43 +1,50 @@
 /* ── Hero ── */
+/* The cover fills the hero under a scrim, the title on top, at every width. A minimum, not a fixed
+   height: a long title grows the hero instead of being cut off. --hero-surface / --hero-ink are the
+   secção's text-safe pair (set inline); "Agrupamento" falls back to the site green. */
 .hero {
   position: relative;
-  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 400px;
   overflow: hidden;
-}
-
-.heroBg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.heroOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.75) 0%,
-    rgba(0, 0, 0, 0.5) 50%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
+  color: var(--color-white);
 }
 
 .heroContent {
-  position: relative;
-  z-index: 1;
+  padding-block: var(--spacing-3xl) var(--spacing-2xl);
+}
+
+.heroFigure {
+  position: absolute;
+  inset: 0;
+}
+
+/* Darkest under the text at the bottom, so contrast holds however high a long title reaches */
+.heroFigure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--photo-scrim-tall);
+}
+
+.heroFigureOpen {
+  cursor: zoom-in;
+}
+
+.heroImg {
+  width: 100%;
   height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding-bottom: 4rem;
+  object-fit: cover;
+  /* Group photos have faces in the upper third; centring cut the heads off */
+  object-position: center 30%;
 }
 
 .heroInfo {
+  position: relative;
+  z-index: 1;
   max-width: 600px;
-  color: var(--color-white);
-  margin-bottom: 2rem;
 }
 
 .heroSection {
@@ -49,160 +56,156 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: var(--color-green-dark);
-  border-radius: 100px;
+  background: var(--hero-surface, var(--color-green-dark));
+  color: var(--hero-ink, var(--color-white));
+  border-radius: var(--radius-pill);
   margin-bottom: 0.75rem;
 }
 
 .heroTitle {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-3xl));
   font-weight: 800;
   line-height: 1.25;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-wrap: balance;
+  /* A word too long for the line (large text on a phone) breaks at a Portuguese hyphenation
+     point, not mid-letter; only long words, with four letters kept either side */
+  hyphens: auto;
+  hyphenate-limit-chars: 10 4 4;
+  overflow-wrap: break-word;
+  text-shadow: var(--photo-text-shadow-lg);
 }
 
 .heroMeta {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) 1.25rem;
   margin-top: 0.75rem;
   font-size: var(--font-size-sm);
-  opacity: 0.85;
+  /* Light on a photo: one weight step up from body so the small meta holds its shape */
+  font-weight: 600;
+  text-shadow: var(--photo-text-shadow);
 }
 
-.heroMeta span {
+.heroMeta > * {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
 
 .heroPhotos {
-  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: var(--transition-interactive);
 }
 
-.heroPhotos:hover {
-  opacity: 1;
+.heroPhotos:active {
+  opacity: 0.7;
 }
 
-/* ── Body layout ── */
+.heroPhotos:focus-visible {
+  outline-color: currentColor;
+}
+
+/* ── Reading column ── */
 .body {
-  padding: 3rem 0 4rem;
+  padding: var(--spacing-2xl) 0 var(--spacing-3xl);
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 2.5rem;
+/* Left edge shared with the hero title. 60ch, not 68: a "ch" is the width of a zero, wider than
+   Nunito's average letter, so this lands at about 70 characters a line. Below 1024px the photos
+   and posts follow the text in the same column. */
+.article,
+.side {
+  max-width: 60ch;
 }
 
-/* ── Sidebar ── */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+/* From 1024px the photos and posts take the space beside the text, larger than they could be
+   under it; the article stays first in the DOM, so reading and focus order don't change */
+/* In em, not px: an em media query follows the reader's browser text size, so with larger text
+   the two columns stop fitting sooner and the page falls back to one column instead of scrolling
+   sideways (64em = 1024px at the default size). The side column also keeps a minimum (in rem, so
+   it grows with the text); the text column gives way first. */
+@media (min-width: 64em) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 60ch) minmax(16rem, 1fr);
+    align-items: start;
+    gap: var(--spacing-3xl);
+  }
+
+  .side > :first-child {
+    margin-top: 0;
+  }
+
+  .side .thumbGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .backLink {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  margin-bottom: var(--spacing-xl);
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-green-dark);
-  transition: opacity var(--transition-fast);
+  transition: var(--transition-interactive);
 }
 
-.backLink:hover {
-  opacity: 0.7;
+@media (hover: hover) {
+  .backLink:hover {
+    opacity: 0.7;
+  }
 }
 
-.sidebarCard {
-  background: var(--color-gray-100);
-  border-radius: var(--border-radius);
-  padding: 1.25rem;
+.backLink:active {
+  opacity: 0.55;
 }
 
-.sidebarTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: var(--color-green-dark);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-gray-200);
+/* ── Gallery ── */
+.gallery {
+  margin-top: var(--spacing-2xl);
 }
 
-/* Author row */
-.authorRow {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-gray-200);
-}
-
-.authorAvatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--color-green-dark);
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.authorName {
-  font-size: var(--font-size-sm);
-  font-weight: 700;
+.galleryTitle {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  line-height: 1.25;
   color: var(--color-black);
-}
-
-.authorRole {
-  font-size: var(--font-size-xs);
-  color: var(--color-gray-500);
-}
-
-.detailList {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.3rem 0.75rem;
-  font-size: var(--font-size-sm);
-}
-
-.detailList dt {
-  font-weight: 700;
-  color: var(--color-gray-500);
-}
-
-.detailList dd {
-  color: var(--color-black);
+  margin-bottom: var(--spacing-md);
 }
 
 /* Photo thumbnails */
 .thumbGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-sm);
 }
 
 .thumb {
   aspect-ratio: 1;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   overflow: hidden;
   border: 2px solid transparent;
   padding: 0;
-  background: none;
-  transition: border-color var(--transition-fast);
+  /* Holds the square while the photo waits for the hero, so nothing shifts when it arrives */
+  background: var(--color-gray-100);
+  transition: var(--transition-interactive);
 }
 
-.thumb:hover {
-  border-color: var(--color-green);
+@media (hover: hover) {
+  .thumb:hover {
+    border-color: var(--color-green);
+  }
+}
+
+.thumb:active {
+  transform: scale(0.97);
 }
 
 .thumb img {
@@ -211,169 +214,164 @@
   object-fit: cover;
 }
 
-/* ── Social links ── */
-.socialLinks {
+/* ── Posts elsewhere ── */
+.posts {
+  margin-top: var(--spacing-2xl);
+}
+
+.postList {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
+  gap: var(--spacing-sm);
+  list-style: none;
 }
 
-.socialLink {
-  color: var(--color-gray-500);
-  transition: color var(--transition-fast);
+/* Several posts on one network: the network named once, then its posts as a row of their own */
+.postGroup {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
-.socialLink:hover {
-  color: var(--color-green-dark);
-}
-
-/* ── Article ── */
-.article {
-  font-size: var(--font-size-base);
-  line-height: 1.85;
+.postGroupName {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
   color: var(--color-gray-700);
 }
 
-.article p {
-  margin-bottom: 1.25rem;
-}
-
-.article p:first-child {
-  font-size: var(--font-size-lg);
-  color: var(--color-black);
+.postLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  line-height: 1.7;
-}
-
-/* ── Lightbox ── */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding: 2rem;
-}
-
-.lightboxClose {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  color: var(--color-white);
-  background: none;
-  opacity: 0.7;
-  transition: opacity var(--transition-fast);
-}
-
-.lightboxClose:hover {
-  opacity: 1;
-}
-
-/* Arrows */
-.lightboxArrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-white);
-  background: rgba(255, 255, 255, 0.1);
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  opacity: 0.7;
-  transition: opacity var(--transition-fast), background var(--transition-fast);
-  z-index: 1;
-}
-
-.lightboxArrow:hover {
-  opacity: 1;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.lightboxArrowLeft {
-  left: 2rem;
-}
-
-.lightboxArrowRight {
-  right: 2rem;
-}
-
-.lightboxImg {
-  max-width: 75%;
-  max-height: 70vh;
-  object-fit: contain;
-  border-radius: var(--border-radius);
-}
-
-.lightboxNav {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.lightboxDot {
-  width: 56px;
-  height: 56px;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  padding: 0;
-  background: none;
-  opacity: 0.5;
+  color: var(--color-gray-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-pill);
   transition: var(--transition-interactive);
 }
 
-.lightboxDot:hover {
-  opacity: 0.8;
+@media (hover: hover) {
+  .postLink:hover {
+    border-color: var(--color-green-dark);
+    color: var(--color-green-dark);
+  }
 }
 
-.lightboxDotActive {
-  border-color: var(--color-yellow);
-  opacity: 1;
+.postLink:active {
+  transform: scale(0.97);
 }
 
-.lightboxDot img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Article ── */
+/* 68ch measure, so leading sits between DESIGN.md body (1.6) and the loose 1.85 it replaced;
+   paragraphs are marked by space alone, about one line */
+.article {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-gray-700);
+}
+
+.article > * + * {
+  margin-top: var(--spacing-lg);
+}
+
+/* The lede: larger and heavier, darker, a touch tighter because it is larger */
+.article > p:first-child {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--color-gray-900);
+}
+
+/* A spoken quote: the same family one step up in weight and size, set in from the text, with
+   pt-PT guillemets in Verde Mata. No italic (Nunito ships none here) and no coloured rule. */
+.quote {
+  margin-block: var(--spacing-xl);
+  padding-inline-start: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--color-gray-900);
+  quotes: "«" "»";
+  text-wrap: pretty;
+}
+
+.quote p::before {
+  content: open-quote;
+}
+
+.quote p::after {
+  content: close-quote;
+}
+
+.quote p::before,
+.quote p::after {
+  color: var(--color-green-dark);
+  font-weight: 800;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .hero {
-    height: 300px;
+    min-height: 300px;
   }
 
-  .layout {
-    grid-template-columns: 1fr;
+  .heroContent {
+    padding-block: var(--spacing-2xl) var(--spacing-xl);
   }
 
-  .sidebar {
-    order: 0;
+  /* The text block covers most of a phone's hero: let taps through it to the photo (which opens
+     the viewer), except on the one control inside it */
+  .heroInfo {
+    pointer-events: none;
   }
 
-  .article {
-    order: 1;
+  .heroPhotos {
+    pointer-events: auto;
   }
 
-  .heroMeta {
-    flex-wrap: wrap;
-    gap: 0.75rem;
+  /* A second, local shade right behind the text block, edge to edge and fading out above the
+     badge: it keeps the top line of a long title readable on a bright photo. Above the photo,
+     below the text (.heroInfo is its own stacking context). */
+  .heroInfo::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--spacing-2xl)) calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-xl));
+    z-index: -1;
+    background: var(--photo-scrim-text);
+  }
+
+  /* The story starts sooner: tighter steps from the hero to the back link and on to the text */
+  .body {
+    padding-top: var(--spacing-xl);
+  }
+
+  .backLink {
+    margin-bottom: var(--spacing-lg);
   }
 }
 
 /* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
 @media (pointer: coarse) {
-  .socialLink {
-    display: inline-grid;
-    place-items: center;
-    min-width: 44px;
+  .postLink {
     min-height: 44px;
   }
 
@@ -385,5 +383,15 @@
     content: "";
     position: absolute;
     inset: -11px -4px;
+  }
+
+  .heroPhotos {
+    position: relative;
+  }
+
+  .heroPhotos::after {
+    content: "";
+    position: absolute;
+    inset: -12px -6px;
   }
 }

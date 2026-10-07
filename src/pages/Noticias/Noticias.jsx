@@ -6,7 +6,7 @@ import { pt } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FaCalendarAlt, FaUser, FaSlidersH, FaTimes, FaTh, FaList } from 'react-icons/fa';
 import { noticias, sections, authors } from '../../config/noticias';
-import { seccoes } from '../../config/seccoes';
+import { seccaoByName as seccaoOf, seccaoBadgeStyle as badgeStyle } from '../../config/seccoes';
 import { srcSetFor } from '../../utils/responsiveImage';
 import styles from './Noticias.module.css';
 
@@ -45,13 +45,6 @@ const presets = [
   { label: 'Neste trimestre', getRange: getScoutTrimester },
   { label: 'Neste ano', getRange: getScoutYear },
 ];
-
-// A news item's secção ("Lobitos") in that secção's colours; "Agrupamento" keeps the site green
-const seccaoOf = (name) => seccoes[name?.toLowerCase()];
-const badgeStyle = (name) => {
-  const s = seccaoOf(name);
-  return s ? { background: s.surface, color: s.onSurface } : undefined;
-};
 
 // Touch screens: the range calendar opens as a centred overlay and doesn't raise the keyboard
 // (it used to be hidden on touch altogether, leaving only the presets)

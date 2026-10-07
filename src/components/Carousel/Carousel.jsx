@@ -1,21 +1,13 @@
 import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { srcSetFor } from '../../utils/responsiveImage';
+import { EASE_OUT, project, rubberband, settleDuration } from '../../utils/swipePhysics';
 import styles from './Carousel.module.css';
 
 // The slide interval lives in CSS (.progress animation-duration): the progress
 // fill's animationend is the clock, so what the dot shows is exactly what happens.
 const SETTLE_MS = 700;
-const EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
-// Initial slope of EASE_OUT (dy/dx at t=0 ≈ 1 / 0.16): used to hand the finger's
-// velocity to the release transition so there's no seam between drag and settle.
-const EASE_OUT_SLOPE = 6.25;
 const DRAG_THRESHOLD = 10;
-
-// Apple's momentum projection (Designing Fluid Interfaces): where a flick would come to rest
-const project = (velocity, rate = 0.998) => ((velocity / 1000) * rate) / (1 - rate);
-const rubberband = (overshoot, dimension, c = 0.55) =>
-  (overshoot * dimension * c) / (dimension + c * Math.abs(overshoot));
 
 function usePrefersReducedMotion() {
   const query = '(prefers-reduced-motion: reduce)';
@@ -144,9 +136,7 @@ export default function Carousel({ images, onFirstImageLoad }) {
       target = Math.min(count - 1, Math.max(0, current + (projected < 0 ? 1 : -1)));
     }
     const remaining = Math.abs((current - target) * d.width + d.offset);
-    const ms = Math.abs(velocity) > 50
-      ? Math.min(SETTLE_MS, Math.max(220, (EASE_OUT_SLOPE * remaining / Math.abs(velocity)) * 1000))
-      : 450;
+    const ms = settleDuration(remaining, velocity, { max: SETTLE_MS });
 
     if (target === current) {
       place(0, ms);

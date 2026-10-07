@@ -86,3 +86,13 @@ export const seccoes = {
     },
   },
 };
+
+// A secção by its display name ("Lobitos"), as notícias store it; "Agrupamento" has none
+export const seccaoByName = (name) => seccoes[name?.toLowerCase()];
+
+// A badge or chip that carries a secção's name, in that secção's text-safe colours. Undefined for
+// "Agrupamento", which keeps the site green from the component's own CSS.
+export const seccaoBadgeStyle = (name) => {
+  const s = seccaoByName(name);
+  return s ? { background: s.surface, color: s.onSurface } : undefined;
+};

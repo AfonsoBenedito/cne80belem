@@ -31,14 +31,23 @@ const Cancioneiro = lazy(loadCancioneiro);
 const CancaoDetail = lazy(() => import('./pages/CancaoDetail/CancaoDetail'));
 const ReservarAlojamento = lazy(() => import('./pages/ReservarAlojamento/ReservarAlojamento'));
 
-// Home triggers the prefetch when its hero has loaded; any other entry page warms the
-// same routes once the document has loaded.
+// Home and the notícia page trigger the prefetch when their hero photo has loaded. Any other
+// entry page warms the same routes a few seconds after the document has loaded: in this SPA
+// "load" fires before a page's own photos are even requested, so prefetching right then shared
+// the bandwidth with them.
+const PREFETCH_DELAY_MS = 4000;
+
 function usePrefetchLikelyRoutes() {
   useEffect(() => {
     if (window.location.pathname.replace(import.meta.env.BASE_URL, '/') === '/') return;
-    if (document.readyState === 'complete') prefetchLikelyRoutes();
-    else window.addEventListener('load', prefetchLikelyRoutes, { once: true });
-    return () => window.removeEventListener('load', prefetchLikelyRoutes);
+    let timer;
+    const schedule = () => { timer = setTimeout(prefetchLikelyRoutes, PREFETCH_DELAY_MS); };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+    return () => {
+      window.removeEventListener('load', schedule);
+      clearTimeout(timer);
+    };
   }, []);
 }
 

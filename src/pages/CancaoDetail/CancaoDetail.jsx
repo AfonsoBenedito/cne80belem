@@ -163,35 +163,43 @@ export default function CancaoDetail() {
 
   // How the song reads: chords on/off, key, naming and text size, in one bar above the lyrics
   // (sticky under the header on desktop). Actions (PDF, songbook) stay in their own row.
+  // Every control in the bar shares one height and one border, so the bar reads as a row of
+  // like things: the key is a joined stepper (− key +), like the A− / A+ pair
   const tomGroup = (
     <div className={styles.transposeGroup}>
-      <span className={styles.transposeLabel}>Tom:</span>
-      <button
-        className={styles.transposeBtn}
-        onClick={() => setSemitones((s) => (s - 1) % 12)}
-        aria-label="Descer meio tom"
-      >
-        <FaMinus size={10} aria-hidden="true" />
-      </button>
-      <span className={styles.transposeKey}>{displayKey}</span>
-      <button
-        className={styles.transposeBtn}
-        onClick={() => setSemitones((s) => (s + 1) % 12)}
-        aria-label="Subir meio tom"
-      >
-        <FaPlus size={10} aria-hidden="true" />
-      </button>
-      {/* Always in the row, hidden in the original key, so transposing never reflows the bar */}
-      <button
-        className={`${styles.transposeReset} ${semitones === 0 ? styles.transposeResetIdle : ''}`}
-        onClick={() => setSemitones(0)}
-        title="Voltar ao tom original"
-        aria-label={`Voltar ao tom original (${solfege ? chordToSolfege(song.key) : song.key})`}
-        aria-hidden={semitones === 0 || undefined}
-        tabIndex={semitones === 0 ? -1 : undefined}
-      >
-        <FaUndo size={9} aria-hidden="true" />
-      </button>
+      <span className={styles.transposeLabel}>Tom</span>
+      <div className={styles.stepper} role="group" aria-label="Tom">
+        <button
+          className={styles.transposeBtn}
+          onClick={() => setSemitones((s) => (s - 1) % 12)}
+          aria-label="Descer meio tom"
+        >
+          <FaMinus size={10} aria-hidden="true" />
+        </button>
+        {/* Transposed, the key itself takes you back (it shows ↺): no extra button to make room for.
+            Always a button, so focus stays on it once it has reset the key */}
+        <button
+          className={`${styles.transposeKey} ${semitones !== 0 ? styles.transposeKeyReset : ''}`}
+          onClick={() => semitones !== 0 && setSemitones(0)}
+          aria-disabled={semitones === 0 || undefined}
+          title={semitones !== 0 ? 'Voltar ao tom original' : undefined}
+          aria-label={
+            semitones === 0
+              ? `Tom ${displayKey}, o original`
+              : `Tom ${displayKey}. Voltar ao tom original (${solfege ? chordToSolfege(song.key) : song.key})`
+          }
+        >
+          {displayKey}
+          {semitones !== 0 && <FaUndo size={9} aria-hidden="true" />}
+        </button>
+        <button
+          className={styles.transposeBtn}
+          onClick={() => setSemitones((s) => (s + 1) % 12)}
+          aria-label="Subir meio tom"
+        >
+          <FaPlus size={10} aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 
@@ -217,38 +225,45 @@ export default function CancaoDetail() {
     </div>
   );
 
+  // Two rows on phones (display: contents elsewhere, so it stays one bar): Acordes and the key,
+  // then the chord names and the text size. With chords off, the size joins Acordes.
   const settingsBar = (
     <div className={styles.settings} ref={settingsRef} role="group" aria-label="Como ler a canção">
-      <button
-        className={`${styles.controlBtn} ${showChords ? styles.controlBtnActive : ''}`}
-        onClick={() => setShowChords(!showChords)}
-        aria-pressed={showChords}
-      >
-        <FaGuitar size={14} aria-hidden="true" />
-        Acordes
-      </button>
+      <div className={styles.settingsRow}>
+        <button
+          className={`${styles.controlBtn} ${showChords ? styles.controlBtnActive : ''}`}
+          onClick={() => setShowChords(!showChords)}
+          aria-pressed={showChords}
+        >
+          <FaGuitar size={14} aria-hidden="true" />
+          Acordes
+        </button>
+        {showChords ? tomGroup : sizeGroup}
+      </div>
 
       {showChords && (
-        <>
-          {tomGroup}
-
-          <div className={styles.solfegeToggle}>
-            <span className={`${styles.solfegeLabel} ${!solfege ? styles.solfegeLabelActive : ''}`}>C D E</span>
+        <div className={styles.settingsRow}>
+          {/* A choice between two namings, not an on/off: two joined buttons, as in the
+              songbook builder (a switch beside the Acordes toggle read as the same kind of thing) */}
+          <div className={styles.segmented} role="group" aria-label="Nomes dos acordes">
             <button
-              className={`${styles.solfegeSwitch} ${solfege ? styles.solfegeSwitchOn : ''}`}
-              onClick={() => setSolfege((s) => !s)}
-              role="switch"
-              aria-checked={solfege}
-              aria-label="Acordes em Dó Ré Mi"
+              className={`${styles.segmentBtn} ${!solfege ? styles.segmentBtnOn : ''}`}
+              onClick={() => setSolfege(false)}
+              aria-pressed={!solfege}
             >
-              <span className={styles.solfegeThumb} />
+              C D E
             </button>
-            <span className={`${styles.solfegeLabel} ${solfege ? styles.solfegeLabelActive : ''}`}>Dó Ré Mi</span>
+            <button
+              className={`${styles.segmentBtn} ${solfege ? styles.segmentBtnOn : ''}`}
+              onClick={() => setSolfege(true)}
+              aria-pressed={solfege}
+            >
+              Dó Ré Mi
+            </button>
           </div>
-        </>
+          {sizeGroup}
+        </div>
       )}
-
-      {sizeGroup}
     </div>
   );
 
