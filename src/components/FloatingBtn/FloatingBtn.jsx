@@ -17,8 +17,10 @@ export default function FloatingBtn() {
   // on the right of every row, which this button would sit on
   const { pathname } = useLocation();
   const onSongList = pathname.replace(/\/$/, '') === '/recursos/cancioneiro';
-  // Contactos is the email: its own Email card sits right there, and the button covered the map
-  const onContactos = pathname.replace(/\/$/, '') === '/contactos';
+  // Contactos is the email: its own Email card sits right there, and the button covered the map.
+  // Reservar Alojamento's form is itself an email; a second, blank one there competed with it
+  // and sat on "Preparar email" on a phone.
+  const onEmailPage = ['/contactos', '/recursos/reservar-alojamento'].includes(pathname.replace(/\/$/, ''));
   // Prova pages and the Programa are read on a phone: the button sat on their text
   const onReadingPage = /^\/seccao\/[^/]+\/(provas\/[^/]+|programa)\/?$/.test(pathname);
   // A notícia's text and gallery fill a phone's width, so the button sat on them; on wider
@@ -74,7 +76,7 @@ export default function FloatingBtn() {
     <>
     {/* The marker stays even where the button doesn't: its observer is set up once, on first load */}
     <span ref={sentinelRef} className={styles.sentinel} style={{ top: SCROLL_THRESHOLD }} aria-hidden="true" />
-    {!onContactos && !onReadingPage && (
+    {!onEmailPage && !onReadingPage && (
     <button
       ref={ref}
       type="button"

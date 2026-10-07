@@ -1,34 +1,31 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useSyncExternalStore, lazy, Suspense } from 'react';
 import { useSEO } from '../../utils/useSEO';
-import DatePicker, { registerLocale } from 'react-datepicker';
-import { pt } from 'date-fns/locale';
-import 'react-datepicker/dist/react-datepicker.css';
-import './datepicker-theme.css';
 import { FaBed, FaEnvelope, FaCopy, FaCheck } from 'react-icons/fa';
 import { mainEmail } from '../../config/contacts';
 import styles from './ReservarAlojamento.module.css';
 
-registerLocale('pt', pt);
+// The calendar (react-datepicker, ~48 KB gzipped, and its CSS) is loaded only for a mouse:
+// touch screens use the phone's own fields and never download it
+const DesktopDateTime = lazy(() => import('./DesktopDateTime'));
 
-// The calendar opens under its field and, on a phone, ran past the left edge of the screen.
-// This keeps it inside the viewport (8px margin) by moving it sideways, never off-screen.
-const keepOnScreen = {
-  name: 'keepOnScreen',
-  fn({ x, y, rects, elements }) {
-    const pad = 8;
-    const vw = document.documentElement.clientWidth;
-    // x is relative to the calendar's offset parent; convert to screen space and back
-    const toScreen = elements.reference.getBoundingClientRect().left - rects.reference.x;
-    const left = Math.min(Math.max(x + toScreen, pad), vw - rects.floating.width - pad);
-    return { x: left - toScreen, y };
-  },
-};
-const pickerModifiers = [keepOnScreen];
+// Two empty field boxes while the calendar loads, so the form doesn't jump when it arrives
+const pickerFallback = (
+  <>
+    <span className={`${styles.input} ${styles.inputLoading}`} aria-hidden="true">dd/mm/aaaa</span>
+    <span className={`${styles.input} ${styles.inputLoading}`} aria-hidden="true">HH:mm</span>
+  </>
+);
 
 // Touch screens use the phone's own date and time pickers (<input type="date"> / "time"): the
 // wheel or calendar people already know, read out properly by VoiceOver and TalkBack, in the
 // phone's language. A mouse keeps the calendar below, which is quicker to click through.
-const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+// Read live, not once at load: a laptop with a touch screen can switch between the two.
+const coarse = typeof window !== 'undefined' ? window.matchMedia('(pointer: coarse)') : null;
+const onPointerChange = (cb) => {
+  coarse?.addEventListener('change', cb);
+  return () => coarse?.removeEventListener('change', cb);
+};
+const readTouch = () => Boolean(coarse?.matches);
 
 // The form keeps Date objects either way (the email is written from them); native fields speak
 // "2026-10-24" and "18:30", in local time
@@ -55,6 +52,8 @@ const startOfToday = () => {
 
 const INITIAL = {
   organization: '',
+  contactName: '',
+  people: '',
   email: '',
   phone: '',
   dateFrom: null,
@@ -64,36 +63,92 @@ const INITIAL = {
   message: '',
 };
 
+// Checked in this order, so the first error is the first field on the page. The browser's own
+// bubbles were in the browser's language and vanished on their own; these stay under the field.
+const FIELD_ORDER = ['organization', 'contactName', 'people', 'email', 'phone', 'dateFrom', 'dateTo'];
+
+function validate(form) {
+  const errors = {};
+  // "required" let a name of only spaces through
+  if (!form.organization.trim()) errors.organization = 'Escreve o nome da organização.';
+  if (!form.contactName.trim()) errors.contactName = 'Escreve o nome de quem fica responsável.';
+  if (!/^\d+$/.test(form.people.trim()) || Number(form.people) < 1) {
+    errors.people = 'Escreve quantas pessoas vêm, só o número (por exemplo, 25).';
+  }
+  if (!form.email.trim()) errors.email = 'Escreve o teu email, para te respondermos.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+    errors.email = 'Este email parece incompleto. Confirma-o (por exemplo, nome@exemplo.pt).';
+  }
+  if (!form.phone.trim()) errors.phone = 'Escreve um número de telefone.';
+  // The calendar empties a typed date it can't take (one already past), so say what it takes
+  if (!form.dateFrom) errors.dateFrom = 'Escolhe a data de entrada, de hoje em diante.';
+  else if (form.dateFrom < startOfToday()) errors.dateFrom = 'A data de entrada já passou. Escolhe hoje ou mais tarde.';
+  if (!form.dateTo) errors.dateTo = 'Escolhe a data de saída.';
+  else if (form.dateFrom && form.dateTo < form.dateFrom) errors.dateTo = 'A data de saída não pode ser antes da entrada.';
+  return errors;
+}
+
 export default function ReservarAlojamento() {
   useSEO({
     title: 'Reservar Alojamento',
     description: 'Reserva o espaço de alojamento do Agrupamento 80 - Santa Maria de Belém para o teu grupo ou organização.',
   });
 
+  const isTouch = useSyncExternalStore(onPointerChange, readTouch, () => false);
   const [form, setForm] = useState(INITIAL);
   // The page can't send anything itself: it opens the visitor's mail app with the request
   // written out. `draft` keeps that request so it can be copied if no mail app opened.
   const [draft, setDraft] = useState(null);
   const [copied, setCopied] = useState(false);
-  const [orgError, setOrgError] = useState('');
-  const orgRef = useRef(null);
+  const [errors, setErrors] = useState({});
+  // Set when a new entry date clears the exit, so the visitor is told rather than finding it empty
+  const [exitCleared, setExitCleared] = useState(false);
   const draftTextRef = useRef(null);
   // After "Preparar email" the form is replaced: focus goes to the confirmation so keyboard and
   // screen-reader users land on what happened, not at the top of the page
   const doneRef = useRef(null);
-  useEffect(() => { if (draft) doneRef.current?.focus(); }, [draft]);
+  // …and "Fazer novo pedido" brings them back to the form's first field, not the top of the page
+  const firstFieldRef = useRef(null);
+  const restarted = useRef(false);
+  useEffect(() => {
+    if (draft) doneRef.current?.focus();
+    else if (restarted.current) firstFieldRef.current?.focus();
+  }, [draft]);
+  // The desktop calendars, so an error can close the one its focus would open
+  const dateFromPicker = useRef(null);
+  const dateToPicker = useRef(null);
 
   // A new entry after the chosen exit clears the exit, rather than keeping an impossible stay
+  function setField(name, value) {
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => (prev[name] ? { ...prev, [name]: undefined } : prev));
+  }
+
   function setDateFrom(date) {
-    setForm((prev) => ({
-      ...prev,
-      dateFrom: date,
-      dateTo: prev.dateTo && date && prev.dateTo < date ? null : prev.dateTo,
-    }));
+    const clears = Boolean(form.dateTo && date && form.dateTo < date);
+    setField('dateFrom', date);
+    if (clears) setForm((prev) => ({ ...prev, dateTo: null }));
+    setExitCleared(clears);
+  }
+
+  function setDateTo(date) {
+    setField('dateTo', date);
+    setExitCleared(false);
   }
 
   function handleChange(e) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setField(e.target.name, e.target.value);
+  }
+
+  // The props that tie a field to its message below it
+  function errorProps(name) {
+    if (errors[name]) return { 'aria-invalid': 'true', 'aria-describedby': `${name}Error` };
+    if (name === 'dateTo' && exitCleared) return { 'aria-describedby': 'dateToCleared' };
+    return {};
+  }
+
+  function fieldError(name) {
+    return errors[name] && <p id={`${name}Error`} className={styles.fieldError}>{errors[name]}</p>;
   }
 
   function fmtDate(d) {
@@ -108,25 +163,39 @@ export default function ReservarAlojamento() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    // "required" lets a name of only spaces through
-    if (!form.organization.trim()) {
-      setOrgError('Escreve o nome da organização.');
-      orgRef.current?.focus();
+    const found = validate(form);
+    const first = FIELD_ORDER.find((name) => found[name]);
+    setErrors(found);
+    if (first) {
+      // Focus reads the field's name and then its message (aria-describedby). On a date, focus
+      // opens the calendar, which would cover the message: close it (keeping focus; true skips the
+      // library's blur), and a key opens it again
+      document.getElementById(first)?.focus();
+      ({ dateFrom: dateFromPicker, dateTo: dateToPicker })[first]?.current?.setOpen(false, true);
       return;
     }
 
-    const subject = `Reserva de Alojamento - ${form.organization}`;
+    const organization = form.organization.trim();
+    const contactName = form.contactName.trim();
+    const subject = `Reserva de Alojamento - ${organization}`;
 
     const timeFromStr = form.timeFrom ? ` às ${fmtTime(form.timeFrom)}` : '';
     const timeToStr = form.timeTo ? ` às ${fmtTime(form.timeTo)}` : '';
+    const message = form.message.trim();
 
+    // A request someone reads, not a list of fields: a greeting, the stay, then who to answer
     const body =
-      `Organização: ${form.organization}\n` +
-      `Email: ${form.email}\n` +
-      `Telefone: ${form.phone}\n` +
-      `Data de entrada: ${fmtDate(form.dateFrom)}${timeFromStr}\n` +
-      `Data de saída: ${fmtDate(form.dateTo)}${timeToStr}\n\n` +
-      `Mensagem:\n${form.message}`;
+      `Olá,\n\n` +
+      `Gostaríamos de reservar o vosso espaço de alojamento.\n\n` +
+      `Organização: ${organization}\n` +
+      `Número de pessoas: ${Number(form.people)}\n` +
+      `Entrada: ${fmtDate(form.dateFrom)}${timeFromStr}\n` +
+      `Saída: ${fmtDate(form.dateTo)}${timeToStr}\n\n` +
+      (message ? `${message}\n\n` : '') +
+      `Responsável: ${contactName}\n` +
+      `Email: ${form.email.trim()}\n` +
+      `Telefone: ${form.phone.trim()}\n\n` +
+      `Com os melhores cumprimentos,\n${contactName}`;
 
     const href = `mailto:${mainEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setDraft({ subject, body, href });
@@ -150,7 +219,9 @@ export default function ReservarAlojamento() {
         {draft ? (
           // Says what actually happened: the email is written, not sent. The visitor still has
           // to press send, and gets the address and text in case no mail app opened.
-          <div className={styles.success} role="status">
+          // No role="status": focus moves to the heading, which announces it; a live region round
+          // the whole panel could read all of it out as well
+          <div className={styles.success}>
             <FaEnvelope size={32} aria-hidden="true" />
             <h2 ref={doneRef} tabIndex={-1} className={styles.doneTitle}>O teu email está pronto</h2>
             <p>
@@ -201,20 +272,25 @@ export default function ReservarAlojamento() {
             <button
               type="button"
               className={styles.newRequest}
-              onClick={() => { setForm(INITIAL); setDraft(null); }}
+              onClick={() => {
+                restarted.current = true;
+                setForm(INITIAL);
+                setErrors({});
+                setExitCleared(false);
+                setDraft(null);
+              }}
             >
               Fazer novo pedido
             </button>
           </div>
         ) : (
-          <form className={styles.form} onSubmit={handleSubmit}>
+          <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <div className={styles.field}>
               <label className={styles.label} htmlFor="organization">Organização</label>
               <input
                 id="organization"
-                ref={orgRef}
-                aria-invalid={orgError ? 'true' : undefined}
-                aria-describedby={orgError ? 'organizationError' : undefined}
+                ref={firstFieldRef}
+                {...errorProps('organization')}
                 name="organization"
                 autoComplete="organization"
                 type="text"
@@ -222,9 +298,46 @@ export default function ReservarAlojamento() {
                 placeholder="Agrupamento, Organização, Movimento, ..."
                 className={styles.input}
                 value={form.organization}
-                onChange={(e) => { handleChange(e); if (orgError) setOrgError(''); }}
+                onChange={handleChange}
               />
-              {orgError && <p id="organizationError" className={styles.fieldError} role="alert">{orgError}</p>}
+              {fieldError('organization')}
+            </div>
+
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="contactName">Nome do responsável</label>
+                <input
+                  id="contactName"
+                  {...errorProps('contactName')}
+                  name="contactName"
+                  autoComplete="name"
+                  type="text"
+                  required
+                  placeholder="Nome e apelido"
+                  className={styles.input}
+                  value={form.contactName}
+                  onChange={handleChange}
+                />
+                {fieldError('contactName')}
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="people">Número de pessoas</label>
+                <input
+                  id="people"
+                  {...errorProps('people')}
+                  name="people"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  required
+                  placeholder="Por exemplo, 25"
+                  className={styles.input}
+                  value={form.people}
+                  onChange={handleChange}
+                />
+                {fieldError('people')}
+              </div>
             </div>
 
             <div className={styles.row}>
@@ -232,6 +345,7 @@ export default function ReservarAlojamento() {
                 <label className={styles.label} htmlFor="email">Email</label>
                 <input
                   id="email"
+                  {...errorProps('email')}
                   name="email"
                   autoComplete="email"
                   type="email"
@@ -241,12 +355,14 @@ export default function ReservarAlojamento() {
                   value={form.email}
                   onChange={handleChange}
                 />
+                {fieldError('email')}
               </div>
 
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="phone">Telefone</label>
                 <input
                   id="phone"
+                  {...errorProps('phone')}
                   name="phone"
                   autoComplete="tel"
                   type="tel"
@@ -256,6 +372,7 @@ export default function ReservarAlojamento() {
                   value={form.phone}
                   onChange={handleChange}
                 />
+                {fieldError('phone')}
               </div>
             </div>
 
@@ -274,6 +391,7 @@ export default function ReservarAlojamento() {
                       <input
                         type="date"
                         id="dateFrom"
+                        {...errorProps('dateFrom')}
                         required
                         min={toDateValue(startOfToday())}
                         value={toDateValue(form.dateFrom)}
@@ -289,40 +407,22 @@ export default function ReservarAlojamento() {
                       />
                     </>
                   ) : (
-                    <>
-                      <DatePicker
-                        selected={form.dateFrom}
+                    <Suspense fallback={pickerFallback}>
+                      <DesktopDateTime
                         id="dateFrom"
-                        popperModifiers={pickerModifiers}
-                        calendarClassName="alojamentoCalendar"
-                        onChange={setDateFrom}
-                        dateFormat="dd/MM/yyyy"
-                        locale="pt"
-                        placeholderText="dd/mm/aaaa"
-                        className={`${styles.input} ${styles.dateInput}`}
-                        wrapperClassName={styles.datePickerWrapper}
-                        required
-                        minDate={new Date()}
+                        pickerRef={dateFromPicker}
+                        date={form.dateFrom}
+                        onDate={setDateFrom}
+                        minDate={startOfToday()}
+                        time={form.timeFrom}
+                        onTime={(date) => setForm((prev) => ({ ...prev, timeFrom: date }))}
+                        timeLabelId="timeFromLabel"
+                        {...errorProps('dateFrom')}
                       />
-                      <DatePicker
-                        selected={form.timeFrom}
-                        ariaLabelledBy="timeFromLabel"
-                        popperModifiers={pickerModifiers}
-                        calendarClassName="alojamentoCalendar"
-                        onChange={(date) => setForm((prev) => ({ ...prev, timeFrom: date }))}
-                        showTimeSelect
-                        showTimeSelectOnly
-                        timeIntervals={30}
-                        timeCaption="Hora"
-                        dateFormat="HH:mm"
-                        locale="pt"
-                        placeholderText="HH:mm"
-                        className={`${styles.input} ${styles.timeInput}`}
-                        wrapperClassName={styles.timePickerWrapper}
-                      />
-                    </>
+                    </Suspense>
                   )}
                 </div>
+                {fieldError('dateFrom')}
               </div>
 
               <div className={styles.field}>
@@ -337,10 +437,11 @@ export default function ReservarAlojamento() {
                       <input
                         type="date"
                         id="dateTo"
+                        {...errorProps('dateTo')}
                         required
                         min={toDateValue(form.dateFrom || startOfToday())}
                         value={toDateValue(form.dateTo)}
-                        onChange={(e) => setForm((prev) => ({ ...prev, dateTo: fromDateValue(e.target.value) }))}
+                        onChange={(e) => setDateTo(fromDateValue(e.target.value))}
                         className={`${styles.input} ${styles.nativeInput}`}
                       />
                       <input
@@ -352,40 +453,26 @@ export default function ReservarAlojamento() {
                       />
                     </>
                   ) : (
-                    <>
-                      <DatePicker
-                        selected={form.dateTo}
+                    <Suspense fallback={pickerFallback}>
+                      <DesktopDateTime
                         id="dateTo"
-                        popperModifiers={pickerModifiers}
-                        calendarClassName="alojamentoCalendar"
-                        onChange={(date) => setForm((prev) => ({ ...prev, dateTo: date }))}
-                        dateFormat="dd/MM/yyyy"
-                        locale="pt"
-                        placeholderText="dd/mm/aaaa"
-                        className={`${styles.input} ${styles.dateInput}`}
-                        wrapperClassName={styles.datePickerWrapper}
-                        required
-                        minDate={form.dateFrom || new Date()}
+                        pickerRef={dateToPicker}
+                        date={form.dateTo}
+                        onDate={setDateTo}
+                        minDate={form.dateFrom || startOfToday()}
+                        time={form.timeTo}
+                        onTime={(date) => setForm((prev) => ({ ...prev, timeTo: date }))}
+                        timeLabelId="timeToLabel"
+                        {...errorProps('dateTo')}
                       />
-                      <DatePicker
-                        selected={form.timeTo}
-                        ariaLabelledBy="timeToLabel"
-                        popperModifiers={pickerModifiers}
-                        calendarClassName="alojamentoCalendar"
-                        onChange={(date) => setForm((prev) => ({ ...prev, timeTo: date }))}
-                        showTimeSelect
-                        showTimeSelectOnly
-                        timeIntervals={30}
-                        timeCaption="Hora"
-                        dateFormat="HH:mm"
-                        locale="pt"
-                        placeholderText="HH:mm"
-                        className={`${styles.input} ${styles.timeInput}`}
-                        wrapperClassName={styles.timePickerWrapper}
-                      />
-                    </>
+                    </Suspense>
                   )}
                 </div>
+                {fieldError('dateTo')}
+                {/* Always in the page, so the screen reader hears the message when it appears */}
+                <p id="dateToCleared" className={styles.fieldNote} aria-live="polite">
+                  {exitCleared && !errors.dateTo && 'Limpámos a data de saída: ficava antes da nova entrada.'}
+                </p>
               </div>
             </div>
 
