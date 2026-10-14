@@ -1,8 +1,8 @@
 // The emblems only ever show here as 36-44px badges: a 96px copy covers 2x screens
 // (the secção pages import the full-size files themselves)
-import lobitosImg from '../assets/images/sections/lobitos.png?w=96&format=webp';
-import exploradoresImg from '../assets/images/sections/exploradores.png?w=96&format=webp';
-import pioneirosImg from '../assets/images/sections/pioneiros.png?w=96&format=webp';
+import lobitosImg from '../assets/images/sections/lobitos.jpg?w=96&format=webp';
+import exploradoresImg from '../assets/images/sections/exploradores.jpg?w=96&format=webp';
+import pioneirosImg from '../assets/images/sections/pioneiros.jpg?w=96&format=webp';
 import caminheirosImg from '../assets/images/sections/caminheiros.jpg?w=96&format=webp';
 
 import diogoCardosoImg from '../assets/images/members/diogo_cardoso.jpg';

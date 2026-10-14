@@ -54,7 +54,7 @@
 }
 
 /* ── Back to the secção ── */
-/* The back link and the PDF button share a row; on a narrow phone the button drops under it */
+/* The back link and the downloads share a row; on a narrow phone the downloads drop under it */
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -62,6 +62,13 @@
   justify-content: space-between;
   gap: var(--spacing-sm) var(--spacing-md);
   margin-top: var(--spacing-xl);
+}
+
+.downloads {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
 }
 
 .backLink {

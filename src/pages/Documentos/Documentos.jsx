@@ -2,6 +2,7 @@ import { useRef, useState, useSyncExternalStore } from 'react';
 import { FaFilePdf, FaTimes, FaDownload, FaExternalLinkAlt } from 'react-icons/fa';
 import { useSEO } from '../../utils/useSEO';
 import { documentos } from '../../config/documentos';
+import { fileSize } from '../../utils/fileSize';
 import styles from './Documentos.module.css';
 
 // The inline viewer is for wide screens with a pointer that can hover. Phones, tablets and
@@ -20,13 +21,6 @@ const canPreviewNow = () => window.matchMedia(PREVIEW_QUERY).matches && navigato
 
 // The built files are hashed (regulamento_interno-Bx3k.pdf); a download is named after the document
 const fileName = (doc) => `${doc.name}.pdf`;
-
-// "84 KB", "1,3 MB": the one file over a megabyte is worth knowing about on mobile data
-const sizeFormat = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 1 });
-const fileSize = (bytes) =>
-  bytes >= 1024 * 1024
-    ? `${sizeFormat.format(bytes / (1024 * 1024))} MB`
-    : `${Math.max(1, Math.round(bytes / 1024))} KB`;
 
 export default function Documentos() {
   useSEO({

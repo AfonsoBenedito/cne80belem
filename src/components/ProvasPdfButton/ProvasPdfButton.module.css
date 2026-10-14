@@ -1,5 +1,8 @@
+/* Also styles the Caderno de Pista link beside it: line-height is set so a link (which inherits
+   the body's) and a button (which doesn't) come out the same height */
 .button {
   display: inline-flex;
+  line-height: normal;
   align-items: center;
   gap: 0.45rem;
   padding: 0.5rem 1rem;
