@@ -69,23 +69,15 @@ export const provasContent = {
   },
 
   'adesao-movimento-4': {
-    title: 'Lei, Princípios e Promessa',
+    title: 'Lei e Princípios',
     sections: [
       {
-        heading: 'A Lei do Escuta',
-        text: 'A Lei do Escuta é o código de conduta que guia o comportamento de todos os membros do CNE. São 10 artigos que expressam valores como a honra, a lealdade, o serviço, a amizade, a cortesia, o respeito pela natureza, a obediência, a alegria, a economia e a pureza de pensamentos, palavras e ações.',
-      },
-      {
         heading: 'Os 10 artigos da Lei',
-        text: '1. A honra do Escuta inspira confiança.\n2. O Escuta é leal.\n3. O Escuta é útil e pratica diariamente uma boa ação.\n4. O Escuta é amigo de todos e irmão de todos os outros Escutas.\n5. O Escuta é cortês e respeitador.\n6. O Escuta protege as plantas e os animais.\n7. O Escuta é obediente.\n8. O Escuta tem sempre boa disposição.\n9. O Escuta é económico, trabalhador e cuidadoso.\n10. O Escuta é puro nos pensamentos, nas palavras e nas ações.',
+        text: '1. A Honra do Escuta inspira confiança.\n2. O Escuta é Leal.\n3. O Escuta é útil e pratica diariamente uma boa acção.\n4. O Escuta é amigo de todos e irmão de todos os outros Escutas.\n5. O Escuta é delicado e respeitador.\n6. O Escuta protege as plantas e os animais.\n7. O Escuta é obediente.\n8. O Escuta tem sempre boa disposição de espírito.\n9. O Escuta é sóbrio, económico e respeitador do bem alheio.\n10. O Escuta é puro nos pensamentos, nas palavras e nas acções.',
       },
       {
         heading: 'Os Princípios',
-        text: 'Os Princípios do Escuta são três deveres fundamentais:\n\n• Dever para com Deus - o Escuta vive a sua Fé e procura conhecer e amar a Deus.\n• Dever para com os outros - o Escuta participa no desenvolvimento da sociedade, respeita a dignidade das outras pessoas e a integridade do mundo natural.\n• Dever para consigo próprio - o Escuta é responsável pelo seu próprio desenvolvimento.',
-      },
-      {
-        heading: 'A Promessa',
-        text: 'A Promessa é o compromisso pessoal e voluntário que cada escuteiro faz perante Deus, perante os outros e perante si mesmo. Ao fazer a Promessa, o escuteiro compromete-se a viver de acordo com a Lei do Escuta e a servir Deus, a Pátria e o próximo.',
+        text: '1. O Escuta orgulha-se da sua Fé e por ela orienta toda a sua vida.\n2. O Escuta é filho de Portugal e bom cidadão.\n3. O dever do Escuta começa em casa.',
       },
     ],
   },

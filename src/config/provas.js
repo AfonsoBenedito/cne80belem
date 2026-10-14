@@ -4,7 +4,7 @@
 // Adesão ao Movimento provas below, it is that prova: its name, its slug and so its page and text
 // (a shared text is keyed by slug alone in provasContent.js). A secção's own prova gets its own
 // slug, and a text for it is keyed "<secção>/<slug>".
-// Titles are short names ("Lei, Princípios e Promessa"), the same wherever two secções share a
+// Titles are short names ("Lei e Princípios"), the same wherever two secções share a
 // topic ("Símbolos e Mística", "Patrono: S. Tiago"). Adesão à Secção follows one order in every
 // secção: organização, cargos, símbolos e mística, patrono, oração, livro/lei, progresso, the rest.
 // Slugs never change with the order or the name, so links and texts keep their prova.
@@ -16,7 +16,7 @@ const adesaoMovimento = {
     { slug: 'adesao-movimento-1', title: 'História do Escutismo e do CNE' },
     { slug: 'adesao-movimento-2', title: 'Organização do Agrupamento e do CNE' },
     { slug: 'adesao-movimento-3', title: 'Vida de Baden-Powell' },
-    { slug: 'adesao-movimento-4', title: 'Lei, Princípios e Promessa' },
+    { slug: 'adesao-movimento-4', title: 'Lei e Princípios' },
     { slug: 'adesao-movimento-5', title: 'Oração do Escuta' },
     { slug: 'adesao-movimento-6', title: 'Livro "Escutismo para Rapazes"' },
     { slug: 'adesao-movimento-7', title: 'Uniforme e distintivos dos dirigentes' },
