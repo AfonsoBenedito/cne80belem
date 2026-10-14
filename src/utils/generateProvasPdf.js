@@ -352,14 +352,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       }
       y += 2 * s;
     }
+    // A recited section (the content's `recite`) is set larger, as on the page. 11.5pt: a step up
+    // from the prose, and the Lobitos' three prayers still fit one A4 page
+    const size = sec.recite ? 11.5 : BODY;
+    const lineH = sec.recite ? size * s * PT * 1.4 : lh;
     for (const block of sec.text ? toBlocks(sec.text) : []) {
       if (block.kind === 'p') {
-        // Several lines (a prayer): set larger, as on the page, and a wrapped part sits indented
-        // under its line
+        // Several lines (a prayer): a wrapped part sits indented under its line
         const verse = block.lines.length > 1;
-        // 11.5pt: a step up from the prose, and the Lobitos' three prayers still fit one A4 page
-        const size = verse ? 11.5 : BODY;
-        const lineH = verse ? size * s * PT * 1.4 : lh;
         const hang = verse ? 1.25 * size * s * PT : 0;
         block.lines.forEach((line, n) => {
           const lines = draw.split(line, colW - hang, size);
@@ -378,22 +378,22 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         // Hanging indent: the marker in the secção's ink, the text aligned after it
         const indent = (block.kind === 'ol' ? 7 : 5) * s;
         block.lines.forEach((item, i) => {
-          const wrapped = draw.split(item, colW - indent, BODY);
-          room(lh * Math.min(wrapped.length, 2));
-          draw.text(block.kind === 'ol' ? `${block.start + i}.` : '•', left(), y + asc(BODY), BODY, 'bold', ink);
+          const wrapped = draw.split(item, colW - indent, size);
+          room(lineH * Math.min(wrapped.length, 2));
+          draw.text(block.kind === 'ol' ? `${block.start + i}.` : '•', left(), y + asc(size), size, 'bold', ink);
           wrapped.forEach((w, k) => {
-            if (k) room(lh);
-            draw.text(w, left() + indent, y + asc(BODY), BODY, 'normal', BLACK);
-            y += lh;
+            if (k) room(lineH);
+            draw.text(w, left() + indent, y + asc(size), size, 'normal', BLACK);
+            y += lineH;
           });
-          y += 1.2 * s;
+          // A recited list's items are sayings of their own: more room between them
+          y += (sec.recite ? 2.5 : 1.2) * s;
         });
       }
       y += 3.5 * s;
     }
-    // A prayer gets a wider pause before the next one, as on the page
-    const verse = sec.text && toBlocks(sec.text).some((b) => b.kind === 'p' && b.lines.length > 1);
-    y += (verse ? 6 : 4) * s;
+    // A recited section gets a wider pause before the next one, as on the page
+    y += (sec.recite ? 6 : 4) * s;
   }
   return first;
 }

@@ -1,5 +1,6 @@
 // ── Conteúdo detalhado de cada prova ──
-// Each entry has a title and sections (array of { heading?, text } or { heading?, media }: media
+// Each entry has a title and sections (array of { heading?, text, recite? } or { heading?, media }; `recite`
+// sets text that is said aloud from memory (prayers, the Lobito's Leis) in the larger reading style; media
 // names pictures the page draws per secção, 'uniformes', 'progresso', 'dirigentes' or a badge grid, from config/distintivos.js).
 // Adesão ao Movimento is the same for every secção, so it is keyed by slug alone. Adesão à
 // Secção differs per secção (Bando, Patrulha, Equipa, Comunidade), so it is keyed
@@ -31,6 +32,7 @@ export const provasContent = {
     sections: [
       {
         heading: 'Oração',
+        recite: true,
         text: 'Senhor Jesus\nEnsinai-me a ser generoso,\nA servir-Vos como Vós o mereceis,\nA dar-me sem medida,\nA combater sem cuidar das feridas,\nA trabalhar sem procurar descanso,\nA gastar-me sem esperar outra recompensa,\nSenão saber que faço a Vossa vontade santa,\nÁmen',
       },
     ],
@@ -62,15 +64,35 @@ export const provasContent = {
     sections: [
       {
         heading: 'Oração do Lobito',
+        recite: true,
         text: 'Divino Menino Jesus.\nNós Vos oferecemos\ninteiramente o nosso coração.\nEnchei-o das Vossas virtudes,\ne ensinai-nos a imitar-Vos.\nNós queremos seguir o Vosso\nexemplo, com toda a boa vontade;\npara assim, com a ajuda da Vossa\nMãe, Maria Santíssima,\ncrescermos em graça e em idade.\nAmen.',
       },
       {
         heading: 'Pai Nosso',
+        recite: true,
         text: 'Pai nosso, que estais nos céus,\nsantificado seja o vosso nome;\nvenha a nós o vosso reino;\nseja feita a vossa vontade,\nassim na terra como no céu.\nO pão nosso de cada dia nos dai hoje;\nperdoai-nos as nossas ofensas,\nassim como nós perdoamos\na quem nos tem ofendido;\ne não nos deixeis cair em tentação,\nmas livrai-nos do mal.\nÁmen.',
       },
       {
         heading: 'Avé Maria',
+        recite: true,
         text: 'Avé Maria, cheia de graça,\no Senhor é convosco;\nbendita sois vós entre as mulheres\ne bendito é o fruto do vosso ventre, Jesus.\nSanta Maria, Mãe de Deus,\nrogai por nós pecadores,\nagora e na hora da nossa morte.\nÁmen.',
+      },
+    ],
+  },
+
+  'lobitos/adesao-seccao-3': {
+    title: 'Leis e Máximas do Lobito',
+    // Numbered, as the Lei e Princípios are
+    sections: [
+      {
+        heading: 'As Leis do Lobito',
+        recite: true,
+        text: '1. O Lobito escuta «Aquelá».\n2. O Lobito não se escuta a si próprio.',
+      },
+      {
+        heading: 'As Máximas do Lobito',
+        recite: true,
+        text: '1. O Lobito pensa primeiro no seu semelhante.\n2. O Lobito sabe ver e ouvir.\n3. O Lobito é asseado.\n4. O Lobito é verdadeiro.\n5. O Lobito é alegre.',
       },
     ],
   },

@@ -28,6 +28,22 @@ describe('provasContent', () => {
     }
   });
 
+  // Text said aloud from memory is set in the larger reading style only when its section says so
+  // (`recite: true`); a prayer or a Lobito's law added without it would quietly render as prose
+  const RECITED = /^(Oração|Pai Nosso|Avé Maria|As Leis do|As Máximas do)/;
+  const sections = Object.entries(provasContent).flatMap(([key, c]) => c.sections.map((s) => [key, s]));
+
+  const recitedHeadings = sections.filter(([, s]) => s.heading && RECITED.test(s.heading)).map(([key, s]) => [key, s.heading, s]);
+  it.each(recitedHeadings)('%s: "%s" is marked recite', (key, heading, s) => {
+    expect(s.recite, `${key} · ${heading}`).toBe(true);
+  });
+
+  it('gives recite only to sections of text', () => {
+    for (const [key, s] of sections) {
+      if (s.recite) expect(typeof s.text, `${key} · ${s.heading}`).toBe('string');
+    }
+  });
+
   it('has unique slugs within each secção', () => {
     for (const seccao of Object.keys(provas)) {
       const slugs = slugsOf(seccao);
