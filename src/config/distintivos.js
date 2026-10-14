@@ -67,8 +67,27 @@ const cargos = [
   { name: 'Relações Públicas', src: relacoesPublicas },
 ];
 
-const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites}/*.{jpg,png}', { eager: true, import: 'default' });
+const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites,saudacao}/*.{jpg,png}', { eager: true, import: 'default' });
 const file = (path) => files[`../assets/images/distintivos/${path}`];
+
+// The saudação drawings ship as they are (no image pipeline), so their w × h are written here, as
+// the posters' are: the page reserves each one's box before it loads, and the text beside a hand
+// doesn't jump when it arrives. A test checks them against the files
+const drawingSizes = {
+  'sinal-sem-boina': [333, 305],
+  'saudacao-com-boina': [353, 307],
+  'saudacao-com-chapeu': [267, 335],
+  'saudacao-com-vara': [221, 609],
+  'posicao-descansar': [258, 449],
+  'posicao-sentido': [162, 468],
+  'sinal-mao': [194, 428],
+  'sinal-lobito': [185, 376],
+  'aperto-de-mao': [518, 225],
+};
+const drawing = (name) => {
+  const [w, h] = drawingSizes[name];
+  return { src: file(`saudacao/${name}.png`), w, h };
+};
 
 // The badge grids, by `media` name, each a list of { name, src } for the open secção. A badge
 // with no name is one the heading already names, so it carries its own alt text; `group` starts
@@ -90,6 +109,23 @@ export const badges = {
     ...cargos.map((c) => ({ ...c, group: 'cargos' })),
   ],
   noites: () => [25, 50, 75, 100, 200].map((n) => ({ name: `${n} noites`, src: file(`noites/${n}.jpg`) })),
+  // The CNE sheet "Saudações e o seu Simbolismo": its drawings, named by their own captions.
+  // `large`: drawings of a whole scout, set taller than a badge; each `alt` says the gesture, as
+  // the drawing shows it. The two positions are whole figures standing, under their own
+  // `groupHeading`, set taller (`tall`) so a figure isn't a sliver in its tile
+  saudacoes: () => [
+    ['sinal-sem-boina', 'Sinal Escutista (sem bóina)', 'Um escuteiro de cabeça descoberta, com a mão direita levantada ao lado do ombro, a fazer o sinal escutista'],
+    ['saudacao-com-boina', 'Saudação Escutista (com bóina)', 'Um escuteiro de bóina, com a mão direita levada à testa, a fazer o sinal escutista junto à bóina'],
+    ['saudacao-com-chapeu', 'Saudação Escutista (com chapéu)', 'Um escuteiro de chapéu de abas, com a mão direita levantada junto à cara, a fazer o sinal escutista'],
+    ['saudacao-com-vara', 'Saudação Escutista (com vara)', 'Um escuteiro de pé, com a vara ao seu lado direito e a mão esquerda à frente do corpo, à altura da cintura'],
+  ].map(([f, name, alt]) => ({ name, alt, ...drawing(f), group: 'saudacoes', large: true }))
+    .concat([
+      ['posicao-descansar', 'Posição «Descansar»', 'Um escuteiro de pé, com as pernas afastadas e a vara inclinada para fora, segura com a mão direita'],
+      ['posicao-sentido', 'Posição «Sentido»', 'Um escuteiro de pé, direito, com os pés juntos e a vara junto ao corpo, segura com a mão direita'],
+    ].map(([f, name, alt]) => ({ name, alt, ...drawing(f), group: 'posicoes', groupHeading: 'Posições', large: true, tall: true }))),
+  sinal: () => [{ name: null, ...drawing('sinal-mao'), large: true, alt: 'O sinal escutista: a mão direita levantada, com os três dedos do meio estendidos e o polegar sobre o mindinho' }],
+  sinalLobito: () => [{ name: null, ...drawing('sinal-lobito'), large: true, alt: 'A saudação do lobito: a mão direita levantada, com o indicador e o médio abertos e o polegar sobre o anelar e o mindinho' }],
+  aperto: () => [{ name: null, ...drawing('aperto-de-mao'), alt: 'O aperto de mão escutista: duas mãos esquerdas que se apertam' }],
 };
 
 // The progresso insígnia is one round badge built a piece per etapa: the centre, then three

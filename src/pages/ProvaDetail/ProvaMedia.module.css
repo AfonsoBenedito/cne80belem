@@ -145,16 +145,103 @@
 }
 
 /* The Promessa, alone: a larger badge on a wider tile */
-.funcoesSingle {
-  grid-template-columns: minmax(0, 10rem);
-}
-
 .funcoesSingle .funcao {
   padding: var(--spacing-md);
 }
 
+.funcoesSingle {
+  /* minmax(0, …): the lone tile may shrink with its column (a larger text size), never push
+     the page wider */
+  grid-template-columns: minmax(0, auto);
+}
+
+.funcoesSingle .funcao {
+  min-width: 0;
+}
+
+/* Up to 7rem tall and 12rem wide: a portrait badge (the Promessa) by its height, a wide drawing
+   (the handshake) by its width */
 .funcoesSingle .funcaoImg {
-  height: 7rem;
+  height: auto;
+  max-height: 7rem;
+  max-width: min(12rem, 100%);
+  /* A drawing that carries its size (--ratio, width over height) gets its width from it, so its
+     box is there before it loads (100% stays in max-width: as a width it would be a share of a
+     tile sized by the not-yet-loaded picture, nothing); a badge without one keeps the caps above */
+  width: min(12rem, calc(7rem * var(--ratio)));
+}
+
+/* Drawings of a whole scout (the saudações): taller than a badge, each fitted to its tile */
+.funcoesLarge {
+  grid-template-columns: repeat(var(--per-wide), minmax(0, 11rem));
+}
+
+.funcoesLarge .funcaoImg {
+  height: 9rem;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Whole figures standing (the two positions): taller, so a figure isn't a sliver in its tile */
+.funcoesTall .funcaoImg {
+  height: 12rem;
+}
+
+/* A group's own heading (the Posições), close to its tiles and set apart from the row above
+   (the column's gap sits on both sides of it, so the bottom margin takes most of it back) */
+.badgeGroups > .groupHeading {
+  margin: var(--spacing-sm) 0 calc(var(--spacing-xs) - var(--spacing-lg));
+}
+
+/* The sign itself, alone beside its text: the one thing the scout copies with their own hand,
+   so it is set by its height, larger than any badge */
+.funcoesSingle.funcoesLarge .funcaoImg {
+  height: auto;
+  max-height: 13rem;
+  max-width: 100%;
+  width: calc(13rem * var(--ratio));
+}
+
+/* A drawing that opens in the photo viewer: the whole tile is the button (stretched over it),
+   the tile answering as the posters do */
+.funcao:has(.funcaoZoom) {
+  position: relative;
+  transition: var(--transition-interactive), transform var(--transition-fast);
+}
+
+.funcaoZoom {
+  display: block;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: zoom-in;
+}
+
+.funcaoZoom::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+}
+
+.funcaoZoom:focus-visible {
+  outline: none;
+}
+
+.funcaoZoom:focus-visible::after {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .funcao:has(.funcaoZoom:hover) {
+    border-color: var(--color-gray-400);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.funcao:has(.funcaoZoom:active) {
+  transform: scale(0.99);
 }
 
 @media (max-width: 600px) {
@@ -163,7 +250,12 @@
   }
 
   .funcoesSingle .funcao {
-    flex-basis: 10rem;
+    flex: 0 1 auto;
+  }
+
+  .funcoesSingle.funcoesLarge .funcaoImg {
+    max-height: 11rem;
+    width: calc(11rem * var(--ratio));
   }
 }
 
@@ -318,4 +410,15 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* The floating button (48px, 1rem from the edge) sits over the column's right side on phones:
+   the tile grids keep clear of it, as the text does (in px, as the button is), so it never covers a caption ("Saudação
+   Escutista (com vara)"). The posters keep the full width: they have no text at their edge */
+@media (max-width: 768px) {
+  .badgeGroups,
+  .progresso,
+  .dirigentes {
+    padding-right: 48px;
+  }
 }

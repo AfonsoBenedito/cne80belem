@@ -250,23 +250,27 @@ export default function ProvaDetail() {
                     )}
                     {s.media && s.text ? (
                       // Text with its picture beside it (the Promessa and its insígnia): the text
-                      // leads, the picture sits on its right, or under it on phones. If the
-                      // picture can't load, the text stands alone
-                      <div className={styles.withMedia}>
-                        <div className={styles.withMediaText}>{renderText(s.text)}</div>
+                      // leads, the picture sits on its right, or under it on phones. A picture
+                      // that shows what the text explains (`mediaFirst`, the saudação's hands)
+                      // comes first instead, in the reading order too, so on phones it sits
+                      // under the heading, not after all the text. If the picture can't load,
+                      // the text stands alone
+                      <div className={`${styles.withMedia} ${s.mediaFirst ? styles.withMediaFirst : ''}`}>
+                        {!s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}</div>}
                         <div className={styles.withMediaAside}>
                           <LoadErrorBoundary quiet>
                             <Suspense fallback={null}>
-                              <ProvaMedia media={s.media} seccao={seccao} />
+                              <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
                             </Suspense>
                           </LoadErrorBoundary>
                         </div>
+                        {s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}</div>}
                       </div>
                     ) : (
                       <>
                         {s.media && (
                           <Suspense fallback={null}>
-                            <ProvaMedia media={s.media} seccao={seccao} />
+                            <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
                           </Suspense>
                         )}
                         {s.text && renderText(s.text)}

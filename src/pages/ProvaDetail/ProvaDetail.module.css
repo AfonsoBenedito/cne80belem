@@ -261,6 +261,14 @@
 
 .withMediaAside {
   flex: none;
+  /* The picture never takes more than half the row, or the whole column on phones, however
+     large the text is set */
+  max-width: 50%;
+}
+
+/* The picture first in the reading order, still on the text's right beside it */
+.withMediaFirst {
+  flex-direction: row-reverse;
 }
 
 /* Phones: the picture under the text, not squeezing it */
@@ -268,6 +276,21 @@
   .withMedia {
     flex-direction: column;
     gap: var(--spacing-lg);
+  }
+
+  .withMediaAside {
+    max-width: 100%;
+  }
+
+  /* The column's width, not the text's own: at a large text size the longest word is wider
+     than the column, and a fitted block would carry it past the screen's edge */
+  .withMediaText {
+    align-self: stretch;
+  }
+
+  /* Under the heading, the text close below it */
+  .withMediaFirst {
+    gap: var(--spacing-md);
   }
 }
 
@@ -548,11 +571,12 @@ ol.list {
 
   /* The floating button (48px, 1rem from the edge) sits over the column's right side on phones:
      the text and the prev/next cards keep clear of it, so it never covers the end of a line
-     ("…em idade.") or a card's title */
+     ("…em idade.") or a card's title. In px, as the button is: in rem a larger text size doubled
+     the clearance and left the text a word per line */
   .paragraph,
   .list,
   .nav {
-    padding-right: 3rem;
+    padding-right: 48px;
   }
 
   .heroTitle {
