@@ -18,6 +18,8 @@ const Direcao = lazy(() => import('./pages/Direcao/Direcao'));
 const Dirigentes = lazy(() => import('./pages/Dirigentes/Dirigentes'));
 const BancoDeFardas = lazy(() => import('./pages/BancoDeFardas/BancoDeFardas'));
 const Documentos = lazy(() => import('./pages/Documentos/Documentos'));
+const Klandestino = lazy(() => import('./pages/Klandestino/Klandestino'));
+const KlandestinoIssue = lazy(() => import('./pages/Klandestino/KlandestinoIssue'));
 const Noticias = lazy(loadNoticias);
 const NoticiaDetail = lazy(() => import('./pages/NoticiaDetail/NoticiaDetail'));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
@@ -67,6 +69,8 @@ export default function App() {
             <Route path="/agrupamento/dirigentes-e-animadores" element={<Dirigentes />} />
             <Route path="/agrupamento/banco-de-fardas" element={<BancoDeFardas />} />
             <Route path="/agrupamento/documentos" element={<Documentos />} />
+            <Route path="/agrupamento/klandestino" element={<Klandestino />} />
+            <Route path="/agrupamento/klandestino/:slug" element={<KlandestinoIssue />} />
             <Route path="/agrupamento/noticias" element={<Noticias />} />
             <Route path="/agrupamento/noticias/:slug" element={<NoticiaDetail />} />
             {/* Section pages */}

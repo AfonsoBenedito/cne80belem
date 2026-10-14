@@ -9,6 +9,7 @@ export const navigation = [
       { label: 'Direção', path: '/agrupamento/direcao' },
       { label: 'Dirigentes e Animadores', path: '/agrupamento/dirigentes-e-animadores' },
       { label: 'Documentos', path: '/agrupamento/documentos' },
+      { label: 'Jornal Klandestino', path: '/agrupamento/klandestino' },
       { label: 'Notícias', path: '/agrupamento/noticias' },
       { label: 'Reservar Alojamento', path: '/recursos/reservar-alojamento' },
     ],
