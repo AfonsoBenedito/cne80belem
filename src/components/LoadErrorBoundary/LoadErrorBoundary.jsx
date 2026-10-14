@@ -5,7 +5,7 @@ import styles from './LoadErrorBoundary.module.css';
 // A lazy part of the site that fails to download (no signal, or a deploy since the page opened:
 // the old chunk files are gone from GitHub Pages) would leave a blank screen. This shows what
 // happened and a reload instead; React keeps a failed lazy import, so only a reload retries it.
-// `page` is a whole route; without it, a part of one (its pictures).
+// `page` is a whole route; without it, a part of one (its pictures); `quiet` shows nothing.
 export default class LoadErrorBoundary extends Component {
   state = { failed: false };
 
@@ -15,7 +15,9 @@ export default class LoadErrorBoundary extends Component {
 
   render() {
     if (!this.state.failed) return this.props.children;
-    const { page } = this.props;
+    const { page, quiet } = this.props;
+    // A picture beside text that stands without it: nothing in its place
+    if (quiet) return null;
     const body = (
       <>
         {page ? (

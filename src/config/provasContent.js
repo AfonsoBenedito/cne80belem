@@ -52,9 +52,37 @@ export const provasContent = {
     ],
   },
 
+  'adesao-movimento-9': {
+    title: 'Fórmula da Promessa',
+    // As the Exploradores, Pioneiros and Caminheiros make it; the Lobitos have their own, below
+    sections: [
+      {
+        heading: 'A Promessa',
+        recite: true,
+        // The secção's Insígnia de Promessa beside the formula: what the Promessa earns
+        media: 'promessa',
+        text: 'Prometo, pela minha honra e com a graça de Deus, fazer todo o possível por:\n\n• Cumprir os meus deveres para com Deus, a Igreja e a Pátria;\n• Auxiliar o meu semelhante em todas as circunstâncias;\n• Obedecer à Lei do Escuta.',
+      },
+    ],
+  },
+
   // ═══════════════════════════════════════
   // ADESÃO À SECÇÃO
   // ═══════════════════════════════════════
+
+  // The Lobitos' own Promessa, in place of the shared one
+  'lobitos/adesao-movimento-9': {
+    title: 'Fórmula da Promessa',
+    sections: [
+      {
+        heading: 'A Promessa do Lobito',
+        recite: true,
+        // The secção's Insígnia de Promessa beside the formula: what the Promessa earns
+        media: 'promessa',
+        text: 'Prometo, da melhor vontade:\n\n• Ser amigo de Jesus, amando os outros;\n• Respeitar a Lei da Alcateia;\n• Praticar diariamente uma boa acção.',
+      },
+    ],
+  },
 
   'lobitos/adesao-seccao-2': {
     title: 'Oração do Lobito, Pai Nosso e Avé Maria',

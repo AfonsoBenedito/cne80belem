@@ -21,10 +21,10 @@ function imageDefaults(url) {
   // The Klandestino's 1993 puzzles are 1-bit line art a few hundred pixels wide: lossy WebP
   // would blur the lines, so they ship as the PNGs they are
   if (path.includes('/images/klandestino/')) return new URLSearchParams()
-  // The badges are set by height (4rem; the progresso pieces up to 8rem), so they are capped at 3×
+  // The badges are set by height (4rem; the progresso pieces up to 8rem, the Promessa's 7rem), so they are capped at 3×
   // that. imagetools never enlarges, so a scan smaller than that keeps its own size
   const badge = path.match(/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites|cruzes)\//)
-  if (badge) return new URLSearchParams({ h: badge[1] === 'progresso' ? '384' : '192', format: 'webp', quality: '85' })
+  if (badge) return new URLSearchParams({ h: badge[1] === 'progresso' || badge[1] === 'promessa' ? '384' : '192', format: 'webp', quality: '85' })
   // The secções' logos are only a faded badge in their page's header (~465px at most): 960px
   // covers that on a 2× screen. The group photos beside them in sections/ keep the larger cap
   if (/\/images\/sections\/(lobitos|exploradores|pioneiros|caminheiros)\.\w+$/.test(path)) {
