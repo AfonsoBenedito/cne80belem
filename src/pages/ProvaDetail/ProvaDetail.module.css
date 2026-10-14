@@ -294,7 +294,28 @@
   }
 }
 
+/* A badge and its heading on one line (the Cargos prova) */
+.headingWithMedia {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: 0.75rem;
+}
+
+.headingWithMedia .sectionHeading {
+  margin-bottom: 0;
+}
+
+/* The badge's box, held while it loads */
+.headingMedia {
+  flex: none;
+  min-width: 3rem;
+  min-height: 3rem;
+}
+
 .sectionHeading {
+  /* Under the sticky header when a link (the Cargos grid) jumps to it */
+  scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
   font-size: var(--font-size-xl);
   font-weight: 800;
   margin-bottom: 0.75rem;
@@ -375,6 +396,15 @@
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-gray-700);
+}
+
+/* The line that opens a cargo's list ("Ao Guia compete:"): a small bold label in the secção's
+   ink, tight to the list it names, so the duties read as the part to learn */
+.listLabel {
+  margin: var(--spacing-lg) 0 var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 .list:last-child {

@@ -18,3 +18,8 @@ export function toBlocks(text) {
   }
   return blocks;
 }
+
+// A one-line paragraph that ends in ":" and opens the list under it ("Ao Guia compete:"): the
+// Cargos prova sets it as the list's label, not as a sentence of its own
+export const leadsList = (blocks, i) =>
+  blocks[i].kind === 'p' && blocks[i].lines.length === 1 && blocks[i].lines[0].endsWith(':') && blocks[i + 1] && blocks[i + 1].kind !== 'p';

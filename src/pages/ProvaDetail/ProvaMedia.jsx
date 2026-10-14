@@ -140,7 +140,7 @@ function Badges({ items, seccao, title }) {
             <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
           )}
           <ul
-            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${group[0].tall ? styles.funcoesTall : ''}`}
+            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${group[0].tall ? styles.funcoesTall : ''}`}
             style={vars}
           >
             {group.map((f) => (
@@ -149,7 +149,13 @@ function Badges({ items, seccao, title }) {
                 className={`${styles.funcao} ${f.current ? styles.funcaoCurrent : ''}`}
                 style={f.current ? { borderColor: seccoes[seccao].color } : undefined}
               >
-                {f.large ? (
+                {f.href ? (
+                // A link to its cargo below, stretched over the whole tile as the drawings' button is
+                <a href={f.href} className={styles.funcaoZoom}>
+                  <img src={f.src} alt="" className={styles.funcaoImg} />
+                  <span className={styles.srOnly}>{f.name}</span>
+                </a>
+              ) : f.large ? (
                   <>
                     {/* Stretched over the whole tile; the name below stays plain text */}
                     <button
@@ -169,7 +175,7 @@ function Badges({ items, seccao, title }) {
                   <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} />
                 )}
                 {f.name && (
-                  <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined}>
+                  <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined} aria-hidden={f.href ? true : undefined}>
                     {f.name}
                     {f.current && <span className={styles.srOnly}> (a tua secção)</span>}
                   </span>
@@ -227,7 +233,9 @@ function Progresso({ seccao }) {
 
 // A prova section's pictures, by its `media` name (provasContent.js): its own chunk, with the
 // images and the photo viewer, so a prova of plain text never downloads them
-export default function ProvaMedia({ media, seccao, title }) {
+export default function ProvaMedia({ media, seccao, title, icon = false }) {
+  // A badge set small beside its heading (the Cargos prova): the heading names it, so no alt
+  if (icon && badges[media]) return <img src={badges[media](seccao)[0].src} alt="" className={styles.headingIcon} />;
   if (media === 'uniformes') return <Uniformes seccao={seccao} />;
   if (media === 'progresso') return <Progresso seccao={seccao} />;
   if (media === 'dirigentes') return <Dirigentes />;

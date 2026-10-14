@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import faviconUrl from '/favicon.png';
 import { registerNunito } from './pdfFonts';
 import { normalize } from './normalize';
-import { toBlocks } from './provaBlocks';
+import { toBlocks, leadsList } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
 import { getProvaContent } from '../config/provasContent';
@@ -240,7 +240,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
       const h = lines.length * 12.5 * s * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
-      const keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A recited prayer is kept whole (below), so its heading asks for room for all of it
+      const first = g.cols === 1 && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
+      if (first && first.kind === 'p' && first.lines.length > 1) {
+        const rh = 11.5 * s * PT * 1.4;
+        const whole = first.lines.reduce((t, line) => t + draw.split(line, colW - 1.25 * 11.5 * s * PT, 11.5).length * rh, 0);
+        if (h + 3 * s + whole <= bottom - colTop) keep = whole;
+      }
       room(h + 3 * s + keep);
       draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
       y += h + 3 * s;
@@ -272,13 +279,15 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const imgH = (large ? 34 : 13) * s;
       const perRow = Math.max(1, Math.floor(colW / ((large ? 38 : 26) * s)));
       const cellW = colW / perRow;
-      // A `group` (the fitas, then the cargos) starts its own row, as on the page
+      // A `group` (the fitas, then the cargos) starts its own row, as on the page, and its rows
+      // are as even as they split, so none is left with one (7 cargos are 4 + 3, not 6 + 1)
       const rows = [];
-      items.forEach((f, k) => {
-        const last = rows[rows.length - 1];
-        if (!last || last.length === perRow || f.group !== items[k - 1]?.group) rows.push([f]);
-        else last.push(f);
-      });
+      const groups = [];
+      items.forEach((f, k) => (f.group === items[k - 1]?.group && k ? groups[groups.length - 1].push(f) : groups.push([f])));
+      for (const g of groups) {
+        const n = Math.ceil(g.length / Math.ceil(g.length / perRow));
+        for (let i = 0; i < g.length; i += n) rows.push(g.slice(i, i + n));
+      }
       rows.forEach((row, r) => {
         const names = row.map((f) => (f.name ? draw.split(f.name, cellW - 3 * s, 8.5, 'bold') : []));
         const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * s * PT * 1.25;
@@ -346,11 +355,15 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       });
       y += NIVEIS_H - LABEL_H;
       const crossH = 11 * s;
-      room(LABEL_H + crossH + 4 * s);
-      label('Pela função');
-      for (const c of dirigentes.cruzes) {
+      const crossRows = dirigentes.cruzes.map((c) => {
         const who = draw.split(c.who, colW - crossH - 6 * s, 8.5);
-        const rowH = Math.max(crossH, 10.5 * s * PT * 1.3 + who.length * 8.5 * s * PT * 1.35);
+        return { c, who, rowH: Math.max(crossH, 10.5 * s * PT * 1.3 + who.length * 8.5 * s * PT * 1.35) };
+      });
+      // The three crosses are one small table: kept together with their label, so the last one
+      // is never left alone on a page
+      room(LABEL_H + crossRows.reduce((h, r) => h + r.rowH + 4 * s, 0));
+      label('Pela função');
+      for (const { c, who, rowH } of crossRows) {
         room(rowH + 4 * s);
         const img = media.get(c.src);
         if (img) draw.image(img.data, left(), y, crossH, crossH, 'JPEG');
@@ -370,9 +383,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     // picture on the right of the text's first line, the text narrower to make room
     const asideItem = sec.text && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
     const aside = asideItem ? media.get(asideItem.src) : null;
-    // 26mm tall (40mm for the hand sign, `large`, as on the page), or narrower for a wide picture
-    // (the handshake), so the text keeps two thirds
-    const asideTall = (asideItem?.large ? 40 : 26) * s;
+    // 26mm tall (40mm for the hand sign, `large`; 14mm for a cargo's badge, `small`, as on the
+    // page), or narrower for a wide picture (the handshake), so the text keeps two thirds
+    const asideTall = (asideItem?.large ? 40 : asideItem?.small ? 14 : 26) * s;
     const asideW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
     const asideH = aside ? (asideW * aside.h) / aside.w : 0;
     // A block that starts beside it is narrower; one that starts under it (or on a later page)
@@ -397,10 +410,23 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     };
     blocks.forEach((block, bi) => {
       const textW = draw.pages.length === asidePage && y < asideTop + asideH ? besideW : colW;
-      if (block.kind === 'p') {
+      if (sec.headingMedia && leadsList(blocks, bi)) {
+        // A cargo's list label ("Ao Guia compete:"), as on the page: bold, in the secção's ink,
+        // smaller, kept with the list's first item
+        room(lineH * 3);
+        draw.text(block.lines[0], left(), y + asc(size - 1), size - 1, 'bold', ink);
+        y += lineH;
+      } else if (block.kind === 'p') {
         // Several lines (a prayer): a wrapped part sits indented under its line
         const verse = block.lines.length > 1;
         const hang = verse ? 1.25 * size * s * PT : 0;
+        // On a one-column page, a recited prayer that fits a page is never split: it moves whole to
+        // the next page rather than leaving its last lines ("…da nossa morte. / Ámen.") on one of
+        // their own. Two columns (the landscape layout) let it run on into the next, on the same page
+        if (verse && sec.recite && g.cols === 1) {
+          const h = block.lines.reduce((t, line) => t + splitRecited(line, textW - hang).length * lineH, 0);
+          if (h <= bottom - colTop) room(h);
+        }
         block.lines.forEach((line, n) => {
           const lines = splitRecited(line, textW - hang);
           // A prayer's last line ("Ámen.") never starts a page alone: its second-to-last line
@@ -419,7 +445,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         const indent = (block.kind === 'ol' ? 7 : 5) * s;
         block.lines.forEach((item, i) => {
           const wrapped = splitRecited(item, textW - indent);
-          room(lineH * Math.min(wrapped.length, 2));
+          // A list's last item never starts a page alone: the one before it asks for room for both
+          const next = i === block.lines.length - 2 ? Math.min(splitRecited(block.lines[i + 1], textW - indent).length, 2) : 0;
+          room(lineH * (Math.min(wrapped.length, 2) + next));
           draw.text(block.kind === 'ol' ? `${block.start + i}.` : '•', left(), y + asc(size), size, 'bold', ink);
           wrapped.forEach((w, k) => {
             if (k) room(lineH);
@@ -431,9 +459,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         });
       }
       // A recited line that leads into a list sits as close to it as the list's own items
-      y += (sec.recite && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
+      y += ((sec.recite || sec.headingMedia) && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
     });
-    if (aside) y = Math.max(y, asideTop + asideH + 4 * s);
+    // Below the picture, if it is on this page: one left on the page before is no reason to
+    // push the next section down (it sent Secretário to a new page, leaving one nearly empty)
+    if (aside && draw.pages.length === asidePage) y = Math.max(y, asideTop + asideH + 4 * s);
     // A recited section gets a wider pause before the next one, as on the page
     y += (sec.recite ? 6 : 4) * s;
   }

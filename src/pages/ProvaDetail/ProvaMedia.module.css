@@ -125,8 +125,9 @@
   border-radius: var(--radius-md);
 }
 
-/* Phones: at most 3 across (4 left "Exploradores" wider than its tile at 320px), and a short
-   last row centred under the full ones */
+/* Phones: at most 3 across (4 left "Exploradores" wider than its tile at 320px, and broke every
+   cargo name mid-word even at 390px), and a short last row centred under the full ones, so the
+   seven cargos are 3 + 3 + 1 */
 @media (max-width: 600px) {
   .funcoes {
     display: flex;
@@ -139,6 +140,7 @@
     min-width: 0;
   }
 }
+
 /* The open secção's own insígnia: its colour on the tile's edge, its ink on the name */
 .funcaoCurrent .funcaoName {
   font-weight: 800;
@@ -153,6 +155,8 @@
   /* minmax(0, …): the lone tile may shrink with its column (a larger text size), never push
      the page wider */
   grid-template-columns: minmax(0, auto);
+  /* The tile its badge's width, not the row's (Relações Públicas, alone under its heading) */
+  justify-content: start;
 }
 
 .funcoesSingle .funcao {
@@ -169,6 +173,23 @@
      box is there before it loads (100% stays in max-width: as a width it would be a share of a
      tile sized by the not-yet-loaded picture, nothing); a badge without one keeps the caps above */
   width: min(12rem, calc(7rem * var(--ratio)));
+}
+
+/* A lone badge at the grid's size (the Cargos prova, beside each cargo's text): the scans are
+   small, so it isn't enlarged past them as the Promessa's is */
+.funcoesSingle.funcoesSmall .funcaoImg {
+  height: 4rem;
+  max-height: none;
+  width: auto;
+}
+
+/* A badge beside its heading (the Cargos prova), at the heading's scale: 3rem, so the 60px cargo
+   scans aren't enlarged past what they hold */
+.headingIcon {
+  display: block;
+  height: 3rem;
+  width: auto;
+  border-radius: var(--radius-xs);
 }
 
 /* Drawings of a whole scout (the saudações): taller than a badge, each fitted to its tile */
@@ -215,6 +236,11 @@
   background: none;
   border: 0;
   cursor: zoom-in;
+}
+
+/* A tile that links to its cargo below goes there, it doesn't enlarge */
+a.funcaoZoom {
+  cursor: pointer;
 }
 
 .funcaoZoom::after {

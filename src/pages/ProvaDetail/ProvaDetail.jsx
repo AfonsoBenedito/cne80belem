@@ -5,7 +5,7 @@ import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
-import { toBlocks } from '../../utils/provaBlocks';
+import { toBlocks, leadsList } from '../../utils/provaBlocks';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import LoadErrorBoundary from '../../components/LoadErrorBoundary/LoadErrorBoundary';
 import styles from './ProvaDetail.module.css';
@@ -81,7 +81,15 @@ export default function ProvaDetail() {
   const next = allProvas[position + 1] ?? null;
 
   // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
-  const renderText = (text) => toBlocks(text).map((block, j) => {
+  // `labels` (the Cargos prova): a line that opens a list ("Ao Guia compete:") is set as its label
+  const renderText = (text, labels = false) => toBlocks(text).map((block, j, blocks) => {
+    if (labels && leadsList(blocks, j)) {
+      return (
+        <p key={j} className={styles.listLabel} style={{ color: section.ink }}>
+          {block.lines[0]}
+        </p>
+      );
+    }
     if (block.kind === 'p') {
       return (
         // Several lines (a prayer, a formula): each its own row, a wrapped
@@ -240,15 +248,33 @@ export default function ProvaDetail() {
               <LoadErrorBoundary key={slug}>
                 {content.sections.map((s, i) => (
                   <div key={i} className={`${styles.section} ${s.recite ? styles.recited : ''}`}>
-                    {s.heading && (
+                    {s.heading && s.headingMedia ? (
+                      // The badge beside the heading (the Cargos prova); its box is held while the
+                      // picture code loads, so the heading doesn't shift
+                      <div className={styles.headingWithMedia}>
+                        <span className={styles.headingMedia}>
+                          <LoadErrorBoundary quiet>
+                            <Suspense fallback={null}>
+                              <ProvaMedia media={s.media} seccao={seccao} icon />
+                            </Suspense>
+                          </LoadErrorBoundary>
+                        </span>
+                        <h2 id={s.id} className={styles.sectionHeading} style={{ color: section.ink }}>
+                          {s.heading}
+                        </h2>
+                      </div>
+                    ) : s.heading && (
                       <h2
+                        id={s.id}
                         className={styles.sectionHeading}
                         style={{ color: section.ink }}
                       >
                         {s.heading}
                       </h2>
                     )}
-                    {s.media && s.text ? (
+                    {s.headingMedia ? (
+                      s.text && renderText(s.text, true)
+                    ) : s.media && s.text ? (
                       // Text with its picture beside it (the Promessa and its insígnia): the text
                       // leads, the picture sits on its right, or under it on phones. A picture
                       // that shows what the text explains (`mediaFirst`, the saudação's hands)
