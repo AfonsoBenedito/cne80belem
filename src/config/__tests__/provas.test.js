@@ -4,10 +4,11 @@ import { provasContent } from '../provasContent';
 import { seccoes } from '../seccoes';
 
 const slugsOf = (seccao) => provas[seccao].flatMap((g) => g.items.map((p) => p.slug));
-const sharedSlugs = Object.keys(provas).map(slugsOf).reduce((a, b) => a.filter((s) => b.includes(s)));
+const titlesOf = (slug) => new Set(Object.values(provas).flat().flatMap((g) => g.items).filter((p) => p.slug === slug).map((p) => p.title));
 
-// A text keyed by slug alone is shown to every secção; only provas every secção shares
-// may be keyed that way (a bare 'adesao-seccao-*' once gave all four the Pioneiros text).
+// A text keyed by slug alone is shown to every secção that lists that slug, so a bare key is only
+// for a prova that is the same wherever it appears (same slug, same title): the shared Adesão ao
+// Movimento provas. A bare 'adesao-seccao-*' once gave all four secções the Pioneiros text.
 describe('provasContent', () => {
   it.each(Object.keys(provasContent))('%s belongs to a prova that lists it', (key) => {
     const [seccao, slug] = key.includes('/') ? key.split('/') : [null, key];
@@ -15,7 +16,15 @@ describe('provasContent', () => {
       expect(seccoes[seccao], `unknown secção "${seccao}"`).toBeDefined();
       expect(slugsOf(seccao)).toContain(slug);
     } else {
-      expect(sharedSlugs, `"${slug}" isn't shared by every secção: key it "<secção>/${slug}"`).toContain(slug);
+      expect(titlesOf(slug).size, `"${slug}" is listed by no secção`).toBeGreaterThan(0);
+      expect(titlesOf(slug).size, `"${slug}" means different provas in different secções: key it "<secção>/${slug}"`).toBe(1);
+    }
+  });
+
+  it('gives a slug the same title in every secção that lists it', () => {
+    const slugs = new Set(Object.keys(provas).flatMap(slugsOf));
+    for (const slug of slugs) {
+      if (slug.startsWith('adesao-movimento-')) expect(titlesOf(slug).size, slug).toBe(1);
     }
   });
 
