@@ -6,8 +6,122 @@ import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
 import { toBlocks } from '../../utils/provaBlocks';
+import { uniformes, uniformeDirigentesImg, dirigentesImg, badges, progresso } from '../../config/distintivos';
+import Lightbox from '../NoticiaDetail/Lightbox';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import styles from './ProvaDetail.module.css';
+
+// The secção's uniform and the dirigentes', side by side at one height: each takes a share of
+// the row in proportion to its width over height. The posters' labels are small, so a press
+// opens them in the photo viewer (zoom, and a swipe to the other one)
+function Uniformes({ seccao }) {
+  const [viewer, setViewer] = useState(null);
+  const pair = [
+    { ...uniformes[seccao], caption: `Uniforme dos ${seccoes[seccao].label.split(' - ').pop()}` },
+    { ...uniformeDirigentesImg, caption: 'Uniforme dos dirigentes' },
+  ];
+  return (
+    <>
+      <div className={styles.uniformes}>
+        {pair.map((u, i) => (
+          <figure key={u.caption} className={styles.uniforme} style={{ flexGrow: u.w / u.h }}>
+            <button
+              type="button"
+              className={styles.uniformeButton}
+              // A tap doesn't focus a button on touch screens: focus it, so closing returns here
+              onClick={(e) => {
+                e.currentTarget.focus({ preventScroll: true });
+                setViewer({ index: i, leaving: false });
+              }}
+              aria-label={`Ver em grande: ${u.caption}`}
+            >
+              <img src={u.src} alt={u.alt} width={u.w} height={u.h} className={styles.uniformeImg} />
+            </button>
+            <figcaption className={styles.uniformeCaption}>{u.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      {viewer && (
+        <Lightbox
+          photos={pair.map((u) => u.src)}
+          index={viewer.index}
+          onIndex={(index) => setViewer({ index, leaving: false })}
+          onClose={() => setViewer((v) => v && { ...v, leaving: true })}
+          leaving={viewer.leaving}
+          onLeft={() => setViewer(null)}
+          title="Uniformes"
+        />
+      )}
+    </>
+  );
+}
+
+// The dirigentes' table, full width; its text is small, so a press opens it in the photo viewer
+function Dirigentes() {
+  const [viewer, setViewer] = useState(null);
+  const d = dirigentesImg;
+  return (
+    <>
+      <button
+        type="button"
+        className={styles.uniformeButton}
+        onClick={(e) => {
+          e.currentTarget.focus({ preventScroll: true });
+          setViewer({ leaving: false });
+        }}
+        aria-label="Ver em grande: Distintivos dos dirigentes"
+      >
+        <img src={d.src} alt={d.alt} width={d.w} height={d.h} className={styles.uniformeImg} />
+      </button>
+      {viewer && (
+        <Lightbox
+          photos={[d.src]}
+          index={0}
+          onIndex={() => {}}
+          onClose={() => setViewer((v) => v && { leaving: true })}
+          leaving={viewer.leaving}
+          onLeft={() => setViewer(null)}
+          title="Distintivos dos dirigentes"
+        />
+      )}
+    </>
+  );
+}
+
+// A grid of badges, each over its name, all at one height
+function Badges({ items }) {
+  return (
+    <ul className={styles.funcoes}>
+      {items.map((f) => (
+        <li key={f.src} className={styles.funcao}>
+          <img src={f.src} alt={f.name ? '' : 'A insígnia'} className={styles.funcaoImg} />
+          {f.name && <span className={styles.funcaoName}>{f.name}</span>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// The etapas in order, each adding its piece, then the whole insígnia
+function Progresso({ seccao }) {
+  const { etapas, completa } = progresso(seccao);
+  return (
+    <div className={styles.progresso}>
+      <ol className={styles.etapas}>
+        {etapas.map((e) => (
+          <li key={e.name} className={styles.etapa}>
+            <img src={e.src} alt="" className={styles.etapaImg} />
+            <span className={styles.funcaoName}>{e.name}</span>
+          </li>
+        ))}
+      </ol>
+      <figure className={styles.completa}>
+        <img src={completa} alt={`A insígnia de progresso completa, com as etapas ${etapas.map((e) => e.name).join(', ')}`} className={styles.completaImg} />
+        <figcaption className={styles.funcaoName}>A insígnia completa</figcaption>
+      </figure>
+    </div>
+  );
+}
 
 export default function ProvaDetail() {
   const { seccao, slug } = useParams();
@@ -219,7 +333,11 @@ export default function ProvaDetail() {
                       {s.heading}
                     </h2>
                   )}
-                  {toBlocks(s.text).map((block, j) => {
+                  {s.media === 'uniformes' && <Uniformes seccao={seccao} />}
+                  {badges[s.media] && <Badges items={badges[s.media](seccao)} />}
+                  {s.media === 'progresso' && <Progresso seccao={seccao} />}
+                  {s.media === 'dirigentes' && <Dirigentes />}
+                  {s.text && toBlocks(s.text).map((block, j) => {
                     if (block.kind === 'p') {
                       return (
                         <p key={j} className={styles.paragraph}>

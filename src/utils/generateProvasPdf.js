@@ -6,6 +6,7 @@ import { toBlocks } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
 import { getProvaContent } from '../config/provasContent';
+import { uniformes, uniformeDirigentesImg, dirigentesImg, badges, progresso } from '../config/distintivos';
 
 // One column, Nunito. The secção's colour is a thin band at the top and the headings' ink; the
 // rest is black and gray on white, so a printed prova reads like the page it came from.
@@ -30,20 +31,48 @@ const hexToRgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)
 const fileSlug = (text) => normalize(text).replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 const shortNameOf = (section) => section.label.split(' - ').pop();
 
-function loadImage(url) {
+// PNG for the logo; the pictures go in as JPEG on white (their WebP isn't a format jsPDF
+// reads, and PNG would make a poster several megabytes)
+function loadImage(url, type = 'image/png') {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      canvas.getContext('2d').drawImage(img, 0, 0);
-      resolve(canvas.toDataURL('image/png'));
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (type === 'image/jpeg') {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.drawImage(img, 0, 0);
+      resolve(type === 'image/jpeg'
+        ? { data: canvas.toDataURL(type, 0.9), w: img.naturalWidth, h: img.naturalHeight }
+        : canvas.toDataURL(type));
     };
     img.onerror = () => resolve(null);
     img.src = url;
   });
+}
+
+// The pictures the given provas draw, loaded once, by URL
+async function loadMedia(seccao, list) {
+  const urls = new Set();
+  for (const prova of list) {
+    for (const sec of getProvaContent(seccao, prova.slug)?.sections ?? []) {
+      if (sec.media === 'uniformes') [uniformes[seccao], uniformeDirigentesImg].forEach((u) => urls.add(u.src));
+      if (sec.media === 'dirigentes') urls.add(dirigentesImg.src);
+      if (badges[sec.media]) badges[sec.media](seccao).forEach((f) => urls.add(f.src));
+      if (sec.media === 'progresso') {
+        const { etapas, completa } = progresso(seccao);
+        etapas.forEach((e) => urls.add(e.src));
+        urls.add(completa);
+      }
+    }
+  }
+  const loaded = await Promise.all([...urls].map((u) => loadImage(u, 'image/jpeg')));
+  return new Map([...urls].map((u, i) => [u, loaded[i]]));
 }
 
 // Every prova of a secção with its number (straight through both groups, as on the site)
@@ -109,8 +138,8 @@ function recorder(doc, g) {
     link(x, y, w, h, pageNumber) {
       push((ox) => doc.link(ox + x, y, w, h, { pageNumber }));
     },
-    image(data, x, y, size) {
-      if (data) push((ox) => doc.addImage(data, 'PNG', ox + x, y, size, size));
+    image(data, x, y, w, h = w, format = 'PNG') {
+      if (data) push((ox) => doc.addImage(data, format, ox + x, y, w, h));
     },
     // Wraps at the size the text will be drawn at
     split(str, width, size, style = 'normal') {
@@ -127,7 +156,7 @@ function band(draw, g, section) {
 // Lays one prova out on the current (empty) page and the ones it needs after it; returns the
 // index of its first page. `header` adds the secção, the group and "Prova N de total": the
 // booklet has them, a prova on its own is just its title
-function layoutProva(draw, g, { seccao, prova, section, total, header }) {
+function layoutProva(draw, g, { seccao, prova, section, total, header, media }) {
   const { s, margin: M } = g;
   const textW = g.w - M * 2;
   const bottom = g.h - 24 * s;
@@ -180,6 +209,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header }) {
     colTop = y;
   };
 
+  // Heights of the picture blocks, for keeping a heading with them
+  const NAME_LINE = 8.5 * s * PT * 1.25;
+  const FUNCAO_ROW = 13 * s + 4 * s + NAME_LINE * 2;
+  const PROGRESSO_H = 16 * s + 4 * s + NAME_LINE * 2 + 6 * s + 32 * s + 10 * s;
+
   const content = getProvaContent(seccao, prova.slug);
   if (!content) {
     // Same wording as the page
@@ -194,12 +228,90 @@ function layoutProva(draw, g, { seccao, prova, section, total, header }) {
     if (sec.heading) {
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
       const h = lines.length * 12.5 * s * PT * 1.25;
-      // Keep a heading with at least two lines of its text
-      room(h + 3 * s + lh * 2);
+      // Keep a heading with at least two lines of its text, or with its pictures
+      const keep = sec.media === 'dirigentes' ? (colW * dirigentesImg.h) / dirigentesImg.w : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? FUNCAO_ROW : lh * 2;
+      room(h + 3 * s + keep);
       draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
       y += h + 3 * s;
     }
-    for (const block of toBlocks(sec.text)) {
+    if (sec.media === 'uniformes') {
+      // Side by side at one height, as on the page; lower than the page is tall if need be
+      const pair = [
+        { ...uniformes[seccao], caption: `Uniforme dos ${shortNameOf(section)}` },
+        { ...uniformeDirigentesImg, caption: 'Uniforme dos dirigentes' },
+      ];
+      const gap = 6 * s;
+      const capH = 8 * s;
+      const h = Math.min((colW - gap) / pair.reduce((t, u) => t + u.w / u.h, 0), bottom - M - 10 * s - capH);
+      room(h + capH);
+      let x = left();
+      for (const u of pair) {
+        const w = (h * u.w) / u.h;
+        draw.image(media.get(u.src)?.data, x, y, w, h, 'JPEG');
+        draw.text(u.caption, x + w / 2, y + h + 5 * s, 8.5, 'bold', GRAY, { align: 'center' });
+        x += w + gap;
+      }
+      y += h + capH + 6 * s;
+    }
+    if (badges[sec.media]) {
+      // A grid of badges, each over its name, all at one height
+      const imgH = 13 * s;
+      const perRow = Math.max(1, Math.floor(colW / (26 * s)));
+      const cellW = colW / perRow;
+      const items = badges[sec.media](seccao);
+      for (let r = 0; r < items.length; r += perRow) {
+        const row = items.slice(r, r + perRow);
+        const names = row.map((f) => (f.name ? draw.split(f.name, cellW - 3 * s, 8.5, 'bold') : []));
+        const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * s * PT * 1.25;
+        room(rowH);
+        row.forEach((f, i) => {
+          const img = media.get(f.src);
+          const cx = left() + cellW * (i + 0.5);
+          if (img) {
+            const w = (imgH * img.w) / img.h;
+            draw.image(img.data, cx - w / 2, y, w, imgH, 'JPEG');
+          }
+          if (names[i].length) draw.text(names[i], cx, y + imgH + 4 * s, 8.5, 'bold', BLACK, { align: 'center', lineHeightFactor: 1.25 });
+        });
+        y += rowH + 5 * s;
+      }
+    }
+    if (sec.media === 'progresso') {
+      // The four etapas in a row, each piece at one height, then the whole insígnia under them
+      const { etapas, completa } = progresso(seccao);
+      const imgH = 16 * s;
+      const bigH = 32 * s;
+      const cellW = colW / etapas.length;
+      const nameH = NAME_LINE * 2;
+      room(PROGRESSO_H);
+      etapas.forEach((e, i) => {
+        const img = media.get(e.src);
+        const cx = left() + cellW * (i + 0.5);
+        if (img) {
+          const w = Math.min((imgH * img.w) / img.h, cellW - 3 * s);
+          const h = (w * img.h) / img.w;
+          draw.image(img.data, cx - w / 2, y + (imgH - h) / 2, w, h, 'JPEG');
+        }
+        const name = draw.split(`${i + 1}. ${e.name}`, cellW - 3 * s, 8.5, 'bold');
+        draw.text(name, cx, y + imgH + 4 * s, 8.5, 'bold', BLACK, { align: 'center', lineHeightFactor: 1.25 });
+      });
+      y += imgH + 4 * s + nameH + 6 * s;
+      const img = media.get(completa);
+      if (img) {
+        const w = (bigH * img.w) / img.h;
+        draw.image(img.data, left() + colW / 2 - w / 2, y, w, bigH, 'JPEG');
+      }
+      draw.text('A insígnia completa', left() + colW / 2, y + bigH + 5 * s, 8.5, 'bold', BLACK, { align: 'center' });
+      y += bigH + 10 * s;
+    }
+    if (sec.media === 'dirigentes') {
+      // The table across the column
+      const h = (colW * dirigentesImg.h) / dirigentesImg.w;
+      room(h);
+      draw.image(media.get(dirigentesImg.src)?.data, left(), y, colW, h, 'JPEG');
+      y += h + 6 * s;
+    }
+    for (const block of sec.text ? toBlocks(sec.text) : []) {
       if (block.kind === 'p') {
         for (const line of block.lines) {
           const lines = draw.split(line, colW, BODY);
@@ -254,10 +366,10 @@ async function newDoc(title, orientation) {
 export async function generateProvaPdf(seccao, slug) {
   const section = seccoes[seccao];
   const prova = numbered(seccao).find((p) => p.slug === slug);
-  const [doc, logo] = await Promise.all([newDoc(prova.title, 'portrait'), loadImage(faviconUrl)]);
+  const [doc, logo, media] = await Promise.all([newDoc(prova.title, 'portrait'), loadImage(faviconUrl), loadMedia(seccao, [prova])]);
 
   const draw = recorder(doc, A4);
-  layoutProva(draw, A4, { seccao, prova, section });
+  layoutProva(draw, A4, { seccao, prova, section, media });
   const n = draw.pages.length;
   draw.pages.forEach((page, i) => footer(draw, A4, page, { logo, label: n > 1 ? `${i + 1} / ${n}` : '' }));
   draw.pages.forEach((page, i) => {
@@ -337,14 +449,14 @@ export async function generateAllProvasPdf(seccao, format = 'booklet') {
   const section = seccoes[seccao];
   const shortName = shortNameOf(section);
   const all = numbered(seccao);
-  const [doc, logo] = await Promise.all([newDoc(`Provas dos ${shortName}`, orientation), loadImage(faviconUrl)]);
+  const [doc, logo, media] = await Promise.all([newDoc(`Provas dos ${shortName}`, orientation), loadImage(faviconUrl), loadMedia(seccao, all)]);
 
   // Page 1 is the cover, filled in once the provas' page numbers are known
   const draw = recorder(doc, g);
   const starts = {};
   for (const prova of all) {
     draw.newPage();
-    starts[prova.slug] = layoutProva(draw, g, { seccao, prova, section, total: all.length, header: true }) + 1;
+    starts[prova.slug] = layoutProva(draw, g, { seccao, prova, section, total: all.length, header: true, media }) + 1;
   }
   // Folded, the pages aren't in the file's order, so links and bookmarks would land wrong
   draw.onto(draw.pages[0], () => layoutCover(draw, g, { section, all, starts, logo, links: !booklet }));

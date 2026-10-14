@@ -1,5 +1,6 @@
 // ── Conteúdo detalhado de cada prova ──
-// Each entry has a title and sections (array of { heading?, text }).
+// Each entry has a title and sections (array of { heading?, text } or { heading?, media }: media
+// names pictures the page draws per secção, 'uniformes', 'progresso', 'dirigentes' or a badge grid, from config/distintivos.js).
 // Adesão ao Movimento is the same for every secção, so it is keyed by slug alone. Adesão à
 // Secção differs per secção (Bando, Patrulha, Equipa, Comunidade), so it is keyed
 // "<secção>/<slug>": a bare 'adesao-seccao-1' once sent every secção to the Pioneiros text.
@@ -120,19 +121,15 @@ export const provasContent = {
 
   'adesao-movimento-7': {
     title: 'Uniforme e distintivos dos dirigentes',
+    // Pictures only, each named: the secção's own, from config/distintivos.js
     sections: [
-      {
-        heading: 'O uniforme escutista',
-        text: 'O uniforme do CNE é um símbolo de pertença e igualdade. Todos os membros usam a camisa caqui (ou azul, para Lobitos), o lenço do Agrupamento, calças/saia escuras e cinto escutista. O uniforme elimina as diferenças sociais e económicas, promovendo a fraternidade entre todos.',
-      },
-      {
-        heading: 'Distintivos de identificação',
-        text: 'No uniforme encontramos diversos elementos de identificação: o número do Agrupamento (no bolso direito), a Flor de Lis do CNE (no bolso esquerdo), as insígnias de secção, os distintivos de progressão pessoal e as insígnias de especialidade. Cada elemento tem o seu lugar específico no uniforme, de acordo com o regulamento do CNE.',
-      },
-      {
-        heading: 'Distintivos de função dos dirigentes',
-        text: 'Os dirigentes (chefes) usam distintivos que identificam a sua função:\n\n• Chefe de Agrupamento - triângulo verde com a Flor de Lis.\n• Chefe de Secção - triângulo na cor da secção (amarelo para Lobitos, verde para Exploradores, azul para Pioneiros, vermelho para Caminheiros).\n• Adjuntos - distintivo semelhante com pequenas variações.\n• Assistente Religioso - cruz sobre a Flor de Lis.\n\nOs dirigentes usam ainda barras de atividade e de formação que atestam a sua experiência e qualificação.',
-      },
+      { media: 'uniformes' },
+      { heading: 'Insígnia de Promessa', media: 'promessa' },
+      { heading: 'Insígnias de secção', media: 'seccoes' },
+      { heading: 'Guias e cargos', media: 'funcoes' },
+      { heading: 'Insígnias de progresso', media: 'progresso' },
+      { heading: 'Noites de campo', media: 'noites' },
+      { heading: 'Distintivos dos dirigentes', media: 'dirigentes' },
     ],
   },
 
