@@ -9,6 +9,10 @@ const MAX_WIDTH = [
   ['/images/logos/', 320],
   ['/images/members/', 320],
   ['/images/fardas/', 480],
+  // The dirigentes' table is set small: kept wide enough to read once zoomed in the viewer
+  ['/images/distintivos/dirigentes', 1600],
+  // The CNE's uniform posters are 700px wide: no wider, or the build would enlarge them
+  ['/images/distintivos/', 700],
   ['/images/building', 1080],
   ['/images/sections/', 1600],
   ['/images/', 2048],
@@ -20,6 +24,8 @@ function imageDefaults(url) {
   // The Klandestino's 1993 puzzles are 1-bit line art a few hundred pixels wide: lossy WebP
   // would blur the lines, so they ship as the PNGs they are
   if (path.includes('/images/klandestino/')) return new URLSearchParams()
+  // The badges are 60–260px: resized they'd only be enlarged or blurred
+  if (/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites)\//.test(path)) return new URLSearchParams()
   const [, w] = MAX_WIDTH.find(([dir]) => path.includes(dir))
   return new URLSearchParams({ w: String(w), format: 'webp', quality: '75' })
 }
