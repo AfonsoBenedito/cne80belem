@@ -217,7 +217,7 @@ export default function ProvaDetail() {
               // sections (only an all-picture prova has any); a new prova starts afresh
               <LoadErrorBoundary key={slug}>
                 {content.sections.map((s, i) => (
-                  <div key={i} className={styles.section}>
+                  <div key={i} className={`${styles.section} ${s.recite ? styles.recited : ''}`}>
                     {s.heading && (
                       <h2
                         className={styles.sectionHeading}
@@ -236,7 +236,7 @@ export default function ProvaDetail() {
                         return (
                           // Several lines (a prayer, a formula): each its own row, a wrapped
                           // part indented under it, so a narrow screen doesn't add lines
-                          <p key={j} className={`${styles.paragraph} ${block.lines.length > 1 ? styles.verse : ''}`}>
+                          <p key={j} className={styles.paragraph}>
                             {block.lines.length > 1
                               ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{line}</span>)
                               : block.lines[0]}
