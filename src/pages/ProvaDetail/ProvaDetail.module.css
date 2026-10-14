@@ -231,6 +231,22 @@
   margin-bottom: 0;
 }
 
+/* Prayers are each a whole: two lines of their own size between them (one line ran them
+   together), and the last "Ámen." gets a pause before the prev/next links */
+.section:has(.verse):not(:last-of-type) {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.article:has(.verse) .nav {
+  margin-top: var(--spacing-3xl);
+}
+
+@media (max-width: 768px) {
+  .section:has(.verse):not(:last-of-type) {
+    margin-bottom: var(--spacing-2xl);
+  }
+}
+
 .sectionHeading {
   font-size: var(--font-size-xl);
   font-weight: 800;
@@ -245,11 +261,41 @@
   margin-bottom: var(--spacing-md);
 }
 
+/* A prayer is read slowly and aloud, often by a child over a parent's phone: larger and darker
+   than the provas' prose, with leading a touch tighter for the bigger size */
+.verse {
+  font-size: var(--font-size-xl);
+  line-height: 1.6;
+  color: var(--color-gray-900);
+}
+
+@media (max-width: 768px) {
+  .verse {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* A prayer's heading stays a step above its now larger text (20px each on desktop otherwise) */
+@media (min-width: 769px) {
+  .section:has(.verse) .sectionHeading {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* The smallest phones: at 18px most lines of a prayer wrapped; at the body size few do */
+@media (max-width: 360px) {
+  .verse {
+    font-size: var(--font-size-base);
+  }
+}
+
 /* A hanging indent: the line starts at the edge, a wrapped part sits under it, 1.25em in */
 .verseLine {
   display: block;
   padding-left: 1.25em;
   text-indent: -1.25em;
+  /* A wrapped line splits evenly ("O pão nosso de cada dia / nos dai hoje;"), not leaving one word on a row */
+  text-wrap: balance;
 }
 
 .paragraph:last-child {
@@ -448,6 +494,13 @@ ol.list {
 @media (max-width: 768px) {
   .hero {
     padding: 2.5rem 0;
+  }
+
+  /* The floating button (48px, 1rem from the edge) sits over the column's right side on phones:
+     the text keeps clear of it, so it never covers the end of a line ("…em idade.") */
+  .paragraph,
+  .list {
+    padding-right: 3rem;
   }
 
   .heroTitle {
