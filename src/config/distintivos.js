@@ -58,13 +58,13 @@ const guias = {
 };
 
 const cargos = [
-  { name: 'Secretário', src: secretario },
-  { name: 'Tesoureiro', src: tesoureiro },
-  { name: 'Guarda-Material', src: guardaMaterial },
-  { name: 'Cozinheiro', src: cozinheiro },
-  { name: 'Socorrista', src: socorrista },
-  { name: 'Animador', src: animador },
-  { name: 'Relações Públicas', src: relacoesPublicas },
+  { name: 'Secretário', slug: 'secretario', src: secretario },
+  { name: 'Tesoureiro', slug: 'tesoureiro', src: tesoureiro },
+  { name: 'Guarda-Material', slug: 'guarda-material', src: guardaMaterial },
+  { name: 'Cozinheiro', slug: 'cozinheiro', src: cozinheiro },
+  { name: 'Socorrista', slug: 'socorrista', src: socorrista },
+  { name: 'Animador', slug: 'animador', src: animador },
+  { name: 'Relações Públicas', slug: 'relacoes-publicas', src: relacoesPublicas },
 ];
 
 const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites,saudacao}/*.{jpg,png}', { eager: true, import: 'default' });
@@ -108,6 +108,17 @@ export const badges = {
     ...guias[seccao].map((g) => ({ ...g, group: 'guias' })),
     ...cargos.map((c) => ({ ...c, group: 'cargos' })),
   ],
+  // The Cargos prova: each badge alone, beside its cargo's text (the heading names it), at the
+  // grid's badge size (`small`): the cargo scans are only 60px
+  // The grid that opens the Cargos prova: every badge, each a link to its cargo below
+  cargosIndex: (seccao) => [
+    { ...guias[seccao][0], href: '#guia', group: 'guias' },
+    { ...guias[seccao][1], href: '#subguia', group: 'guias' },
+    ...cargos.map((c) => ({ name: c.name, src: c.src, href: `#cargo-${c.slug}`, group: 'cargos' })),
+  ],
+  guia: (seccao) => [{ src: guias[seccao][0].src, name: null, small: true, alt: `Insígnia de ${guias[seccao][0].name}` }],
+  subguia: (seccao) => [{ src: guias[seccao][1].src, name: null, small: true, alt: `Insígnia de ${guias[seccao][1].name}` }],
+  ...Object.fromEntries(cargos.map((c) => [`cargo-${c.slug}`, () => [{ src: c.src, name: null, small: true, alt: `Insígnia de ${c.name}` }]])),
   noites: () => [25, 50, 75, 100, 200].map((n) => ({ name: `${n} noites`, src: file(`noites/${n}.jpg`) })),
   // The CNE sheet "Saudações e o seu Simbolismo": its drawings, named by their own captions.
   // `large`: drawings of a whole scout, set taller than a badge; each `alt` says the gesture, as

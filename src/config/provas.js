@@ -90,6 +90,7 @@ export const provas = {
       group: 'Adesão à Secção',
       items: [
         { slug: 'adesao-seccao-1', title: 'Organização da IVª Secção' },
+        { slug: 'adesao-seccao-8', title: 'Cargos da Tribo' },
         { slug: 'adesao-seccao-2', title: 'Símbolos e Mística' },
         { slug: 'adesao-seccao-4', title: 'Patrono: S. Paulo' },
         { slug: 'adesao-seccao-3', title: 'Oração do Caminheiro' },
