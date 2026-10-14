@@ -33,7 +33,8 @@ const viewerSizes = (ratio) => {
 // there, and on release it settles from the finger's own speed. The ends resist instead of
 // looping. A drag down closes it, the backdrop thinning as it goes; a pinch, a double tap, or
 // Ctrl/⌘ + scroll zooms the photo itself, and a zoomed photo pans.
-export default function Lightbox({ photos, index, onIndex, onClose, title, leaving = false, onLeft }) {
+// `captions` (optional, one per photo) names the photo in the bar beside its count
+export default function Lightbox({ photos, index, onIndex, onClose, title, captions, leaving = false, onLeft }) {
   const panelRef = useRef(null);
   const stageRef = useRef(null);
   const trackRef = useRef(null);
@@ -511,7 +512,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, leavi
     >
       <div className={styles.lightboxBar}>
         <p className={styles.lightboxCount} aria-live="polite">
-          {single ? '' : `${index + 1} de ${total}`}
+          {[captions?.[index], single ? '' : `${index + 1} de ${total}`].filter(Boolean).join(' · ')}
         </p>
         <div className={styles.lightboxActions}>
           {/* Zoom is also a pinch, a double tap or Ctrl/⌘ + scroll; the button makes it findable,

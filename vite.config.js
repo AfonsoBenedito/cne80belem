@@ -9,9 +9,6 @@ const MAX_WIDTH = [
   ['/images/logos/', 320],
   ['/images/members/', 320],
   ['/images/fardas/', 480],
-  // The dirigentes' table is set small: kept wide enough to read once zoomed in the viewer
-  ['/images/distintivos/dirigentes', 1600],
-  // The CNE's uniform posters are 700px wide: no wider, or the build would enlarge them
   ['/images/distintivos/', 700],
   ['/images/building', 1080],
   ['/images/sections/', 1600],
@@ -24,8 +21,10 @@ function imageDefaults(url) {
   // The Klandestino's 1993 puzzles are 1-bit line art a few hundred pixels wide: lossy WebP
   // would blur the lines, so they ship as the PNGs they are
   if (path.includes('/images/klandestino/')) return new URLSearchParams()
-  // The badges are 60–260px: resized they'd only be enlarged or blurred
-  if (/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites)\//.test(path)) return new URLSearchParams()
+  // The badges are set by height (4rem; the progresso pieces up to 8rem), so they are capped at 3×
+  // that. imagetools never enlarges, so a scan smaller than that keeps its own size
+  const badge = path.match(/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites|cruzes)\//)
+  if (badge) return new URLSearchParams({ h: badge[1] === 'progresso' ? '384' : '192', format: 'webp', quality: '85' })
   const [, w] = MAX_WIDTH.find(([dir]) => path.includes(dir))
   return new URLSearchParams({ w: String(w), format: 'webp', quality: '75' })
 }

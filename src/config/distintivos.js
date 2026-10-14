@@ -5,7 +5,9 @@ import fardaExploradores from '../assets/images/distintivos/farda-exploradores.j
 import fardaPioneiros from '../assets/images/distintivos/farda-pioneiros.png';
 import fardaCaminheiros from '../assets/images/distintivos/farda-caminheiros.jpg';
 import uniformeDirigentes from '../assets/images/distintivos/uniforme-dirigentes.jpg';
-import dirigentesTabela from '../assets/images/distintivos/dirigentes.png';
+import cruzCristo from '../assets/images/distintivos/cruzes/cruz-de-cristo.png';
+import cruzJerusalem from '../assets/images/distintivos/cruzes/cruz-de-jerusalem.png';
+import cruzFlorDeLisada from '../assets/images/distintivos/cruzes/cruz-flor-de-lisada.png';
 import guiaBando from '../assets/images/distintivos/funcao/guia-bando.jpg';
 import subguiaBando from '../assets/images/distintivos/funcao/subguia-bando.jpg';
 import guiaPatrulha from '../assets/images/distintivos/funcao/guia-patrulha.jpg';
@@ -30,12 +32,21 @@ export const uniformes = {
 
 export const uniformeDirigentesImg = { src: uniformeDirigentes, w: 700, h: 920, alt: 'Uniforme dos dirigentes, com o lugar de cada insígnia e distintivo' };
 
-// The CNE's table of the dirigentes' distintivos, the same for every secção
-export const dirigentesImg = {
-  src: dirigentesTabela,
-  w: 2392,
-  h: 1672,
-  alt: 'Tabela dos distintivos dos dirigentes. Um losango pelo nível: verde para a Secção, vermelho para o Agrupamento, amarelo para o Núcleo, roxo para a Região e branco para o Nacional. Uma cruz pela função: a Cruz de Cristo para os Chefes de Unidade, Agrupamento, Núcleo, Região e Nacional e os seus Adjuntos; a Cruz de Jerusalém para os Secretários e Tesoureiros; a Cruz Flor-de-Lisada para os Assistentes.',
+// The dirigentes' distintivos, from the CNE's table: a losango whose colour says the level, and a
+// cross that says the função. The colours are the table's own
+export const dirigentes = {
+  niveis: [
+    { name: 'Secção', color: '#21af5a' },
+    { name: 'Agrupamento', color: '#fb1c19' },
+    { name: 'Núcleo', color: '#ffff4c' },
+    { name: 'Região', color: '#6e329b' },
+    { name: 'Nacional', color: '#ffffff' },
+  ],
+  cruzes: [
+    { name: 'Cruz de Cristo', who: 'Chefes de Unidade, Agrupamento, Núcleo, Região e Nacional, e Adjuntos', src: cruzCristo },
+    { name: 'Cruz de Jerusalém', who: 'Secretários e Tesoureiros', src: cruzJerusalem },
+    { name: 'Cruz Flor-de-Lisada', who: 'Assistentes', src: cruzFlorDeLisada },
+  ],
 };
 
 // The Guia's and Sub-Guia's fitas on the pocket; the Caminheiros use the Pioneiros' (blue) ones
@@ -59,18 +70,25 @@ const cargos = [
 const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites}/*.{jpg,png}', { eager: true, import: 'default' });
 const file = (path) => files[`../assets/images/distintivos/${path}`];
 
-// The badge grids, by `media` name, each a list of { name, src } for the open secção (a badge
-// with no name is one the heading already names)
+// The badge grids, by `media` name, each a list of { name, src } for the open secção. A badge
+// with no name is one the heading already names, so it carries its own alt text; `group` starts
+// a row of its own (the fitas apart from the cargos); `current` marks the open secção's own
 export const badges = {
   // The Lobitos have their own; every other secção has the CNE's
-  promessa: (seccao) => [{ name: null, src: file(seccao === 'lobitos' ? 'promessa/lobitos.jpg' : 'promessa/cne.jpg') }],
+  promessa: (seccao) => [seccao === 'lobitos'
+    ? { name: null, src: file('promessa/lobitos.jpg'), alt: 'Insígnia de Promessa dos Lobitos: a cabeça de lobo, com o lema «Da melhor vontade»' }
+    : { name: null, src: file('promessa/cne.jpg'), alt: 'Insígnia de Promessa do CNE: a flor de lis com a cruz, com o lema «Alerta»' }],
   // All four, wherever it's open
-  seccoes: () => ['lobitos', 'exploradores', 'pioneiros', 'caminheiros'].map((s) => ({
+  seccoes: (seccao) => ['lobitos', 'exploradores', 'pioneiros', 'caminheiros'].map((s) => ({
     name: { lobitos: 'Lobitos', exploradores: 'Exploradores', pioneiros: 'Pioneiros', caminheiros: 'Caminheiros' }[s],
     src: file(`seccoes/${s}.png`),
+    current: s === seccao,
   })),
   // Guia and Sub-Guia first, then the cargos
-  funcoes: (seccao) => [...guias[seccao], ...cargos],
+  funcoes: (seccao) => [
+    ...guias[seccao].map((g) => ({ ...g, group: 'guias' })),
+    ...cargos.map((c) => ({ ...c, group: 'cargos' })),
+  ],
   noites: () => [25, 50, 75, 100, 200].map((n) => ({ name: `${n} noites`, src: file(`noites/${n}.jpg`) })),
 };
 

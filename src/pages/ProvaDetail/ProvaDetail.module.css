@@ -245,143 +245,15 @@
   margin-bottom: var(--spacing-md);
 }
 
+/* A hanging indent: the line starts at the edge, a wrapped part sits under it, 1.25em in */
+.verseLine {
+  display: block;
+  padding-left: 1.25em;
+  text-indent: -1.25em;
+}
+
 .paragraph:last-child {
   margin-bottom: 0;
-}
-
-/* ── Uniformes: flex-grow is each poster's width over its height, so both end at one height ── */
-.uniformes {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-}
-
-.uniforme {
-  flex-basis: 0;
-  min-width: 0;
-  margin: 0;
-}
-
-.uniformeButton {
-  display: block;
-  width: 100%;
-  padding: 0;
-  background: none;
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  cursor: zoom-in;
-  transition: var(--transition-interactive), transform var(--transition-fast);
-}
-
-.uniformeImg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.uniformeCaption {
-  margin-top: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: var(--color-gray-700);
-  text-align: center;
-}
-
-@media (hover: hover) {
-  .uniformeButton:hover {
-    border-color: var(--color-gray-400);
-    box-shadow: var(--shadow-md);
-  }
-}
-
-.uniformeButton:active {
-  transform: scale(0.99);
-}
-
-/* ── Guias e cargos: each badge over its name, all at one height ── */
-.funcoes {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
-  gap: var(--spacing-md) var(--spacing-sm);
-  padding: 0;
-}
-
-.funcao {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  text-align: center;
-}
-
-.funcaoImg {
-  height: 4rem;
-  width: auto;
-  border-radius: var(--radius-xs);
-}
-
-.funcaoName {
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--color-gray-700);
-}
-
-/* ── Insígnias de progresso: the four etapas at one height, in order, then the whole badge ── */
-.progresso {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.etapas {
-  flex: 1 1 20rem;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--spacing-sm);
-  padding: 0;
-  counter-reset: etapa;
-}
-
-.etapa {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  text-align: center;
-  counter-increment: etapa;
-}
-
-.etapaImg {
-  height: 4.5rem;
-  width: 100%;
-  object-fit: contain;
-}
-
-/* The etapa's number over its name (the order is the point); inline, "1." wrapped away from a long name */
-.etapa .funcaoName::before {
-  content: counter(etapa);
-  display: block;
-  font-size: var(--font-size-xs);
-  font-weight: 800;
-  color: var(--color-gray-500);
-}
-
-.completa {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  margin: 0 auto;
-}
-
-.completaImg {
-  height: 8rem;
-  width: auto;
 }
 
 .list {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
@@ -6,122 +6,12 @@ import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
 import { toBlocks } from '../../utils/provaBlocks';
-import { uniformes, uniformeDirigentesImg, dirigentesImg, badges, progresso } from '../../config/distintivos';
-import Lightbox from '../NoticiaDetail/Lightbox';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
+import LoadErrorBoundary from '../../components/LoadErrorBoundary/LoadErrorBoundary';
 import styles from './ProvaDetail.module.css';
 
-// The secção's uniform and the dirigentes', side by side at one height: each takes a share of
-// the row in proportion to its width over height. The posters' labels are small, so a press
-// opens them in the photo viewer (zoom, and a swipe to the other one)
-function Uniformes({ seccao }) {
-  const [viewer, setViewer] = useState(null);
-  const pair = [
-    { ...uniformes[seccao], caption: `Uniforme dos ${seccoes[seccao].label.split(' - ').pop()}` },
-    { ...uniformeDirigentesImg, caption: 'Uniforme dos dirigentes' },
-  ];
-  return (
-    <>
-      <div className={styles.uniformes}>
-        {pair.map((u, i) => (
-          <figure key={u.caption} className={styles.uniforme} style={{ flexGrow: u.w / u.h }}>
-            <button
-              type="button"
-              className={styles.uniformeButton}
-              // A tap doesn't focus a button on touch screens: focus it, so closing returns here
-              onClick={(e) => {
-                e.currentTarget.focus({ preventScroll: true });
-                setViewer({ index: i, leaving: false });
-              }}
-              aria-label={`Ver em grande: ${u.caption}`}
-            >
-              <img src={u.src} alt={u.alt} width={u.w} height={u.h} className={styles.uniformeImg} />
-            </button>
-            <figcaption className={styles.uniformeCaption}>{u.caption}</figcaption>
-          </figure>
-        ))}
-      </div>
-      {viewer && (
-        <Lightbox
-          photos={pair.map((u) => u.src)}
-          index={viewer.index}
-          onIndex={(index) => setViewer({ index, leaving: false })}
-          onClose={() => setViewer((v) => v && { ...v, leaving: true })}
-          leaving={viewer.leaving}
-          onLeft={() => setViewer(null)}
-          title="Uniformes"
-        />
-      )}
-    </>
-  );
-}
-
-// The dirigentes' table, full width; its text is small, so a press opens it in the photo viewer
-function Dirigentes() {
-  const [viewer, setViewer] = useState(null);
-  const d = dirigentesImg;
-  return (
-    <>
-      <button
-        type="button"
-        className={styles.uniformeButton}
-        onClick={(e) => {
-          e.currentTarget.focus({ preventScroll: true });
-          setViewer({ leaving: false });
-        }}
-        aria-label="Ver em grande: Distintivos dos dirigentes"
-      >
-        <img src={d.src} alt={d.alt} width={d.w} height={d.h} className={styles.uniformeImg} />
-      </button>
-      {viewer && (
-        <Lightbox
-          photos={[d.src]}
-          index={0}
-          onIndex={() => {}}
-          onClose={() => setViewer((v) => v && { leaving: true })}
-          leaving={viewer.leaving}
-          onLeft={() => setViewer(null)}
-          title="Distintivos dos dirigentes"
-        />
-      )}
-    </>
-  );
-}
-
-// A grid of badges, each over its name, all at one height
-function Badges({ items }) {
-  return (
-    <ul className={styles.funcoes}>
-      {items.map((f) => (
-        <li key={f.src} className={styles.funcao}>
-          <img src={f.src} alt={f.name ? '' : 'A insígnia'} className={styles.funcaoImg} />
-          {f.name && <span className={styles.funcaoName}>{f.name}</span>}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-// The etapas in order, each adding its piece, then the whole insígnia
-function Progresso({ seccao }) {
-  const { etapas, completa } = progresso(seccao);
-  return (
-    <div className={styles.progresso}>
-      <ol className={styles.etapas}>
-        {etapas.map((e) => (
-          <li key={e.name} className={styles.etapa}>
-            <img src={e.src} alt="" className={styles.etapaImg} />
-            <span className={styles.funcaoName}>{e.name}</span>
-          </li>
-        ))}
-      </ol>
-      <figure className={styles.completa}>
-        <img src={completa} alt={`A insígnia de progresso completa, com as etapas ${etapas.map((e) => e.name).join(', ')}`} className={styles.completaImg} />
-        <figcaption className={styles.funcaoName}>A insígnia completa</figcaption>
-      </figure>
-    </div>
-  );
-}
+// The pictures (badges, posters, their viewer) load only for a prova that has them
+const ProvaMedia = lazy(() => import('./ProvaMedia'));
 
 export default function ProvaDetail() {
   const { seccao, slug } = useParams();
@@ -323,42 +213,46 @@ export default function ProvaDetail() {
           {/* Content */}
           <article className={styles.article}>
             {content ? (
-              content.sections.map((s, i) => (
-                <div key={i} className={styles.section}>
-                  {s.heading && (
-                    <h2
-                      className={styles.sectionHeading}
-                      style={{ color: section.ink }}
-                    >
-                      {s.heading}
-                    </h2>
-                  )}
-                  {s.media === 'uniformes' && <Uniformes seccao={seccao} />}
-                  {badges[s.media] && <Badges items={badges[s.media](seccao)} />}
-                  {s.media === 'progresso' && <Progresso seccao={seccao} />}
-                  {s.media === 'dirigentes' && <Dirigentes />}
-                  {s.text && toBlocks(s.text).map((block, j) => {
-                    if (block.kind === 'p') {
+              // If the pictures' chunk can't download, one note with a reload stands in for the
+              // sections (only an all-picture prova has any); a new prova starts afresh
+              <LoadErrorBoundary key={slug}>
+                {content.sections.map((s, i) => (
+                  <div key={i} className={styles.section}>
+                    {s.heading && (
+                      <h2
+                        className={styles.sectionHeading}
+                        style={{ color: section.ink }}
+                      >
+                        {s.heading}
+                      </h2>
+                    )}
+                    {s.media && (
+                      <Suspense fallback={null}>
+                        <ProvaMedia media={s.media} seccao={seccao} />
+                      </Suspense>
+                    )}
+                    {s.text && toBlocks(s.text).map((block, j) => {
+                      if (block.kind === 'p') {
+                        return (
+                          // Several lines (a prayer, a formula): each its own row, a wrapped
+                          // part indented under it, so a narrow screen doesn't add lines
+                          <p key={j} className={styles.paragraph}>
+                            {block.lines.length > 1
+                              ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{line}</span>)
+                              : block.lines[0]}
+                          </p>
+                        );
+                      }
+                      const List = block.kind;
                       return (
-                        <p key={j} className={styles.paragraph}>
-                          {block.lines.map((line, k) => (
-                            <span key={k}>
-                              {line}
-                              {k < block.lines.length - 1 && <br />}
-                            </span>
-                          ))}
-                        </p>
+                        <List key={j} className={styles.list} start={block.start}>
+                          {block.lines.map((line, k) => <li key={k}>{line}</li>)}
+                        </List>
                       );
-                    }
-                    const List = block.kind;
-                    return (
-                      <List key={j} className={styles.list} start={block.start}>
-                        {block.lines.map((line, k) => <li key={k}>{line}</li>)}
-                      </List>
-                    );
-                  })}
-                </div>
-              ))
+                    })}
+                  </div>
+                ))}
+              </LoadErrorBoundary>
             ) : (
               <div className={styles.noContent} style={{ borderColor: section.color }}>
                 <h2 className={styles.noContentTitle}>Texto em preparação</h2>

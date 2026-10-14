@@ -10,6 +10,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import Home from './pages/Home/Home';
 import FloatingBtn from './components/FloatingBtn/FloatingBtn';
+import LoadErrorBoundary from './components/LoadErrorBoundary/LoadErrorBoundary';
 import styles from './App.module.css';
 
 import { loadNoticias, loadContactos, loadCancioneiro, prefetchLikelyRoutes } from './utils/prefetchRoutes';
@@ -53,6 +54,12 @@ function usePrefetchLikelyRoutes() {
   }, []);
 }
 
+// Keyed by the address, so leaving a page that failed to load gives the next one a fresh try
+function RouteBoundary({ children }) {
+  const { pathname } = useLocation();
+  return <LoadErrorBoundary key={pathname} page>{children}</LoadErrorBoundary>;
+}
+
 export default function App() {
   usePrefetchLikelyRoutes();
 
@@ -62,39 +69,41 @@ export default function App() {
       <Header />
       {/* Skip-link target: focusable so keyboard users land past the header */}
       <div id="conteudo" tabIndex={-1} className={styles.skipTarget}>
-        <Suspense fallback={<main className={styles.routeFallback} aria-busy="true" />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/agrupamento/direcao" element={<Direcao />} />
-            <Route path="/agrupamento/dirigentes-e-animadores" element={<Dirigentes />} />
-            <Route path="/agrupamento/banco-de-fardas" element={<BancoDeFardas />} />
-            <Route path="/agrupamento/documentos" element={<Documentos />} />
-            <Route path="/agrupamento/klandestino" element={<Klandestino />} />
-            <Route path="/agrupamento/klandestino/:slug" element={<KlandestinoIssue />} />
-            <Route path="/agrupamento/noticias" element={<Noticias />} />
-            <Route path="/agrupamento/noticias/:slug" element={<NoticiaDetail />} />
-            {/* Section pages */}
-            <Route path="/seccao/:seccao" element={<Seccao />} />
-            {/* Section news (covil/cabana/abrigo/base) */}
-            <Route path="/seccao/lobitos/covil" element={<Noticias fixedSection="Lobitos" hideHero />} />
-            <Route path="/seccao/exploradores/cabana" element={<Noticias fixedSection="Exploradores" hideHero />} />
-            <Route path="/seccao/pioneiros/abrigo" element={<Noticias fixedSection="Pioneiros" hideHero />} />
-            <Route path="/seccao/caminheiros/base" element={<Noticias fixedSection="Caminheiros" hideHero />} />
-            {/* Section sub-pages */}
-            <Route path="/seccao/:seccao/programa" element={<Programa />} />
-            <Route path="/seccao/:seccao/provas" element={<Provas />} />
-            <Route path="/seccao/:seccao/provas/:slug" element={<ProvaDetail />} />
-            {/* Pages under construction */}
-            <Route path="/seccao/:seccao/*" element={<UnderConstruction />} />
-            <Route path="/recursos/cancioneiro" element={<Cancioneiro />} />
-            <Route path="/recursos/cancioneiro/:slug" element={<CancaoDetail />} />
-            <Route path="/recursos/reservar-alojamento" element={<ReservarAlojamento />} />
-            <Route path="/recursos/*" element={<UnderConstruction />} />
-            <Route path="/links" element={<UnderConstruction />} />
-            <Route path="/contactos" element={<Contactos />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <RouteBoundary>
+          <Suspense fallback={<main className={styles.routeFallback} aria-busy="true" />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/agrupamento/direcao" element={<Direcao />} />
+              <Route path="/agrupamento/dirigentes-e-animadores" element={<Dirigentes />} />
+              <Route path="/agrupamento/banco-de-fardas" element={<BancoDeFardas />} />
+              <Route path="/agrupamento/documentos" element={<Documentos />} />
+              <Route path="/agrupamento/klandestino" element={<Klandestino />} />
+              <Route path="/agrupamento/klandestino/:slug" element={<KlandestinoIssue />} />
+              <Route path="/agrupamento/noticias" element={<Noticias />} />
+              <Route path="/agrupamento/noticias/:slug" element={<NoticiaDetail />} />
+              {/* Section pages */}
+              <Route path="/seccao/:seccao" element={<Seccao />} />
+              {/* Section news (covil/cabana/abrigo/base) */}
+              <Route path="/seccao/lobitos/covil" element={<Noticias fixedSection="Lobitos" hideHero />} />
+              <Route path="/seccao/exploradores/cabana" element={<Noticias fixedSection="Exploradores" hideHero />} />
+              <Route path="/seccao/pioneiros/abrigo" element={<Noticias fixedSection="Pioneiros" hideHero />} />
+              <Route path="/seccao/caminheiros/base" element={<Noticias fixedSection="Caminheiros" hideHero />} />
+              {/* Section sub-pages */}
+              <Route path="/seccao/:seccao/programa" element={<Programa />} />
+              <Route path="/seccao/:seccao/provas" element={<Provas />} />
+              <Route path="/seccao/:seccao/provas/:slug" element={<ProvaDetail />} />
+              {/* Pages under construction */}
+              <Route path="/seccao/:seccao/*" element={<UnderConstruction />} />
+              <Route path="/recursos/cancioneiro" element={<Cancioneiro />} />
+              <Route path="/recursos/cancioneiro/:slug" element={<CancaoDetail />} />
+              <Route path="/recursos/reservar-alojamento" element={<ReservarAlojamento />} />
+              <Route path="/recursos/*" element={<UnderConstruction />} />
+              <Route path="/links" element={<UnderConstruction />} />
+              <Route path="/contactos" element={<Contactos />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </RouteBoundary>
       </div>
       <Footer />
       <FloatingBtn />
