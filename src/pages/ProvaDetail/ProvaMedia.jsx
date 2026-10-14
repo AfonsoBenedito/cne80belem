@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react';
+import { Fragment, Suspense, lazy, useState } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../../config/distintivos';
@@ -111,10 +111,18 @@ function Dirigentes() {
   );
 }
 
+// A drawing's width over its height (the saudação's carry their size), so a lone one can be given
+// its width before it loads
+const ratio = (f) => (f.w ? { '--ratio': f.w / f.h } : undefined);
+
 // A grid of badges, each over its name, all at one height. Items that share a `group` keep a row
 // of their own; every group's rows are as wide as the largest group's, so the tiles line up.
-// A lone badge (the Promessa) is set larger: it's the one the scout is working towards
-function Badges({ items, seccao }) {
+// A lone badge (the Promessa) is set larger: it's the one the scout is working towards.
+// The drawings (`large`, the saudações) are old photocopies, small in place: a press opens them
+// in the photo viewer, as the uniform posters do
+function Badges({ items, seccao, title }) {
+  const [viewer, setViewer] = useState(null);
+  const drawings = items.filter((f) => f.large);
   const groups = [];
   for (const item of items) {
     const last = groups[groups.length - 1];
@@ -127,28 +135,65 @@ function Badges({ items, seccao }) {
   return (
     <div className={styles.badgeGroups}>
       {groups.map((group) => (
-        <ul
-          key={group[0].src}
-          className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''}`}
-          style={vars}
-        >
-          {group.map((f) => (
-            <li
-              key={f.src}
-              className={`${styles.funcao} ${f.current ? styles.funcaoCurrent : ''}`}
-              style={f.current ? { borderColor: seccoes[seccao].color } : undefined}
-            >
-              <img src={f.src} alt={f.alt ?? ''} className={styles.funcaoImg} />
-              {f.name && (
-                <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined}>
-                  {f.name}
-                  {f.current && <span className={styles.srOnly}> (a tua secção)</span>}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+        <Fragment key={group[0].src}>
+          {group[0].groupHeading && (
+            <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
+          )}
+          <ul
+            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${group[0].tall ? styles.funcoesTall : ''}`}
+            style={vars}
+          >
+            {group.map((f) => (
+              <li
+                key={f.src}
+                className={`${styles.funcao} ${f.current ? styles.funcaoCurrent : ''}`}
+                style={f.current ? { borderColor: seccoes[seccao].color } : undefined}
+              >
+                {f.large ? (
+                  <>
+                    {/* Stretched over the whole tile; the name below stays plain text */}
+                    <button
+                      type="button"
+                      className={styles.funcaoZoom}
+                      onClick={(e) => {
+                        e.currentTarget.focus({ preventScroll: true });
+                        setViewer({ index: drawings.indexOf(f), leaving: false });
+                      }}
+                      aria-label={`Ampliar: ${f.name ?? title}`}
+                    >
+                      <img src={f.src} alt="" width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} />
+                    </button>
+                    {f.alt && <Description>{f.alt}</Description>}
+                  </>
+                ) : (
+                  <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} />
+                )}
+                {f.name && (
+                  <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined}>
+                    {f.name}
+                    {f.current && <span className={styles.srOnly}> (a tua secção)</span>}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </Fragment>
       ))}
+      {viewer && (
+        <Suspense fallback={null}>
+          <Lightbox
+            photos={drawings.map((f) => f.src)}
+            index={viewer.index}
+            onIndex={(index) => setViewer({ index, leaving: false })}
+            onClose={() => setViewer((v) => v && { ...v, leaving: true })}
+            leaving={viewer.leaving}
+            onLeft={() => setViewer(null)}
+            title={title}
+            captions={drawings.map((f) => f.name ?? '')}
+            drawings
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
@@ -182,10 +227,10 @@ function Progresso({ seccao }) {
 
 // A prova section's pictures, by its `media` name (provasContent.js): its own chunk, with the
 // images and the photo viewer, so a prova of plain text never downloads them
-export default function ProvaMedia({ media, seccao }) {
+export default function ProvaMedia({ media, seccao, title }) {
   if (media === 'uniformes') return <Uniformes seccao={seccao} />;
   if (media === 'progresso') return <Progresso seccao={seccao} />;
   if (media === 'dirigentes') return <Dirigentes />;
-  if (badges[media]) return <Badges items={badges[media](seccao)} seccao={seccao} />;
+  if (badges[media]) return <Badges items={badges[media](seccao)} seccao={seccao} title={title} />;
   return null;
 }

@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { provas } from '../provas';
 import { provasContent } from '../provasContent';
 import { seccoes } from '../seccoes';
+import { badges } from '../distintivos';
+import { readFileSync } from 'node:fs';
+import { basename } from 'node:path';
 
 const slugsOf = (seccao) => provas[seccao].flatMap((g) => g.items.map((p) => p.slug));
 const titlesOf = (slug) => new Set(Object.values(provas).flat().flatMap((g) => g.items).filter((p) => p.slug === slug).map((p) => p.title));
@@ -49,5 +52,19 @@ describe('provasContent', () => {
       const slugs = slugsOf(seccao);
       expect(new Set(slugs).size, seccao).toBe(slugs.length);
     }
+  });
+});
+
+// The saudação drawings carry their w × h (so the page reserves their box before they load);
+// replacing a drawing without updating its size would stretch it
+describe('saudação drawings', () => {
+  const dir = 'src/assets/images/distintivos/saudacao/';
+  const pngSize = (path) => {
+    const b = readFileSync(path);
+    return [b.readUInt32BE(16), b.readUInt32BE(20)];
+  };
+  const items = ['saudacoes', 'sinal', 'sinalLobito', 'aperto'].flatMap((m) => badges[m]('exploradores'));
+  it.each(items.map((f) => [basename(f.src).split('?')[0], f]))('%s has its file\'s size', (name, f) => {
+    expect([f.w, f.h]).toEqual(pngSize(dir + name));
   });
 });

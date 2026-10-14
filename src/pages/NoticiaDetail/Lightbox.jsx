@@ -33,8 +33,10 @@ const viewerSizes = (ratio) => {
 // there, and on release it settles from the finger's own speed. The ends resist instead of
 // looping. A drag down closes it, the backdrop thinning as it goes; a pinch, a double tap, or
 // Ctrl/⌘ + scroll zooms the photo itself, and a zoomed photo pans.
-// `captions` (optional, one per photo) names the photo in the bar beside its count
-export default function Lightbox({ photos, index, onIndex, onClose, title, captions, leaving = false, onLeft }) {
+// `captions` (optional, one per photo) names the photo in the bar beside its count. `drawings`
+// names what it shows "Desenho" instead of "Foto" (the saudação's drawings), for screen readers
+export default function Lightbox({ photos, index, onIndex, onClose, title, captions, drawings = false, leaving = false, onLeft }) {
+  const noun = drawings ? 'Desenho' : 'Foto';
   const panelRef = useRef(null);
   const stageRef = useRef(null);
   const trackRef = useRef(null);
@@ -135,7 +137,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
   // Scale to s keeping the screen point (px, py) still under the finger or cursor
   const announceZoom = () => {
     const s = zoom.current.s;
-    setZoomNote(s > 1 ? `Foto ampliada a ${Math.round(s * 100)}%` : 'Foto no tamanho original');
+    setZoomNote(s > 1 ? `${noun} ${drawings ? 'ampliado' : 'ampliada'} a ${Math.round(s * 100)}%` : `${noun} no tamanho original`);
   };
 
   const zoomAround = (s, px, py, ms, announce = true) => {
@@ -506,7 +508,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
       className={`${styles.lightbox} ${leaving ? styles.lightboxLeaving : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label={`${single ? 'Foto' : 'Fotos'}: ${title}`}
+      aria-label={`${single ? noun : `${noun}s`}: ${title}`}
       tabIndex={-1}
       onClick={onBackdropClick}
     >
@@ -521,7 +523,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
             type="button"
             className={styles.lightboxRound}
             onClick={toggleZoom}
-            aria-label={zoomed ? 'Reduzir foto' : 'Ampliar foto'}
+            aria-label={`${zoomed ? 'Reduzir' : 'Ampliar'} ${noun.toLowerCase()}`}
             aria-keyshortcuts={zoomed ? '0' : '+'}
             title={zoomed ? 'Reduzir (0)' : 'Ampliar (+)'}
           >
@@ -559,7 +561,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
                   src={photo}
                   srcSet={srcSetFor(photo)}
                   sizes={viewerSizes(aspectRatioFor(photo))}
-                  alt={single ? `Foto: ${title}` : `Foto ${i + 1}: ${title}`}
+                  alt={single ? `${noun}: ${title}` : `${noun} ${i + 1}: ${title}`}
                   className={styles.lightboxImg}
                   decoding="async"
                   draggable={false}
@@ -576,7 +578,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
             type="button"
             className={styles.lightboxArrow}
             onClick={() => go(-1)}
-            aria-label="Foto anterior"
+            aria-label={`${noun} anterior`}
             aria-disabled={atStart || undefined}
           >
             <FaChevronLeft size={20} aria-hidden="true" />
@@ -588,7 +590,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
                 type="button"
                 className={`${styles.lightboxDot} ${i === index ? styles.lightboxDotActive : ''}`}
                 onClick={() => { if (i !== index) { resetZoom(); onIndex(i); } }}
-                aria-label={`Ver foto ${i + 1}`}
+                aria-label={`Ver ${noun.toLowerCase()} ${i + 1}`}
                 aria-current={i === index ? 'true' : undefined}
               >
                 <img src={photo} srcSet={srcSetFor(photo)} sizes="80px" alt="" decoding="async" />
@@ -599,7 +601,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
             type="button"
             className={styles.lightboxArrow}
             onClick={() => go(1)}
-            aria-label="Foto seguinte"
+            aria-label={`${noun} seguinte`}
             aria-disabled={atEnd || undefined}
           >
             <FaChevronRight size={20} aria-hidden="true" />

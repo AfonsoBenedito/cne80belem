@@ -240,7 +240,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
       const h = lines.length * 12.5 * s * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
-      const keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? FUNCAO_ROW : lh * 2;
+      const keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
       room(h + 3 * s + keep);
       draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
       y += h + 3 * s;
@@ -265,11 +265,13 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       y += h + capH + 6 * s;
     }
     if (badges[sec.media] && !sec.text) {
-      // A grid of badges, each over its name, all at one height
-      const imgH = 13 * s;
-      const perRow = Math.max(1, Math.floor(colW / (26 * s)));
-      const cellW = colW / perRow;
+      // A grid of badges, each over its name, all at one height; drawings of a whole scout
+      // (`large`, the saudações) taller, fewer to a row, each fitted to its cell
       const items = badges[sec.media](seccao);
+      const large = items[0].large;
+      const imgH = (large ? 34 : 13) * s;
+      const perRow = Math.max(1, Math.floor(colW / ((large ? 38 : 26) * s)));
+      const cellW = colW / perRow;
       // A `group` (the fitas, then the cargos) starts its own row, as on the page
       const rows = [];
       items.forEach((f, k) => {
@@ -277,21 +279,28 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         if (!last || last.length === perRow || f.group !== items[k - 1]?.group) rows.push([f]);
         else last.push(f);
       });
-      for (const row of rows) {
+      rows.forEach((row, r) => {
         const names = row.map((f) => (f.name ? draw.split(f.name, cellW - 3 * s, 8.5, 'bold') : []));
         const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * s * PT * 1.25;
-        room(rowH);
+        // A group's own heading (the Posições), as on the page, kept with its first row
+        const heading = row[0].groupHeading && rows[r - 1]?.[0].group !== row[0].group ? row[0].groupHeading : null;
+        room(rowH + (heading ? LABEL_H : 0));
+        if (heading) {
+          draw.text(heading.toUpperCase(), left(), y + asc(7.5), 7.5, 'bold', GRAY, { charSpace: 0.4 * s });
+          y += LABEL_H;
+        }
         row.forEach((f, i) => {
           const img = media.get(f.src);
           const cx = left() + cellW * (i + 0.5);
           if (img) {
-            const w = (imgH * img.w) / img.h;
-            draw.image(img.data, cx - w / 2, y, w, imgH, 'JPEG');
+            const w = Math.min((imgH * img.w) / img.h, cellW - 4 * s);
+            const h = (w * img.h) / img.w;
+            draw.image(img.data, cx - w / 2, y + imgH - h, w, h, 'JPEG');
           }
           if (names[i].length) draw.text(names[i], cx, y + imgH + 4 * s, 8.5, 'bold', BLACK, { align: 'center', lineHeightFactor: 1.25 });
         });
         y += rowH + 5 * s;
-      }
+      });
     }
     if (sec.media === 'progresso') {
       // The four etapas in a row, each piece at one height, then the whole insígnia under them
@@ -359,14 +368,22 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     const blocks = sec.text ? toBlocks(sec.text) : [];
     // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
     // picture on the right of the text's first line, the text narrower to make room
-    const aside = sec.text && badges[sec.media] ? media.get(badges[sec.media](seccao)[0].src) : null;
-    const asideH = 26 * s;
-    const asideW = aside ? (asideH * aside.w) / aside.h : 0;
-    const textW = aside ? colW - asideW - 8 * s : colW;
+    const asideItem = sec.text && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
+    const aside = asideItem ? media.get(asideItem.src) : null;
+    // 26mm tall (40mm for the hand sign, `large`, as on the page), or narrower for a wide picture
+    // (the handshake), so the text keeps two thirds
+    const asideTall = (asideItem?.large ? 40 : 26) * s;
+    const asideW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
+    const asideH = aside ? (asideW * aside.h) / aside.w : 0;
+    // A block that starts beside it is narrower; one that starts under it (or on a later page)
+    // takes the full width
+    const besideW = aside ? colW - asideW - 8 * s : colW;
     let asideTop = y;
+    let asidePage = -1;
     if (aside) {
       room(asideH);
       asideTop = y;
+      asidePage = draw.pages.length;
       draw.image(aside.data, left() + colW - asideW, y, asideW, asideH, 'JPEG');
     }
     // A recited line wraps without leaving one word alone on its last row ("…possível / por:"):
@@ -379,6 +396,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       return lines;
     };
     blocks.forEach((block, bi) => {
+      const textW = draw.pages.length === asidePage && y < asideTop + asideH ? besideW : colW;
       if (block.kind === 'p') {
         // Several lines (a prayer): a wrapped part sits indented under its line
         const verse = block.lines.length > 1;
