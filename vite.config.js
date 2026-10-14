@@ -25,6 +25,11 @@ function imageDefaults(url) {
   // that. imagetools never enlarges, so a scan smaller than that keeps its own size
   const badge = path.match(/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites|cruzes)\//)
   if (badge) return new URLSearchParams({ h: badge[1] === 'progresso' ? '384' : '192', format: 'webp', quality: '85' })
+  // The secções' logos are only a faded badge in their page's header (~465px at most): 960px
+  // covers that on a 2× screen. The group photos beside them in sections/ keep the larger cap
+  if (/\/images\/sections\/(lobitos|exploradores|pioneiros|caminheiros)\.\w+$/.test(path)) {
+    return new URLSearchParams({ w: '960', format: 'webp', quality: '75' })
+  }
   const [, w] = MAX_WIDTH.find(([dir]) => path.includes(dir))
   return new URLSearchParams({ w: String(w), format: 'webp', quality: '75' })
 }

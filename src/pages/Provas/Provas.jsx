@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { FaChevronRight, FaChevronDown, FaArrowLeft } from 'react-icons/fa';
+import { FaChevronRight, FaChevronDown, FaArrowLeft, FaBookOpen } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
+import pdfStyles from '../../components/ProvasPdfButton/ProvasPdfButton.module.css';
+import { cadernosDePista } from '../../config/cadernosDePista';
 import styles from './Provas.module.css';
 
 export default function Provas() {
@@ -24,6 +26,7 @@ export default function Provas() {
   if (!section || !sectionProvas) return <Navigate to="/" replace />;
 
   const shortName = section.label.split(' - ').pop();
+  const caderno = cadernosDePista[seccao];
 
   const toggleGroup = (group) => {
     setOpenGroups((prev) =>
@@ -55,8 +58,17 @@ export default function Provas() {
           <Link to={`/seccao/${seccao}`} className={styles.backLink} style={{ color: section.ink }}>
             <FaArrowLeft size={12} aria-hidden="true" /> {shortName}
           </Link>
-          {/* Every prova in one file, with a contents page to tick them off */}
-          <ProvasPdfButton seccao={seccao} label="Descarregar todas em PDF" ink={section.ink} />
+          <div className={styles.downloads}>
+            {/* The CNE's own booklet, ready to print */}
+            {caderno && (
+              <a href={caderno} download={`Caderno de Pista - ${shortName}.pdf`} className={pdfStyles.button}>
+                <FaBookOpen size={12} aria-hidden="true" style={{ color: section.ink }} />
+                Caderno de Pista
+              </a>
+            )}
+            {/* Every prova in one file, with a contents page to tick them off */}
+            <ProvasPdfButton seccao={seccao} label="Descarregar todas em PDF" ink={section.ink} />
+          </div>
         </div>
 
         {sectionProvas.map((group, gi) => {
