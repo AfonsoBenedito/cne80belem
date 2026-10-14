@@ -264,7 +264,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       }
       y += h + capH + 6 * s;
     }
-    if (badges[sec.media]) {
+    if (badges[sec.media] && !sec.text) {
       // A grid of badges, each over its name, all at one height
       const imgH = 13 * s;
       const perRow = Math.max(1, Math.floor(colW / (26 * s)));
@@ -356,16 +356,38 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     // from the prose, and the Lobitos' three prayers still fit one A4 page
     const size = sec.recite ? 11.5 : BODY;
     const lineH = sec.recite ? size * s * PT * 1.4 : lh;
-    for (const block of sec.text ? toBlocks(sec.text) : []) {
+    const blocks = sec.text ? toBlocks(sec.text) : [];
+    // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
+    // picture on the right of the text's first line, the text narrower to make room
+    const aside = sec.text && badges[sec.media] ? media.get(badges[sec.media](seccao)[0].src) : null;
+    const asideH = 26 * s;
+    const asideW = aside ? (asideH * aside.w) / aside.h : 0;
+    const textW = aside ? colW - asideW - 8 * s : colW;
+    let asideTop = y;
+    if (aside) {
+      room(asideH);
+      asideTop = y;
+      draw.image(aside.data, left() + colW - asideW, y, asideW, asideH, 'JPEG');
+    }
+    // A recited line wraps without leaving one word alone on its last row ("…possível / por:"):
+    // narrower measures are tried until the last row holds two words
+    const splitRecited = (text, width) => {
+      let lines = draw.split(text, width, size);
+      for (let w = width * 0.95; sec.recite && lines.length > 1 && !lines[lines.length - 1].includes(' ') && w > width * 0.7; w -= width * 0.05) {
+        lines = draw.split(text, w, size);
+      }
+      return lines;
+    };
+    blocks.forEach((block, bi) => {
       if (block.kind === 'p') {
         // Several lines (a prayer): a wrapped part sits indented under its line
         const verse = block.lines.length > 1;
         const hang = verse ? 1.25 * size * s * PT : 0;
         block.lines.forEach((line, n) => {
-          const lines = draw.split(line, colW - hang, size);
+          const lines = splitRecited(line, textW - hang);
           // A prayer's last line ("Ámen.") never starts a page alone: its second-to-last line
           // asks for room for both
-          const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], colW - hang, size).length : 0;
+          const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], textW - hang, size).length : 0;
           lines.forEach((wrapped, i) => {
             // No paragraph starts or ends a page with a single line of it
             const last = lines.length - i;
@@ -378,7 +400,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         // Hanging indent: the marker in the secção's ink, the text aligned after it
         const indent = (block.kind === 'ol' ? 7 : 5) * s;
         block.lines.forEach((item, i) => {
-          const wrapped = draw.split(item, colW - indent, size);
+          const wrapped = splitRecited(item, textW - indent);
           room(lineH * Math.min(wrapped.length, 2));
           draw.text(block.kind === 'ol' ? `${block.start + i}.` : '•', left(), y + asc(size), size, 'bold', ink);
           wrapped.forEach((w, k) => {
@@ -390,8 +412,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
           y += (sec.recite ? 2.5 : 1.2) * s;
         });
       }
-      y += 3.5 * s;
-    }
+      // A recited line that leads into a list sits as close to it as the list's own items
+      y += (sec.recite && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
+    });
+    if (aside) y = Math.max(y, asideTop + asideH + 4 * s);
     // A recited section gets a wider pause before the next one, as on the page
     y += (sec.recite ? 6 : 4) * s;
   }

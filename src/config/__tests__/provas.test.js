@@ -30,7 +30,7 @@ describe('provasContent', () => {
 
   // Text said aloud from memory is set in the larger reading style only when its section says so
   // (`recite: true`); a prayer or a Lobito's law added without it would quietly render as prose
-  const RECITED = /^(Oração|Pai Nosso|Avé Maria|As Leis do|As Máximas do)/;
+  const RECITED = /^(Oração|Pai Nosso|Avé Maria|As Leis do|As Máximas do|A Promessa)/;
   const sections = Object.entries(provasContent).flatMap(([key, c]) => c.sections.map((s) => [key, s]));
 
   const recitedHeadings = sections.filter(([, s]) => s.heading && RECITED.test(s.heading)).map(([key, s]) => [key, s.heading, s]);

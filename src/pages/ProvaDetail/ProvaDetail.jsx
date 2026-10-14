@@ -80,6 +80,27 @@ export default function ProvaDetail() {
   const prev = allProvas[position - 1] ?? null;
   const next = allProvas[position + 1] ?? null;
 
+  // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
+  const renderText = (text) => toBlocks(text).map((block, j) => {
+    if (block.kind === 'p') {
+      return (
+        // Several lines (a prayer, a formula): each its own row, a wrapped
+        // part indented under it, so a narrow screen doesn't add lines
+        <p key={j} className={styles.paragraph}>
+          {block.lines.length > 1
+            ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{line}</span>)
+            : block.lines[0]}
+        </p>
+      );
+    }
+    const List = block.kind;
+    return (
+      <List key={j} className={styles.list} start={block.start}>
+        {block.lines.map((line, k) => <li key={k}>{line}</li>)}
+      </List>
+    );
+  });
+
   return (
     <main className={styles.page}>
       {/* Hero */}
@@ -211,7 +232,8 @@ export default function ProvaDetail() {
           </aside>
 
           {/* Content */}
-          <article className={styles.article}>
+          {/* The secção's ink reaches the list markers through a variable, as the PDF draws them */}
+          <article className={styles.article} style={{ '--section-ink': section.ink }}>
             {content ? (
               // If the pictures' chunk can't download, one note with a reload stands in for the
               // sections (only an all-picture prova has any); a new prova starts afresh
@@ -226,30 +248,30 @@ export default function ProvaDetail() {
                         {s.heading}
                       </h2>
                     )}
-                    {s.media && (
-                      <Suspense fallback={null}>
-                        <ProvaMedia media={s.media} seccao={seccao} />
-                      </Suspense>
+                    {s.media && s.text ? (
+                      // Text with its picture beside it (the Promessa and its insígnia): the text
+                      // leads, the picture sits on its right, or under it on phones. If the
+                      // picture can't load, the text stands alone
+                      <div className={styles.withMedia}>
+                        <div className={styles.withMediaText}>{renderText(s.text)}</div>
+                        <div className={styles.withMediaAside}>
+                          <LoadErrorBoundary quiet>
+                            <Suspense fallback={null}>
+                              <ProvaMedia media={s.media} seccao={seccao} />
+                            </Suspense>
+                          </LoadErrorBoundary>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {s.media && (
+                          <Suspense fallback={null}>
+                            <ProvaMedia media={s.media} seccao={seccao} />
+                          </Suspense>
+                        )}
+                        {s.text && renderText(s.text)}
+                      </>
                     )}
-                    {s.text && toBlocks(s.text).map((block, j) => {
-                      if (block.kind === 'p') {
-                        return (
-                          // Several lines (a prayer, a formula): each its own row, a wrapped
-                          // part indented under it, so a narrow screen doesn't add lines
-                          <p key={j} className={styles.paragraph}>
-                            {block.lines.length > 1
-                              ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{line}</span>)
-                              : block.lines[0]}
-                          </p>
-                        );
-                      }
-                      const List = block.kind;
-                      return (
-                        <List key={j} className={styles.list} start={block.start}>
-                          {block.lines.map((line, k) => <li key={k}>{line}</li>)}
-                        </List>
-                      );
-                    })}
                   </div>
                 ))}
               </LoadErrorBoundary>

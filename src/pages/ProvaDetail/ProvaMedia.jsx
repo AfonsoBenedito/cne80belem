@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../../config/distintivos';
-import Lightbox from '../NoticiaDetail/Lightbox';
 import styles from './ProvaMedia.module.css';
+
+// The photo viewer loads on the first press of a poster: the Promessa page shows an insígnia and
+// never opens it
+const Lightbox = lazy(() => import('../NoticiaDetail/Lightbox'));
 
 // Badges per row, so no row is left with one: n items in rows of at most `max`, as even as they
 // split (7 in rows of 5 is 4 + 3, not 5 + 2)
@@ -60,16 +63,18 @@ function Uniformes({ seccao }) {
         ))}
       </div>
       {viewer && (
-        <Lightbox
-          photos={pair.map((u) => u.src)}
-          index={viewer.index}
-          onIndex={(index) => setViewer({ index, leaving: false })}
-          onClose={() => setViewer((v) => v && { ...v, leaving: true })}
-          leaving={viewer.leaving}
-          onLeft={() => setViewer(null)}
-          title="Uniformes"
-          captions={pair.map((u) => u.caption)}
-        />
+        <Suspense fallback={null}>
+          <Lightbox
+            photos={pair.map((u) => u.src)}
+            index={viewer.index}
+            onIndex={(index) => setViewer({ index, leaving: false })}
+            onClose={() => setViewer((v) => v && { ...v, leaving: true })}
+            leaving={viewer.leaving}
+            onLeft={() => setViewer(null)}
+            title="Uniformes"
+            captions={pair.map((u) => u.caption)}
+          />
+        </Suspense>
       )}
     </>
   );

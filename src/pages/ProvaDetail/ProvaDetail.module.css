@@ -248,6 +248,29 @@
   }
 }
 
+.withMedia {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+}
+
+.withMediaText {
+  flex: 1;
+  min-width: 0;
+}
+
+.withMediaAside {
+  flex: none;
+}
+
+/* Phones: the picture under the text, not squeezing it */
+@media (max-width: 600px) {
+  .withMedia {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+}
+
 .sectionHeading {
   font-size: var(--font-size-xl);
   font-weight: 800;
@@ -275,6 +298,17 @@
 /* Each item a saying of its own, not lines of one paragraph */
 .recited .list li + li {
   margin-top: var(--spacing-sm);
+}
+
+/* A recited line wraps evenly too ("…fazer todo o possível / por:" left the colon alone), and a
+   line that leads into a list ("…fazer todo o possível por:") sits as close to it as the list's
+   own items, so the two read as one sentence */
+.recited .paragraph {
+  text-wrap: balance;
+}
+
+.recited .paragraph:has(+ .list) {
+  margin-bottom: var(--spacing-sm);
 }
 
 @media (max-width: 768px) {
@@ -344,7 +378,8 @@ ol.list {
 }
 
 .list li::marker {
-  color: var(--color-gray-500);
+  /* The secção's ink, like the headings and the PDF's markers (gray was the page's only odd one) */
+  color: var(--section-ink, var(--color-gray-500));
   font-weight: 700;
 }
 
