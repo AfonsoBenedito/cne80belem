@@ -6,7 +6,7 @@ import { toBlocks } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
 import { getProvaContent } from '../config/provasContent';
-import { uniformes, uniformeDirigentesImg, dirigentesImg, badges, progresso } from '../config/distintivos';
+import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../config/distintivos';
 
 // One column, Nunito. The secção's colour is a thin band at the top and the headings' ink; the
 // rest is black and gray on white, so a printed prova reads like the page it came from.
@@ -62,7 +62,7 @@ async function loadMedia(seccao, list) {
   for (const prova of list) {
     for (const sec of getProvaContent(seccao, prova.slug)?.sections ?? []) {
       if (sec.media === 'uniformes') [uniformes[seccao], uniformeDirigentesImg].forEach((u) => urls.add(u.src));
-      if (sec.media === 'dirigentes') urls.add(dirigentesImg.src);
+      if (sec.media === 'dirigentes') dirigentes.cruzes.forEach((c) => urls.add(c.src));
       if (badges[sec.media]) badges[sec.media](seccao).forEach((f) => urls.add(f.src));
       if (sec.media === 'progresso') {
         const { etapas, completa } = progresso(seccao);
@@ -126,6 +126,15 @@ function recorder(doc, g) {
         doc.setDrawColor(...color);
         doc.setLineWidth(width);
         doc.line(ox + x1, y1, ox + x2, y2);
+      });
+    },
+    // A losango (the dirigentes' level), outlined so the white one shows
+    diamond(cx, cy, w, h, fill) {
+      push((ox) => {
+        doc.setFillColor(...hexToRgb(fill));
+        doc.setDrawColor(...BLACK);
+        doc.setLineWidth(0.2);
+        doc.lines([[w / 2, h / 2], [-w / 2, h / 2], [-w / 2, -h / 2], [w / 2, -h / 2]], ox + cx, cy - h / 2, [1, 1], 'FD', true);
       });
     },
     box(x, y, size) {
@@ -213,6 +222,8 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
   const NAME_LINE = 8.5 * s * PT * 1.25;
   const FUNCAO_ROW = 13 * s + 4 * s + NAME_LINE * 2;
   const PROGRESSO_H = 16 * s + 4 * s + NAME_LINE * 2 + 6 * s + 32 * s + 10 * s;
+  const LABEL_H = 7 * s;
+  const NIVEIS_H = LABEL_H + 12 * s + 4 * s + NAME_LINE + 6 * s;
 
   const content = getProvaContent(seccao, prova.slug);
   if (!content) {
@@ -229,7 +240,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
       const h = lines.length * 12.5 * s * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
-      const keep = sec.media === 'dirigentes' ? (colW * dirigentesImg.h) / dirigentesImg.w : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? FUNCAO_ROW : lh * 2;
+      const keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? FUNCAO_ROW : lh * 2;
       room(h + 3 * s + keep);
       draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
       y += h + 3 * s;
@@ -259,8 +270,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const perRow = Math.max(1, Math.floor(colW / (26 * s)));
       const cellW = colW / perRow;
       const items = badges[sec.media](seccao);
-      for (let r = 0; r < items.length; r += perRow) {
-        const row = items.slice(r, r + perRow);
+      // A `group` (the fitas, then the cargos) starts its own row, as on the page
+      const rows = [];
+      items.forEach((f, k) => {
+        const last = rows[rows.length - 1];
+        if (!last || last.length === perRow || f.group !== items[k - 1]?.group) rows.push([f]);
+        else last.push(f);
+      });
+      for (const row of rows) {
         const names = row.map((f) => (f.name ? draw.split(f.name, cellW - 3 * s, 8.5, 'bold') : []));
         const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * s * PT * 1.25;
         room(rowH);
@@ -305,21 +322,47 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       y += bigH + 10 * s;
     }
     if (sec.media === 'dirigentes') {
-      // The table across the column
-      const h = (colW * dirigentesImg.h) / dirigentesImg.w;
-      room(h);
-      draw.image(media.get(dirigentesImg.src)?.data, left(), y, colW, h, 'JPEG');
-      y += h + 6 * s;
+      // The CNE's table drawn as the page draws it: a losango per level, then a cross per função
+      const label = (text) => {
+        draw.text(text.toUpperCase(), left(), y + asc(7.5), 7.5, 'bold', GRAY, { charSpace: 0.4 * s });
+        y += LABEL_H;
+      };
+      room(NIVEIS_H);
+      label('Pelo nível');
+      const cellW = colW / dirigentes.niveis.length;
+      dirigentes.niveis.forEach((n, i) => {
+        const cx = left() + cellW * (i + 0.5);
+        draw.diamond(cx, y + 6 * s, 8 * s, 12 * s, n.color);
+        draw.text(n.name, cx, y + 12 * s + 4 * s + asc(8.5), 8.5, 'bold', BLACK, { align: 'center' });
+      });
+      y += NIVEIS_H - LABEL_H;
+      const crossH = 11 * s;
+      room(LABEL_H + crossH + 4 * s);
+      label('Pela função');
+      for (const c of dirigentes.cruzes) {
+        const who = draw.split(c.who, colW - crossH - 6 * s, 8.5);
+        const rowH = Math.max(crossH, 10.5 * s * PT * 1.3 + who.length * 8.5 * s * PT * 1.35);
+        room(rowH + 4 * s);
+        const img = media.get(c.src);
+        if (img) draw.image(img.data, left(), y, crossH, crossH, 'JPEG');
+        const tx = left() + crossH + 6 * s;
+        draw.text(c.name, tx, y + asc(10.5) + 1 * s, 10.5, 'bold', BLACK);
+        draw.text(who, tx, y + 10.5 * s * PT * 1.3 + asc(8.5) + 1 * s, 8.5, 'normal', GRAY, { lineHeightFactor: 1.35 });
+        y += rowH + 4 * s;
+      }
+      y += 2 * s;
     }
     for (const block of sec.text ? toBlocks(sec.text) : []) {
       if (block.kind === 'p') {
+        // Several lines (a prayer): a wrapped part sits indented under its line, as on the page
+        const hang = block.lines.length > 1 ? 1.25 * BODY * s * PT : 0;
         for (const line of block.lines) {
-          const lines = draw.split(line, colW, BODY);
+          const lines = draw.split(line, colW - hang, BODY);
           lines.forEach((wrapped, i) => {
             // No paragraph starts or ends a page with a single line of it
             const last = lines.length - i;
             room(lh * (lines.length > 1 && (i === 0 || last === 2) ? 2 : 1));
-            draw.text(wrapped, left(), y + asc(BODY), BODY, 'normal', BLACK);
+            draw.text(wrapped, left() + (i ? hang : 0), y + asc(BODY), BODY, 'normal', BLACK);
             y += lh;
           });
         }
@@ -360,6 +403,8 @@ async function newDoc(title, orientation) {
   const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4' });
   await registerNunito(doc);
   doc.setProperties({ title, author: 'Agrupamento 80 — Santa Maria de Belém' });
+  // Screen readers and copied text use it (jsPDF knows "pt", not "pt-PT")
+  doc.setLanguage('pt');
   return doc;
 }
 

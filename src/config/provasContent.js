@@ -85,18 +85,11 @@ export const provasContent = {
 
   'adesao-movimento-5': {
     title: 'Oração do Escuta',
+    // The prayer alone, as the CNE words it
     sections: [
       {
-        heading: 'A Oração do Escuta',
-        text: 'A Oração do Escuta é uma prece que acompanha todos os momentos da vida escutista - aberturas e encerramentos de atividades, acampamentos e celebrações. É um momento de recolhimento em que os escuteiros se unem em espírito.',
-      },
-      {
-        heading: 'Texto da Oração',
-        text: 'Senhor, ensinai-me a ser generoso,\na servir-Vos como mereceis,\na dar sem conta,\na combater sem medo de ser ferido,\na trabalhar sem descanso\ne a não buscar outra recompensa\nsenão a de saber\nque faço a Vossa santa vontade.\n\nÁmen.',
-      },
-      {
-        heading: 'Significado',
-        text: 'Esta oração, atribuída a Santo Inácio de Loyola, reflete o espírito de serviço desinteressado que está na base do Escutismo. Pede a Deus a graça de ser generoso, de servir sem esperar recompensa e de trabalhar incansavelmente pelo bem dos outros. É uma oração que convida à entrega total e à coragem, valores centrais na vida de qualquer escuteiro.',
+        heading: 'Oração',
+        text: 'Senhor Jesus\nEnsinai-me a ser generoso,\nA servir-Vos como Vós o mereceis,\nA dar-me sem medida,\nA combater sem cuidar das feridas,\nA trabalhar sem procurar descanso,\nA gastar-me sem esperar outra recompensa,\nSenão saber que faço a Vossa vontade santa,\nÁmen',
       },
     ],
   },

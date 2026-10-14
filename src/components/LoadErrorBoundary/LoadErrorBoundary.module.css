@@ -1,0 +1,78 @@
+/* A whole route: centred in the space the page would have taken, like the 404 */
+.page {
+  min-height: calc(100vh - var(--header-height) - 200px);
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-3xl) 0;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+/* A part of a page: a quiet card where the pictures would be */
+.inline {
+  padding: var(--spacing-lg);
+  background: var(--color-gray-100);
+  border-radius: var(--radius-lg);
+}
+
+.titleSmall {
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+.text {
+  max-width: 34rem;
+  margin: var(--spacing-xs) auto 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-gray-600);
+}
+
+.inline .text {
+  margin-left: 0;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: var(--spacing-md);
+  padding: 0.5rem 1rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--color-green-dark);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-interactive), transform var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .button:hover {
+    background: var(--color-green-deep);
+  }
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button:active {
+    transform: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .button {
+    min-height: 44px;
+  }
+}
