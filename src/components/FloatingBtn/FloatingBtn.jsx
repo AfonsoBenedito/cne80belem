@@ -21,8 +21,9 @@ export default function FloatingBtn() {
   // Reservar Alojamento's form is itself an email; a second, blank one there competed with it
   // and sat on "Preparar email" on a phone.
   const onEmailPage = ['/contactos', '/recursos/reservar-alojamento'].includes(pathname.replace(/\/$/, ''));
-  // Prova pages and the Programa are read on a phone: the button sat on their text
-  const onReadingPage = /^\/seccao\/[^/]+\/(provas\/[^/]+|programa)\/?$/.test(pathname);
+  // Prova pages, the Programa and a Klandestino issue are read on a phone: the button sat on their text
+  const onReadingPage = /^\/seccao\/[^/]+\/(provas\/[^/]+|programa)\/?$/.test(pathname)
+    || /^\/agrupamento\/klandestino\/[^/]+\/?$/.test(pathname);
   // A notícia's text and gallery fill a phone's width, so the button sat on them; on wider
   // screens it stays, in the margin beside the reading column
   const onNoticia = /^\/agrupamento\/noticias\/[^/]+\/?$/.test(pathname);

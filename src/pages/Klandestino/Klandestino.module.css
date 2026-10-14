@@ -1,0 +1,189 @@
+.page {
+  padding: var(--spacing-2xl) 0 var(--spacing-3xl);
+  /* Newsprint, as on the issue pages; the cards sit on it like loose sheets */
+  background: var(--color-paper);
+}
+
+.header {
+  max-width: 40rem;
+  margin: 0 auto var(--spacing-2xl);
+  text-align: center;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-green);
+}
+
+.subtitle {
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-700);
+}
+
+.lead {
+  max-width: 34rem;
+  margin: var(--spacing-sm) auto 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-gray-500);
+  text-wrap: balance;
+}
+
+/* ── Issues: each card is a front page. The masthead is the same on all four, so it's the small
+   part; the number and the date are what tell them apart, at display size ── */
+.issues {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.issue {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-lg);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  color: var(--color-gray-900);
+  text-decoration: none;
+  transition: var(--transition-interactive), transform var(--transition-fast);
+}
+
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  border-top: 3px solid var(--color-gray-900);
+  border-bottom: 1px solid var(--color-gray-900);
+  font-size: var(--font-size-base);
+  font-weight: 800;
+}
+
+.mastheadVolume {
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+}
+
+.issueNumber {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.issueDate {
+  margin-top: var(--spacing-xs);
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-700);
+}
+
+/* Three of the issue's own headlines, one per line, as a front page would trail them */
+.highlights {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.highlight {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-gray-700);
+}
+
+.read {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-green-dark);
+}
+
+/* ── Loose sheets ── */
+.loose {
+  margin-top: var(--spacing-2xl);
+}
+
+.looseTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+.looseList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm) var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.looseItem {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  color: var(--color-gray-900);
+  text-decoration: none;
+  transition: var(--transition-interactive), transform var(--transition-fast);
+}
+
+.looseName {
+  font-weight: 800;
+}
+
+.looseDate {
+  flex: 1;
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+.looseArrow {
+  align-self: center;
+  color: var(--color-green-dark);
+}
+
+@media (hover: hover) {
+  .issue:hover,
+  .looseItem:hover {
+    border-color: var(--color-gray-400);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.issue:active,
+.looseItem:active {
+  transform: scale(0.99);
+}
+
+@media (max-width: 768px) {
+  .issues,
+  .looseList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (pointer: coarse) {
+  .looseItem {
+    min-height: 44px;
+  }
+}

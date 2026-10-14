@@ -25,9 +25,14 @@
   --color-gray-600: #525252;
   --color-gray-700: #404040;
   --color-gray-900: #171717;
+  /* The Klandestino's newsprint: gray-500 text stays 4.68:1 on it */
+  --color-paper: #f8f5ee;
 
   /* Typography */
   --font-family: 'Nunito', sans-serif;
+  /* Typewriter face for the Klandestino's masthead line and signatures (system fonts only, nothing
+     downloaded). Not for the songs: American Typewriter isn't fixed-width, and chords must align */
+  --font-typewriter: 'American Typewriter', 'Courier New', Courier, ui-monospace, monospace;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;

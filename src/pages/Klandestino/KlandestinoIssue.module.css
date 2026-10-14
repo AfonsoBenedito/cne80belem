@@ -1,0 +1,571 @@
+.page {
+  padding: var(--spacing-xl) 0 var(--spacing-3xl);
+  /* Newsprint: the issue reads on paper, the site's chrome stays white around it */
+  background: var(--color-paper);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-green-dark);
+  text-decoration: none;
+  transition: var(--transition-interactive);
+}
+
+/* ── Masthead: the name between a newspaper's double rules, the issue's line under it ── */
+.masthead {
+  margin: var(--spacing-lg) 0 var(--spacing-2xl);
+  text-align: center;
+}
+
+.mastheadTitle {
+  padding: var(--spacing-sm) 0;
+  border-top: 4px solid var(--color-gray-900);
+  border-bottom: 1px solid var(--color-gray-900);
+  font-size: clamp(2.25rem, 7vw, 4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--color-gray-900);
+  overflow-wrap: break-word;
+}
+
+.mastheadLine {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs) var(--spacing-lg);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-gray-900);
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--color-gray-900);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Layout: the sumário beside the text on wide screens ── */
+.layout {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: var(--spacing-2xl);
+  align-items: start;
+}
+
+.contents {
+  position: sticky;
+  top: calc(var(--header-height) + var(--spacing-lg));
+  max-height: calc(100vh - var(--header-height) - var(--spacing-2xl));
+  max-height: calc(100svh - var(--header-height) - var(--spacing-2xl));
+  overflow-y: auto;
+}
+
+.contentsTitle {
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-gray-900);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gray-900);
+}
+
+.contentsList {
+  list-style: none;
+}
+
+/* The toggle exists only where the sumário folds (up to 1024px) */
+.contentsToggle {
+  display: none;
+}
+
+.contentsCount {
+  margin-left: auto;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-gray-500);
+}
+
+.contentsChevron {
+  flex-shrink: 0;
+  transition: transform var(--transition-base);
+}
+
+.contentsChevronOpen {
+  transform: rotate(180deg);
+}
+
+.contentsLink {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-gray-900);
+  text-decoration: none;
+  transition: var(--transition-interactive);
+}
+
+.contentsText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.contentsSection {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-500);
+}
+
+.contentsLinkCurrent {
+  color: var(--color-green-dark);
+}
+
+.contentsLinkCurrent .contentsSection,
+.contentsLinkCurrent .contentsPage {
+  color: var(--color-green-dark);
+}
+
+.contentsPage {
+  flex-shrink: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-500);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Articles ── */
+.articles {
+  min-width: 0;
+  max-width: 68ch;
+}
+
+.article {
+  /* The sticky header must not cover the title when the sumário jumps here */
+  scroll-margin-top: calc(var(--header-height) + var(--spacing-md));
+  padding-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+/* Focus lands on an article when the sumário jumps to it; it's a landmark, not a control */
+.article:focus {
+  outline: none;
+}
+
+.articleHeader {
+  margin-bottom: var(--spacing-md);
+}
+
+.kicker {
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-green-dark);
+}
+
+.articleTitle {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--color-gray-900);
+  text-wrap: balance;
+}
+
+.pageNumber {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-500);
+}
+
+.paragraph,
+.list,
+.verse,
+.quote,
+.note,
+.figure,
+.gridWrap {
+  margin-top: var(--spacing-md);
+}
+
+.paragraph {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-gray-700);
+  overflow-wrap: break-word;
+}
+
+.subhead {
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+.list {
+  padding-left: 1.4em;
+  list-style: disc;
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-gray-700);
+}
+
+.listNumbered {
+  padding-left: 0;
+  list-style: none;
+}
+
+.list li + li {
+  margin-top: var(--spacing-xs);
+}
+
+.list li::marker {
+  color: var(--color-gray-500);
+}
+
+.verse {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--spacing-md);
+  border-left: 2px solid var(--color-gray-300);
+  font-size: var(--font-size-base);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--color-gray-700);
+}
+
+.quote {
+  padding-left: var(--spacing-md);
+  border-left: 2px solid var(--color-gray-300);
+  font-size: var(--font-size-base);
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--color-gray-700);
+}
+
+.cite {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-style: normal;
+  color: var(--color-gray-500);
+}
+
+.note {
+  max-width: 62ch;
+  padding: var(--spacing-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--color-gray-700);
+}
+
+/* A song with chords: the 1993 spacing in a fixed-width font, scrolling sideways on its own on a
+   phone rather than wrapping (a wrapped line would move its chords off their syllables) */
+.songWrap {
+  margin-top: var(--spacing-md);
+  overflow-x: auto;
+}
+
+.song {
+  font-family: 'Courier New', Courier, ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-gray-700);
+}
+
+/* A sopa de letras: one cell per letter, scrolls sideways on its own on a narrow phone */
+.gridWrap {
+  overflow-x: auto;
+}
+
+.grid {
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-900);
+  font-variant-numeric: tabular-nums;
+}
+
+.grid td {
+  width: 1.6em;
+  height: 1.6em;
+  border: 1px solid var(--color-gray-300);
+  text-align: center;
+}
+
+/* The 1993 bitmaps are small 1-bit drawings: shown at twice their size, pixels kept sharp */
+.puzzle {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  zoom: 2;
+  image-rendering: pixelated;
+}
+
+.chordLine {
+  font-weight: 700;
+  color: var(--color-green-dark);
+}
+
+/* Puzzles ↔ solutions, between issues */
+.puzzleLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.puzzleLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-green-dark);
+  text-decoration: none;
+  transition: var(--transition-interactive);
+}
+
+.puzzleNone {
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  color: var(--color-gray-600);
+}
+
+.author {
+  margin-top: var(--spacing-md);
+  font-family: var(--font-typewriter);
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  text-align: right;
+  color: var(--color-gray-900);
+}
+
+/* ── Ficha técnica ── */
+.team {
+  margin-top: var(--spacing-md);
+}
+
+.teamTitle {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+.teamList {
+  margin-top: var(--spacing-sm);
+}
+
+.teamRow {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.teamRow dt {
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+.teamRow dd {
+  color: var(--color-gray-600);
+}
+
+/* Back to the sumário: a pill at the bottom right, only where the sumário scrolls away with the
+   text (up to 1024px); the floating mail button is hidden on these pages */
+.contentsReturn {
+  display: none;
+}
+
+/* ── Previous / next ── */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-2xl);
+}
+
+.pagerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-gray-900);
+  text-decoration: none;
+  transition: var(--transition-interactive), transform var(--transition-fast);
+}
+
+.pagerNext {
+  margin-left: auto;
+}
+
+@media (hover: hover) {
+  .backLink:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .contentsLink:hover,
+  .puzzleLink:hover {
+    color: var(--color-green-deep);
+  }
+
+  .puzzleLink:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .pagerLink:hover {
+    border-color: var(--color-gray-400);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.pagerLink:active {
+  transform: scale(0.98);
+}
+
+/* Up to 1024px the text gets the full width; the sumário sits above it, not sticky */
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--spacing-xl);
+  }
+
+  .contents {
+    position: static;
+    max-height: none;
+    max-width: 68ch;
+    /* "Sumário" brings it back under the sticky header, not behind it */
+    scroll-margin-top: calc(var(--header-height) + var(--spacing-md));
+  }
+
+  .contentsLabel {
+    display: none;
+  }
+
+  .contentsToggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    width: 100%;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .contentsList {
+    display: none;
+  }
+
+  .contentsListOpen {
+    display: block;
+  }
+
+  .contentsReturn {
+    position: fixed;
+    right: var(--spacing-md);
+    bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    min-height: 44px;
+    padding: 0 var(--spacing-md);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
+    font-family: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 800;
+    color: var(--color-gray-900);
+    cursor: pointer;
+    animation: returnIn 200ms ease-out;
+    transition: var(--transition-interactive), transform var(--transition-fast);
+  }
+
+  .contentsReturn:active {
+    transform: scale(0.97);
+  }
+}
+
+@keyframes returnIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (max-width: 600px) {
+  .teamRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .articleTitle {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (pointer: coarse) {
+  .backLink {
+    position: relative;
+  }
+
+  .backLink::after {
+    content: "";
+    position: absolute;
+    inset: -12px -8px;
+  }
+
+  .contentsLink,
+  .pagerLink,
+  .puzzleLink {
+    min-height: 44px;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -27,6 +27,18 @@
         "value": "rgba(0, 0, 0, 0.35)",
         "createdAt": "2026-09-24T17:03:18.684Z",
         "reason": "Agent: photography shadow on the hero carousel, documented in DESIGN.md Elevation & Depth > Over photography; user chose to record these values (2026-09-24)"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "sf mono",
+        "createdAt": "2026-10-14T10:51:13.854Z",
+        "reason": "Claude: functional fixed-width font for the Klandestino songs' chord lines, which only line up above the lyrics in monospace; documented in DESIGN.md (Klandestino › Blocks)"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "courier new",
+        "createdAt": "2026-10-14T11:13:41.674Z",
+        "reason": "Claude: fixed-width face for the Klandestino songs' chord sheets (chords must align); documented in DESIGN.md Typography as the archive's exception"
       }
     ]
   }

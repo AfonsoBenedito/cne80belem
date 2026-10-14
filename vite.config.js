@@ -17,6 +17,9 @@ const MAX_WIDTH = [
 function imageDefaults(url) {
   const path = decodeURIComponent(url.pathname)
   if (!path.includes('/src/assets/images/')) return new URLSearchParams()
+  // The Klandestino's 1993 puzzles are 1-bit line art a few hundred pixels wide: lossy WebP
+  // would blur the lines, so they ship as the PNGs they are
+  if (path.includes('/images/klandestino/')) return new URLSearchParams()
   const [, w] = MAX_WIDTH.find(([dir]) => path.includes(dir))
   return new URLSearchParams({ w: String(w), format: 'webp', quality: '75' })
 }
