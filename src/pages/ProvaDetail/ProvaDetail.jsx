@@ -236,7 +236,7 @@ export default function ProvaDetail() {
                         return (
                           // Several lines (a prayer, a formula): each its own row, a wrapped
                           // part indented under it, so a narrow screen doesn't add lines
-                          <p key={j} className={styles.paragraph}>
+                          <p key={j} className={`${styles.paragraph} ${block.lines.length > 1 ? styles.verse : ''}`}>
                             {block.lines.length > 1
                               ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{line}</span>)
                               : block.lines[0]}

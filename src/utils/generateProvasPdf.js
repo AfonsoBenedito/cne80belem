@@ -354,18 +354,26 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     }
     for (const block of sec.text ? toBlocks(sec.text) : []) {
       if (block.kind === 'p') {
-        // Several lines (a prayer): a wrapped part sits indented under its line, as on the page
-        const hang = block.lines.length > 1 ? 1.25 * BODY * s * PT : 0;
-        for (const line of block.lines) {
-          const lines = draw.split(line, colW - hang, BODY);
+        // Several lines (a prayer): set larger, as on the page, and a wrapped part sits indented
+        // under its line
+        const verse = block.lines.length > 1;
+        // 11.5pt: a step up from the prose, and the Lobitos' three prayers still fit one A4 page
+        const size = verse ? 11.5 : BODY;
+        const lineH = verse ? size * s * PT * 1.4 : lh;
+        const hang = verse ? 1.25 * size * s * PT : 0;
+        block.lines.forEach((line, n) => {
+          const lines = draw.split(line, colW - hang, size);
+          // A prayer's last line ("Ámen.") never starts a page alone: its second-to-last line
+          // asks for room for both
+          const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], colW - hang, size).length : 0;
           lines.forEach((wrapped, i) => {
             // No paragraph starts or ends a page with a single line of it
             const last = lines.length - i;
-            room(lh * (lines.length > 1 && (i === 0 || last === 2) ? 2 : 1));
-            draw.text(wrapped, left() + (i ? hang : 0), y + asc(BODY), BODY, 'normal', BLACK);
-            y += lh;
+            room(lineH * ((lines.length > 1 && (i === 0 || last === 2) ? 2 : 1) + (last === 1 ? keepNext : 0)));
+            draw.text(wrapped, left() + (i ? hang : 0), y + asc(size), size, 'normal', BLACK);
+            y += lineH;
           });
-        }
+        });
       } else {
         // Hanging indent: the marker in the secção's ink, the text aligned after it
         const indent = (block.kind === 'ol' ? 7 : 5) * s;
@@ -383,7 +391,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       }
       y += 3.5 * s;
     }
-    y += 4 * s;
+    // A prayer gets a wider pause before the next one, as on the page
+    const verse = sec.text && toBlocks(sec.text).some((b) => b.kind === 'p' && b.lines.length > 1);
+    y += (verse ? 6 : 4) * s;
   }
   return first;
 }
