@@ -54,11 +54,20 @@
 }
 
 /* ── Back to the secção ── */
+/* The back link and the PDF button share a row; on a narrow phone the button drops under it */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm) var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
 .backLink {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin-top: var(--spacing-xl);
   font-size: var(--font-size-sm);
   font-weight: 700;
   transition: var(--transition-interactive);

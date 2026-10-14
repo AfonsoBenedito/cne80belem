@@ -5,6 +5,7 @@ import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
+import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import styles from './Provas.module.css';
 
 export default function Provas() {
@@ -50,9 +51,13 @@ export default function Provas() {
       </section>
 
       <div className="container">
-        <Link to={`/seccao/${seccao}`} className={styles.backLink} style={{ color: section.ink }}>
-          <FaArrowLeft size={12} aria-hidden="true" /> {shortName}
-        </Link>
+        <div className={styles.toolbar}>
+          <Link to={`/seccao/${seccao}`} className={styles.backLink} style={{ color: section.ink }}>
+            <FaArrowLeft size={12} aria-hidden="true" /> {shortName}
+          </Link>
+          {/* Every prova in one file, with a contents page to tick them off */}
+          <ProvasPdfButton seccao={seccao} label="Descarregar todas em PDF" ink={section.ink} />
+        </div>
 
         {sectionProvas.map((group, gi) => {
           const isOpen = openGroups.includes(group.group);
