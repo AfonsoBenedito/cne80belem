@@ -11,7 +11,7 @@ export const provasContent = {
   // ═══════════════════════════════════════
 
   'adesao-movimento-1': {
-    title: 'Sabes quando e como surgiu o Escutismo e o CNE?',
+    title: 'História do Escutismo e do CNE',
     sections: [
       {
         heading: 'O nascimento do Escutismo',
@@ -29,7 +29,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-2': {
-    title: 'Sabes como se organiza o teu Agrupamento? E o CNE?',
+    title: 'Organização do Agrupamento e do CNE',
     sections: [
       {
         heading: 'Organização do Agrupamento',
@@ -47,7 +47,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-3': {
-    title: 'Conheces a vida de Baden-Powell?',
+    title: 'Vida de Baden-Powell',
     sections: [
       {
         heading: 'Infância e juventude',
@@ -69,7 +69,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-4': {
-    title: 'Conheces a Lei, os Princípios e a Promessa?',
+    title: 'Lei, Princípios e Promessa',
     sections: [
       {
         heading: 'A Lei do Escuta',
@@ -91,7 +91,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-5': {
-    title: 'Já sabes rezar a oração do Escuta?',
+    title: 'Oração do Escuta',
     sections: [
       {
         heading: 'A Oração do Escuta',
@@ -109,7 +109,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-6': {
-    title: 'Conheces o livro "Escutismo para Rapazes"?',
+    title: 'Livro "Escutismo para Rapazes"',
     sections: [
       {
         heading: 'Sobre o livro',
@@ -127,7 +127,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-7': {
-    title: 'Conheces o uniforme e os distintivos de função dos dirigentes?',
+    title: 'Uniforme e distintivos dos dirigentes',
     sections: [
       {
         heading: 'O uniforme escutista',
@@ -145,7 +145,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-8': {
-    title: 'Conheces a saudação e sabes o que ela significa?',
+    title: 'Saudação e o seu significado',
     sections: [
       {
         heading: 'A saudação escutista',
@@ -163,7 +163,7 @@ export const provasContent = {
   },
 
   'adesao-movimento-9': {
-    title: 'Conheces a fórmula da Promessa e o que significa?',
+    title: 'Fórmula da Promessa',
     sections: [
       {
         heading: 'Fórmula da Promessa',
@@ -185,7 +185,7 @@ export const provasContent = {
   // ═══════════════════════════════════════
 
   'pioneiros/adesao-seccao-1': {
-    title: 'Como se organizam os Pioneiros?',
+    title: 'Organização dos Pioneiros',
     sections: [
       {
         heading: 'A III Secção',
@@ -203,7 +203,7 @@ export const provasContent = {
   },
 
   'pioneiros/adesao-seccao-2': {
-    title: 'Quais são os cargos existentes na Equipa?',
+    title: 'Cargos da Equipa',
     sections: [
       {
         heading: 'Guia de Equipa',
@@ -221,7 +221,7 @@ export const provasContent = {
   },
 
   'pioneiros/adesao-seccao-3': {
-    title: 'Quais os símbolos e qual a mística dos Pioneiros?',
+    title: 'Símbolos e Mística',
     sections: [
       {
         heading: 'O Icthus',
@@ -243,7 +243,7 @@ export const provasContent = {
   },
 
   'pioneiros/adesao-seccao-4': {
-    title: 'Conheces o Patrono dos Pioneiros e o da tua Equipa?',
+    title: 'Patrono: S. Pedro',
     sections: [
       {
         heading: 'São Pedro - Patrono dos Pioneiros',
@@ -253,51 +253,13 @@ export const provasContent = {
         heading: 'Porque é São Pedro o patrono?',
         text: 'São Pedro é o patrono dos Pioneiros porque encarna muitas das qualidades que se esperam de um Pioneiro: era um homem de ação, corajoso e generoso, mas também imperfeito e capaz de reconhecer os seus erros. A sua vida mostra que é possível crescer, superar as fraquezas e colocar-se ao serviço de uma causa maior. O símbolo do peixe (Icthus) também está ligado a São Pedro, enquanto pescador.',
       },
-      {
-        heading: 'O patrono da Equipa',
-        text: 'Cada Equipa de Pioneiros escolhe também o seu próprio patrono - uma figura (santa, histórica ou inspiradora) que serve de modelo e inspiração para a vida da Equipa. O patrono da Equipa deve ser estudado e conhecido por todos os seus membros, e o seu exemplo deve orientar a ação e o espírito da Equipa. A celebração do dia do patrono é um momento importante na vida da Equipa.',
-      },
     ],
   },
 
-  'pioneiros/adesao-seccao-5': {
-    title: 'Já sabes trabalhar e viver em Equipa?',
-    sections: [
-      {
-        heading: 'A vida em Equipa',
-        text: 'A Equipa é o coração da vida dos Pioneiros. É na Equipa que cada jovem aprende a viver com os outros, a respeitar diferenças, a tomar decisões em conjunto e a assumir responsabilidades. Trabalhar em Equipa não significa que todos fazem o mesmo - significa que cada um contribui com as suas competências e talentos para o bem comum.',
-      },
-      {
-        heading: 'Reuniões de Equipa',
-        text: 'As reuniões de Equipa são momentos fundamentais para planificar, avaliar e partilhar. Nestas reuniões, os Pioneiros discutem ideias, distribuem tarefas, resolvem conflitos e fortalecem os laços de amizade. Uma boa reunião de Equipa tem ordem de trabalhos, dá voz a todos os elementos e termina com decisões claras.',
-      },
-      {
-        heading: 'Competências de Equipa',
-        text: 'Viver em Equipa desenvolve competências essenciais para a vida:\n\n• Comunicação - saber ouvir e expressar ideias com clareza.\n• Cooperação - trabalhar em conjunto para atingir objetivos comuns.\n• Gestão de conflitos - resolver desentendimentos de forma construtiva.\n• Liderança partilhada - cada membro pode liderar em diferentes momentos.\n• Responsabilidade - cumprir as tarefas que lhe foram confiadas.\n\nEstas competências são desenvolvidas no dia-a-dia da Equipa, em atividades, acampamentos e projetos.',
-      },
-    ],
-  },
 
-  'pioneiros/adesao-seccao-6': {
-    title: 'Já participaste numa atividade típica de secção?',
-    sections: [
-      {
-        heading: 'O Empreendimento',
-        text: 'A atividade típica dos Pioneiros é o Empreendimento - um projeto concebido, planificado e executado pela Equipa. O Empreendimento é um desafio que os Pioneiros assumem e que pode ter as mais diversas formas: um projeto de serviço à comunidade, uma construção, uma expedição, uma ação de sensibilização, entre outros.',
-      },
-      {
-        heading: 'Fases do Empreendimento',
-        text: 'O Empreendimento desenvolve-se em quatro fases:\n\n1. Descoberta - identificar uma necessidade, um desafio ou uma oportunidade.\n2. Aventura - planificar o projeto, distribuir tarefas e preparar a execução.\n3. Expressão - executar o projeto e vivê-lo intensamente.\n4. Avaliação - analisar o que correu bem e o que pode ser melhorado.\n\nCada fase é vivida pela Equipa, com o apoio e orientação dos Chefes.',
-      },
-      {
-        heading: 'Outras atividades',
-        text: 'Além do Empreendimento, os Pioneiros vivem outras atividades significativas:\n\n• Acampamentos - momentos de convívio, aventura e contacto com a natureza.\n• Raids - percursos de orientação e sobrevivência que testam competências.\n• Atividades de serviço - ações concretas de ajuda à comunidade.\n• Campos de trabalho - projetos de voluntariado de maior duração.\n• Celebrações - momentos de partilha, reflexão e vivência da fé.',
-      },
-    ],
-  },
 
   'pioneiros/adesao-seccao-7': {
-    title: 'Já conheces as Áreas e os Trilhos que terás de escolher na tua etapa de Conhecimento?',
+    title: 'Áreas e Trilhos',
     sections: [
       {
         heading: 'O sistema FACEIS',
@@ -315,7 +277,7 @@ export const provasContent = {
   },
 
   'pioneiros/adesao-seccao-8': {
-    title: 'Conheces os projetos existentes para os Pioneiros?',
+    title: 'Projetos dos Pioneiros',
     sections: [
       {
         heading: 'Projetos nacionais e regionais',

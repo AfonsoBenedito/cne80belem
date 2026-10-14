@@ -36,7 +36,7 @@ export default function ProvaDetail() {
   let provaItem = null;
   let provaGroup = null;
   let provaIndex = 0;
-  // Numbers run 1–17 across both groups, as on the list
+  // Numbers run straight across both groups, as on the list
   let groupStart = 0;
   if (sectionProvas) {
     for (const group of sectionProvas) {
@@ -77,7 +77,7 @@ export default function ProvaDetail() {
 
   useSEO(provaItem && section ? {
     title: `${provaItem.title} - ${section.label}`,
-    description: `${provaItem.title} Prova de ${provaGroup.group} da ${section.label} do Agrupamento 80.`,
+    description: `${provaItem.title}: prova de ${provaGroup.group} da ${section.label} do Agrupamento 80.`,
   } : {});
 
   if (!section || !sectionProvas) return <Navigate to="/" replace />;
@@ -155,7 +155,7 @@ export default function ProvaDetail() {
                 />
               </button>
               <div id="prova-lista" className={`${styles.sidebarBody} ${menuOpen ? styles.sidebarBodyOpen : ''}`}>
-                {/* Both groups, so the whole path (1–17) is in view; h3s under an h2 the eye doesn't need */}
+                {/* Both groups, so the whole path is in view; h3s under an h2 the eye doesn't need */}
                 <h2 id="prova-lista-titulo" className={styles.srOnly}>Provas dos {shortName}</h2>
                 {sectionProvas.map((group, gi) => {
                   const start = sectionProvas.slice(0, gi).reduce((t, g) => t + g.items.length, 0);
