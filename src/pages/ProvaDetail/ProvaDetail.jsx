@@ -82,7 +82,9 @@ export default function ProvaDetail() {
 
   // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
   // `labels` (the Cargos prova): a line that opens a list ("Ao Guia compete:") is set as its label
-  const renderText = (text, labels = false) => toBlocks(text).map((block, j, blocks) => {
+  // `notes` (the Leis e Máximas): one per item of the list, what it means, folded under it: the
+  // item itself opens it, so the list reads as the lines to learn and the meaning is a tap away
+  const renderText = (text, labels = false, notes = null) => toBlocks(text).map((block, j, blocks) => {
     if (labels && leadsList(blocks, j)) {
       return (
         <p key={j} className={styles.listLabel} style={{ color: section.ink }}>
@@ -104,7 +106,21 @@ export default function ProvaDetail() {
     const List = block.kind;
     return (
       <List key={j} className={styles.list} start={block.start}>
-        {block.lines.map((line, k) => <li key={k}>{line}</li>)}
+        {block.lines.map((line, k) => (
+          <li key={k}>
+            {notes?.[k] ? (
+              <details className={styles.itemDetails}>
+                <summary className={styles.itemSummary}>
+                  {line}
+                  <FaChevronDown size={12} aria-hidden="true" className={styles.itemChevron} />
+                </summary>
+                <p className={styles.itemNote}>{notes[k]}</p>
+              </details>
+            ) : (
+              line
+            )}
+          </li>
+        ))}
       </List>
     );
   });
@@ -299,7 +315,7 @@ export default function ProvaDetail() {
                             <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
                           </Suspense>
                         )}
-                        {s.text && renderText(s.text)}
+                        {s.text && renderText(s.text, false, s.notes)}
                       </>
                     )}
                   </div>

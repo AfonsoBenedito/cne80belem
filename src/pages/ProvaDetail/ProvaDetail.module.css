@@ -420,6 +420,72 @@
   margin-top: 0.35rem;
 }
 
+/* A recited item that folds its meaning (the Leis e Máximas): the line itself is the control,
+   a chevron in the secção's ink after it says it opens; closed by default. The whole row is the
+   control, its number too: the box reaches back over the list's 1.4em indent, where the number
+   sits, and on to the row's end */
+.itemSummary {
+  display: block;
+  margin-left: -1.4em;
+  padding-left: 1.4em;
+  list-style: none;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+/* The number is the item's marker, part of the list item and hit on top of the row: the item
+   lets taps through, so a tap on "1." lands on the row under it and opens it */
+.list li:has(> .itemDetails) {
+  pointer-events: none;
+}
+
+.itemDetails {
+  pointer-events: auto;
+}
+
+.itemSummary::-webkit-details-marker {
+  display: none;
+}
+
+.itemChevron {
+  display: inline-block;
+  margin-left: 0.5em;
+  vertical-align: 0.1em;
+  color: var(--section-ink);
+  transition: transform var(--transition-fast);
+}
+
+.itemDetails[open] .itemChevron {
+  transform: rotate(180deg);
+}
+
+/* An open item's note ends its row: the next item starts a clear step below it, not at the
+   closed rows' spacing, so it doesn't read as part of the note above */
+.list li:has(> .itemDetails[open]) + li {
+  margin-top: var(--spacing-lg);
+}
+
+@media (hover: hover) {
+  .itemSummary:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-gray-300);
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* What a recited item means, once opened (the Leis e Máximas): the reading text, not the
+   recited size, so the line to learn by heart stays the one that stands out */
+.itemNote {
+  margin-top: var(--spacing-xs);
+  /* A step under its line at every width (20px over 16, 18 over 15, 16 over 14): a fixed 16px
+     matched the recited line on small phones, where it drops to 16 too */
+  font-size: max(var(--font-size-sm), 0.85em);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-gray-700);
+  text-wrap: pretty;
+}
+
 /* The global reset strips list markers; articles want them back */
 ul.list {
   list-style: disc;
@@ -649,6 +715,18 @@ ol.list {
 
 /* Touch input: 44px targets (the back link keeps its size and grows an invisible hit area) */
 @media (pointer: coarse) {
+  /* A row 44px tall for a thumb: the line grows 10px above and below (its box only, the text
+     stays put), and the items sit 20px apart so a one-line row (24px) and its neighbours tile
+     at 44px instead of overlapping */
+  .itemSummary {
+    padding-block: 10px;
+    margin-block: -10px;
+  }
+
+  .list:has(.itemDetails) li + li {
+    margin-top: 20px;
+  }
+
   .backLink {
     position: relative;
   }
