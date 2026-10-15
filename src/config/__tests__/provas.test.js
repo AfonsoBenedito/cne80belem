@@ -3,6 +3,7 @@ import { provas } from '../provas';
 import { provasContent } from '../provasContent';
 import { seccoes } from '../seccoes';
 import { badges } from '../distintivos';
+import { toBlocks } from '../../utils/provaBlocks';
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 
@@ -39,6 +40,15 @@ describe('provasContent', () => {
   const recitedHeadings = sections.filter(([, s]) => s.heading && RECITED.test(s.heading)).map(([key, s]) => [key, s.heading, s]);
   it.each(recitedHeadings)('%s: "%s" is marked recite', (key, heading, s) => {
     expect(s.recite, `${key} · ${heading}`).toBe(true);
+  });
+
+  // A note sits under its list item by position: one more note than items would never show
+  it('gives no section more notes than list items', () => {
+    for (const [key, s] of sections) {
+      if (!s.notes) continue;
+      const items = toBlocks(s.text).filter((b) => b.kind !== 'p').flatMap((b) => b.lines);
+      expect(s.notes.length, `${key} · ${s.heading}`).toBeLessThanOrEqual(items.length);
+    }
   });
 
   it('gives recite only to sections of text', () => {

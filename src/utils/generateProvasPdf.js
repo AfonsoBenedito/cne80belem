@@ -21,6 +21,8 @@ const COL_GAP = 12;
 
 const BLACK = [26, 26, 26];
 const GRAY = [115, 115, 115];
+// The page's --color-gray-700, for text that reads under a larger line (the Leis' notes)
+const NOTE_GRAY = [64, 64, 64];
 const GRAY_LIGHT = [220, 220, 220];
 
 // Font sizes are in pt; jsPDF measures in mm, so a line of N pt is N × this tall at leading 1
@@ -454,6 +456,22 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
             draw.text(w, left() + indent, y + asc(size), size, 'normal', BLACK);
             y += lineH;
           });
+          // What the item means (the Leis e Máximas' `notes`), under it: a step smaller, in the
+          // page's gray-700 and a little further in, so on paper the line to learn stays the one
+          // that stands out
+          const note = sec.notes?.[i];
+          if (note) {
+            const noteSize = BODY - 1;
+            const noteH = noteSize * s * PT * 1.5;
+            const noteIn = indent + 2 * s;
+            y += 1 * s;
+            for (const w of draw.split(note, textW - noteIn, noteSize)) {
+              room(noteH);
+              draw.text(w, left() + noteIn, y + asc(noteSize), noteSize, 'normal', NOTE_GRAY);
+              y += noteH;
+            }
+            y += 1 * s;
+          }
           // A recited list's items are sayings of their own: more room between them
           y += (sec.recite ? 2.5 : 1.2) * s;
         });
