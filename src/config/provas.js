@@ -9,7 +9,7 @@
 // secção: organização, cargos, símbolos e mística, patrono, oração, livro/lei, progresso, the rest.
 // Slugs never change with the order or the name, so links and texts keep their prova.
 
-// The Adesão ao Movimento provas (Exploradores and Pioneiros take all nine)
+// The Adesão ao Movimento provas (Exploradores and Pioneiros take all ten)
 const adesaoMovimento = {
   group: 'Adesão ao Movimento',
   items: [
@@ -22,10 +22,11 @@ const adesaoMovimento = {
     { slug: 'adesao-movimento-7', title: 'Uniforme e distintivos dos dirigentes' },
     { slug: 'adesao-movimento-8', title: 'Saudação e o seu significado' },
     { slug: 'adesao-movimento-9', title: 'Fórmula da Promessa' },
+    { slug: 'adesao-movimento-nos', title: 'Nó Direito e Nó de Correr' },
   ],
 };
 
-// The shared Adesão ao Movimento prova n (1–9)
+// The shared Adesão ao Movimento prova n (1–10)
 const mov = (n) => adesaoMovimento.items[n - 1];
 
 export const provas = {
@@ -37,7 +38,7 @@ export const provas = {
         mov(8),
         mov(9),
         { slug: 'adesao-movimento-cargos', title: 'Cargos do Bando' },
-        { slug: 'adesao-movimento-nos', title: 'Nó Direito e Nó de Correr' },
+        mov(10),
       ],
     },
     {
@@ -84,7 +85,7 @@ export const provas = {
       group: 'Adesão ao Movimento',
       // "Conhecer a organização do CNE. Saber quando e como surgiu o Escutismo e o CNE." is the
       // shared 1 and 2; "Conhecer as Leis e os Princípios do CNE." the shared 4
-      items: [mov(1), mov(2), mov(3), mov(4), mov(5), mov(7), mov(9)],
+      items: [mov(1), mov(2), mov(3), mov(4), mov(5), mov(7), mov(9), mov(10)],
     },
     {
       group: 'Adesão à Secção',

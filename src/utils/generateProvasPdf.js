@@ -510,17 +510,30 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       // A recited line that leads into a list sits as close to it as the list's own items
       y += block.kind === 'h' ? 0.5 * s : ((sec.recite || sec.headingMedia) && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
     });
-    // A picture under its text (`mediaAfter`, the nós' diagrams), as on the page: at its own size
-    // (a file pixel to 0.26mm, as a screen shows it), narrower only to fit the column
+    // A picture under its text (`mediaAfter`, the nós' diagrams): printed from the width the page
+    // draws it at (`natural`, a CSS pixel to 0.26mm) and 1.4× that, so on paper, the sheet beside
+    // the rope, its steps read at arm's length; the two diagrams keep their sizes to each other,
+    // and neither is wider than the column
     if (sec.mediaAfter && badges[sec.media]) {
-      const img = media.get(badges[sec.media](seccao)[0].src);
+      const item = badges[sec.media](seccao)[0];
+      const img = media.get(item.src);
       if (img) {
-        const w = Math.min(img.w * 0.2646 * s, colW);
+        const w = Math.min((item.natural ?? img.w) * 0.2646 * 1.4 * s, colW);
         const h = (w * img.h) / img.w;
         y += 1 * s;
-        room(h);
+        // The diagram and its caption move together, never a caption alone atop a page
+        const captionLines = item.caption ? draw.split(item.caption, w, 8.5) : [];
+        room(h + 2 * s + captionLines.length * 8.5 * s * PT * 1.4);
         draw.image(img.data, left(), y, w, h, 'JPEG');
         y += h + 2 * s;
+        // Its caption of ours (the nó direito's step order), smaller and gray, under it
+        if (captionLines.length) {
+          for (const line of captionLines) {
+            draw.text(line, left(), y + asc(8.5), 8.5, 'normal', GRAY);
+            y += 8.5 * s * PT * 1.4;
+          }
+          y += 1 * s;
+        }
       }
     }
     // Colours with their names (the Bandos), as on the page: a round swatch, edged so the white

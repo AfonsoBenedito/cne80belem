@@ -505,6 +505,8 @@
 .termRow {
   font-size: var(--font-size-base);
   line-height: 1.7;
+  /* No word left alone on a meaning's last line ("…para fazer o / nó.") */
+  text-wrap: pretty;
 }
 
 .term {

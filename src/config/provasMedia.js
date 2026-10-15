@@ -119,10 +119,13 @@ export const badges = {
   ],
   // The Cargos prova: each badge alone, beside its cargo's text (the heading names it), at the
   // grid's badge size (`small`): the cargo scans are only 60px
-  // The Lobitos' Manual de Adesão's knot diagrams, each under its knot's text at its own size
-  // (`w` × `h`: the file's; the page never draws it larger, so the lines stay crisp)
-  noDireito: () => [{ name: null, src: noDireito, w: 355, h: 174, natural: true, alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
-  noDeCorrer: () => [{ name: null, src: noDeCorrer, w: 212, h: 118, natural: true, alt: 'O nó de correr em dois passos: 1, um cote direto, uma seta a mostrar o chicote; 2, o chicote livre passado dobrado por dentro da argola, formando um seio' }],
+  // The Lobitos' Manual de Adesão's knot diagrams, each under its knot's text, cleaned to black
+  // line art at 2× (`w` × `h`: the file's). `natural`: the width it's drawn at on a wide screen
+  // (the manual's own, so 2× screens get every file pixel); on phones it fills the column.
+  // `zoom`: it opens in the viewer, the rope in one hand. `caption`: ours, under it, where the
+  // drawing's own order isn't plain (the nó direito's steps run 1, 2 across the top, then 3)
+  noDireito: () => [{ name: null, src: noDireito, w: 710, h: 348, natural: 355, zoom: true, caption: 'Segue os passos 1, 2 e 3; em baixo, à direita, o nó pronto.', alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
+  noDeCorrer: () => [{ name: null, src: noDeCorrer, w: 424, h: 236, natural: 212, zoom: true, alt: 'O nó de correr em dois passos: 1, um cote direto, uma seta a mostrar o chicote; 2, o chicote livre passado dobrado por dentro da argola, formando um seio' }],
   // The Lobitos' Manual de Adesão's drawings of S. Francisco de Assis, one beside each part of
   // his prova (`large`: set as drawings; `zoom: false`: 166–294px wide, so not opened in the
   // viewer, which would show them no bigger; w × h kept, as the saudação's)

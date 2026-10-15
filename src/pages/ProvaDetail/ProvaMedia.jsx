@@ -73,6 +73,7 @@ function Uniformes({ seccao }) {
             onLeft={() => setViewer(null)}
             title="Uniformes"
             captions={pair.map((u) => u.caption)}
+            alts={pair.map((u) => u.alt)}
           />
         </Suspense>
       )}
@@ -113,7 +114,7 @@ function Dirigentes() {
 
 // A drawing's width over its height (the saudação's carry their size), so a lone one can be given
 // its width before it loads
-const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.w}px` } : undefined);
+const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.natural ?? f.w}px` } : undefined);
 
 // A grid of badges, each over its name, all at one height. Items that share a `group` keep a row
 // of their own; every group's rows are as wide as the largest group's, so the tiles line up.
@@ -123,8 +124,9 @@ const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.w}px` } : 
 function Badges({ items, seccao, title }) {
   const [viewer, setViewer] = useState(null);
   // A drawing smaller than the viewer would show it (`zoom: false`, the S. Francisco cartoons)
-  // stays a plain picture: the viewer would only set it on black at the size it already has
-  const zoomable = (f) => f.large && f.zoom !== false;
+  // stays a plain picture: the viewer would only set it on black at the size it already has;
+  // one that isn't a drawing tile but gains from it opts in (`zoom: true`, the knot diagrams)
+  const zoomable = (f) => (f.large && f.zoom !== false) || f.zoom === true;
   const drawings = items.filter(zoomable);
   const groups = [];
   for (const item of items) {
@@ -177,6 +179,7 @@ function Badges({ items, seccao, title }) {
                 ) : (
                   <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} />
                 )}
+                {f.caption && <span className={styles.funcaoCaption}>{f.caption}</span>}
                 {f.name && (
                   <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined} aria-hidden={f.href ? true : undefined}>
                     {f.name}
@@ -198,7 +201,8 @@ function Badges({ items, seccao, title }) {
             leaving={viewer.leaving}
             onLeft={() => setViewer(null)}
             title={title}
-            captions={drawings.map((f) => f.name ?? '')}
+            captions={drawings.map((f) => f.name ?? f.caption ?? '')}
+            alts={drawings.map((f) => f.alt)}
             drawings
           />
         </Suspense>

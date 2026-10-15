@@ -34,8 +34,10 @@ const viewerSizes = (ratio) => {
 // looping. A drag down closes it, the backdrop thinning as it goes; a pinch, a double tap, or
 // Ctrl/⌘ + scroll zooms the photo itself, and a zoomed photo pans.
 // `captions` (optional, one per photo) names the photo in the bar beside its count. `drawings`
-// names what it shows "Desenho" instead of "Foto" (the saudação's drawings), for screen readers
-export default function Lightbox({ photos, index, onIndex, onClose, title, captions, drawings = false, leaving = false, onLeft }) {
+// names what it shows "Desenho" instead of "Foto" (the saudação's drawings), for screen readers.
+// `alts` (optional, one per photo) describes each one where the page does (the knots' steps), so
+// the viewer doesn't read less than the page did
+export default function Lightbox({ photos, index, onIndex, onClose, title, captions, alts, drawings = false, leaving = false, onLeft }) {
   const noun = drawings ? 'Desenho' : 'Foto';
   const panelRef = useRef(null);
   const stageRef = useRef(null);
@@ -561,7 +563,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
                   src={photo}
                   srcSet={srcSetFor(photo)}
                   sizes={viewerSizes(aspectRatioFor(photo))}
-                  alt={single ? `${noun}: ${title}` : `${noun} ${i + 1}: ${title}`}
+                  alt={alts?.[i] || (single ? `${noun}: ${title}` : `${noun} ${i + 1}: ${title}`)}
                   className={styles.lightboxImg}
                   decoding="async"
                   draggable={false}
