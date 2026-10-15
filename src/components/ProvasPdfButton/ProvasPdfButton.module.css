@@ -14,7 +14,11 @@
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  white-space: nowrap;
+  /* One line while it fits; at a larger text size it wraps inside its row instead of pushing the
+     page wider ("Descarregar todas em PDF" was 466px on a 390px phone at 200%) */
+  max-width: 100%;
+  text-align: left;
+  text-wrap: balance;
   transition: var(--transition-interactive), transform var(--transition-fast);
 }
 
@@ -34,8 +38,14 @@
 }
 
 /* ── Format menu (all provas): drops from the button, its right edge on the button's ── */
+/* Its icons keep their size when the label wraps */
+.button > svg {
+  flex-shrink: 0;
+}
+
 .wrap {
   position: relative;
+  max-width: 100%;
 }
 
 .chevron {

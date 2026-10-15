@@ -20,6 +20,8 @@ const A4 = { w: 210, h: 297, margin: 22, s: 1, cols: 1 };
 const A4_LANDSCAPE = { w: 297, h: 210, margin: 20, s: 1, cols: 2 };
 const A5 = { w: 148.5, h: 210, margin: 15, s: 0.82, t: 0.96, cols: 1 };
 const COL_GAP = 12;
+// The logo's longest side: it's drawn at most 5mm (the footer) to 14mm (the cover) wide
+const LOGO_PX = 240;
 
 const BLACK = [26, 26, 26];
 const GRAY = [115, 115, 115];
@@ -36,21 +38,24 @@ const fileSlug = (text) => normalize(text).replace(/[^a-z0-9]+/g, '-').replace(/
 const shortNameOf = (section) => section.label.split(' - ').pop();
 
 // PNG for the logo; the pictures go in as JPEG on white (their WebP isn't a format jsPDF
-// reads, and PNG would make a poster several megabytes)
-function loadImage(url, type = 'image/png') {
+// reads, and PNG would make a poster several megabytes). `max` caps the longer side: the logo
+// is drawn 5mm wide, and its 691px file went in as 1.3MB of raw pixels, half the PDF
+function loadImage(url, type = 'image/png', max = Infinity) {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
+      const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
       const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      canvas.width = Math.round(img.naturalWidth * k);
+      canvas.height = Math.round(img.naturalHeight * k);
       const ctx = canvas.getContext('2d');
       if (type === 'image/jpeg') {
         ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-      ctx.drawImage(img, 0, 0);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       resolve(type === 'image/jpeg'
         ? { data: canvas.toDataURL(type, 0.9), w: img.naturalWidth, h: img.naturalHeight }
         : canvas.toDataURL(type));
@@ -719,7 +724,8 @@ function footer(draw, g, page, { logo, label }) {
 }
 
 async function newDoc(title, orientation) {
-  const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4' });
+  // `compress`: text, fonts and the logo's pixels deflated (they went in raw)
+  const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4', compress: true });
   await registerNunito(doc);
   doc.setProperties({ title, author: 'Agrupamento 80 - Santa Maria de Belém' });
   // Screen readers and copied text use it (jsPDF knows "pt", not "pt-PT")
@@ -730,7 +736,7 @@ async function newDoc(title, orientation) {
 export async function generateProvaPdf(seccao, slug) {
   const section = seccoes[seccao];
   const prova = numbered(seccao).find((p) => p.slug === slug);
-  const [doc, logo, media] = await Promise.all([newDoc(prova.title, 'portrait'), loadImage(faviconUrl), loadMedia(seccao, [prova])]);
+  const [doc, logo, media] = await Promise.all([newDoc(prova.title, 'portrait'), loadImage(faviconUrl, 'image/png', LOGO_PX), loadMedia(seccao, [prova])]);
 
   const draw = recorder(doc, A4);
   layoutProva(draw, A4, { seccao, prova, section, media });
@@ -815,7 +821,7 @@ export async function generateAllProvasPdf(seccao, format = 'booklet') {
   const section = seccoes[seccao];
   const shortName = shortNameOf(section);
   const all = numbered(seccao);
-  const [doc, logo, media] = await Promise.all([newDoc(`Provas dos ${shortName}`, orientation), loadImage(faviconUrl), loadMedia(seccao, all)]);
+  const [doc, logo, media] = await Promise.all([newDoc(`Provas dos ${shortName}`, orientation), loadImage(faviconUrl, 'image/png', LOGO_PX), loadMedia(seccao, all)]);
 
   // Page 1 is the cover, filled in once the provas' page numbers are known
   const draw = recorder(doc, g);
