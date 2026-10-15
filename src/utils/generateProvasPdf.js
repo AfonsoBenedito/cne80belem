@@ -130,6 +130,17 @@ function recorder(doc, g) {
         doc.line(ox + x1, y1, ox + x2, y2);
       });
     },
+    // A dot (a step of the Lobitismo's chain), or a swatch with an edge (a Bando's colour)
+    circle(cx, cy, r, color, edge) {
+      push((ox) => {
+        doc.setFillColor(...color);
+        if (edge) {
+          doc.setDrawColor(...edge);
+          doc.setLineWidth(0.3);
+        }
+        doc.circle(ox + cx, cy, r, edge ? 'FD' : 'F');
+      });
+    },
     // A losango (the dirigentes' level), outlined so the white one shows
     diamond(cx, cy, w, h, fill) {
       push((ox) => {
@@ -156,6 +167,11 @@ function recorder(doc, g) {
     split(str, width, size, style = 'normal') {
       setText(doc, size * g.s, style);
       return doc.splitTextToSize(str, width);
+    },
+    // How wide a line is at the size it will be drawn at
+    width(str, size, style = 'normal') {
+      setText(doc, size * g.s, style);
+      return doc.getTextWidth(str);
     },
   };
 }
@@ -243,6 +259,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const h = lines.length * 12.5 * s * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A chain of steps (the Lobitismo's Alcateia → CNE) is short and reads only whole: its
+      // heading asks for room for the whole section, lead and every step
+      if (sec.steps && !sec.steps[0].label) {
+        const tw = colW - 8 * s;
+        const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
+        const steps = sec.steps.reduce((t, st) => t + ((st.title ? draw.split(st.title, tw, BODY, 'bold').length : 0) + (st.text ? draw.split(st.text, tw, BODY).length : 0)) * lh + 3 * s, 0);
+        if (h + 3 * s + lead + steps <= bottom - colTop) keep = lead + steps + 1 * s;
+      }
       // A recited prayer is kept whole (below), so its heading asks for room for all of it
       const first = g.cols === 1 && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
       if (first && first.kind === 'p' && first.lines.length > 1) {
@@ -479,6 +503,70 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       // A recited line that leads into a list sits as close to it as the list's own items
       y += ((sec.recite || sec.headingMedia) && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
     });
+    // Colours with their names (the Bandos), as on the page: a round swatch, edged so the white
+    // one shows, its name beside it, on one row that wraps
+    if (sec.swatches) {
+      const r = 2.6 * s;
+      const rowH = 2 * r + 3 * s;
+      room(rowH);
+      let x = left();
+      for (const c of sec.swatches) {
+        const w = 2 * r + 2 * s + draw.width(c.name, BODY, 'bold') + 7 * s;
+        if (x + w > left() + colW && x > left()) {
+          x = left();
+          y += rowH;
+          room(rowH);
+        }
+        draw.circle(x + r, y + r, r, hexToRgb(c.color), GRAY_LIGHT);
+        draw.text(c.name, x + 2 * r + 2 * s, y + r + asc(BODY) / 2 - 0.3 * s, BODY, 'bold', BLACK);
+        x += w;
+      }
+      y += rowH + 1 * s;
+    }
+    // Words and what they mean (Caçadas, Covil): the word bold in the secção's ink, its meaning
+    if (sec.terms) {
+      for (const t of sec.terms) {
+        const tw = draw.width(t.term, BODY, 'bold') + 1.5 * s;
+        const rest = draw.split(t.text, colW - tw, BODY);
+        room(lh * rest.length);
+        draw.text(t.term, left(), y + asc(BODY), BODY, 'bold', ink);
+        rest.forEach((line) => {
+          draw.text(line, left() + tw, y + asc(BODY), BODY, 'normal', BLACK);
+          y += lh;
+        });
+      }
+      y += 2 * s;
+    }
+    // Steps on one line (the Lobitismo), as on the page: a date or a dot in the secção's ink at
+    // the left, a thin rail joining them, each step's name in bold and its text beside it
+    if (sec.steps) {
+      const dated = Boolean(sec.steps[0].label);
+      const markW = (dated ? 16 : 5) * s;
+      const railX = left() + (dated ? 4.5 : 1.25) * s;
+      const tx = left() + markW + 3 * s;
+      const tw = colW - markW - 3 * s;
+      if (blocks.length) y += 1 * s;
+      sec.steps.forEach((st, k) => {
+        const title = st.title ? draw.split(st.title, tw, BODY, 'bold') : [];
+        const text = st.text ? draw.split(st.text, tw, BODY) : [];
+        const h = (title.length + text.length) * lh;
+        // A step is never split, and the last one never starts a page alone
+        room(h + (k === sec.steps.length - 2 ? lh * 2 : 0));
+        const top = y;
+        if (dated) draw.text(st.label, left(), y + asc(12.5), 12.5, 'bold', ink);
+        else draw.circle(railX, y + asc(BODY) - 1.1 * s, 1.25 * s, ink);
+        for (const t of title) {
+          draw.text(t, tx, y + asc(BODY), BODY, 'bold', BLACK);
+          y += lh;
+        }
+        for (const t of text) {
+          draw.text(t, tx, y + asc(BODY), BODY, 'normal', BLACK);
+          y += lh;
+        }
+        y += 3 * s;
+        if (k < sec.steps.length - 1) draw.line(railX, top + (dated ? 7 : 2.5) * s, railX, y - 1 * s, GRAY_LIGHT, 0.5);
+      });
+    }
     // Below the picture, if it is on this page: one left on the page before is no reason to
     // push the next section down (it sent Secretário to a new page, leaving one nearly empty)
     if (aside && draw.pages.length === asidePage) y = Math.max(y, asideTop + asideH + 4 * s);

@@ -8,7 +8,9 @@ import pioneirosGroup from '../assets/images/sections/pioneiros-group.jpeg';
 
 // color: identity (borders, decorative icons). surface/onSurface: any fill that carries text.
 // ink: section-coloured text on white or light tints. Pairs are checked for WCAG AA (4.5:1).
-// ageMin/ageMax repeat the ages in `description` as data (Home's age ladder); keep both in sync.
+// ageMin/ageMax repeat the ages in `description` as data (Home's age ladder); keep both in sync,
+// and with the Lobitismo prova's list of the secções (provasContent.js), as the Alcateia's
+// Manual de Adesão gives them: 6–10, 10–13, 14–17, 18–22.
 export const seccoes = {
   lobitos: {
     key: 'lobitos',
@@ -33,7 +35,7 @@ export const seccoes = {
     key: 'exploradores',
     label: 'II Secção - Exploradores',
     ageMin: 10,
-    ageMax: 14,
+    ageMax: 13,
     tagline: 'Vivem o escutismo em patrulha e superam desafios na natureza.',
     color: '#549b8b',
     surface: '#42796c',
@@ -42,7 +44,7 @@ export const seccoes = {
     image: exploradoresImg,
     groupPhoto: exploradoresGroup,
     description:
-      'Os Exploradores têm entre 10 e 14 anos e vivem o Escutismo em patrulha. Aprendem a trabalhar em equipa, a liderar e a superar desafios na natureza. Através de acampamentos, caminhadas e provas de competência, desenvolvem autonomia, responsabilidade e espírito de entreajuda.',
+      'Os Exploradores têm entre 10 e 13 anos e vivem o Escutismo em patrulha. Aprendem a trabalhar em equipa, a liderar e a superar desafios na natureza. Através de acampamentos, caminhadas e provas de competência, desenvolvem autonomia, responsabilidade e espírito de entreajuda.',
     quote: {
       text: 'O Sistema de Patrulhas é o principal motor do Escutismo, permitindo a cada Escuteiro encontrar o seu lugar entre os outros.',
       author: 'Baden Powell',
@@ -70,7 +72,7 @@ export const seccoes = {
   caminheiros: {
     key: 'caminheiros',
     label: 'IV Secção - Caminheiros',
-    ageMin: 17,
+    ageMin: 18,
     ageMax: 22,
     tagline: 'Vivem o escutismo como serviço à comunidade e ao mundo.',
     color: '#ec4c4b',
@@ -79,7 +81,7 @@ export const seccoes = {
     ink: '#c43f3e',
     image: caminheirosImg,
     description:
-      'Os Caminheiros são os mais velhos do Agrupamento, com idades entre os 17 e os 22 anos. Vivem o Escutismo como um compromisso de serviço à comunidade e ao mundo. Através de projetos de voluntariado, viagens e reflexão, preparam-se para serem cidadãos ativos e construtores de um mundo melhor.',
+      'Os Caminheiros são os mais velhos do Agrupamento, com idades entre os 18 e os 22 anos. Vivem o Escutismo como um compromisso de serviço à comunidade e ao mundo. Através de projetos de voluntariado, viagens e reflexão, preparam-se para serem cidadãos ativos e construtores de um mundo melhor.',
     quote: {
       text: 'Os Caminheiros formam uma fraternidade do Ar Livre para Servir.',
       author: 'Baden Powell',
