@@ -280,6 +280,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     return { first, col, colTop, alone };
   }
 
+  // A picture that the following text runs on beside (`wrap`, S. Tiago's), as on the page:
+  // where it ends, on which page, and how wide the text beside it is
+  let float = null;
   for (const sec of content.sections) {
     if (sec.heading) {
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
@@ -459,8 +462,15 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // 26mm tall (40mm for the hand sign, `large`; 14mm for a cargo's badge, `small`, as on the
     // page), or narrower for a wide picture (the handshake), so the text keeps two thirds
     const asideTall = (asideItem?.large ? 40 : asideItem?.small ? 14 : 26) * s;
-    const asideW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
-    const asideH = aside ? (asideW * aside.h) / aside.w : 0;
+    const imgW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
+    const imgH = aside ? (imgW * aside.h) / aside.w : 0;
+    // Numbers on the drawing (the pilgrim's signs), as on the page, and what each is under it:
+    // the block is as wide as the longest name, the drawing centred over it
+    const marks = aside && asideItem.marks ? asideItem.marks : [];
+    const MARK_R = 2.2 * s;
+    const MARK_LINE = 5.5 * s;
+    const asideW = marks.length ? Math.max(imgW, ...marks.map((m) => 2 * MARK_R + 2 * s + draw.width(m.label, 8.5, 'bold'))) : imgW;
+    const asideH = imgH + (marks.length ? 3 * s + marks.length * MARK_LINE : 0);
     // A block that starts beside it is narrower; one that starts under it (or on a later page)
     // takes the full width
     const besideW = aside ? colW - asideW - 8 * s : colW;
@@ -470,7 +480,20 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       room(asideH);
       asideTop = y;
       asidePage = draw.pages.length;
-      draw.image(aside.data, left() + colW - asideW, y, asideW, asideH, 'JPEG');
+      const ax = left() + colW - asideW;
+      const ix = ax + (asideW - imgW) / 2;
+      draw.image(aside.data, ix, y, imgW, imgH, 'JPEG');
+      const disc = (cx, cy, n) => {
+        draw.circle(cx, cy, MARK_R + 0.5 * s, [255, 255, 255]);
+        draw.circle(cx, cy, MARK_R, hexToRgb(section.surface));
+        draw.text(String(n), cx, cy + asc(7) / 2, 7, 'bold', hexToRgb(section.onSurface), { align: 'center' });
+      };
+      marks.forEach((m, k) => disc(ix + m.x * imgW, y + m.y * imgH, k + 1));
+      marks.forEach((m, k) => {
+        const ly = y + imgH + 3 * s + k * MARK_LINE + MARK_R;
+        disc(ax + MARK_R, ly, k + 1);
+        draw.text(m.label, ax + 2 * MARK_R + 2 * s, ly + asc(8.5) / 2, 8.5, 'bold', BLACK);
+      });
     }
     // A recited line wraps without leaving one word alone on its last row ("…possível / por:"):
     // narrower measures are tried until the last row holds two words
@@ -481,8 +504,60 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       }
       return lines;
     };
+    // Someone else's words (the Manual do Dirigente), as on the page: our line saying whose, the
+    // passage in from the text beside a rule in the secção's colour, its source under it, gray
+    if (sec.quote) {
+      // The rule is drawn whole, one piece per page the passage runs over (one per line showed
+      // seams between them)
+      let rule = null;
+      const closeRule = () => {
+        if (rule && y > rule.y) draw.onto(draw.pages[rule.page], () => draw.rect(rule.x, rule.y, 0.8 * s, y - rule.y, hexToRgb(section.color)));
+        rule = null;
+      };
+      const para = (text, x, w, withRule) => {
+        const lines = draw.split(text, w, BODY);
+        lines.forEach((line, i) => {
+          const last = lines.length - i;
+          const page = draw.pages.length - 1;
+          room(lh * (lines.length > 1 && (i === 0 || last === 2) ? 2 : 1));
+          if (withRule && rule && draw.pages.length - 1 !== page) {
+            // the passage went on to a new page: its rule there starts again at the top
+            const was = y;
+            y = rule.end;
+            closeRule();
+            y = was;
+          }
+          if (withRule && !rule) rule = { page: draw.pages.length - 1, x: left(), y };
+          draw.text(line, x, y + asc(BODY), BODY, 'normal', BLACK);
+          y += lh;
+          if (rule) rule.end = y;
+        });
+      };
+      if (sec.intro) {
+        para(sec.intro, left(), colW, false);
+        y += 3.5 * s;
+      }
+      const indent = 5 * s;
+      toBlocks(sec.quote).forEach((block, i, all) => {
+        para(block.lines.join(' '), left() + indent, colW - indent, true);
+        // the rule runs on between the passage's paragraphs
+        if (i < all.length - 1) {
+          y += 3.5 * s;
+          if (rule) rule.end = y;
+        }
+      });
+      closeRule();
+      if (sec.source) {
+        y += 2 * s;
+        room(lh);
+        draw.text(`- ${sec.source}`, left() + indent, y + asc(8.5), 8.5, 'bold', GRAY);
+        y += lh;
+      }
+      y += 3.5 * s;
+    }
     blocks.forEach((block, bi) => {
-      const textW = draw.pages.length === asidePage && y < asideTop + asideH ? besideW : colW;
+      const beside = (draw.pages.length === asidePage && y < asideTop + asideH) || (float && draw.pages.length === float.page && y < float.bottom);
+      const textW = beside ? (float && !aside ? float.besideW : besideW) : colW;
       if (block.kind === 'h') {
         // A sub-heading inside the text ("### "), as on the page: bold, a step above its
         // paragraph, kept with its first lines
@@ -705,7 +780,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     }
     // Below the picture, if it is on this page: one left on the page before is no reason to
     // push the next section down (it sent Secretário to a new page, leaving one nearly empty)
-    if (aside && draw.pages.length === asidePage) y = Math.max(y, asideTop + asideH + 4 * s);
+    // A picture the next part runs on beside (`wrap`) doesn't push it down: the text keeps its
+    // narrower width until the picture ends
+    if (aside && sec.wrap) float = { page: asidePage, bottom: asideTop + asideH + 2 * s, besideW };
+    else if (aside && draw.pages.length === asidePage) y = Math.max(y, asideTop + asideH + 4 * s);
     // A recited section gets a wider pause before the next one, as on the page
     y += (sec.recite ? 6 : 4) * s;
   }

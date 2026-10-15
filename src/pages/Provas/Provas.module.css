@@ -182,8 +182,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  /* In rem, as its number is, so a larger text size grows the circle with it */
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   font-size: var(--font-size-sm);
   font-weight: 800;
@@ -254,8 +255,8 @@
   }
 
   .cardNumber {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     font-size: var(--font-size-xs);
   }
 

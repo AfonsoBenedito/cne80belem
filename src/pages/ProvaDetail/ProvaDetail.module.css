@@ -192,8 +192,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  /* In rem, as its number is: in px the circle stayed 24px while a larger text size grew the
+     number past it ("14" read "L4" at a 32px font) */
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   /* White on gray-300 was 1.5:1; two-digit numbers (10–17) need the room too */
   background: var(--color-gray-200);
@@ -219,6 +221,8 @@
 /* ── Article ── */
 /* ~70 characters a line: at the full column the text ran to 110 */
 .article {
+  /* Its pictures beside text follow its width (below) */
+  container: article / inline-size;
   min-width: 0;
   max-width: 68ch;
 }
@@ -271,8 +275,28 @@
   flex-direction: row-reverse;
 }
 
-/* Phones: the picture under the text, not squeezing it */
-@media (max-width: 600px) {
+/* A picture taller than its short text (S. Tiago's, with its list of signs) floats instead: the
+   next part starts right after the text and runs beside the picture until it ends, rather than
+   under a blank as tall as the picture */
+.withMediaWrap {
+  display: block;
+}
+
+.withMediaWrap .withMediaAside {
+  float: right;
+  margin: 0 0 var(--spacing-lg) var(--spacing-xl);
+}
+
+/* A picture that couldn't load (or whose code couldn't) leaves nothing: its column gives way and
+   the text takes the row */
+.withMediaAside:empty {
+  display: none;
+}
+
+/* The picture under the text, not squeezing it, whenever the article is narrow: on phones, and at
+   a larger text size on any screen (the article's own width in rem: at a 32px default font the
+   text beside S. Tiago's drawing was 168px wide) */
+@container article (max-width: 36rem) {
   .withMedia {
     flex-direction: column;
     gap: var(--spacing-lg);
@@ -291,6 +315,16 @@
   /* Under the heading, the text close below it */
   .withMediaFirst {
     gap: var(--spacing-md);
+  }
+
+  /* Narrow, the floated picture goes over its text like the rest */
+  .withMediaWrap {
+    display: flex;
+  }
+
+  .withMediaWrap .withMediaAside {
+    float: none;
+    margin: 0;
   }
 }
 
@@ -332,7 +366,8 @@
   color: var(--color-gray-900);
 }
 
-.textSubheading:first-child {
+.textSubheading:first-child,
+.sectionHeading + .textSubheading {
   margin-top: 0;
 }
 
@@ -345,6 +380,35 @@
   line-height: 1.45;
   color: var(--color-gray-900);
   text-wrap: balance;
+}
+
+/* Someone else's words (the Manual do Dirigente), set apart from ours: in from the text, a
+   rule in the secção's colour beside them (decorative, so `color`, not `ink`), the source under
+   them, small and gray */
+.quote {
+  margin: var(--spacing-lg) 0;
+}
+
+.quoteText {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  border-left: 3px solid;
+}
+
+.quoteText .paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.quoteSource {
+  margin-top: var(--spacing-sm);
+  padding-left: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-600);
+}
+
+.quoteSource::before {
+  content: "- ";
 }
 
 /* A picture under its text (the nós' diagrams), a step below the last paragraph */
@@ -377,6 +441,9 @@
 }
 
 .paragraph {
+  /* About 70 characters a line (measured in Nunito): the article's 68ch is wider, and a prova
+     whose drawing ends early ran its text at 90 */
+  max-width: 32rem;
   font-size: var(--font-size-base);
   /* Same rhythm as the lists (1.85 read loose next to them, and on phones) */
   line-height: 1.7;
@@ -1014,6 +1081,7 @@ ol.list {
      the clearance and left the text a word per line */
   .paragraph,
   .lead,
+  .quote,
   .list,
   .steps,
   .swatches,
@@ -1021,6 +1089,11 @@ ol.list {
   .cast,
   .nav {
     padding-right: 48px;
+  }
+
+  /* The quotation keeps the clearance; its paragraphs don't add theirs */
+  .quoteText .paragraph {
+    padding-right: 0;
   }
 
   .heroTitle {

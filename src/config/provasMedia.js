@@ -29,6 +29,7 @@ import noDeCorrer from '../assets/images/provas/nos/no-de-correr.png';
 import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
+import saoTiago from '../assets/images/provas/sao-tiago/sao-tiago.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
 import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
@@ -155,6 +156,11 @@ export const badges = {
   selvaCa: () => [{ name: null, src: selvaCa, w: 144, h: 144, alt: 'Desenho: uma serpente enrolada, de cabeça levantada' }],
   selvaBanderlogues: () => [{ name: null, src: selvaBanderlogues, w: 154, h: 151, alt: 'Desenho: um macaco cor de laranja, de língua de fora' }],
   selvaXerCane: () => [{ name: null, src: selvaXerCane, w: 200, h: 173, alt: 'Desenho: um tigre, deitado' }],
+  // The Exploradores' patrono, a pilgrim's drawing (cleaned to flat colour at 2×), beside his
+  // prova's first part, its pilgrim's signs numbered (`large`, as S. Francisco's; `marks`: x, y
+  // as a share of the drawing, each named in a list under it; each number beside its sign, never
+  // on it, so the shell and the gourd stay in sight)
+  saoTiagoSinais: () => [{ name: null, src: saoTiago, w: 514, h: 804, large: true, zoom: false, marks: [{ x: 0.82, y: 0.28, label: 'Concha de vieira' }, { x: 0.46, y: 0.72, label: 'Bordão' }, { x: 0.1, y: 0.1, label: 'Cabaça' }], alt: 'São Tiago vestido de peregrino, com os números 1, 2 e 3 sobre a concha de vieira ao peito, o bordão e a cabaça' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },
