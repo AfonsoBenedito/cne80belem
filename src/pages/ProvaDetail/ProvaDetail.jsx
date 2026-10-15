@@ -335,6 +335,10 @@ export default function ProvaDetail() {
                             <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
                           </Suspense>
                         )}
+                        {/* The prova's own question to the scout (the Livro da Selva's
+                            "Conheces…"), as the manual sets it under its title: bold, before the
+                            text */}
+                        {s.lead && <p className={styles.lead}>{s.lead}</p>}
                         {s.text && renderText(s.text, false, s.notes)}
                         {s.swatches && (
                           // Colours with their names (the Bandos'): the name is the content, the
@@ -357,6 +361,31 @@ export default function ProvaDetail() {
                               </div>
                             ))}
                           </dl>
+                        )}
+                        {s.cast && (
+                          // The characters (the Livro da Selva's), as the manual sets them: each
+                          // one's drawing beside them, their name in bold opening their text. The
+                          // name is a heading (inline, so it still opens the sentence), so a screen
+                          // reader can go from character to character. A drawing that can't load
+                          // leaves its box empty, and the box gives way: the text stands alone
+                          // (while the picture code loads, a placeholder holds the box)
+                          <ul className={styles.cast}>
+                            {s.cast.map((c) => (
+                              <li key={c.name} className={styles.castRow}>
+                                <span className={styles.castPicture}>
+                                  <LoadErrorBoundary quiet>
+                                    <Suspense fallback={<span aria-hidden="true" />}>
+                                      <ProvaMedia media={c.media} seccao={seccao} picture />
+                                    </Suspense>
+                                  </LoadErrorBoundary>
+                                </span>
+                                <div className={styles.castText}>
+                                  <h3 className={styles.castName} style={{ color: section.ink }}>{c.name}</h3>
+                                  <p className={styles.castRest}>{c.text}</p>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
                         )}
                         {s.steps && (
                           // Steps on one line, each joined to the next: dates (a history) or names

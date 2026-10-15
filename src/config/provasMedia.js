@@ -29,6 +29,16 @@ import noDeCorrer from '../assets/images/provas/nos/no-de-correr.png';
 import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
+import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
+import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
+import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
+import selvaRacxa from '../assets/images/provas/livro-da-selva/racxa.jpg';
+import selvaBalu from '../assets/images/provas/livro-da-selva/balu.jpg';
+import selvaBaguera from '../assets/images/provas/livro-da-selva/baguera.jpg';
+import selvaHaiti from '../assets/images/provas/livro-da-selva/haiti.jpg';
+import selvaCa from '../assets/images/provas/livro-da-selva/ca.jpg';
+import selvaBanderlogues from '../assets/images/provas/livro-da-selva/banderlogues.jpg';
+import selvaXerCane from '../assets/images/provas/livro-da-selva/xercane.jpg';
 
 // w × h of each file, so the two posters can share one height before they load
 export const uniformes = {
@@ -132,6 +142,19 @@ export const badges = {
   sfPatrono: () => [{ name: null, src: sfPatrono, w: 166, h: 378, large: true, zoom: false, alt: 'S. Francisco de Assis, em desenho: de hábito castanho, cordão à cintura e sandálias, com um passarinho na cabeça' }],
   sfCrianca: () => [{ name: null, src: sfCrianca, w: 294, h: 418, large: true, zoom: false, alt: 'Francisco em criança, em desenho: de braços abertos e a sorrir, com uma túnica castanha remendada' }],
   sfLobo: () => [{ name: null, src: sfLobo, w: 225, h: 225, large: true, zoom: false, alt: 'S. Francisco e o lobo de Gúbio, em desenho, lado a lado e de braços abertos' }],
+  // The Lobitos' Manual de Adesão's drawings of the Livro da Selva's characters, one
+  // beside each one's text (the files are 110–264px, so they're shown small; w × h kept, so each
+  // box is held before it loads). The name heads each one, so the alt says only what's drawn
+  selvaMaugli: () => [{ name: null, src: selvaMaugli, w: 125, h: 186, alt: 'Desenho: um menino de cabelo preto e calção vermelho, a apontar' }],
+  selvaAquela: () => [{ name: null, src: selvaAquela, w: 157, h: 136, alt: 'Desenho: um lobo castanho escuro, de pé, a olhar em frente' }],
+  selvaPaiLobo: () => [{ name: null, src: selvaPaiLobo, w: 160, h: 160, alt: 'Desenho: um lobo cinzento, sentado' }],
+  selvaRacxa: () => [{ name: null, src: selvaRacxa, w: 110, h: 161, alt: 'Desenho: uma loba cinzenta, sentada, de cabeça erguida' }],
+  selvaBalu: () => [{ name: null, src: selvaBalu, w: 164, h: 185, alt: 'Desenho: um urso cinzento-azulado, a dançar' }],
+  selvaBaguera: () => [{ name: null, src: selvaBaguera, w: 264, h: 189, alt: 'Desenho: uma pantera negra, a caminhar' }],
+  selvaHaiti: () => [{ name: null, src: selvaHaiti, w: 131, h: 159, alt: 'Desenho: um elefante, de tromba levantada' }],
+  selvaCa: () => [{ name: null, src: selvaCa, w: 144, h: 144, alt: 'Desenho: uma serpente enrolada, de cabeça levantada' }],
+  selvaBanderlogues: () => [{ name: null, src: selvaBanderlogues, w: 154, h: 151, alt: 'Desenho: um macaco cor de laranja, de língua de fora' }],
+  selvaXerCane: () => [{ name: null, src: selvaXerCane, w: 200, h: 173, alt: 'Desenho: um tigre, deitado' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },
