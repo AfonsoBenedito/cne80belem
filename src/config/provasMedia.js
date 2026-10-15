@@ -1,5 +1,8 @@
-// The uniforms, badges and progresso insígnias shown in the prova "Uniforme e distintivos dos dirigentes"
-// (the CNE's own posters and badge scans)
+// The pictures the provas draw, by the `media` name their sections give (provasContent.js): the
+// uniforms, badges and progresso insígnias of "Uniforme e distintivos dos dirigentes" (the CNE's own
+// posters and badge scans, in assets/images/distintivos/), and the drawings and diagrams other provas
+// set beside or under their text (the Saudação's, the Cargos' badges, the Manual de Adesão's knots
+// and S. Francisco, in assets/images/provas/)
 import fardaLobitos from '../assets/images/distintivos/farda-lobitos.png';
 import fardaExploradores from '../assets/images/distintivos/farda-exploradores.jpg';
 import fardaPioneiros from '../assets/images/distintivos/farda-pioneiros.png';
@@ -72,12 +75,13 @@ const cargos = [
   { name: 'Relações Públicas', slug: 'relacoes-publicas', src: relacoesPublicas },
 ];
 
-const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites,saudacao}/*.{jpg,png}', { eager: true, import: 'default' });
+const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites}/*.{jpg,png}', { eager: true, import: 'default' });
 const file = (path) => files[`../assets/images/distintivos/${path}`];
 
 // The saudação drawings ship as they are (no image pipeline), so their w × h are written here, as
 // the posters' are: the page reserves each one's box before it loads, and the text beside a hand
 // doesn't jump when it arrives. A test checks them against the files
+const saudacaoFiles = import.meta.glob('../assets/images/provas/saudacao/*.png', { eager: true, import: 'default' });
 const drawingSizes = {
   'sinal-sem-boina': [333, 305],
   'saudacao-com-boina': [353, 307],
@@ -91,7 +95,7 @@ const drawingSizes = {
 };
 const drawing = (name) => {
   const [w, h] = drawingSizes[name];
-  return { src: file(`saudacao/${name}.png`), w, h };
+  return { src: saudacaoFiles[`../assets/images/provas/saudacao/${name}.png`], w, h };
 };
 
 // The badge grids, by `media` name, each a list of { name, src } for the open secção. A badge

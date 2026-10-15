@@ -1,7 +1,7 @@
 import { Fragment, Suspense, lazy, useState } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
-import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../../config/distintivos';
+import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../../config/provasMedia';
 import styles from './ProvaMedia.module.css';
 
 // The photo viewer loads on the first press of a poster: the Promessa page shows an insígnia and

@@ -1,7 +1,7 @@
 // ── Conteúdo detalhado de cada prova ──
 // Each entry has a title and sections (array of { heading?, text, recite? } or { heading?, media }; `recite`
 // sets text that is said aloud from memory (prayers, the Lobito's Leis) in the larger reading style; media
-// names pictures the page draws per secção, 'uniformes', 'progresso', 'dirigentes' or a badge grid, from config/distintivos.js;
+// names pictures the page draws per secção, 'uniformes', 'progresso', 'dirigentes' or a badge grid, from config/provasMedia.js;
 // with text, `mediaFirst` puts a picture that shows what the text explains before it, so on phones it
 // sits under the heading; `mediaAfter` sets it under the text instead, at its own size (a wide
 // diagram: the nós); `notes`, one per list item, set what each item means under it; `steps`,
@@ -79,7 +79,7 @@ export const provasContent = {
 
   'adesao-movimento-7': {
     title: 'Uniforme e distintivos dos dirigentes',
-    // Pictures only, each named: the secção's own, from config/distintivos.js
+    // Pictures only, each named: the secção's own, from config/provasMedia.js
     sections: [
       { media: 'uniformes' },
       { heading: 'Insígnia de Promessa', media: 'promessa' },

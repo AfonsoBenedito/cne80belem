@@ -6,7 +6,7 @@ import { toBlocks, leadsList } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
 import { getProvaContent } from '../config/provasContent';
-import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../config/distintivos';
+import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../config/provasMedia';
 
 // One column, Nunito. The secção's colour is a thin band at the top and the headings' ink; the
 // rest is black and gray on white, so a printed prova reads like the page it came from.

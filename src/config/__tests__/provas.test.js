@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { provas } from '../provas';
 import { provasContent } from '../provasContent';
 import { seccoes } from '../seccoes';
-import { badges } from '../distintivos';
+import { badges } from '../provasMedia';
 import { toBlocks } from '../../utils/provaBlocks';
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
@@ -68,7 +68,7 @@ describe('provasContent', () => {
 // The saudação drawings carry their w × h (so the page reserves their box before they load);
 // replacing a drawing without updating its size would stretch it
 describe('saudação drawings', () => {
-  const dir = 'src/assets/images/distintivos/saudacao/';
+  const dir = 'src/assets/images/provas/saudacao/';
   const pngSize = (path) => {
     const b = readFileSync(path);
     return [b.readUInt32BE(16), b.readUInt32BE(20)];
