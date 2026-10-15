@@ -151,7 +151,7 @@ function Badges({ items: all, seccao, title }) {
             <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
           )}
           <ul
-            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''}`}
+            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''} ${items[0].hero ? styles.funcoesHero : ''}`}
             style={vars}
           >
             {group.map((f) => (
@@ -235,6 +235,7 @@ function Badges({ items: all, seccao, title }) {
             captions={drawings.map((f) => f.name ?? f.caption ?? '')}
             alts={drawings.map((f) => f.alt)}
             drawings
+            kind={drawings.every((f) => f.kind) ? drawings[0].kind : undefined}
           />
         </Suspense>
       )}

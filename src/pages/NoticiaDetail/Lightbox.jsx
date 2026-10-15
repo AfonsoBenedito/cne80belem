@@ -37,8 +37,10 @@ const viewerSizes = (ratio) => {
 // names what it shows "Desenho" instead of "Foto" (the saudação's drawings), for screen readers.
 // `alts` (optional, one per photo) describes each one where the page does (the knots' steps), so
 // the viewer doesn't read less than the page did
-export default function Lightbox({ photos, index, onIndex, onClose, title, captions, alts, drawings = false, leaving = false, onLeft }) {
-  const noun = drawings ? 'Desenho' : 'Foto';
+export default function Lightbox({ photos, index, onIndex, onClose, title, captions, alts, drawings = false, kind, leaving = false, onLeft }) {
+  // `kind` names what it shows when it is neither a photo nor a drawing (B.P.'s painted portrait:
+  // "Retrato")
+  const noun = kind ?? (drawings ? 'Desenho' : 'Foto');
   const panelRef = useRef(null);
   const stageRef = useRef(null);
   const trackRef = useRef(null);

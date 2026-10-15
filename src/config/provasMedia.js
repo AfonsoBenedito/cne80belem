@@ -30,6 +30,14 @@ import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
 import saoTiago from '../assets/images/provas/sao-tiago/sao-tiago.png';
+import bpRetrato from '../assets/images/provas/baden-powell/retrato.jpg';
+import bpBarco from '../assets/images/provas/baden-powell/barco.png';
+import bpHussardos from '../assets/images/provas/baden-powell/hussardos.png';
+import bpMatopo from '../assets/images/provas/baden-powell/matopo.png';
+import bpMafeking from '../assets/images/provas/baden-powell/mafeking.png';
+import bpPoliciaMontada from '../assets/images/provas/baden-powell/policia-montada.png';
+import bpJamboree from '../assets/images/provas/baden-powell/jamboree-1920.png';
+import bpPaxHill from '../assets/images/provas/baden-powell/pax-hill.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
 import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
@@ -161,6 +169,19 @@ export const badges = {
   // as a share of the drawing, each named in a list under it; each number beside its sign, never
   // on it, so the shell and the gourd stay in sight)
   saoTiagoSinais: () => [{ name: null, src: saoTiago, w: 514, h: 804, large: true, zoom: false, marks: [{ x: 0.82, y: 0.28, label: 'Concha de vieira' }, { x: 0.46, y: 0.72, label: 'Bordão' }, { x: 0.1, y: 0.1, label: 'Cabaça' }], alt: 'São Tiago vestido de peregrino, com os números 1, 2 e 3 sobre a concha de vieira ao peito, o bordão e a cabaça' }],
+  // Vida de Baden-Powell: the photographs and drawing of the agrupamento's text ("Vida BP"), each
+  // beside its part with that text's own caption; cleaned to grey at 2× (the originals are 175 to
+  // 400px), so not opened in the viewer, which would show them no sharper
+  // His portrait, painted, at the top of the prova: a large file, so it opens in the viewer and
+  // is set larger than the photographs (`hero`)
+  bpRetrato: () => [{ name: null, src: bpRetrato, w: 1024, h: 1469, large: true, zoom: true, hero: true, kind: 'Retrato', alt: 'Retrato pintado de Baden-Powell já idoso, de chapéu escutista, lenço ao pescoço e uniforme com condecorações, de braços cruzados' }],
+  bpBarco: () => [{ name: null, src: bpBarco, w: 800, h: 1060, large: true, zoom: false, caption: 'Foi com o irmão Warington que aprendeu a manobrar um barco', alt: 'Desenho de um rapaz de pé num barco, a remar com uma vara' }],
+  bpHussardos: () => [{ name: null, src: bpHussardos, w: 350, h: 606, large: true, zoom: false, caption: 'B.P., capitão do 13º de Hussardos', alt: 'Fotografia de Baden-Powell jovem, de bigode, com o uniforme de gala dos Hussardos e o barretina debaixo do braço' }],
+  bpMatopo: () => [{ name: null, src: bpMatopo, w: 692, h: 526, large: true, zoom: false, caption: 'Patrulhando as colinas Matopo, durante a Guerra dos Matabeles, cerca de 1896', alt: 'Fotografia de Baden-Powell a cavalo, de chapéu de abas largas e espingarda ao ombro, num campo de erva alta' }],
+  bpMafeking: () => [{ name: null, src: bpMafeking, w: 582, h: 440, large: true, zoom: false, caption: 'Notícia de 18 de Maio de 1900, acerca da libertação de Mafeking', alt: 'Cartaz de jornal: «Extra Special. Relief of Mafeking. Latest cricket: Baden-Powell 216, Kruger 0»' }],
+  bpPoliciaMontada: () => [{ name: null, src: bpPoliciaMontada, w: 442, h: 688, large: true, zoom: false, caption: 'Comandante da Polícia Montada da África do Sul', alt: 'Fotografia de Baden-Powell de uniforme, sentado a uma mesa, a escrever' }],
+  bpJamboree: () => [{ name: null, src: bpJamboree, w: 778, h: 690, large: true, zoom: false, caption: 'Foto do 1º Jamboree Internacional', alt: 'Fotografia do primeiro Jamboree, em 1920: uma multidão de escuteiros de chapéu num grande pavilhão coberto, com bandeiras ao fundo' }],
+  bpPaxHill: () => [{ name: null, src: bpPaxHill, w: 478, h: 490, large: true, zoom: false, caption: 'B.P. no seu estúdio, em Pax Hill, 1935', alt: 'Fotografia de Baden-Powell já idoso, de lenço escutista, sentado à secretária do seu estúdio, com flores ao lado' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },

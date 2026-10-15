@@ -347,6 +347,17 @@
   min-height: 3rem;
 }
 
+/* The years a section covers (Vida de Baden-Powell's parts), a small line over its heading, so
+   a long life reads as a timeline: part of the heading, in its ink */
+.sectionDate {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
 .sectionHeading {
   /* Under the sticky header when a link (the Cargos grid) jumps to it */
   scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
@@ -411,6 +422,68 @@
   content: "- ";
 }
 
+/* A letter (B.P.'s last message), the page's last word: on a tint of the secção's colour (a
+   tint, so the text stays gray-900), a step larger, its salutation bold, its sign-off on the
+   right in two lines; the rule gives way to the tint */
+.letter .quoteText {
+  padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+  border-left: 0;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--quote-tint) 9%, var(--color-white));
+}
+
+.letter .quoteText .paragraph {
+  font-size: var(--font-size-lg);
+  line-height: 1.65;
+  color: var(--color-gray-900);
+}
+
+.letter .quoteText .paragraph:first-child {
+  font-weight: 800;
+}
+
+.letter .quoteText .paragraph:last-child {
+  margin-top: var(--spacing-lg);
+  margin-left: auto;
+  width: fit-content;
+  text-align: right;
+  font-weight: 700;
+}
+
+.letter .quoteSource {
+  padding-left: var(--spacing-xl);
+}
+
+@media (max-width: 600px) {
+  .letter .quoteText {
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+  }
+
+  .letter .quoteSource {
+    padding-left: var(--spacing-md);
+  }
+}
+
+/* A link to another prova that tells a part in full (Vida de Baden-Powell's book and
+   fraternity): the secção's ink, underlined, bold as a name */
+.moreLink {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+@media (hover: hover) {
+  .moreLink:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+.moreLink:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* A picture under its text (the nós' diagrams), a step below the last paragraph */
 .mediaAfter {
   margin-top: var(--spacing-md);
@@ -429,14 +502,22 @@
   justify-content: center;
 }
 
-/* On phones the drawing sits under its heading, at the text's edge, as any picture there */
+/* The opening portrait's column, as wide as the portrait at its 20rem height */
+.withMediaAside:has([class*="funcoesHero"]) {
+  width: calc(20rem * 0.7 + 2 * var(--spacing-md) + 2px);
+}
+
+/* On phones the drawing sits under its heading, its tile the column's full width, so every
+   picture on a page is one card size (portrait or landscape, the picture centred in it) */
 @media (max-width: 600px) {
   .withMediaAside:has([class*="funcoesLarge"]) {
-    width: auto;
+    width: 100%;
   }
 
-  .withMediaAside:has([class*="funcoesLarge"]) [class*="funcoesSingle"] {
-    justify-content: start;
+  /* (the badge grids become a centred flex row on phones: the lone tile takes the whole row) */
+  .withMediaAside:has([class*="funcoesLarge"]) [class*="funcoesSingle"] > li {
+    flex: 1 1 100%;
+    width: 100%;
   }
 }
 
@@ -1173,6 +1254,18 @@ ol.list {
 
   .backLink {
     position: relative;
+  }
+
+  /* A link to another prova, inline in a sentence: 44px tall for a thumb without moving the
+     line (11px above and below its 22px) */
+  .moreLink {
+    position: relative;
+  }
+
+  .moreLink::after {
+    content: "";
+    position: absolute;
+    inset: -11px 0;
   }
 
   .backLink::after {

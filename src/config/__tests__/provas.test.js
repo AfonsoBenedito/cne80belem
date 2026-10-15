@@ -38,6 +38,12 @@ describe('provasContent', () => {
     }
   });
 
+  // `more` names another prova by its title: it must be one some secção lists
+  it.each(Object.keys(provasContent))('%s points with "more" only to provas that exist', (key) => {
+    const titles = new Set(Object.values(provas).flatMap((groups) => groups.flatMap((g) => g.items.map((i) => i.title))));
+    for (const sec of provasContent[key].sections) if (sec.more) expect(titles, `no prova titled "${sec.more}"`).toContain(sec.more);
+  });
+
   it('gives a slug the same title in every secção that lists it', () => {
     const slugs = new Set(Object.keys(provas).flatMap(slugsOf));
     for (const slug of slugs) {

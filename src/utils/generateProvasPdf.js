@@ -305,6 +305,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A quotation (the Última Mensagem): the heading takes its introduction and the passage's
+      // first lines with it
+      if (sec.quote) keep = (sec.intro ? draw.split(sec.intro, colW, BODY).length * lh + 3.5 * s : 0) + lh * 3 + 3.5 * s;
       // A short list of words (Caçadas e Covil: up to four) reads only whole: its heading asks for
       // room for the lead and every word, so it never splits across a page or a column; a longer
       // one (the Palavras dos nós) for its lead and first two words, so they're never apart
@@ -329,7 +332,13 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const whole = first.lines.reduce((t, line) => t + draw.split(line, colW - 1.25 * 11.5 * ts * PT, 11.5).length * rh, 0);
         if (h + 3 * s + whole <= bottom - colTop) keep = whole;
       }
-      room(h + 3 * s + keep);
+      // The years it covers (Vida de Baden-Powell's parts), as on the page: small, over it
+      const dateH = sec.date ? 8.5 * ts * PT * 1.3 : 0;
+      room(dateH + h + 3 * s + keep);
+      if (sec.date) {
+        draw.text(sec.date, left(), y + asc(8.5), 8.5, 'bold', ink);
+        y += dateH;
+      }
       draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
       y += h + 3 * s;
     }
@@ -477,7 +486,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     const aside = asideItem ? media.get(asideItem.src) : null;
     // 26mm tall (40mm for the hand sign, `large`; 14mm for a cargo's badge, `small`, as on the
     // page), or narrower for a wide picture (the handshake), so the text keeps two thirds
-    const asideTall = (asideItem?.large ? 40 : asideItem?.small ? 14 : 26) * s;
+    const asideTall = (asideItem?.hero ? 58 : asideItem?.large ? 40 : asideItem?.small ? 14 : 26) * s;
     const imgW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
     const imgH = aside ? (imgW * aside.h) / aside.w : 0;
     // Numbers on the drawing (the pilgrim's signs), as on the page, and what each is under it:
@@ -485,8 +494,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     const marks = aside && asideItem.marks ? asideItem.marks : [];
     const MARK_R = 2.2 * s;
     const MARK_LINE = 5.5 * s;
-    const asideW = marks.length ? Math.max(imgW, ...marks.map((m) => 2 * MARK_R + 2 * s + draw.width(m.label, 8.5, 'bold'))) : imgW;
-    const asideH = imgH + (marks.length ? 3 * s + marks.length * MARK_LINE : 0);
+    const asideW = marks.length ? Math.max(imgW, ...marks.map((m) => 2 * MARK_R + 2 * s + draw.width(m.label, 8.5, 'bold'))) : asideItem?.caption ? Math.max(imgW, 30 * s) : imgW;
+    // Its caption (Vida de Baden-Powell's photographs), as on the page: small and gray, under it
+    const capLines = aside && asideItem.caption && !marks.length ? draw.split(asideItem.caption, Math.max(imgW, 30 * s), 8) : [];
+    const CAP_LINE = 8 * ts * PT * 1.35;
+    const asideH = imgH + (marks.length ? 3 * s + marks.length * MARK_LINE : 0) + (capLines.length ? 2 * s + capLines.length * CAP_LINE : 0);
     // A block that starts beside it is narrower; one that starts under it (or on a later page)
     // takes the full width
     const besideW = aside ? colW - asideW - 8 * s : colW;
@@ -505,6 +517,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         draw.text(String(n), cx, cy + asc(7) / 2, 7, 'bold', hexToRgb(section.onSurface), { align: 'center' });
       };
       marks.forEach((m, k) => disc(ix + m.x * imgW, y + m.y * imgH, k + 1));
+      capLines.forEach((line, k) => draw.text(line, ax + asideW / 2, y + imgH + 2 * s + asc(8) + k * CAP_LINE, 8, 'normal', GRAY, { align: 'center' }));
       marks.forEach((m, k) => {
         const ly = y + imgH + 3 * s + k * MARK_LINE + MARK_R;
         disc(ax + MARK_R, ly, k + 1);
@@ -520,6 +533,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       }
       return lines;
     };
+    // Another prova that tells this part in full, as on the page, if this secção has it (in a
+    // booklet of all the provas it's a few pages on; on its own, its name says where to look)
+    const more = sec.more && numbered(seccao).find((p) => p.title === sec.more);
+    if (more) blocks.push({ kind: 'p', lines: [`Podes saber mais na prova ${more.n}, «${more.title}».`] });
     // Someone else's words (the Manual do Dirigente), as on the page: our line saying whose, the
     // passage in from the text beside a rule in the secção's colour, its source under it, gray
     if (sec.quote) {
@@ -530,12 +547,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         if (rule && y > rule.y) draw.onto(draw.pages[rule.page], () => draw.rect(rule.x, rule.y, 0.8 * s, y - rule.y, hexToRgb(section.color)));
         rule = null;
       };
-      const para = (text, x, w, withRule) => {
+      // `keep`: lines of the next paragraph to keep with this one (a one-line opening, «Caros
+      // escuteiros:», never alone at a page's foot)
+      const para = (text, x, w, withRule, keep = 0) => {
         const lines = draw.split(text, w, BODY);
         lines.forEach((line, i) => {
           const last = lines.length - i;
           const page = draw.pages.length - 1;
-          room(lh * (lines.length > 1 && (i === 0 || last === 2) ? 2 : 1));
+          room(lh * ((lines.length > 1 && (i === 0 || last === 2) ? 2 : 1) + (last === 1 ? keep : 0)) + (last === 1 && keep ? 3.5 * s : 0));
           if (withRule && rule && draw.pages.length - 1 !== page) {
             // the passage went on to a new page: its rule there starts again at the top
             const was = y;
@@ -550,12 +569,36 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         });
       };
       if (sec.intro) {
-        para(sec.intro, left(), colW, false);
+        // kept with the passage's first lines: an introduction never ends a page
+        para(sec.intro, left(), colW, false, 3);
         y += 3.5 * s;
       }
       const indent = 5 * s;
       toBlocks(sec.quote).forEach((block, i, all) => {
-        para(block.lines.join(' '), left() + indent, colW - indent, true);
+        const keep = all[i + 1] && draw.split(block.lines.join(' '), colW - indent, BODY).length === 1 ? Math.min(2, draw.split(all[i + 1].lines.join(' '), colW - indent, BODY).length) : 0;
+        // A letter (B.P.'s last message), as on the page: its salutation bold, its sign-off on
+        // the right, its two lines kept
+        if (sec.letter && i === all.length - 1) {
+          y += 2 * s;
+          room(lh * block.lines.length);
+          for (const line of block.lines) {
+            draw.text(line, left() + colW, y + asc(BODY), BODY, 'bold', BLACK, { align: 'right' });
+            y += lh;
+          }
+          if (rule) rule.end = y;
+          return;
+        }
+        if (sec.letter && i === 0 && block.lines.length === 1) {
+          room(lh * (1 + keep));
+          if (!rule) rule = { page: draw.pages.length - 1, x: left(), y };
+          draw.text(block.lines[0], left() + indent, y + asc(BODY), BODY, 'bold', BLACK);
+          y += lh;
+          rule.end = y;
+          y += 3.5 * s;
+          rule.end = y;
+          return;
+        }
+        para(block.lines.join(' '), left() + indent, colW - indent, true, keep);
         // the rule runs on between the passage's paragraphs
         if (i < all.length - 1) {
           y += 3.5 * s;

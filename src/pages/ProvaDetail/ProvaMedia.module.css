@@ -272,6 +272,12 @@
   width: calc(13rem * var(--ratio));
 }
 
+/* A prova's opening portrait (B.P.'s): taller than the photographs beside the rest of its text */
+.funcoesSingle.funcoesLarge.funcoesHero .funcaoImg {
+  max-height: 20rem;
+  width: calc(20rem * var(--ratio));
+}
+
 /* A drawing that opens in the photo viewer: the whole tile is the button (stretched over it),
    the tile answering as the posters do */
 .funcao:has(.funcaoZoom) {
