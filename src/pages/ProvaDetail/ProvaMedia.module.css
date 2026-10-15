@@ -175,6 +175,49 @@
   width: min(12rem, calc(7rem * var(--ratio)));
 }
 
+/* A line of ours under a picture (the nó direito's step order): smaller and gray, not the
+   manual's text, sitting under the drawing in its tile */
+.funcaoCaption {
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  color: var(--color-gray-600);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* A diagram at its own size (`natural`, the nós': black line art at 2×): the manual's width on
+   a wide screen, narrower only to fit its column */
+.funcoesSingle.funcoesNatural .funcaoImg {
+  width: var(--natural);
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+}
+
+/* On phones it fills the column (the file holds 2×, so it stays crisp), so the steps' numbers
+   read with the phone propped on the table */
+@media (max-width: 600px) {
+  .funcoesSingle.funcoesNatural,
+  .funcoesSingle.funcoesNatural .funcao {
+    width: 100%;
+  }
+
+  .funcoesSingle.funcoesNatural .funcaoImg {
+    width: 100%;
+  }
+
+  /* Its zoom button too: the tile centres it, so it would shrink to the file's width (the nó de
+     correr's 424px), leaving the diagram narrower than its column from about 425 to 600px */
+  .funcoesSingle.funcoesNatural .funcaoZoom {
+    align-self: stretch;
+  }
+
+  /* No caption at its edge to keep clear of the floating button: the whole column */
+  .badgeGroups:has(.funcoesNatural) {
+    padding-right: 0;
+  }
+}
+
 /* A lone badge at the grid's size (the Cargos prova, beside each cargo's text): the scans are
    small, so it isn't enlarged past them as the Promessa's is */
 .funcoesSingle.funcoesSmall .funcaoImg {

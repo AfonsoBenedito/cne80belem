@@ -22,7 +22,9 @@ function imageDefaults(url) {
   // would blur the lines, so they ship as the PNGs they are
   if (path.includes('/images/klandestino/')) return new URLSearchParams()
   // The CNE sheet's saudação drawings are line art too, cleaned from a scan: they stay PNG
-  if (path.includes('/images/distintivos/saudacao/')) return new URLSearchParams()
+  if (path.includes('/images/provas/saudacao/')) return new URLSearchParams()
+  // The Lobitos' Manual de Adesão's knot diagrams are grey line art as well
+  if (path.includes('/images/provas/nos/')) return new URLSearchParams()
   // The badges are set by height (4rem; the progresso pieces up to 8rem, the Promessa's 7rem), so they are capped at 3×
   // that. imagetools never enlarges, so a scan smaller than that keeps its own size
   const badge = path.match(/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites|cruzes)\//)

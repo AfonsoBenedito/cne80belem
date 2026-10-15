@@ -36,7 +36,7 @@ export default function Provas() {
     );
   };
 
-  // The provas are done in order across both groups, so they're numbered straight through (1–10 for the Lobitos, 1–15 for the Exploradores and Pioneiros, 1–14 for the Caminheiros)
+  // The provas are done in order across both groups, so they're numbered straight through (1–10 for the Lobitos, 1–16 for the Exploradores, Pioneiros and Caminheiros)
   const starts = sectionProvas.map((_, i) =>
     sectionProvas.slice(0, i).reduce((n, g) => n + g.items.length, 0)
   );

@@ -297,6 +297,19 @@ export default function ProvaDetail() {
                     )}
                     {s.headingMedia ? (
                       s.text && renderText(s.text, true)
+                    ) : s.mediaAfter ? (
+                      // The text, then its picture under it at the picture's own size (a wide
+                      // diagram: the nós' steps)
+                      <>
+                        {s.text && renderText(s.text)}
+                        <div className={styles.mediaAfter}>
+                          <LoadErrorBoundary quiet>
+                            <Suspense fallback={null}>
+                              <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
+                            </Suspense>
+                          </LoadErrorBoundary>
+                        </div>
+                      </>
                     ) : s.media && s.text ? (
                       // Text with its picture beside it (the Promessa and its insígnia): the text
                       // leads, the picture sits on its right, or under it on phones. A picture

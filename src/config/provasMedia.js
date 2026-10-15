@@ -1,5 +1,8 @@
-// The uniforms, badges and progresso insígnias shown in the prova "Uniforme e distintivos dos dirigentes"
-// (the CNE's own posters and badge scans)
+// The pictures the provas draw, by the `media` name their sections give (provasContent.js): the
+// uniforms, badges and progresso insígnias of "Uniforme e distintivos dos dirigentes" (the CNE's own
+// posters and badge scans, in assets/images/distintivos/), and the drawings and diagrams other provas
+// set beside or under their text (the Saudação's, the Cargos' badges, the Manual de Adesão's knots
+// and S. Francisco, in assets/images/provas/)
 import fardaLobitos from '../assets/images/distintivos/farda-lobitos.png';
 import fardaExploradores from '../assets/images/distintivos/farda-exploradores.jpg';
 import fardaPioneiros from '../assets/images/distintivos/farda-pioneiros.png';
@@ -21,6 +24,8 @@ import cozinheiro from '../assets/images/distintivos/funcao/cozinheiro.jpg';
 import socorrista from '../assets/images/distintivos/funcao/socorrista.jpg';
 import animador from '../assets/images/distintivos/funcao/animador.jpg';
 import relacoesPublicas from '../assets/images/distintivos/funcao/relacoes-publicas.jpg';
+import noDireito from '../assets/images/provas/nos/no-direito.png';
+import noDeCorrer from '../assets/images/provas/nos/no-de-correr.png';
 import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
@@ -70,12 +75,13 @@ const cargos = [
   { name: 'Relações Públicas', slug: 'relacoes-publicas', src: relacoesPublicas },
 ];
 
-const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites,saudacao}/*.{jpg,png}', { eager: true, import: 'default' });
+const files = import.meta.glob('../assets/images/distintivos/{promessa,seccoes,noites}/*.{jpg,png}', { eager: true, import: 'default' });
 const file = (path) => files[`../assets/images/distintivos/${path}`];
 
 // The saudação drawings ship as they are (no image pipeline), so their w × h are written here, as
 // the posters' are: the page reserves each one's box before it loads, and the text beside a hand
 // doesn't jump when it arrives. A test checks them against the files
+const saudacaoFiles = import.meta.glob('../assets/images/provas/saudacao/*.png', { eager: true, import: 'default' });
 const drawingSizes = {
   'sinal-sem-boina': [333, 305],
   'saudacao-com-boina': [353, 307],
@@ -89,7 +95,7 @@ const drawingSizes = {
 };
 const drawing = (name) => {
   const [w, h] = drawingSizes[name];
-  return { src: file(`saudacao/${name}.png`), w, h };
+  return { src: saudacaoFiles[`../assets/images/provas/saudacao/${name}.png`], w, h };
 };
 
 // The badge grids, by `media` name, each a list of { name, src } for the open secção. A badge
@@ -113,6 +119,13 @@ export const badges = {
   ],
   // The Cargos prova: each badge alone, beside its cargo's text (the heading names it), at the
   // grid's badge size (`small`): the cargo scans are only 60px
+  // The Lobitos' Manual de Adesão's knot diagrams, each under its knot's text, cleaned to black
+  // line art at 2× (`w` × `h`: the file's). `natural`: the width it's drawn at on a wide screen
+  // (the manual's own, so 2× screens get every file pixel); on phones it fills the column.
+  // `zoom`: it opens in the viewer, the rope in one hand. `caption`: ours, under it, where the
+  // drawing's own order isn't plain (the nó direito's steps run 1, 2 across the top, then 3)
+  noDireito: () => [{ name: null, src: noDireito, w: 710, h: 348, natural: 355, zoom: true, caption: 'Segue os passos 1, 2 e 3; em baixo, à direita, o nó pronto.', alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
+  noDeCorrer: () => [{ name: null, src: noDeCorrer, w: 424, h: 236, natural: 212, zoom: true, alt: 'O nó de correr em dois passos: 1, um cote direto, uma seta a mostrar o chicote; 2, o chicote livre passado dobrado por dentro da argola, formando um seio' }],
   // The Lobitos' Manual de Adesão's drawings of S. Francisco de Assis, one beside each part of
   // his prova (`large`: set as drawings; `zoom: false`: 166–294px wide, so not opened in the
   // viewer, which would show them no bigger; w × h kept, as the saudação's)
