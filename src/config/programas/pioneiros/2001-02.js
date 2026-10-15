@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2001/02.
+// Comunidade 9 - Programa 2001/02.
 // Fonte:
 //   T2: 2º trimestre.doc
 //   T3: 3º trimestre.doc

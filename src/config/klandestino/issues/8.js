@@ -550,7 +550,7 @@ export default {
         },
         {
           "type": "h",
-          "text": "Animal — Alimentação diária"
+          "text": "Animal - Alimentação diária"
         },
         {
           "type": "list",

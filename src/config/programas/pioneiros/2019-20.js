@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2019/20.
+// Comunidade 9 - Programa 2019/20.
 // Fonte:
 //   T1: IIIª PIO Relatório Atividades 2019-2020.pdf
 //   T2: IIIª PIO Relatório Atividades 2019-2020.pdf

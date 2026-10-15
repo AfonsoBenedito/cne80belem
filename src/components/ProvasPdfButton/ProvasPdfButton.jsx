@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { FaDownload, FaChevronDown } from 'react-icons/fa';
+import { FaDownload, FaChevronDown, FaRedo } from 'react-icons/fa';
 import styles from './ProvasPdfButton.module.css';
 
 const loadGenerator = () => import('../../utils/generateProvasPdf');
@@ -15,6 +15,11 @@ const FORMATS = [
 export default function ProvasPdfButton({ seccao, slug, label, ink }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // The PDF code itself failed to download: the browser keeps a failed import, so only a reload
+  // can try again (as the site's LoadErrorBoundary says)
+  const [stale, setStale] = useState(false);
+  // Said to screen readers once the file is on its way (nothing changes on screen)
+  const [done, setDone] = useState('');
   const [open, setOpen] = useState(false);
   const running = useRef(false);
   const wrapRef = useRef(null);
@@ -36,15 +41,19 @@ export default function ProvasPdfButton({ seccao, slug, label, ink }) {
     running.current = true;
     setBusy(true);
     setError('');
+    setDone('');
     setOpen(false);
     toggleRef.current?.focus();
     try {
       const { generateProvaPdf, generateAllProvasPdf } = await loadGenerator();
       await (slug ? generateProvaPdf(seccao, slug) : generateAllProvasPdf(seccao, format));
+      setDone('PDF pronto.');
     } catch (err) {
-      // A failed dynamic import is a TypeError about fetching the module
-      setError(/fetch|import|module/i.test(err?.message || '')
-        ? 'Não foi possível preparar o PDF. Verifica a ligação à internet e tenta outra vez.'
+      // A failed dynamic import (the generator, its fonts) is a TypeError about fetching the module
+      const failedImport = /fetch|import|module/i.test(err?.message || '');
+      setStale(failedImport);
+      setError(failedImport
+        ? 'Não foi possível preparar o PDF. A ligação pode ter falhado, ou o site foi atualizado entretanto. Recarregar resolve.'
         : 'Não foi possível preparar o PDF. Tenta outra vez daqui a pouco.');
     } finally {
       running.current = false;
@@ -62,7 +71,7 @@ export default function ProvasPdfButton({ seccao, slug, label, ink }) {
   return (
     <>
       {slug ? (
-        <button type="button" className={styles.button} onClick={() => download()} aria-disabled={busy || undefined}>
+        <button type="button" className={styles.button} onClick={() => download()} aria-disabled={busy || undefined} aria-busy={busy || undefined}>
           {content}
         </button>
       ) : (
@@ -74,6 +83,11 @@ export default function ProvasPdfButton({ seccao, slug, label, ink }) {
             setOpen(false);
             toggleRef.current?.focus();
           }}
+          // Tabbing on past the last format closes the menu. Only when focus lands on something
+          // else: a press on a format in Safari, which doesn't focus buttons, leaves it nowhere
+          onBlur={(e) => {
+            if (e.relatedTarget && !wrapRef.current?.contains(e.relatedTarget)) setOpen(false);
+          }}
         >
           <button
             ref={toggleRef}
@@ -82,6 +96,7 @@ export default function ProvasPdfButton({ seccao, slug, label, ink }) {
             aria-expanded={open}
             aria-controls={menuId}
             aria-disabled={busy || undefined}
+            aria-busy={busy || undefined}
             onClick={() => !busy && setOpen(!open)}
           >
             {content}
@@ -98,7 +113,15 @@ export default function ProvasPdfButton({ seccao, slug, label, ink }) {
           </div>
         </div>
       )}
-      <p className={styles.error} role="alert" hidden={!error}>{error}</p>
+      <div className={styles.error} role="alert" hidden={!error}>
+        <p className={styles.errorText}>{error}</p>
+        {stale && (
+          <button type="button" className={styles.reload} onClick={() => window.location.reload()}>
+            <FaRedo size={11} aria-hidden="true" /> Recarregar
+          </button>
+        )}
+      </div>
+      <span className={styles.srOnly} role="status">{done}</span>
     </>
   );
 }

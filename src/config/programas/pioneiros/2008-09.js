@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2008/09.
+// Comunidade 9 - Programa 2008/09.
 // Fonte:
 //   T1: Programa 1º Trimestre Aprovado.xls
 //   T2: Programa 2º Trimestre Aprovado.xls

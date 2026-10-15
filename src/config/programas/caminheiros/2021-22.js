@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2021/22.
+// Clã 72 - Programa 2021/22.
 // Fonte:
 //   T1: Programa CLA 72 2021-2022.xlsx (folha Programa T1 2021-2022)
 //   T2: Programa CLA 72 2021-2022.xlsx (folha Programa T2 2021-2022)

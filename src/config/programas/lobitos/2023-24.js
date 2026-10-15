@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2023/24.
+// Alcateia 16 - Programa 2023/24.
 // Fonte:
 //   T1: 1T.xlsx
 //   T2: 2T.xlsx

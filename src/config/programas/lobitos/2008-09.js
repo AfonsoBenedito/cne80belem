@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2008/09.
+// Alcateia 16 - Programa 2008/09.
 // Fonte:
 //   T1: programa I-Alcateia.xls
 export default {

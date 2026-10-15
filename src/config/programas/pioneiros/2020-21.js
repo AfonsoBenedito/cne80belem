@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2020/21.
+// Comunidade 9 - Programa 2020/21.
 // Fonte:
 //   T1: Relatório atividades PIO 9.docx (2020-2021)
 //   T2: Relatório atividades PIO 9.docx (2020-2021)

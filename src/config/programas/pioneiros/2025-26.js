@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2025/26.
+// Comunidade 9 - Programa 2025/26.
 // Fonte:
 //   T1: Livro Unidade_Comunidade.xlsx (folha Programa 1º Trimestre)
 //   T2: Livro Unidade_Comunidade.xlsx (folha Programa 2º Trimestre)

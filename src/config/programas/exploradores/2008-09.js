@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2008/09.
+// Expedição 17 - Programa 2008/09.
 // Fonte:
 //   T1: Programa_1trimestre.pdf (lido da imagem)
 //   T2: programa_2trimestre.pdf (lido da imagem)

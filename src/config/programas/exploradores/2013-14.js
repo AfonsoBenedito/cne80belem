@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2013/14.
+// Expedição 17 - Programa 2013/14.
 // Fonte:
 //   T1: Programa 1º Trimestre.pdf
 //   T2: Planeamento 2º Trimestre.xlsx (folha Draft)

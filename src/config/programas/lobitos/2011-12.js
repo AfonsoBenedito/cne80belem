@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2011/12.
+// Alcateia 16 - Programa 2011/12.
 // Fonte:
 //   T1: 1ª Dentada_ 2011-2012.pdf
 export default {

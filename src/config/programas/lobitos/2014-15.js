@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2014/15.
+// Alcateia 16 - Programa 2014/15.
 // Fonte:
 //   T1: 1º Trimestre.pdf
 //   T2: 2º Trimestre.pdf

@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2023/24.
+// Expedição 17 - Programa 2023/24.
 // Fonte:
 //   T1: Programa_1trimestre.xlsx
 //   T2: Programa_2trimestre.xlsx

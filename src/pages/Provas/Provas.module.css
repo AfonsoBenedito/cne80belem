@@ -241,6 +241,13 @@
     padding: 2.5rem 0;
   }
 
+  /* The floating button (48px, 1rem from the edge) sits over the column's right side here, as on
+     a prova's page: the group toggles and the prova cards keep clear of it, so it never covers a
+     chevron or the end of a long title. In px, as the button is */
+  .group {
+    padding-right: 48px;
+  }
+
   .card {
     padding: 0.85rem var(--spacing-md);
     gap: 0.75rem;

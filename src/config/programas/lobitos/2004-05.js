@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2004/05.
+// Alcateia 16 - Programa 2004/05.
 // Fonte:
 //   T3: Programa 3º trimestre 04-05.pdf
 export default {

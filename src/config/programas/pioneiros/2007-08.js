@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2007/08.
+// Comunidade 9 - Programa 2007/08.
 // Fonte:
 //   T1: Programa 1º Trimestre - Executado.xls
 //   T2: Programa 2º Trimestre - Executado.xls

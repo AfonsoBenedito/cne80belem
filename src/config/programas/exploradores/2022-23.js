@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2022/23.
+// Expedição 17 - Programa 2022/23.
 // Fonte:
 //   T1: Programa_1trimestre.docx
 //   T2: Programa 2T_2023.jpg

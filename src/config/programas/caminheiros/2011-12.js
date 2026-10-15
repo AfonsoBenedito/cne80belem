@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2011/12.
+// Clã 72 - Programa 2011/12.
 // Fonte:
 //   T1: Programa 1º Trimestre - Aprovado.xls
 //   T2: Programa 2º Trimestre - Aprovado.xls

@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2002/03.
+// Expedição 17 - Programa 2002/03.
 // Fonte:
 //   T1: Programa 1º Trimestre.doc
 //   T2: Programa 2 Semestre.doc

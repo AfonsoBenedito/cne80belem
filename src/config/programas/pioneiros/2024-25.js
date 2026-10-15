@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2024/25.
+// Comunidade 9 - Programa 2024/25.
 // Fonte:
 //   T1: Livro Unidade_COM 2024_2025.xlsx (folha Programa 1º Trimestre)
 //   T2: Livro Unidade_COM 2024_2025.xlsx (folha Programa 2º Trimestre)

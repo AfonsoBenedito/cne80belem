@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2011/12.
+// Comunidade 9 - Programa 2011/12.
 // Fonte:
 //   T1: Programa 1º Trimestre.xls
 //   T2: R.Act Comunidade.docx (relatório de atividades)

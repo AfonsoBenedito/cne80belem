@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2005/06.
+// Comunidade 9 - Programa 2005/06.
 // Fonte:
 //   T1: Programa 1º Trimestre.doc
 //   T2: Programa 2º Trimestre.xls

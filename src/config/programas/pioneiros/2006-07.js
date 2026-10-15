@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2006/07.
+// Comunidade 9 - Programa 2006/07.
 // Fonte:
 //   T2: Programa 2º Trimestre.xls
 //   T3: Programa 3º Trimestre.xls

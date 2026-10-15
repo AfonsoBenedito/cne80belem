@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2011/12.
+// Expedição 17 - Programa 2011/12.
 // Fonte:
 //   T1: Programa_1trimestre.pdf
 //   T2: Programa_2trimestre.pdf
