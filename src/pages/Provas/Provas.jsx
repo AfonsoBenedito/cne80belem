@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { FaChevronRight, FaChevronDown, FaArrowLeft, FaBookOpen } from 'react-icons/fa';
+import { FaChevronRight, FaChevronDown, FaArrowLeft, FaBookOpen, FaFileAlt } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
@@ -8,6 +8,7 @@ import { useSEO } from '../../utils/useSEO';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import pdfStyles from '../../components/ProvasPdfButton/ProvasPdfButton.module.css';
 import { cadernosDePista } from '../../config/cadernosDePista';
+import { manuaisDeAdesao } from '../../config/manuaisDeAdesao';
 import styles from './Provas.module.css';
 
 export default function Provas() {
@@ -27,6 +28,7 @@ export default function Provas() {
 
   const shortName = section.label.split(' - ').pop();
   const caderno = cadernosDePista[seccao];
+  const manual = manuaisDeAdesao[seccao];
 
   const toggleGroup = (group) => {
     setOpenGroups((prev) =>
@@ -64,6 +66,13 @@ export default function Provas() {
               <a href={caderno} download={`Caderno de Pista - ${shortName}.pdf`} className={pdfStyles.button}>
                 <FaBookOpen size={12} aria-hidden="true" style={{ color: section.ink }} />
                 Caderno de Pista
+              </a>
+            )}
+            {/* The secção's own guide to its provas (the Alcateia's), as the dirigentes hand it out */}
+            {manual && (
+              <a href={manual} download={`Manual de Adesão - ${shortName}.pdf`} className={pdfStyles.button}>
+                <FaFileAlt size={12} aria-hidden="true" style={{ color: section.ink }} />
+                Manual de Adesão
               </a>
             )}
             {/* Every prova in one file, with a contents page to tick them off */}
