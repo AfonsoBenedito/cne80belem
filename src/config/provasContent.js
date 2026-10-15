@@ -3,7 +3,8 @@
 // sets text that is said aloud from memory (prayers, the Lobito's Leis) in the larger reading style; media
 // names pictures the page draws per secção, 'uniformes', 'progresso', 'dirigentes' or a badge grid, from config/distintivos.js;
 // with text, `mediaFirst` puts a picture that shows what the text explains before it, so on phones it
-// sits under the heading; `notes`, one per list item, set what each item means under it; `steps`,
+// sits under the heading; `mediaAfter` sets it under the text instead, at its own size (a wide
+// diagram: the nós); `notes`, one per list item, set what each item means under it; `steps`,
 // [{ label?, title?, text? }], a vertical line of steps after the text: a date each (`label`, the
 // Lobitismo's history) or a name each (`title`, its chain); `swatches`, [{ name, color }], colours
 // with their names (the Bandos'); `terms`, [{ term, text }], words and what they mean).
@@ -153,6 +154,29 @@ export const provasContent = {
         // The secção's Insígnia de Promessa beside the formula: what the Promessa earns
         media: 'promessa',
         text: 'Prometo, da melhor vontade:\n\n• Ser amigo de Jesus, amando os outros;\n• Respeitar a Lei da Alcateia;\n• Praticar diariamente uma boa acção.',
+      },
+    ],
+  },
+
+  'lobitos/adesao-movimento-nos': {
+    title: 'Nó Direito e Nó de Correr',
+    // From the Alcateia 16's Manual de Adesão (2021-2022), "Prova 4 – Os nós", word for word,
+    // each knot's steps drawn under its text (`mediaAfter`: the diagrams are wide)
+    sections: [
+      {
+        text: 'Ao longo dos anos que vais passar nos escuteiros vais aprender muitos nós. Como não podia deixar de ser, nos Lobitos vais ter que aprender dois nós muito simples.',
+      },
+      {
+        heading: 'Nó Direito',
+        media: 'noDireito',
+        mediaAfter: true,
+        text: 'O nó direito é utilizado para unir duas espias do mesmo tamanho.\n\nCruzar a ponta esquerda sobre a direita e laçar; cruzar de novo a ponta direita sobre a ponta esquerda e laçar.\n\nDe cada lado os chicotes ficam lado a lado.',
+      },
+      {
+        heading: 'Nó de Correr',
+        media: 'noDeCorrer',
+        mediaAfter: true,
+        text: 'O nó de correr serve para fixar rapidamente uma corda a um tronco, por exemplo. Com o nó de correr, quanto mais puxarmos, mais apertado fica o laço em torno do objeto.\n\nFazer um cote direto (1), e passar o chicote livre (2) por dentro da argola, dobrado, formando um seio.',
       },
     ],
   },

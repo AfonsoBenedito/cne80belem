@@ -113,7 +113,7 @@ function Dirigentes() {
 
 // A drawing's width over its height (the saudação's carry their size), so a lone one can be given
 // its width before it loads
-const ratio = (f) => (f.w ? { '--ratio': f.w / f.h } : undefined);
+const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.w}px` } : undefined);
 
 // A grid of badges, each over its name, all at one height. Items that share a `group` keep a row
 // of their own; every group's rows are as wide as the largest group's, so the tiles line up.
@@ -143,7 +143,7 @@ function Badges({ items, seccao, title }) {
             <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
           )}
           <ul
-            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${group[0].tall ? styles.funcoesTall : ''}`}
+            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''}`}
             style={vars}
           >
             {group.map((f) => (

@@ -175,6 +175,15 @@
   width: min(12rem, calc(7rem * var(--ratio)));
 }
 
+/* A diagram at its own size (`natural`, the nós': grey line art a few hundred pixels wide):
+   its file's width, never larger so the lines stay crisp, narrower only to fit its column */
+.funcoesSingle.funcoesNatural .funcaoImg {
+  width: var(--natural);
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+}
+
 /* A lone badge at the grid's size (the Cargos prova, beside each cargo's text): the scans are
    small, so it isn't enlarged past them as the Promessa's is */
 .funcoesSingle.funcoesSmall .funcaoImg {

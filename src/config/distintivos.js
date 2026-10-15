@@ -21,6 +21,8 @@ import cozinheiro from '../assets/images/distintivos/funcao/cozinheiro.jpg';
 import socorrista from '../assets/images/distintivos/funcao/socorrista.jpg';
 import animador from '../assets/images/distintivos/funcao/animador.jpg';
 import relacoesPublicas from '../assets/images/distintivos/funcao/relacoes-publicas.jpg';
+import noDireito from '../assets/images/provas/nos/no-direito.png';
+import noDeCorrer from '../assets/images/provas/nos/no-de-correr.png';
 import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
@@ -113,6 +115,10 @@ export const badges = {
   ],
   // The Cargos prova: each badge alone, beside its cargo's text (the heading names it), at the
   // grid's badge size (`small`): the cargo scans are only 60px
+  // The Lobitos' Manual de Adesão's knot diagrams, each under its knot's text at its own size
+  // (`w` × `h`: the file's; the page never draws it larger, so the lines stay crisp)
+  noDireito: () => [{ name: null, src: noDireito, w: 355, h: 174, natural: true, alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
+  noDeCorrer: () => [{ name: null, src: noDeCorrer, w: 212, h: 118, natural: true, alt: 'O nó de correr em dois passos: 1, um cote direto, uma seta a mostrar o chicote; 2, o chicote livre passado dobrado por dentro da argola, formando um seio' }],
   // The Lobitos' Manual de Adesão's drawings of S. Francisco de Assis, one beside each part of
   // his prova (`large`: set as drawings; `zoom: false`: 166–294px wide, so not opened in the
   // viewer, which would show them no bigger; w × h kept, as the saudação's)

@@ -258,7 +258,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
       const h = lines.length * 12.5 * s * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
-      let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
       // A chain of steps (the Lobitismo's Alcateia → CNE) is short and reads only whole: its
       // heading asks for room for the whole section, lead and every step
       if (sec.steps && !sec.steps[0].label) {
@@ -407,7 +407,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     const blocks = sec.text ? toBlocks(sec.text) : [];
     // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
     // picture on the right of the text's first line, the text narrower to make room
-    const asideItem = sec.text && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
+    const asideItem = sec.text && !sec.mediaAfter && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
     const aside = asideItem ? media.get(asideItem.src) : null;
     // 26mm tall (40mm for the hand sign, `large`; 14mm for a cargo's badge, `small`, as on the
     // page), or narrower for a wide picture (the handshake), so the text keeps two thirds
@@ -510,6 +510,19 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       // A recited line that leads into a list sits as close to it as the list's own items
       y += block.kind === 'h' ? 0.5 * s : ((sec.recite || sec.headingMedia) && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
     });
+    // A picture under its text (`mediaAfter`, the nós' diagrams), as on the page: at its own size
+    // (a file pixel to 0.26mm, as a screen shows it), narrower only to fit the column
+    if (sec.mediaAfter && badges[sec.media]) {
+      const img = media.get(badges[sec.media](seccao)[0].src);
+      if (img) {
+        const w = Math.min(img.w * 0.2646 * s, colW);
+        const h = (w * img.h) / img.w;
+        y += 1 * s;
+        room(h);
+        draw.image(img.data, left(), y, w, h, 'JPEG');
+        y += h + 2 * s;
+      }
+    }
     // Colours with their names (the Bandos), as on the page: a round swatch, edged so the white
     // one shows, its name beside it, on one row that wraps
     if (sec.swatches) {

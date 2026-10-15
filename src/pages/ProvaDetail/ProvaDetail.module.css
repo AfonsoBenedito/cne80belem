@@ -336,6 +336,11 @@
   margin-top: 0;
 }
 
+/* A picture under its text (the nós' diagrams), a step below the last paragraph */
+.mediaAfter {
+  margin-top: var(--spacing-md);
+}
+
 /* A lone drawing beside text sits centred in one fixed column, so the text keeps one measure
    from section to section, whatever each drawing's width (the S. Francisco prova's three) */
 .withMediaAside:has([class*="funcoesLarge"]) {
