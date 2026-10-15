@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 1998/99.
+// Comunidade 9 - Programa 1998/99.
 // Fonte:
 //   T1: Programa 1º Trimestre.doc
 //   T3: Programa 3º Trimestre.doc

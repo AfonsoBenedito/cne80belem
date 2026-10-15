@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2026/27.
+// Expedição 17 - Programa 2026/27.
 // Fonte:
 //   T1: Livro Unidade_Expedição 2026-2027.xlsx (folha Programa 1º Trimestre)
 //   T2: Livro Unidade_Expedição 2026-2027.xlsx (folha Programa 2º Trimestre)

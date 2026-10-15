@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2015/16.
+// Expedição 17 - Programa 2015/16.
 // Fonte:
 //   T1: 1º Trimestre.xlsx
 //   T3: 3º Trimestre.xlsx

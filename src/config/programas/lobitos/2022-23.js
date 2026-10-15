@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2022/23.
+// Alcateia 16 - Programa 2022/23.
 // Fonte:
 //   T1: Programa Alcateia 16 - 2022-2023 - 1º Trimestre.pdf
 //   T2: Programa Alcateia 16 - 2022-2023 - 2º Trimestre.pdf

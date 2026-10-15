@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2012/13.
+// Alcateia 16 - Programa 2012/13.
 // Fonte:
 //   T1: Atividades Alcateia 2012-2013.pdf (relatório: principais atividades realizadas)
 //   T2: Atividades Alcateia 2012-2013.pdf (relatório: principais atividades realizadas)

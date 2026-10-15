@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2007/08.
+// Alcateia 16 - Programa 2007/08.
 // Fonte:
 //   T2: Programa.xls (folha Iº Trimestre, conteúdo 2º Trimestre 2007/2008)
 export default {

@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2019/20.
+// Clã 72 - Programa 2019/20.
 // Fonte:
 //   T1: Programa CLA 72 2019-2020.xlsx (folha Programa T1 2019-2020)
 export default {

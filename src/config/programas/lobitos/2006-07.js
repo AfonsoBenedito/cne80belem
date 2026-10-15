@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2006/07.
+// Alcateia 16 - Programa 2006/07.
 // Fonte:
 //   T1: Programas.doc + Copiar de Programa.xls (folha Iº Trimestre)
 //   T2: Programas.doc + Copiar de Programa.xls (folha Iiº Trimestre)

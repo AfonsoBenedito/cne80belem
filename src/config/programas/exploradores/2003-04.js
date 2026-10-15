@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2003/04.
+// Expedição 17 - Programa 2003/04.
 // Fonte:
 //   T1: relatorio de actividades.doc (programa do 1.º trimestre no Relatório de Atividades 2003/2004)
 //   T2: relatorio de actividades.doc (programa do 2.º trimestre no Relatório de Atividades 2003/2004)

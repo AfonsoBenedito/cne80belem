@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2000/01.
+// Comunidade 9 - Programa 2000/01.
 // Fonte:
 //   T3: Programas 3º trimestre.doc (programa da secção; o documento tem também os programas das equipas Tubarão Branco e Beija-Flor)
 export default {

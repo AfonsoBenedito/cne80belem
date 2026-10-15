@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 1997/98.
+// Comunidade 9 - Programa 1997/98.
 // Fonte:
 //   T1: Programa da IIIª Secção 1º Trimestre.doc
 //   T2: Programa da IIIª Secção 2º Trimestre.pdf (exportado do .doc)

@@ -13,10 +13,12 @@ import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from 
 // A prova on its own is an A4 portrait page. All of a secção's come as A4 portrait, A4
 // landscape (the text in two columns: one column that wide is too long a line to read) or a
 // booklet of A5 pages, two to an A4 landscape sheet in folding order. One layout serves them
-// all, scaled by `s`.
+// all, scaled by `s`; the type by `t` where it differs: the booklet's pages are 0.82 of A4's,
+// but its text only 0.96 (10pt body), as a Lobito holds it in their hands (at 0.82 the body
+// was 8.6pt and the smallest labels 6.2pt); it runs to a few more pages instead
 const A4 = { w: 210, h: 297, margin: 22, s: 1, cols: 1 };
 const A4_LANDSCAPE = { w: 297, h: 210, margin: 20, s: 1, cols: 2 };
-const A5 = { w: 148.5, h: 210, margin: 15, s: 0.82, cols: 1 };
+const A5 = { w: 148.5, h: 210, margin: 15, s: 0.82, t: 0.96, cols: 1 };
 const COL_GAP = 12;
 
 const BLACK = [26, 26, 26];
@@ -94,7 +96,7 @@ function setText(doc, size, style = 'normal', color = BLACK) {
 
 // Pages are recorded as lists of drawing steps and drawn afterwards at an x offset: the
 // booklet only knows where a page sits on its sheet once every page exists. Sizes given to it
-// are A4's; `g.s` scales the fonts to the page.
+// are A4's; `g.t` (or `g.s`) scales the fonts to the page.
 function recorder(doc, g) {
   const pages = [[]];
   let ops = pages[0];
@@ -105,6 +107,15 @@ function recorder(doc, g) {
       ops = [];
       pages.push(ops);
     },
+    // Where the drawing has got to, and back to there (a prova tried in a column, and undone)
+    mark() {
+      return { pages: pages.length, ops: ops.length };
+    },
+    rollback(m) {
+      pages.length = m.pages;
+      ops = pages[m.pages - 1];
+      ops.length = m.ops;
+    },
     // Draws onto an earlier page (the cover, the footers), then carries on where it was
     onto(page, fn) {
       const was = ops;
@@ -114,7 +125,7 @@ function recorder(doc, g) {
     },
     text(str, x, y, size, style, color, opts) {
       push((ox) => {
-        setText(doc, size * g.s, style, color);
+        setText(doc, size * (g.t ?? g.s), style, color);
         doc.text(str, ox + x, y, opts);
       });
     },
@@ -166,12 +177,12 @@ function recorder(doc, g) {
     },
     // Wraps at the size the text will be drawn at
     split(str, width, size, style = 'normal') {
-      setText(doc, size * g.s, style);
+      setText(doc, size * (g.t ?? g.s), style);
       return doc.splitTextToSize(str, width);
     },
     // How wide a line is at the size it will be drawn at
     width(str, size, style = 'normal') {
-      setText(doc, size * g.s, style);
+      setText(doc, size * (g.t ?? g.s), style);
       return doc.getTextWidth(str);
     },
   };
@@ -182,48 +193,58 @@ function band(draw, g, section) {
 }
 
 // Lays one prova out on the current (empty) page and the ones it needs after it; returns the
-// index of its first page. `header` adds the secção, the group and "Prova N de total": the
-// booklet has them, a prova on its own is just its title
-function layoutProva(draw, g, { seccao, prova, section, total, header, media }) {
+// index of its first page and where it ended (`col`, and that page's `colTop`). `header` adds the
+// secção, the group and "Prova N de total": the booklet has them, a prova on its own is just its
+// title. `at` starts it in a later column of the current page instead (the landscape layout's
+// right column, left empty by the prova before), its title at the column's width
+function layoutProva(draw, g, { seccao, prova, section, total, header, media, at }) {
   const { s, margin: M } = g;
+  // Text sizes in mm (a line's height, its ascent) follow the type's scale, not the page's
+  const ts = g.t ?? s;
   const textW = g.w - M * 2;
   const bottom = g.h - 24 * s;
   const ink = hexToRgb(section.ink);
-  const lh = BODY * s * PT * 1.55;
-  const asc = (size) => size * s * PT * 0.8;
+  const lh = BODY * ts * PT * 1.55;
+  const asc = (size) => size * ts * PT * 0.8;
   const first = draw.pages.length - 1;
   // The text flows down each column, then onto the next page; the title spans them all
   const colW = (textW - COL_GAP * (g.cols - 1)) / g.cols;
-  let col = 0;
+  let col = at?.col ?? 0;
   let colTop;
   const left = () => M + col * (colW + COL_GAP);
-  let y = M + 4 * s;
+  let y = at?.y ?? M + 4 * s;
+  // Started in a later column, the title is that column's; on its own page it spans them all
+  const titleX = left();
+  const titleW = at ? colW : textW;
 
-  band(draw, g, section);
+  if (!at) band(draw, g, section);
 
   if (header) {
-    draw.text(`PROVAS DOS ${shortNameOf(section).toUpperCase()}  ·  ${prova.group.toUpperCase()}`, M, y, 8, 'bold', GRAY, { charSpace: 0.4 * s });
+    draw.text(`PROVAS DOS ${shortNameOf(section).toUpperCase()}  ·  ${prova.group.toUpperCase()}`, titleX, y, 8, 'bold', GRAY, { charSpace: 0.4 * s, maxWidth: titleW });
     y += 6 * s + asc(24);
   } else {
     y += 4 * s;
   }
-  const titleLines = draw.split(prova.title, textW, 24, 'bold');
-  draw.text(titleLines, M, y, 24, 'bold', BLACK, { lineHeightFactor: 1.15 });
-  y += (titleLines.length - 1) * 24 * s * PT * 1.15;
+  const titleLines = draw.split(prova.title, titleW, 24, 'bold');
+  draw.text(titleLines, titleX, y, 24, 'bold', BLACK, { lineHeightFactor: 1.15 });
+  y += (titleLines.length - 1) * 24 * ts * PT * 1.15;
   if (header) {
     y += 8 * s;
-    draw.text(`Prova ${prova.n} de ${total}`, M, y, 9.5, 'normal', GRAY);
+    draw.text(`Prova ${prova.n} de ${total}`, titleX, y, 9.5, 'normal', GRAY);
     y += 6 * s;
   } else {
     y += 7 * s;
   }
-  draw.line(M, y, M + 18 * s, y, hexToRgb(section.color), 0.8 * s);
+  draw.line(titleX, y, titleX + 18 * s, y, hexToRgb(section.color), 0.8 * s);
   y += 12 * s;
   colTop = y;
 
-  // Continuation pages carry the title small, so a loose sheet still says what it is
+  // Continuation pages carry the title small, so a loose sheet still says what it is.
+  // `alone`: a prova started in a column (`at`) had nothing but its title fit there
+  let alone = false;
   const room = (h) => {
     if (y + h <= bottom) return;
+    if (at && y === colTop && draw.pages.length - 1 === first) alone = true;
     if (col < g.cols - 1) {
       col += 1;
       y = colTop;
@@ -238,7 +259,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
   };
 
   // Heights of the picture blocks, for keeping a heading with them
-  const NAME_LINE = 8.5 * s * PT * 1.25;
+  const NAME_LINE = 8.5 * ts * PT * 1.25;
   const FUNCAO_ROW = 13 * s + 4 * s + NAME_LINE * 2;
   const PROGRESSO_H = 16 * s + 4 * s + NAME_LINE * 2 + 6 * s + 32 * s + 10 * s;
   const LABEL_H = 7 * s;
@@ -246,20 +267,29 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
 
   const content = getProvaContent(seccao, prova.slug);
   if (!content) {
-    // Same wording as the page
-    const note = draw.split('Ainda estamos a escrever o texto desta prova. Até lá, fala com o teu Chefe.', textW - 6 * s, BODY);
-    draw.rect(M, y - 4 * s, 1.2 * s, 12 * s + note.length * lh, hexToRgb(section.color));
-    draw.text('Texto em preparação', M + 6 * s, y + 1 * s, 12, 'bold', BLACK);
-    draw.text(note, M + 6 * s, y + 8 * s, BODY, 'normal', GRAY, { lineHeightFactor: 1.55 });
-    return first;
+    // Same wording as the page; in its column, so the next prova can take the one beside it
+    const note = draw.split('Ainda estamos a escrever o texto desta prova. Até lá, fala com o teu Chefe.', colW - 6 * s, BODY);
+    draw.rect(left(), y - 4 * s, 1.2 * s, 12 * s + note.length * lh, hexToRgb(section.color));
+    draw.text('Texto em preparação', left() + 6 * s, y + 1 * s, 12, 'bold', BLACK);
+    draw.text(note, left() + 6 * s, y + 8 * s, BODY, 'normal', GRAY, { lineHeightFactor: 1.55 });
+    return { first, col, colTop, alone };
   }
 
   for (const sec of content.sections) {
     if (sec.heading) {
       const lines = draw.split(sec.heading, colW, 12.5, 'bold');
-      const h = lines.length * 12.5 * s * PT * 1.25;
+      const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A short list of words (Caçadas e Covil: up to four) reads only whole: its heading asks for
+      // room for the lead and every word, so it never splits across a page or a column; a longer
+      // one (the Palavras dos nós) for its lead and first two words, so they're never apart
+      if (sec.terms) {
+        const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
+        const kept = sec.terms.length <= 4 ? sec.terms : sec.terms.slice(0, 2);
+        const terms = kept.reduce((t, w) => t + draw.split(w.text, colW - draw.width(w.term, BODY, 'bold') - 1.5 * s, BODY).length * lh, 0);
+        if (h + 3 * s + lead + terms <= bottom - colTop) keep = lead + terms + 2 * s;
+      }
       // A chain of steps (the Lobitismo's Alcateia → CNE) is short and reads only whole: its
       // heading asks for room for the whole section, lead and every step
       if (sec.steps && !sec.steps[0].label) {
@@ -271,8 +301,8 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       // A recited prayer is kept whole (below), so its heading asks for room for all of it
       const first = g.cols === 1 && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
       if (first && first.kind === 'p' && first.lines.length > 1) {
-        const rh = 11.5 * s * PT * 1.4;
-        const whole = first.lines.reduce((t, line) => t + draw.split(line, colW - 1.25 * 11.5 * s * PT, 11.5).length * rh, 0);
+        const rh = 11.5 * ts * PT * 1.4;
+        const whole = first.lines.reduce((t, line) => t + draw.split(line, colW - 1.25 * 11.5 * ts * PT, 11.5).length * rh, 0);
         if (h + 3 * s + whole <= bottom - colTop) keep = whole;
       }
       room(h + 3 * s + keep);
@@ -316,8 +346,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         for (let i = 0; i < g.length; i += n) rows.push(g.slice(i, i + n));
       }
       rows.forEach((row, r) => {
-        const names = row.map((f) => (f.name ? draw.split(f.name, cellW - 3 * s, 8.5, 'bold') : []));
-        const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * s * PT * 1.25;
+        // A name wider than its cell breaks after its hyphen ("Guarda- / Material"), not inside a
+        // word ("Guarda-Materi / al"): the lines only break at spaces
+        const nameW = cellW - 3 * s;
+        const fit = (name) => name.split(' ').map((w) => (draw.width(w, 8.5, 'bold') > nameW ? w.replace(/-(?=\S)/g, '- ') : w)).join(' ');
+        const names = row.map((f) => (f.name ? draw.split(fit(f.name), nameW, 8.5, 'bold') : []));
+        const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * ts * PT * 1.25;
         // A group's own heading (the Posições), as on the page, kept with its first row
         const heading = row[0].groupHeading && rows[r - 1]?.[0].group !== row[0].group ? row[0].groupHeading : null;
         room(rowH + (heading ? LABEL_H : 0));
@@ -384,7 +418,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const crossH = 11 * s;
       const crossRows = dirigentes.cruzes.map((c) => {
         const who = draw.split(c.who, colW - crossH - 6 * s, 8.5);
-        return { c, who, rowH: Math.max(crossH, 10.5 * s * PT * 1.3 + who.length * 8.5 * s * PT * 1.35) };
+        return { c, who, rowH: Math.max(crossH, 10.5 * ts * PT * 1.3 + who.length * 8.5 * ts * PT * 1.35) };
       });
       // The three crosses are one small table: kept together with their label, so the last one
       // is never left alone on a page
@@ -396,7 +430,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         if (img) draw.image(img.data, left(), y, crossH, crossH, 'JPEG');
         const tx = left() + crossH + 6 * s;
         draw.text(c.name, tx, y + asc(10.5) + 1 * s, 10.5, 'bold', BLACK);
-        draw.text(who, tx, y + 10.5 * s * PT * 1.3 + asc(8.5) + 1 * s, 8.5, 'normal', GRAY, { lineHeightFactor: 1.35 });
+        draw.text(who, tx, y + 10.5 * ts * PT * 1.3 + asc(8.5) + 1 * s, 8.5, 'normal', GRAY, { lineHeightFactor: 1.35 });
         y += rowH + 4 * s;
       }
       y += 2 * s;
@@ -404,14 +438,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     // A recited section (the content's `recite`) is set larger, as on the page. 11.5pt: a step up
     // from the prose, and the Lobitos' three prayers still fit one A4 page
     const size = sec.recite ? 11.5 : BODY;
-    const lineH = sec.recite ? size * s * PT * 1.4 : lh;
+    const lineH = sec.recite ? size * ts * PT * 1.4 : lh;
     const blocks = sec.text ? toBlocks(sec.text) : [];
     // The prova's question to the scout (the Livro da Selva's), as on the page: bold, a step larger
     if (sec.lead) {
       const lines = draw.split(sec.lead, colW, 12, 'bold');
-      room(lines.length * 12 * s * PT * 1.35 + lh * 2);
+      room(lines.length * 12 * ts * PT * 1.35 + lh * 2);
       draw.text(lines, left(), y + asc(12), 12, 'bold', BLACK, { lineHeightFactor: 1.35 });
-      y += lines.length * 12 * s * PT * 1.35 + 2 * s;
+      y += lines.length * 12 * ts * PT * 1.35 + 2 * s;
     }
     // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
     // picture on the right of the text's first line, the text narrower to make room
@@ -460,7 +494,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       } else if (block.kind === 'p') {
         // Several lines (a prayer): a wrapped part sits indented under its line
         const verse = block.lines.length > 1;
-        const hang = verse ? 1.25 * size * s * PT : 0;
+        const hang = verse ? 1.25 * size * ts * PT : 0;
         // On a one-column page, a recited prayer that fits a page is never split: it moves whole to
         // the next page rather than leaving its last lines ("…da nossa morte. / Ámen.") on one of
         // their own. Two columns (the landscape layout) let it run on into the next, on the same page
@@ -501,7 +535,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
           const note = sec.notes?.[i];
           if (note) {
             const noteSize = BODY - 1;
-            const noteH = noteSize * s * PT * 1.5;
+            const noteH = noteSize * ts * PT * 1.5;
             const noteIn = indent + 2 * s;
             y += 1 * s;
             for (const w of draw.split(note, textW - noteIn, noteSize)) {
@@ -531,14 +565,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         y += 1 * s;
         // The diagram and its caption move together, never a caption alone atop a page
         const captionLines = item.caption ? draw.split(item.caption, w, 8.5) : [];
-        room(h + 2 * s + captionLines.length * 8.5 * s * PT * 1.4);
+        room(h + 2 * s + captionLines.length * 8.5 * ts * PT * 1.4);
         draw.image(img.data, left(), y, w, h, 'JPEG');
         y += h + 2 * s;
         // Its caption of ours (the nó direito's step order), smaller and gray, under it
         if (captionLines.length) {
           for (const line of captionLines) {
             draw.text(line, left(), y + asc(8.5), 8.5, 'normal', GRAY);
-            y += 8.5 * s * PT * 1.4;
+            y += 8.5 * ts * PT * 1.4;
           }
           y += 1 * s;
         }
@@ -566,10 +600,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     }
     // Words and what they mean (Caçadas, Covil): the word bold in the secção's ink, its meaning
     if (sec.terms) {
-      for (const t of sec.terms) {
+      const termLines = sec.terms.map((t) => draw.split(t.text, colW - draw.width(t.term, BODY, 'bold') - 1.5 * s, BODY).length);
+      for (const [k, t] of sec.terms.entries()) {
         const tw = draw.width(t.term, BODY, 'bold') + 1.5 * s;
         const rest = draw.split(t.text, colW - tw, BODY);
-        room(lh * rest.length);
+        // Never one word alone at a column's foot or head: the first two go together, and the
+        // last two (a list of four or fewer moves whole, with its heading, above)
+        const pair = k === 0 || k === sec.terms.length - 2 ? termLines[k + 1] ?? 0 : 0;
+        room(lh * (rest.length + pair));
         draw.text(t.term, left(), y + asc(BODY), BODY, 'bold', ink);
         rest.forEach((line) => {
           draw.text(line, left() + tw, y + asc(BODY), BODY, 'normal', BLACK);
@@ -591,7 +629,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
       const cellW = pairs ? (colW - gutter) / 2 : colW;
       // In pairs a step smaller and tighter (9.5pt), as the manual sets them, so the ten fit
       const size = pairs ? 9.5 : BODY;
-      const rowLh = pairs ? size * s * PT * 1.42 : lh;
+      const rowLh = pairs ? size * ts * PT * 1.42 : lh;
       const tw = cellW - box - gap;
       // The name's line is shorter by the name; the rest wrap at the full width
       const measure = (c) => {
@@ -666,7 +704,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     // A recited section gets a wider pause before the next one, as on the page
     y += (sec.recite ? 6 : 4) * s;
   }
-  return first;
+  return { first, col, colTop, alone };
 }
 
 function footer(draw, g, page, { logo, label }) {
@@ -675,7 +713,7 @@ function footer(draw, g, page, { logo, label }) {
   draw.onto(page, () => {
     draw.line(M, y - 5 * s, g.w - M, y - 5 * s, GRAY_LIGHT, 0.25);
     draw.image(logo, M, y - 3.4 * s, 5 * s);
-    draw.text('Agrupamento 80 — Santa Maria de Belém', M + (logo ? 7 * s : 0), y, 7.5, 'bold', GRAY);
+    draw.text('Agrupamento 80 - Santa Maria de Belém', M + (logo ? 7 * s : 0), y, 7.5, 'bold', GRAY);
     if (label) draw.text(label, g.w - M, y, 7.5, 'normal', GRAY, { align: 'right' });
   });
 }
@@ -683,7 +721,7 @@ function footer(draw, g, page, { logo, label }) {
 async function newDoc(title, orientation) {
   const doc = new jsPDF({ orientation, unit: 'mm', format: 'a4' });
   await registerNunito(doc);
-  doc.setProperties({ title, author: 'Agrupamento 80 — Santa Maria de Belém' });
+  doc.setProperties({ title, author: 'Agrupamento 80 - Santa Maria de Belém' });
   // Screen readers and copied text use it (jsPDF knows "pt", not "pt-PT")
   doc.setLanguage('pt');
   return doc;
@@ -709,6 +747,8 @@ export async function generateProvaPdf(seccao, slug) {
 // page the title sits on the left half and the list on the right
 function layoutCover(draw, g, { section, all, starts, logo, links }) {
   const { s, margin: M } = g;
+  // Text sizes in mm (a line's height, its ascent) follow the type's scale, not the page's
+  const ts = g.t ?? s;
   const wide = g.w > g.h;
   const headW = wide ? g.w / 2 - M - COL_GAP : g.w - M * 2;
   const ink = hexToRgb(section.ink);
@@ -721,7 +761,7 @@ function layoutCover(draw, g, { section, all, starts, logo, links }) {
   const title = draw.split(`Provas dos ${shortNameOf(section)}`, headW, 32, 'bold');
   y += 14 * s;
   draw.text(title, M, y, 32, 'bold', BLACK, { lineHeightFactor: 1.1 });
-  y += (title.length - 1) * 32 * s * PT * 1.1 + 9 * s;
+  y += (title.length - 1) * 32 * ts * PT * 1.1 + 9 * s;
   draw.text('Os passos até à tua Promessa', M, y, 11, 'normal', GRAY);
   y += 8 * s;
   draw.line(M, y, M + 18 * s, y, hexToRgb(section.color), 0.8 * s);
@@ -780,9 +820,23 @@ export async function generateAllProvasPdf(seccao, format = 'booklet') {
   // Page 1 is the cover, filled in once the provas' page numbers are known
   const draw = recorder(doc, g);
   const starts = {};
+  // In two columns (the landscape layout), a prova that ends in the left one leaves the right
+  // one to the next, which starts there, under the first's title if they share its first page
+  let end = null;
   for (const prova of all) {
-    draw.newPage();
-    starts[prova.slug] = layoutProva(draw, g, { seccao, prova, section, total: all.length, header: true, media }) + 1;
+    const at = end && end.col < g.cols - 1 ? { col: end.col + 1, y: end.colTop } : null;
+    const opts = { seccao, prova, section, total: all.length, header: true, media };
+    const mark = draw.mark();
+    if (!at) draw.newPage();
+    end = layoutProva(draw, g, { ...opts, at });
+    // Only its title fit in the column (the posters of the Uniforme are taller): undone, and
+    // laid out on a page of its own instead, so a title never stands alone
+    if (end.alone) {
+      draw.rollback(mark);
+      draw.newPage();
+      end = layoutProva(draw, g, opts);
+    }
+    starts[prova.slug] = end.first + 1;
   }
   // Folded, the pages aren't in the file's order, so links and bookmarks would land wrong
   draw.onto(draw.pages[0], () => layoutCover(draw, g, { section, all, starts, logo, links: !booklet }));

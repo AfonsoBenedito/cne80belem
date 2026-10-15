@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2024/25.
+// Alcateia 16 - Programa 2024/25.
 // Fonte:
 //   T1: Livro Unidade_ALC.xlsx (folha Programa 1º Trimestre)
 //   T2: Livro Unidade_ALC.xlsx (folha Programa 2º Trimestre)

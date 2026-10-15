@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2015/16.
+// Comunidade 9 - Programa 2015/16.
 // Fonte:
 //   T1: Programa PIO 2015-2016.xlsx (folha Programa T1 2015-2016)
 //   T2: Programa PIO 2015-2016.xlsx (folha Programa T2 2015-2016)

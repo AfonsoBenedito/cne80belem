@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2019/20.
+// Expedição 17 - Programa 2019/20.
 // Fonte:
 //   T1: Programa EXP 2019-2020.xlsx (folha EXP T1 2019-2020)
 //   T2: Programa EXP 2019-2020.xlsx (folha EXP T2 2019-2020)

@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2016/17.
+// Alcateia 16 - Programa 2016/17.
 // Fonte:
 //   T1: Programa LOB 2016-2017 T1.pdf
 //   T2: Programa LOB 2016-2017 T2.pdf

@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2013/14.
+// Alcateia 16 - Programa 2013/14.
 // Fonte:
 //   T1: 1º Trimestre 2013-2014.xlsx
 //   T2: 2º Trimestre 2013-2014.xlsx

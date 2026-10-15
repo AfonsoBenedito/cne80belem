@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2021/22.
+// Expedição 17 - Programa 2021/22.
 // Fonte:
 //   T1: Programa.xlsx (folha 1 Trimestre)
 //   T2: Programa.xlsx (folha 2 Trimestre: planos das quatro patrulhas)

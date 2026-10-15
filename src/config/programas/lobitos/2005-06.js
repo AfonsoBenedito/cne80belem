@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2005/06.
+// Alcateia 16 - Programa 2005/06.
 // Fonte:
 //   T1: Programa 1º trimestre 04-05.doc (na pasta 2004-2005; as datas e o rodapé são de 2005/2006)
 //   T2: programa.doc (IIº Trimestre)

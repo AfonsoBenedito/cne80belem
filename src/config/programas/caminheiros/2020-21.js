@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2020/21.
+// Clã 72 - Programa 2020/21.
 // Fonte:
 //   T1: Programa CLA 72 2020-2021.xlsx (folha Programa T1 2020-2021)
 //   T2: Programa CLA 72 2020-2021.xlsx (folha Programa T2 2020-2021)

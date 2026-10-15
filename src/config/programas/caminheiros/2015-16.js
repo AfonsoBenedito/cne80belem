@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2015/16.
+// Clã 72 - Programa 2015/16.
 // Fonte:
 //   T1: Programa CLA T1 2015-2016.xlsx (folha Programa T1 2015-2016)
 //   T2: Programa CLA T2 2015-2016.xlsx (folha Folha1)

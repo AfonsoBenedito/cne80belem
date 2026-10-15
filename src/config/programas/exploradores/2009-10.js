@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2009/10.
+// Expedição 17 - Programa 2009/10.
 // Fonte:
 //   T1: Programa_1trimestre.xls
 //   T2: Programa_2trimestre.pdf

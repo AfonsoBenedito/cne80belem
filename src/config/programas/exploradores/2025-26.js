@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2025/26.
+// Expedição 17 - Programa 2025/26.
 // Fonte:
 //   T1: Livro Unidade_Expedição 2025-2026.xlsx (folha Programa 1º Trimestre)
 //   T2: Livro Unidade_Expedição 2025-2026.xlsx (folha Programa 2º Trimestre)

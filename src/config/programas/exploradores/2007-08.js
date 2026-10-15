@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2007/08.
+// Expedição 17 - Programa 2007/08.
 // Fonte:
 //   T1: Programa II ª Secção 2007-2008(1).xls (folha 1º Trimestre)
 //   T2: Programa II ª Secção 2007-2008(1).xls (folha 2º Trimestre)

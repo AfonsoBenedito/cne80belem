@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2017/18.
+// Comunidade 9 - Programa 2017/18.
 // Fonte:
 //   T1: Comunidade 9 - Programa (2017-2018).xlsx (folha Programa T1 2017-2018)
 //   T2: 03 PIO Relatório Atividades 2017-2018.docx

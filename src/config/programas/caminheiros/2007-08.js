@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2007/08.
+// Clã 72 - Programa 2007/08.
 // Fonte:
 //   T2: 2º TRIMESTRE 2007_clã.doc
 export default {

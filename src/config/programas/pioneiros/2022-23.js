@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2022/23.
+// Comunidade 9 - Programa 2022/23.
 // Fonte:
 //   T1: Programa PIO 2022-2023.xlsx (folha Programa do 1º Trimestre)
 //   T2: Programa PIO 2022-2023.xlsx (folha Programa do 2º Trimestre)

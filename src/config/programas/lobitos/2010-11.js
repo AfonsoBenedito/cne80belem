@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2010/11.
+// Alcateia 16 - Programa 2010/11.
 // Fonte:
 //   T3: Programa 3º Trimestre - Alcateia 16.pdf
 export default {

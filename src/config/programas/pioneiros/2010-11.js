@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2010/11.
+// Comunidade 9 - Programa 2010/11.
 // Fonte:
 //   T1: Relatorio de Actividade 1º Trimestre - Comunidade - 2010 - 2011.pdf
 //   T2: Programa 2º Trimestre Aprovado .xls

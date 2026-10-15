@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2021/22.
+// Alcateia 16 - Programa 2021/22.
 // Fonte:
 //   T1: Programa Alcateia 16 - 2021-2022.xlsx (folha Programa T1 2021-2022)
 //   T2: Programa Alcateia 16 - 2021-2022.xlsx (folha Programa T2 2021-2022)

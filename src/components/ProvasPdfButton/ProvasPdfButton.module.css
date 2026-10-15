@@ -151,9 +151,65 @@
   display: none;
 }
 
+/* The message and, when only a reload can help, its button, on one line while they fit */
+.error:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs) var(--spacing-md);
+}
+
+.errorText {
+  margin: 0;
+  flex: 1 1 16rem;
+}
+
+.reload {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font: inherit;
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--color-green-dark);
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+@media (hover: hover) {
+  .reload:hover {
+    background: var(--color-green-deep);
+  }
+}
+
+.reload:active {
+  transform: scale(0.97);
+}
+
+.reload:focus-visible {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 2px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .button:active,
-  .option:active {
+  .option:active,
+  .reload:active {
     transform: none;
   }
 
@@ -174,7 +230,8 @@
 
 @media (pointer: coarse) {
   .button,
-  .option {
+  .option,
+  .reload {
     min-height: 44px;
   }
 }

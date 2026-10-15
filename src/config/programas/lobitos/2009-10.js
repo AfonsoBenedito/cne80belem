@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2009/10.
+// Alcateia 16 - Programa 2009/10.
 // Fonte:
 //   T1: Programa do 1º Trimestre 2009-2010.xls
 //   T2: Programa 2º Trimestre + Relação objectivos-actividades.xlsx

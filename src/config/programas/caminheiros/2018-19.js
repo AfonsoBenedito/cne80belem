@@ -1,4 +1,4 @@
-// Clã 72 — Programa 2018/19.
+// Clã 72 - Programa 2018/19.
 // Fonte:
 //   T1: Programa CLA T1 2018-2019.xlsx (folha Programa T1 2018-2019)
 //   T2: Programa CLA T1 2018-2019.xlsx (folha Programa T2 2018-2019)

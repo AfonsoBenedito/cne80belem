@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2020/21.
+// Expedição 17 - Programa 2020/21.
 // Fonte:
 //   T1: Relatório Atividades Expedição 2020-2021 VF.docx (tabela de atividades)
 //   T2: Relatório Atividades Expedição 2020-2021 VF.docx (tabela de atividades)

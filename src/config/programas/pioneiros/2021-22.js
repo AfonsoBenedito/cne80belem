@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2021/22.
+// Comunidade 9 - Programa 2021/22.
 // Fonte:
 //   T1: Relatório atividades PIO 9_versãofinal.docx (2021-2022)
 //   T2: Relatório atividades PIO 9_versãofinal.docx (2021-2022)

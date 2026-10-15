@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2018/19.
+// Expedição 17 - Programa 2018/19.
 // Fonte:
 //   T1: Programa EXP 2018-2019.xlsx (folha EXP T1 2018-2019)
 //   T2: Programa EXP 2018-2019.xlsx (folha EXP T2 2018-2019)

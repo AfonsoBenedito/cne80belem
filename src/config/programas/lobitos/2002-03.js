@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2002/03.
+// Alcateia 16 - Programa 2002/03.
 // Fonte:
 //   T1: Programa 1º trimestre 02-03.doc
 //   T2: Programa 2º trimestre 02-03.doc

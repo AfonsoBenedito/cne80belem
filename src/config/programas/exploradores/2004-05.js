@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2004/05.
+// Expedição 17 - Programa 2004/05.
 // Fonte:
 //   T1: Programa 1º trimestre 2004-2005.doc
 export default {

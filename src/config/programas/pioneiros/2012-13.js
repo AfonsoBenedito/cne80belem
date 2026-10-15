@@ -1,4 +1,4 @@
-// Comunidade 9 — Programa 2012/13.
+// Comunidade 9 - Programa 2012/13.
 // Fonte:
 //   T1: Programa PIO T1 2012-2013.pdf
 //   T2: Programa PIO T2 2012-2013.pdf

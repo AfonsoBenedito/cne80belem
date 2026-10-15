@@ -1,4 +1,4 @@
-// Expedição 17 — Programa 2024/25.
+// Expedição 17 - Programa 2024/25.
 // Fonte:
 //   T1: Programa_1trimestre.xlsx
 export default {

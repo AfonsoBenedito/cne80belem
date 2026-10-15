@@ -1,4 +1,4 @@
-// Alcateia 16 — Programa 2015/16.
+// Alcateia 16 - Programa 2015/16.
 // Fonte:
 //   T1: LOB - Relatório Atividades 2015-2016.pdf (quadro de atividades)
 //   T2: LOB - Relatório Atividades 2015-2016.pdf (quadro de atividades)
