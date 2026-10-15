@@ -436,7 +436,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     };
     blocks.forEach((block, bi) => {
       const textW = draw.pages.length === asidePage && y < asideTop + asideH ? besideW : colW;
-      if (sec.headingMedia && leadsList(blocks, bi)) {
+      if (block.kind === 'h') {
+        // A sub-heading inside the text ("### "), as on the page: bold, a step above its
+        // paragraph, kept with its first lines
+        y += bi ? 1.5 * s : 0;
+        room(lh * 3);
+        draw.text(block.lines[0], left(), y + asc(BODY), BODY, 'bold', BLACK);
+        y += lh;
+      } else if (sec.headingMedia && leadsList(blocks, bi)) {
         // A cargo's list label ("Ao Guia compete:"), as on the page: bold, in the secção's ink,
         // smaller, kept with the list's first item
         room(lineH * 3);
@@ -501,7 +508,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         });
       }
       // A recited line that leads into a list sits as close to it as the list's own items
-      y += ((sec.recite || sec.headingMedia) && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
+      y += block.kind === 'h' ? 0.5 * s : ((sec.recite || sec.headingMedia) && block.kind === 'p' && blocks[bi + 1] && blocks[bi + 1].kind !== 'p' ? 1.5 : 3.5) * s;
     });
     // Colours with their names (the Bandos), as on the page: a round swatch, edged so the white
     // one shows, its name beside it, on one row that wraps

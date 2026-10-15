@@ -122,7 +122,10 @@ const ratio = (f) => (f.w ? { '--ratio': f.w / f.h } : undefined);
 // in the photo viewer, as the uniform posters do
 function Badges({ items, seccao, title }) {
   const [viewer, setViewer] = useState(null);
-  const drawings = items.filter((f) => f.large);
+  // A drawing smaller than the viewer would show it (`zoom: false`, the S. Francisco cartoons)
+  // stays a plain picture: the viewer would only set it on black at the size it already has
+  const zoomable = (f) => f.large && f.zoom !== false;
+  const drawings = items.filter(zoomable);
   const groups = [];
   for (const item of items) {
     const last = groups[groups.length - 1];
@@ -155,7 +158,7 @@ function Badges({ items, seccao, title }) {
                   <img src={f.src} alt="" className={styles.funcaoImg} />
                   <span className={styles.srOnly}>{f.name}</span>
                 </a>
-              ) : f.large ? (
+              ) : zoomable(f) ? (
                   <>
                     {/* Stretched over the whole tile; the name below stays plain text */}
                     <button
