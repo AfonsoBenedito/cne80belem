@@ -21,6 +21,9 @@ import cozinheiro from '../assets/images/distintivos/funcao/cozinheiro.jpg';
 import socorrista from '../assets/images/distintivos/funcao/socorrista.jpg';
 import animador from '../assets/images/distintivos/funcao/animador.jpg';
 import relacoesPublicas from '../assets/images/distintivos/funcao/relacoes-publicas.jpg';
+import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
+import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
+import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
 
 // w × h of each file, so the two posters can share one height before they load
 export const uniformes = {
@@ -110,6 +113,12 @@ export const badges = {
   ],
   // The Cargos prova: each badge alone, beside its cargo's text (the heading names it), at the
   // grid's badge size (`small`): the cargo scans are only 60px
+  // The Lobitos' Manual de Adesão's drawings of S. Francisco de Assis, one beside each part of
+  // his prova (`large`: set as drawings; `zoom: false`: 166–294px wide, so not opened in the
+  // viewer, which would show them no bigger; w × h kept, as the saudação's)
+  sfPatrono: () => [{ name: null, src: sfPatrono, w: 166, h: 378, large: true, zoom: false, alt: 'S. Francisco de Assis, em desenho: de hábito castanho, cordão à cintura e sandálias, com um passarinho na cabeça' }],
+  sfCrianca: () => [{ name: null, src: sfCrianca, w: 294, h: 418, large: true, zoom: false, alt: 'Francisco em criança, em desenho: de braços abertos e a sorrir, com uma túnica castanha remendada' }],
+  sfLobo: () => [{ name: null, src: sfLobo, w: 225, h: 225, large: true, zoom: false, alt: 'S. Francisco e o lobo de Gúbio, em desenho, lado a lado e de braços abertos' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },

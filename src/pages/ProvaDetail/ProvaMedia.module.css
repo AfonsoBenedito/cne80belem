@@ -216,6 +216,12 @@
 
 /* The sign itself, alone beside its text: the one thing the scout copies with their own hand,
    so it is set by its height, larger than any badge */
+/* A lone drawing keeps the lone tile's own width: the drawings' grid (11rem columns, above)
+   would cap a wide one (S. Francisco and the wolf) narrower than its height */
+.funcoesSingle.funcoesLarge {
+  grid-template-columns: minmax(0, auto);
+}
+
 .funcoesSingle.funcoesLarge .funcaoImg {
   height: auto;
   max-height: 13rem;

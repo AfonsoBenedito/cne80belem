@@ -321,6 +321,45 @@
   margin-bottom: 0.75rem;
 }
 
+/* A sub-heading inside a section's text (the "### " lines: S. Francisco's life in its four
+   parts): a step under the section heading, more room above than below, so each part reads
+   as its own beat of the story */
+.textSubheading {
+  margin: var(--spacing-lg) 0 var(--spacing-xs);
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--color-gray-900);
+}
+
+.textSubheading:first-child {
+  margin-top: 0;
+}
+
+/* A lone drawing beside text sits centred in one fixed column, so the text keeps one measure
+   from section to section, whatever each drawing's width (the S. Francisco prova's three) */
+.withMediaAside:has([class*="funcoesLarge"]) {
+  /* 11rem plus its tile's padding and edge: a tall drawing keeps its full 13rem height, a
+     square one (the wolf) comes down to 11rem, and the text keeps about 55 characters a line
+     (at 13rem it was 47) */
+  width: calc(11rem + 2 * var(--spacing-md) + 2px);
+}
+
+.withMediaAside:has([class*="funcoesLarge"]) [class*="funcoesSingle"] {
+  justify-content: center;
+}
+
+/* On phones the drawing sits under its heading, at the text's edge, as any picture there */
+@media (max-width: 600px) {
+  .withMediaAside:has([class*="funcoesLarge"]) {
+    width: auto;
+  }
+
+  .withMediaAside:has([class*="funcoesLarge"]) [class*="funcoesSingle"] {
+    justify-content: start;
+  }
+}
+
 .paragraph {
   font-size: var(--font-size-base);
   /* Same rhythm as the lists (1.85 read loose next to them, and on phones) */
@@ -563,6 +602,29 @@
 
 .stepsDated .step:not(:last-child)::after {
   top: 2.1rem;
+}
+
+/* A narrow list (a small phone, or a larger text size: the width is in rem, so it grows with the
+   text) puts each date above its text, the text taking the full width; side by side, a 3.5rem
+   date column left long words ("voluntariamente") wider than what remained */
+.stepsDated {
+  container-type: inline-size;
+}
+
+@container (width < 15rem) {
+  .stepsDated .step {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.1rem;
+  }
+
+  .stepsDated .stepBody {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .stepsDated .step:not(:last-child)::after {
+    content: none;
+  }
 }
 
 /* A recited item that folds its meaning (the Leis e Máximas): the line itself is the control,

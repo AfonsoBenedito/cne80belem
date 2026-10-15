@@ -92,6 +92,13 @@ export default function ProvaDetail() {
         </p>
       );
     }
+    if (block.kind === 'h') {
+      return (
+        <h3 key={j} className={styles.textSubheading}>
+          {block.lines[0]}
+        </h3>
+      );
+    }
     if (block.kind === 'p') {
       return (
         // Several lines (a prayer, a formula): each its own row, a wrapped
