@@ -240,9 +240,18 @@ function Progresso({ seccao }) {
 
 // A prova section's pictures, by its `media` name (provasContent.js): its own chunk, with the
 // images and the photo viewer, so a prova of plain text never downloads them
-export default function ProvaMedia({ media, seccao, title, icon = false }) {
+// A drawing alone, sized by the box it sits in (the Livro da Selva's characters). One that fails
+// to load leaves nothing, so its box gives way to the text instead of holding a broken image
+function Picture({ f }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} onError={() => setFailed(true)} />;
+}
+
+export default function ProvaMedia({ media, seccao, title, icon = false, picture = false }) {
   // A badge set small beside its heading (the Cargos prova): the heading names it, so no alt
   if (icon && badges[media]) return <img src={badges[media](seccao)[0].src} alt="" className={styles.headingIcon} />;
+  if (picture && badges[media]) return <Picture f={badges[media](seccao)[0]} />;
   if (media === 'uniformes') return <Uniformes seccao={seccao} />;
   if (media === 'progresso') return <Progresso seccao={seccao} />;
   if (media === 'dirigentes') return <Dirigentes />;

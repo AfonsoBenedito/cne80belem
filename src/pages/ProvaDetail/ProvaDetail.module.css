@@ -336,6 +336,17 @@
   margin-top: 0;
 }
 
+/* The prova's question to the scout, as the manual sets it under its title: a step larger and
+   bold, the darkest text, so it reads as what the page asks before the text that answers it */
+.lead {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--color-gray-900);
+  text-wrap: balance;
+}
+
 /* A picture under its text (the nós' diagrams), a step below the last paragraph */
 .mediaAfter {
   margin-top: var(--spacing-md);
@@ -519,6 +530,89 @@
   display: inline;
   margin: 0;
   color: var(--color-gray-700);
+}
+
+/* The characters (the Livro da Selva's), as the manual sets them: each one's drawing on the
+   bare page, no frame (the manual's cartoons have none), on the left, then the right, then the
+   left again, so the list reads as the manual's page, not a column of tiles; their text beside
+   it, its first line level with the drawing's top, opening on their name in bold in the
+   secção's ink. A drawing sits in a column one width (8rem), up to 7rem tall, at its own shape */
+.cast {
+  /* Its layout follows its own width (below) */
+  container-type: inline-size;
+  list-style: none;
+  margin: var(--spacing-xl) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.castRow {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--spacing-lg);
+  align-items: start;
+}
+
+/* Every other character's drawing on the right */
+.castRow:nth-child(even) {
+  grid-template-columns: minmax(0, 1fr) 8rem;
+}
+
+.castRow:nth-child(even) .castPicture {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.castRow:nth-child(even) .castText {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.castPicture {
+  display: flex;
+  justify-content: center;
+}
+
+.castPicture img {
+  max-width: 100%;
+  max-height: 7rem;
+  width: auto;
+  height: auto;
+}
+
+.castText {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-gray-700);
+  text-wrap: pretty;
+}
+
+/* The name and its text run on as one sentence, as the manual has them */
+.castName,
+.castRest {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.castName {
+  font-weight: 800;
+}
+
+/* A drawing that couldn't load: its box gives way, the text takes the row */
+.castPicture:empty {
+  display: none;
+}
+
+.castRow:has(.castPicture:empty) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.castRow:has(.castPicture:empty) .castText {
+  grid-column: 1;
 }
 
 /* Steps on one line (the Lobitismo): a dot or a date on a rail in the secção's colour, each
@@ -874,6 +968,41 @@ ol.list {
   }
 }
 
+/* By the list's own width, not the screen's, so a larger text size (whose 8rem column would leave
+   the text beside it a few words wide) gets the same layout as a phone: under 36rem the drawings
+   float, all on the left, the text starting beside the drawing and running on under it at the
+   full width. 5.5rem, so a child knows each face (at 4rem Maugli was 36px wide) */
+@container (max-width: 36rem) {
+  .castRow {
+    display: flow-root;
+  }
+
+  .castPicture {
+    float: left;
+    width: 5.5rem;
+    margin: 0.3rem var(--spacing-md) var(--spacing-xs) 0;
+  }
+
+  .castPicture img {
+    max-height: 5.5rem;
+  }
+
+  /* Beside a float, `pretty` pulled the short lines narrower still */
+  .castText {
+    text-wrap: wrap;
+  }
+}
+
+/* Narrower still (a 360px phone, or large text on one): beside a 5.5rem drawing the text would
+   be two words a line, so the drawing sits over its text instead, at the same size */
+@container (max-width: 18rem) {
+  .castPicture {
+    float: none;
+    justify-content: flex-start;
+    margin: 0 0 var(--spacing-sm);
+  }
+}
+
 @media (max-width: 768px) {
   .hero {
     padding: 2.5rem 0;
@@ -884,10 +1013,12 @@ ol.list {
      ("…em idade.") or a card's title. In px, as the button is: in rem a larger text size doubled
      the clearance and left the text a word per line */
   .paragraph,
+  .lead,
   .list,
   .steps,
   .swatches,
   .terms,
+  .cast,
   .nav {
     padding-right: 48px;
   }

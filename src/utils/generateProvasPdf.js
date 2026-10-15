@@ -66,6 +66,7 @@ async function loadMedia(seccao, list) {
       if (sec.media === 'uniformes') [uniformes[seccao], uniformeDirigentesImg].forEach((u) => urls.add(u.src));
       if (sec.media === 'dirigentes') dirigentes.cruzes.forEach((c) => urls.add(c.src));
       if (badges[sec.media]) badges[sec.media](seccao).forEach((f) => urls.add(f.src));
+      sec.cast?.forEach((c) => badges[c.media]?.(seccao).forEach((f) => urls.add(f.src)));
       if (sec.media === 'progresso') {
         const { etapas, completa } = progresso(seccao);
         etapas.forEach((e) => urls.add(e.src));
@@ -405,6 +406,13 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
     const size = sec.recite ? 11.5 : BODY;
     const lineH = sec.recite ? size * s * PT * 1.4 : lh;
     const blocks = sec.text ? toBlocks(sec.text) : [];
+    // The prova's question to the scout (the Livro da Selva's), as on the page: bold, a step larger
+    if (sec.lead) {
+      const lines = draw.split(sec.lead, colW, 12, 'bold');
+      room(lines.length * 12 * s * PT * 1.35 + lh * 2);
+      draw.text(lines, left(), y + asc(12), 12, 'bold', BLACK, { lineHeightFactor: 1.35 });
+      y += lines.length * 12 * s * PT * 1.35 + 2 * s;
+    }
     // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
     // picture on the right of the text's first line, the text narrower to make room
     const asideItem = sec.text && !sec.mediaAfter && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
@@ -569,6 +577,58 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media }) 
         });
       }
       y += 2 * s;
+    }
+    // The characters (the Livro da Selva's), as on the page and in the manual: each one's drawing
+    // fitted to a box, their text beside it, its first line level with the drawing's top,
+    // opening on their name in bold in the secção's ink. On a full-width page two to a row, the
+    // drawings on the outside (left, then right, as the manual alternates them), so all ten fit
+    // the page under the text, as in the manual; in a narrow column, one to a row, alternating
+    if (sec.cast) {
+      const pairs = colW >= 150 * s;
+      const box = (pairs ? 13 : 18) * s;
+      const gap = (pairs ? 2.5 : 5) * s;
+      const gutter = 5 * s;
+      const cellW = pairs ? (colW - gutter) / 2 : colW;
+      // In pairs a step smaller and tighter (9.5pt), as the manual sets them, so the ten fit
+      const size = pairs ? 9.5 : BODY;
+      const rowLh = pairs ? size * s * PT * 1.42 : lh;
+      const tw = cellW - box - gap;
+      // The name's line is shorter by the name; the rest wrap at the full width
+      const measure = (c) => {
+        const nameW = draw.width(c.name, size, 'bold');
+        const words = c.text.trimStart().split(' ');
+        const lead = c.text.startsWith(' ') ? ' ' : '';
+        let n = 0;
+        while (n < words.length && nameW + draw.width(lead + words.slice(0, n + 1).join(' '), size) <= tw) n++;
+        const rest = n < words.length ? draw.split(words.slice(n).join(' '), tw, size) : [];
+        return { c, nameW, first: lead + words.slice(0, n).join(' '), rest, h: Math.max(box, (1 + rest.length) * rowLh) };
+      };
+      const cell = ({ c, nameW, first, rest }, x, imageRight) => {
+        const f = badges[c.media]?.(seccao)[0];
+        const img = f && media.get(f.src);
+        if (img) {
+          const w = Math.min(box, (box * img.w) / img.h);
+          const h = (w * img.h) / img.w;
+          draw.image(img.data, (imageRight ? x + cellW - box : x) + (box - w) / 2, y, w, h, 'JPEG');
+        }
+        const tx = imageRight ? x : x + box + gap;
+        let ty = y;
+        draw.text(c.name, tx, ty + asc(size), size, 'bold', ink);
+        draw.text(first, tx + nameW, ty + asc(size), size, 'normal', BLACK);
+        for (const line of rest) {
+          ty += rowLh;
+          draw.text(line, tx, ty + asc(size), size, 'normal', BLACK);
+        }
+      };
+      const per = pairs ? 2 : 1;
+      y += (pairs ? 1 : 2) * s;
+      for (let i = 0; i < sec.cast.length; i += per) {
+        const row = sec.cast.slice(i, i + per).map(measure);
+        const rowH = Math.max(...row.map((m) => m.h));
+        room(rowH);
+        row.forEach((m, j) => cell(m, left() + j * (cellW + gutter), pairs ? j === 1 : (i / per) % 2 === 1));
+        y += rowH + (pairs ? 2 : 4) * s;
+      }
     }
     // Steps on one line (the Lobitismo), as on the page: a date or a dot in the secção's ink at
     // the left, a thin rail joining them, each step's name in bold and its text beside it
