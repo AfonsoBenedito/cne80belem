@@ -1,5 +1,6 @@
 import nunitoRegularUrl from '../assets/fonts/Nunito-Regular.ttf';
 import nunitoExtraBoldUrl from '../assets/fonts/Nunito-ExtraBold.ttf';
+import nunitoItalicUrl from '../assets/fonts/Nunito-Italic.ttf';
 
 let fontLoaded = false;
 
@@ -10,6 +11,15 @@ function arrayBufferToBase64(buffer) {
     binary += String.fromCharCode(bytes[i]);
   }
   return btoa(binary);
+}
+
+// Nunito Italic, for titles of works in a prova's text (`*…*`): only fetched and embedded when
+// a PDF has some
+export async function registerNunitoItalic(doc) {
+  if (doc.getFontList()['Nunito']?.includes('italic')) return;
+  const buf = await (await fetch(nunitoItalicUrl)).arrayBuffer();
+  doc.addFileToVFS('Nunito-Italic.ttf', arrayBufferToBase64(buf));
+  doc.addFont('Nunito-Italic.ttf', 'Nunito', 'italic');
 }
 
 export async function registerNunito(doc) {

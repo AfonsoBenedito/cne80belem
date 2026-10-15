@@ -5,7 +5,7 @@ import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
-import { toBlocks, leadsList } from '../../utils/provaBlocks';
+import { toBlocks, leadsList, inlineRuns } from '../../utils/provaBlocks';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import LoadErrorBoundary from '../../components/LoadErrorBoundary/LoadErrorBoundary';
 import styles from './ProvaDetail.module.css';
@@ -80,6 +80,9 @@ export default function ProvaDetail() {
   const prev = allProvas[position - 1] ?? null;
   const next = allProvas[position + 1] ?? null;
 
+  // A line with its titles of works in italics (`*…*`, English ones `*{en}…*`)
+  const inline = (line) => inlineRuns(line).map((r, i) => (r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text));
+
   // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
   // `labels` (the Cargos prova): a line that opens a list ("Ao Guia compete:") is set as its label
   // `notes` (the Leis e Máximas): one per item of the list, what it means, folded under it: the
@@ -105,8 +108,8 @@ export default function ProvaDetail() {
         // part indented under it, so a narrow screen doesn't add lines
         <p key={j} className={styles.paragraph}>
           {block.lines.length > 1
-            ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{line}</span>)
-            : block.lines[0]}
+            ? block.lines.map((line, k) => <span key={k} className={styles.verseLine}>{inline(line)}</span>)
+            : inline(block.lines[0])}
         </p>
       );
     }
@@ -124,7 +127,7 @@ export default function ProvaDetail() {
                 <p className={styles.itemNote}>{notes[k]}</p>
               </details>
             ) : (
-              line
+              inline(line)
             )}
           </li>
         ))}
@@ -369,7 +372,9 @@ export default function ProvaDetail() {
                           </ul>
                         )}
                         {s.terms && (
-                          <dl className={styles.terms}>
+                          // Numbers (the book's parts, I to VI) sit in a column of their own, so
+                          // the texts after them start on one line
+                          <dl className={`${styles.terms} ${s.terms.every((t) => t.term.length <= 4) ? styles.termsNumbered : ''}`}>
                             {s.terms.map((t) => (
                               <div key={t.term} className={styles.termRow}>
                                 <dt className={styles.term} style={{ color: section.ink }}>{t.term}</dt>
@@ -412,7 +417,8 @@ export default function ProvaDetail() {
                                 {st.label && <span className={styles.stepLabel} style={{ color: section.ink }}>{st.label}</span>}
                                 <span className={styles.stepBody}>
                                   {st.title && <span className={styles.stepTitle}>{st.title}</span>}
-                                  {st.text && <span className={styles.stepText}>{st.text}</span>}
+                                  {/* A step can hold more than one paragraph (the book's 1908) */}
+                                  {st.text && st.text.split('\n\n').map((t, n) => <span key={n} className={styles.stepText}>{inline(t)}</span>)}
                                 </span>
                               </li>
                             ))}

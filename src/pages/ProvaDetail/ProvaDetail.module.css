@@ -513,6 +513,8 @@
 }
 
 .list {
+  /* The paragraphs' measure: wider, a list ran past them (about 80 characters on desktop) */
+  max-width: 32rem;
   margin: 0 0 var(--spacing-md);
   padding-left: 1.4em;
   font-size: var(--font-size-base);
@@ -572,6 +574,8 @@
 /* Words and what they mean (Caçadas, Covil): the word bold in the secção's ink, its meaning
    after it, one per row */
 .terms {
+  /* The paragraphs' measure */
+  max-width: 32rem;
   margin: var(--spacing-sm) 0 0;
   display: flex;
   flex-direction: column;
@@ -585,6 +589,18 @@
   line-height: 1.7;
   /* No word left alone on a meaning's last line ("…para fazer o / nó.") */
   text-wrap: pretty;
+}
+
+/* Short terms (numbers): one column for them, the texts aligned after it */
+.termsNumbered .termRow {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+}
+
+.termsNumbered .term,
+.termsNumbered .termText {
+  display: block;
+  margin-right: 0;
 }
 
 .term {
@@ -731,6 +747,8 @@
 
 .stepBody {
   grid-column: 2;
+  /* The paragraphs' measure: at the list's 68ch a step's text ran on to about 80 characters */
+  max-width: 32rem;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -747,6 +765,11 @@
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-gray-700);
+}
+
+/* A step's second paragraph, a paragraph's step below its first */
+.stepText + .stepText {
+  margin-top: var(--spacing-sm);
 }
 
 /* A history: the date is the marker, set large in the secção's ink, the line under it */

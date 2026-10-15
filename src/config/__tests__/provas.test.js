@@ -25,6 +25,19 @@ describe('provasContent', () => {
     }
   });
 
+  // Titles of works are marked *…* (*{en}…* in English); only a section's text and its steps'
+  // texts draw the marks, on the page and in the PDF, so anywhere else they'd show as asterisks
+  it.each(Object.keys(provasContent))('%s marks titles only where they are drawn, in pairs', (key) => {
+    for (const sec of provasContent[key].sections) {
+      const { text, steps, ...rest } = sec;
+      expect(JSON.stringify(rest), `"*" outside a section's text or steps in ${key}`).not.toContain('*');
+      for (const st of steps ?? []) expect(st.title ?? '', `"*" in a step's title in ${key}`).not.toContain('*');
+      for (const t of [text, ...(steps ?? []).map((st) => st.text)].filter(Boolean)) {
+        for (const line of t.split('\n')) expect(line.split('*').length % 2, `unpaired "*" in ${key}: ${line}`).toBe(1);
+      }
+    }
+  });
+
   it('gives a slug the same title in every secção that lists it', () => {
     const slugs = new Set(Object.keys(provas).flatMap(slugsOf));
     for (const slug of slugs) {

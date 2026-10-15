@@ -29,3 +29,20 @@ export function toBlocks(text) {
 // Cargos prova sets it as the list's label, not as a sentence of its own
 export const leadsList = (blocks, i) =>
   blocks[i].kind === 'p' && blocks[i].lines.length === 1 && blocks[i].lines[0].endsWith(':') && blocks[i + 1] && blocks[i + 1].kind !== 'p';
+
+// Inline marks inside a line: *…* is the title of a work, set in italics; *{en}…* the same in
+// English, so a screen reader says it in English (Scouting for Boys). The page draws the runs
+// as <i>, the PDF in Nunito Italic. Only paragraphs, list items and steps read them (a test
+// keeps them out of everything else)
+const INLINE = /\*(\{en\})?([^*]+)\*/g;
+export function inlineRuns(line) {
+  const runs = [];
+  let at = 0;
+  for (const m of line.matchAll(INLINE)) {
+    if (m.index > at) runs.push({ text: line.slice(at, m.index) });
+    runs.push({ text: m[2], italic: true, lang: m[1] ? 'en' : undefined });
+    at = m.index + m[0].length;
+  }
+  if (at < line.length) runs.push({ text: line.slice(at) });
+  return runs;
+}
