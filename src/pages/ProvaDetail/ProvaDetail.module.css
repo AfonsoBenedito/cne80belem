@@ -420,6 +420,151 @@
   margin-top: 0.35rem;
 }
 
+/* Colours with their names (the Bandos): a round swatch, the name beside it, all on one row
+   that wraps. The palest swatch (Branco) carries an edge so it shows on white */
+.swatches {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  margin: var(--spacing-md) 0 0;
+  padding: 0;
+}
+
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.swatchColor {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--color-gray-300);
+}
+
+/* Words and what they mean (Caçadas, Covil): the word bold in the secção's ink, its meaning
+   after it, one per row */
+.terms {
+  margin: var(--spacing-sm) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* Word and meaning run on as one line of text, so a long meaning wraps under both, not onto a
+   line of its own */
+.termRow {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+}
+
+.term {
+  display: inline;
+  margin-right: 0.4em;
+  font-weight: 800;
+}
+
+.termText {
+  display: inline;
+  margin: 0;
+  color: var(--color-gray-700);
+}
+
+/* Steps on one line (the Lobitismo): a dot or a date on a rail in the secção's colour, each
+   step's text beside it. The rail runs from the first marker to the last, so it reads as one
+   path, not a list of separate things */
+.steps {
+  --marker: 0.75rem;
+  --rail-x: calc(var(--marker) / 2);
+  list-style: none;
+  margin: var(--spacing-md) 0 0;
+  padding: 0;
+  max-width: 68ch;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--marker) minmax(0, 1fr);
+  column-gap: var(--spacing-md);
+  padding-bottom: var(--spacing-lg);
+}
+
+.step:last-child {
+  padding-bottom: 0;
+}
+
+/* The marker: a dot, on the line */
+.step::before {
+  content: "";
+  grid-column: 1;
+  grid-row: 1;
+  width: var(--marker);
+  height: var(--marker);
+  margin-top: 0.4em;
+  border-radius: 50%;
+  background: var(--section-ink);
+}
+
+/* The line, from this marker down to the next */
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--rail-x) - 1px);
+  top: calc(0.4em + var(--marker));
+  bottom: 0;
+  width: 2px;
+  background: var(--color-gray-200);
+}
+
+.stepBody {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stepTitle {
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--color-gray-900);
+}
+
+.stepText {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-gray-700);
+}
+
+/* A history: the date is the marker, set large in the secção's ink, the line under it */
+.stepsDated {
+  --marker: 3.5rem;
+  --rail-x: 1.1rem;
+}
+
+.stepsDated .step::before {
+  content: none;
+}
+
+.stepLabel {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepsDated .step:not(:last-child)::after {
+  top: 2.1rem;
+}
+
 /* A recited item that folds its meaning (the Leis e Máximas): the line itself is the control,
    a chevron in the secção's ink after it says it opens; closed by default. The whole row is the
    control, its number too: the box reaches back over the list's 1.4em indent, where the number
@@ -671,6 +816,9 @@ ol.list {
      the clearance and left the text a word per line */
   .paragraph,
   .list,
+  .steps,
+  .swatches,
+  .terms,
   .nav {
     padding-right: 48px;
   }

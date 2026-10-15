@@ -316,6 +316,43 @@ export default function ProvaDetail() {
                           </Suspense>
                         )}
                         {s.text && renderText(s.text, false, s.notes)}
+                        {s.swatches && (
+                          // Colours with their names (the Bandos'): the name is the content, the
+                          // swatch shows it
+                          <ul className={styles.swatches}>
+                            {s.swatches.map((c) => (
+                              <li key={c.name} className={styles.swatch}>
+                                <span className={styles.swatchColor} style={{ background: c.color }} aria-hidden="true" />
+                                {c.name}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {s.terms && (
+                          <dl className={styles.terms}>
+                            {s.terms.map((t) => (
+                              <div key={t.term} className={styles.termRow}>
+                                <dt className={styles.term} style={{ color: section.ink }}>{t.term}</dt>
+                                <dd className={styles.termText}>{t.text}</dd>
+                              </div>
+                            ))}
+                          </dl>
+                        )}
+                        {s.steps && (
+                          // Steps on one line, each joined to the next: dates (a history) or names
+                          // (a chain, each part of the next)
+                          <ol className={`${styles.steps} ${s.steps[0].label ? styles.stepsDated : ''}`}>
+                            {s.steps.map((st, k) => (
+                              <li key={k} className={styles.step}>
+                                {st.label && <span className={styles.stepLabel} style={{ color: section.ink }}>{st.label}</span>}
+                                <span className={styles.stepBody}>
+                                  {st.title && <span className={styles.stepTitle}>{st.title}</span>}
+                                  {st.text && <span className={styles.stepText}>{st.text}</span>}
+                                </span>
+                              </li>
+                            ))}
+                          </ol>
+                        )}
                       </>
                     )}
                   </div>
