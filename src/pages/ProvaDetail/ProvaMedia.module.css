@@ -287,6 +287,65 @@
   cursor: zoom-in;
 }
 
+/* A drawing with numbers on it (the pilgrim's signs): each number a small disc in the secção's
+   surface, ringed in white so it reads over any colour of the drawing, centred on its point */
+.marked {
+  position: relative;
+  display: block;
+}
+
+.mark {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  line-height: 1;
+  border: 2px solid var(--color-white);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+/* What each number is, under the drawing, the number in the same disc */
+.markList {
+  list-style: none;
+  counter-reset: mark;
+  margin: var(--spacing-sm) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--spacing-xs);
+  justify-items: start;
+  text-align: left;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-gray-900);
+}
+
+.markList li {
+  counter-increment: mark;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.markList li::before {
+  content: counter(mark);
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  background: var(--mark-bg);
+  color: var(--mark-fg);
+  border-radius: 50%;
+}
+
 /* A tile that links to its cargo below goes there, it doesn't enlarge */
 a.funcaoZoom {
   cursor: pointer;

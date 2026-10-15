@@ -39,6 +39,15 @@
         "value": "courier new",
         "createdAt": "2026-10-14T11:13:41.674Z",
         "reason": "Claude: fixed-width face for the Klandestino songs' chord sheets (chords must align); documented in DESIGN.md Typography as the archive's exception"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/pages/ProvaDetail/ProvaDetail.module.css"
+        ],
+        "createdAt": "2026-10-15T22:43:23.613Z",
+        "reason": "The quotation rule on the Manual do Dirigente's blockquote (S. Tiago prova, .quoteText), chosen by the user: a quotation convention, not a card accent. The only other side border here is the sidebar's current-prova accent (.sidebarLink, set inline in the secção's colour), which predates this ignore"
       }
     ]
   }

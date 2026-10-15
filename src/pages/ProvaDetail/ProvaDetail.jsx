@@ -317,11 +317,13 @@ export default function ProvaDetail() {
                       // comes first instead, in the reading order too, so on phones it sits
                       // under the heading, not after all the text. If the picture can't load,
                       // the text stands alone
-                      <div className={`${styles.withMedia} ${s.mediaFirst ? styles.withMediaFirst : ''}`}>
+                      <div className={`${styles.withMedia} ${s.mediaFirst ? styles.withMediaFirst : ''} ${s.wrap ? styles.withMediaWrap : ''}`}>
                         {!s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}</div>}
                         <div className={styles.withMediaAside}>
                           <LoadErrorBoundary quiet>
-                            <Suspense fallback={null}>
+                            {/* A placeholder holds the column while the picture code loads, so
+                                the column only gives way when there's nothing to show */}
+                            <Suspense fallback={<span aria-hidden="true" />}>
                               <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
                             </Suspense>
                           </LoadErrorBoundary>
@@ -339,6 +341,20 @@ export default function ProvaDetail() {
                             "Conheces…"), as the manual sets it under its title: bold, before the
                             text */}
                         {s.lead && <p className={styles.lead}>{s.lead}</p>}
+                        {s.quote && (
+                          // Someone else's words (the CNE's Manual do Dirigente on S. Tiago), word
+                          // for word: a line of ours says whose, the passage set apart with a rule in
+                          // the secção's colour, its source under it; the section's text after it
+                          <>
+                            {s.intro && <p className={styles.paragraph}>{s.intro}</p>}
+                            <figure className={styles.quote}>
+                              <blockquote className={styles.quoteText} style={{ borderColor: section.color }}>
+                                {renderText(s.quote)}
+                              </blockquote>
+                              {s.source && <figcaption className={styles.quoteSource}>{s.source}</figcaption>}
+                            </figure>
+                          </>
+                        )}
                         {s.text && renderText(s.text, false, s.notes)}
                         {s.swatches && (
                           // Colours with their names (the Bandos'): the name is the content, the

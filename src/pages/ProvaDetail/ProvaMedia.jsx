@@ -121,13 +121,19 @@ const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.natural ??
 // A lone badge (the Promessa) is set larger: it's the one the scout is working towards.
 // The drawings (`large`, the saudações) are old photocopies, small in place: a press opens them
 // in the photo viewer, as the uniform posters do
-function Badges({ items, seccao, title }) {
+function Badges({ items: all, seccao, title }) {
   const [viewer, setViewer] = useState(null);
+  // A picture that fails to load leaves the grid (or, alone beside its text, its whole column),
+  // never a broken image in its tile
+  const [failed, setFailed] = useState(() => new Set());
+  const fail = (src) => setFailed((was) => new Set(was).add(src));
+  const items = all.filter((f) => !failed.has(f.src));
   // A drawing smaller than the viewer would show it (`zoom: false`, the S. Francisco cartoons)
   // stays a plain picture: the viewer would only set it on black at the size it already has;
   // one that isn't a drawing tile but gains from it opts in (`zoom: true`, the knot diagrams)
   const zoomable = (f) => (f.large && f.zoom !== false) || f.zoom === true;
   const drawings = items.filter(zoomable);
+  if (!items.length) return null;
   const groups = [];
   for (const item of items) {
     const last = groups[groups.length - 1];
@@ -157,7 +163,7 @@ function Badges({ items, seccao, title }) {
                 {f.href ? (
                 // A link to its cargo below, stretched over the whole tile as the drawings' button is
                 <a href={f.href} className={styles.funcaoZoom}>
-                  <img src={f.src} alt="" className={styles.funcaoImg} />
+                  <img src={f.src} alt="" className={styles.funcaoImg} onError={() => fail(f.src)} />
                   <span className={styles.srOnly}>{f.name}</span>
                 </a>
               ) : zoomable(f) ? (
@@ -172,14 +178,39 @@ function Badges({ items, seccao, title }) {
                       }}
                       aria-label={`Ampliar: ${f.name ?? title}`}
                     >
-                      <img src={f.src} alt="" width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} />
+                      <img src={f.src} alt="" width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
                     </button>
                     {f.alt && <Description>{f.alt}</Description>}
                   </>
+                ) : f.marks ? (
+                  // Numbers on the drawing (the pilgrim's signs), each named in the list under it:
+                  // the numbers are for the eye, the list says it to everyone
+                  <span className={styles.marked}>
+                    <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
+                    {f.marks.map((m, k) => (
+                      <span
+                        key={m.label}
+                        className={styles.mark}
+                        style={{ left: `${m.x * 100}%`, top: `${m.y * 100}%`, background: seccoes[seccao].surface, color: seccoes[seccao].onSurface }}
+                        aria-hidden="true"
+                      >
+                        {k + 1}
+                      </span>
+                    ))}
+                  </span>
                 ) : (
-                  <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} />
+                  <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
                 )}
                 {f.caption && <span className={styles.funcaoCaption}>{f.caption}</span>}
+                {f.marks && (
+                  <ol className={styles.markList}>
+                    {f.marks.map((m) => (
+                      <li key={m.label} style={{ '--mark-bg': seccoes[seccao].surface, '--mark-fg': seccoes[seccao].onSurface }}>
+                        {m.label}
+                      </li>
+                    ))}
+                  </ol>
+                )}
                 {f.name && (
                   <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined} aria-hidden={f.href ? true : undefined}>
                     {f.name}
