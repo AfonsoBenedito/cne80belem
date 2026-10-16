@@ -80,6 +80,22 @@ export default function ProvaDetail() {
   const prev = allProvas[position - 1] ?? null;
   const next = allProvas[position + 1] ?? null;
 
+  // A pointer to another prova that tells a section's part in full (`more`, by title), if this
+  // secção has that prova: after the text, in every kind of section (with a picture beside it,
+  // or under it, too: drawn only in the plain branch, the fraternity's pointer was lost when its
+  // section got a photograph)
+  const moreLine = (s) => {
+    const other = s.more && allProvas.find((p) => p.title === s.more);
+    return other ? (
+      <p className={styles.paragraph}>
+        Podes saber mais na prova{' '}
+        <Link to={`/seccao/${seccao}/provas/${other.slug}`} className={styles.moreLink} style={{ color: section.ink }}>
+          {other.title}
+        </Link>.
+      </p>
+    ) : null;
+  };
+
   // A line with its titles of works in italics (`*…*`, English ones `*{en}…*`)
   const inline = (line) => inlineRuns(line).map((r, i) => (r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text));
 
@@ -295,16 +311,21 @@ export default function ProvaDetail() {
                         className={styles.sectionHeading}
                         style={{ color: section.ink }}
                       >
+                        {s.date && <span className={styles.sectionDate}>{s.date}</span>}
                         {s.heading}
                       </h2>
                     )}
                     {s.headingMedia ? (
-                      s.text && renderText(s.text, true)
+                      <>
+                        {s.text && renderText(s.text, true)}
+                        {moreLine(s)}
+                      </>
                     ) : s.mediaAfter ? (
                       // The text, then its picture under it at the picture's own size (a wide
                       // diagram: the nós' steps)
                       <>
                         {s.text && renderText(s.text)}
+                        {moreLine(s)}
                         <div className={styles.mediaAfter}>
                           <LoadErrorBoundary quiet>
                             <Suspense fallback={null}>
@@ -321,7 +342,7 @@ export default function ProvaDetail() {
                       // under the heading, not after all the text. If the picture can't load,
                       // the text stands alone
                       <div className={`${styles.withMedia} ${s.mediaFirst ? styles.withMediaFirst : ''} ${s.wrap ? styles.withMediaWrap : ''}`}>
-                        {!s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}</div>}
+                        {!s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}{moreLine(s)}</div>}
                         <div className={styles.withMediaAside}>
                           <LoadErrorBoundary quiet>
                             {/* A placeholder holds the column while the picture code loads, so
@@ -331,7 +352,7 @@ export default function ProvaDetail() {
                             </Suspense>
                           </LoadErrorBoundary>
                         </div>
-                        {s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}</div>}
+                        {s.mediaFirst && <div className={styles.withMediaText}>{renderText(s.text)}{moreLine(s)}</div>}
                       </div>
                     ) : (
                       <>
@@ -350,7 +371,7 @@ export default function ProvaDetail() {
                           // the secção's colour, its source under it; the section's text after it
                           <>
                             {s.intro && <p className={styles.paragraph}>{s.intro}</p>}
-                            <figure className={styles.quote}>
+                            <figure className={`${styles.quote} ${s.letter ? styles.letter : ''}`} style={{ '--quote-tint': section.color }}>
                               <blockquote className={styles.quoteText} style={{ borderColor: section.color }}>
                                 {renderText(s.quote)}
                               </blockquote>
@@ -359,6 +380,7 @@ export default function ProvaDetail() {
                           </>
                         )}
                         {s.text && renderText(s.text, false, s.notes)}
+                        {moreLine(s)}
                         {s.swatches && (
                           // Colours with their names (the Bandos'): the name is the content, the
                           // swatch shows it
