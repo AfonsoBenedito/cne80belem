@@ -213,7 +213,8 @@
   }
 
   /* No caption at its edge to keep clear of the floating button: the whole column */
-  .badgeGroups:has(.funcoesNatural) {
+  .badgeGroups:has(.funcoesNatural),
+  .badgeGroups:has(.funcoesPhoto) {
     padding-right: 0;
   }
 }
@@ -276,6 +277,49 @@
 .funcoesSingle.funcoesLarge.funcoesHero .funcaoImg {
   max-height: 20rem;
   width: calc(20rem * var(--ratio));
+}
+
+/* A photograph (`photo`, the História's archive photos): the column's whole width under its
+   heading at every size, so the faces and uniforms can be seen without opening it; up to 26rem
+   tall, so a portrait (Tomar's) is held by its height and centred in its tile. Its width comes
+   from --ratio, so the box is there before the photo loads. On phones too (the grid is a flex
+   row there, below: this keeps it one full-width tile) */
+.funcoesSingle.funcoesPhoto {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.funcoesSingle.funcoesPhoto .funcao {
+  flex: none;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-xs);
+}
+
+.funcoesSingle.funcoesLarge.funcoesPhoto .funcaoImg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+}
+
+/* The button is the photo's size (its width from --ratio, set on it too), so the mark sits on
+   the photo's corner and the box is held before the photo loads. Up to 26rem tall: a landscape
+   fills the column, a portrait (Tomar's) is held by its height */
+.funcoesPhoto .funcaoZoom {
+  position: relative;
+  width: min(100%, calc(26rem * var(--ratio)));
+  border-radius: var(--radius-xs);
+}
+
+/* Its press area and focus ring are the photo's own (the button is the photo's size), so the
+   ring follows the photo's corners, not the tile's rounder ones */
+.funcoesPhoto .funcaoZoom::after {
+  border-radius: var(--radius-xs);
+}
+
+.funcoesPhoto .funcaoCaption {
+  padding: 0 var(--spacing-sm);
 }
 
 /* A drawing that opens in the photo viewer: the whole tile is the button (stretched over it),
