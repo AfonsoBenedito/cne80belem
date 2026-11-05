@@ -38,6 +38,9 @@ import bpMafeking from '../assets/images/provas/baden-powell/mafeking.png';
 import bpPoliciaMontada from '../assets/images/provas/baden-powell/policia-montada.png';
 import bpJamboree from '../assets/images/provas/baden-powell/jamboree-1920.png';
 import bpPaxHill from '../assets/images/provas/baden-powell/pax-hill.png';
+import histJunta from '../assets/images/provas/historia/primeira-junta-1925.jpg';
+import histBpPortugal from '../assets/images/provas/historia/bp-portugal-1929.jpg';
+import histTomar from '../assets/images/provas/historia/acanac-tomar-1946.jpg';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
 import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
@@ -182,6 +185,12 @@ export const badges = {
   bpPoliciaMontada: () => [{ name: null, src: bpPoliciaMontada, w: 442, h: 688, large: true, zoom: false, caption: 'Comandante da Polícia Montada da África do Sul', alt: 'Fotografia de Baden-Powell de uniforme, sentado a uma mesa, a escrever' }],
   bpJamboree: () => [{ name: null, src: bpJamboree, w: 778, h: 690, large: true, zoom: false, caption: 'Foto do 1º Jamboree Internacional', alt: 'Fotografia do primeiro Jamboree, em 1920: uma multidão de escuteiros de chapéu num grande pavilhão coberto, com bandeiras ao fundo' }],
   bpPaxHill: () => [{ name: null, src: bpPaxHill, w: 478, h: 490, large: true, zoom: false, caption: 'B.P. no seu estúdio, em Pax Hill, 1935', alt: 'Fotografia de Baden-Powell já idoso, de lenço escutista, sentado à secretária do seu estúdio, com flores ao lado' }],
+  // História do Escutismo e do CNE: the CNE's own photographs, from its history page
+  // (escutismo.pt/historia), with its captions; large enough to open in the viewer. `photo`: set
+  // the column's width under the heading, not a tile beside the text, with the zoom mark
+  histJunta: () => [{ name: null, src: histJunta, photo: true, w: 1611, h: 1181, large: true, zoom: true, kind: 'Fotografia', caption: 'A primeira Junta Nacional, em Braga, 1925', alt: 'Fotografia antiga: seis homens sentados num jardim, cinco de uniforme escutista e chapéu de abas largas e, ao centro, o Arcebispo D. Manuel Vieira de Matos, de batina e capa' }],
+  histBpPortugal: () => [{ name: null, src: histBpPortugal, photo: true, w: 1181, h: 828, large: true, zoom: true, kind: 'Fotografia', caption: 'Baden-Powell em Portugal, 1929', alt: 'Fotografia antiga: Baden-Powell, já idoso, de uniforme e chapéu escutista e bengala na mão, a bordo de um navio, rodeado de dirigentes e escuteiros portugueses' }],
+  histTomar: () => [{ name: null, src: histTomar, photo: true, w: 1720, h: 2560, large: true, zoom: true, kind: 'Fotografia', caption: 'Acampamento Nacional em Tomar, 1946', alt: 'Fotografia antiga: três rapazes de uniforme escutista, um de chapéu, sentados num tronco no campo, de cabeças juntas sobre o que um deles tem nas mãos' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },
