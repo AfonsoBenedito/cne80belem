@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { Fragment, Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
@@ -84,6 +84,9 @@ export default function ProvaDetail() {
   // secção has that prova: after the text, in every kind of section (with a picture beside it,
   // or under it, too: drawn only in the plain branch, the fraternity's pointer was lost when its
   // section got a photograph)
+  // Section headings are h2, or h3 under the part headings of a prova told in parts
+  const SectionH = content?.sections.some((s) => s.part) ? 'h3' : 'h2';
+
   const moreLine = (s) => {
     const other = s.more && allProvas.find((p) => p.title === s.more);
     return other ? (
@@ -289,7 +292,11 @@ export default function ProvaDetail() {
               // sections (only an all-picture prova has any); a new prova starts afresh
               <LoadErrorBoundary key={slug}>
                 {content.sections.map((s, i) => (
-                  <div key={i} className={`${styles.section} ${s.recite ? styles.recited : ''}`}>
+                  <Fragment key={i}>
+                  {/* A prova told in parts (the História: the Escutismo, then the CNE) names each
+                      part over its first section: the part is the h2, its sections h3 */}
+                  {s.part && <h2 className={styles.partHeading} style={{ '--part-rule': section.color }}>{s.part}</h2>}
+                  <div className={`${styles.section} ${s.recite ? styles.recited : ''}`}>
                     {s.heading && s.headingMedia ? (
                       // The badge beside the heading (the Cargos prova); its box is held while the
                       // picture code loads, so the heading doesn't shift
@@ -301,19 +308,21 @@ export default function ProvaDetail() {
                             </Suspense>
                           </LoadErrorBoundary>
                         </span>
-                        <h2 id={s.id} className={styles.sectionHeading} style={{ color: section.ink }}>
+                        <SectionH id={s.id} className={styles.sectionHeading} style={{ color: section.ink }}>
                           {s.heading}
-                        </h2>
+                        </SectionH>
                       </div>
                     ) : s.heading && (
-                      <h2
+                      <SectionH
                         id={s.id}
                         className={styles.sectionHeading}
                         style={{ color: section.ink }}
                       >
-                        {s.date && <span className={styles.sectionDate}>{s.date}</span>}
+                        {/* The years then the name, a pause between them for a screen reader
+                            ("1907 O acampamento de Brownsea", not "1907O acampamento") */}
+                        {s.date && <span className={styles.sectionDate}>{s.date}<span className={styles.srOnly}> </span></span>}
                         {s.heading}
-                      </h2>
+                      </SectionH>
                     )}
                     {s.headingMedia ? (
                       <>
@@ -380,7 +389,7 @@ export default function ProvaDetail() {
                           </>
                         )}
                         {s.text && renderText(s.text, false, s.notes)}
-                        {moreLine(s)}
+                        {!(s.swatches || s.terms || s.steps) && moreLine(s)}
                         {s.swatches && (
                           // Colours with their names (the Bandos'): the name is the content, the
                           // swatch shows it
@@ -446,9 +455,13 @@ export default function ProvaDetail() {
                             ))}
                           </ol>
                         )}
+                        {/* After the colours, words or steps the section has (the História's
+                            1908–1920): the pointer goes past the whole part, so it ends it */}
+                        {(s.swatches || s.terms || s.steps) && moreLine(s)}
                       </>
                     )}
                   </div>
+                  </Fragment>
                 ))}
               </LoadErrorBoundary>
             ) : (

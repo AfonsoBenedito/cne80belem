@@ -1,7 +1,8 @@
-import { Fragment, Suspense, lazy, useState } from 'react';
+import { Fragment, Suspense, lazy, useId, useState } from 'react';
 import { FaSearchPlus } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../../config/provasMedia';
+import { srcSetFor } from '../../utils/responsiveImage';
 import styles from './ProvaMedia.module.css';
 
 // The photo viewer loads on the first press of a poster: the Promessa page shows an insígnia and
@@ -13,9 +14,11 @@ const Lightbox = lazy(() => import('../NoticiaDetail/Lightbox'));
 const perRow = (n, max) => Math.ceil(n / Math.ceil(n / max));
 
 // A button's content is presentational and its aria-label is its whole name, so the picture's
-// description would never be read from inside it: it follows the button, for screen readers
-function Description({ children }) {
-  return <p className={styles.srOnly}>{children}</p>;
+// description would never be read from inside it: it follows the button, for screen readers.
+// Tied to its button (`id`, the drawings' and photos'), it is the button's description, read with
+// it, so it is hidden from reading on: one paragraph read twice was the same words again
+function Description({ id, children }) {
+  return id ? <p id={id} hidden>{children}</p> : <p className={styles.srOnly}>{children}</p>;
 }
 
 // The posters' labels are too small to read in place: this mark says a press enlarges them
@@ -116,6 +119,19 @@ function Dirigentes() {
 // its width before it loads
 const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.natural ?? f.w}px` } : undefined);
 
+// A photograph (`photo`, the História's) is shown at the column's width (32rem, the screen's on
+// phones) or, a portrait, at 26rem tall: the srcset's file for that width, fetched only near the
+// screen (they're far down the page). The viewer opens the full file
+const photoSources = (f) => {
+  const w = `${(26 * f.w) / f.h}rem`;
+  return {
+    srcSet: srcSetFor(f.src),
+    sizes: `(max-width: 600px) min(calc(100vw - 2rem), ${w}), min(32rem, ${w})`,
+    loading: 'lazy',
+    decoding: 'async',
+  };
+};
+
 // A grid of badges, each over its name, all at one height. Items that share a `group` keep a row
 // of their own; every group's rows are as wide as the largest group's, so the tiles line up.
 // A lone badge (the Promessa) is set larger: it's the one the scout is working towards.
@@ -123,6 +139,7 @@ const ratio = (f) => (f.w ? { '--ratio': f.w / f.h, '--natural': `${f.natural ??
 // in the photo viewer, as the uniform posters do
 function Badges({ items: all, seccao, title }) {
   const [viewer, setViewer] = useState(null);
+  const descId = useId();
   // A picture that fails to load leaves the grid (or, alone beside its text, its whole column),
   // never a broken image in its tile
   const [failed, setFailed] = useState(() => new Set());
@@ -151,7 +168,7 @@ function Badges({ items: all, seccao, title }) {
             <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
           )}
           <ul
-            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''} ${items[0].hero ? styles.funcoesHero : ''}`}
+            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''} ${items[0].hero ? styles.funcoesHero : ''} ${items[0].photo ? styles.funcoesPhoto : ''}`}
             style={vars}
           >
             {group.map((f) => (
@@ -176,11 +193,26 @@ function Badges({ items: all, seccao, title }) {
                         e.currentTarget.focus({ preventScroll: true });
                         setViewer({ index: drawings.indexOf(f), leaving: false });
                       }}
-                      aria-label={`Ampliar: ${f.name ?? title}`}
+                      // Named by what it shows: its name, or its caption (a photograph's), or the section
+                      aria-label={`Ampliar: ${f.name ?? f.caption ?? title}`}
+                      aria-describedby={f.alt ? `${descId}-${drawings.indexOf(f)}` : undefined}
+                      style={f.photo ? ratio(f) : undefined}
                     >
-                      <img src={f.src} alt="" width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
+                      <img
+                        src={f.src}
+                        alt=""
+                        width={f.w}
+                        height={f.h}
+                        className={styles.funcaoImg}
+                        style={ratio(f)}
+                        onError={() => fail(f.src)}
+                        {...(f.photo && photoSources(f))}
+                      />
+                      {/* A photograph (`photo`, the História's) reads as a picture to look at, not
+                          one to press: the posters' mark says it opens larger */}
+                      {f.photo && <ZoomMark />}
                     </button>
-                    {f.alt && <Description>{f.alt}</Description>}
+                    {f.alt && <Description id={`${descId}-${drawings.indexOf(f)}`}>{f.alt}</Description>}
                   </>
                 ) : f.marks ? (
                   // Numbers on the drawing (the pilgrim's signs), each named in the list under it:

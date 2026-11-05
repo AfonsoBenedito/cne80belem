@@ -1,11 +1,12 @@
 // Maps a plain photo import (the URL config files already hold) to a WebP srcset,
 // so components can serve phone-sized files without changing how photos are imported.
+// The provas' archive photos (historia/) too, shown at the column's width.
 // Both globs must use the same pattern literal (import.meta.glob rejects variables).
-const plain = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jpg,jpeg,png}', '../assets/images/sections/*-group.*'], {
+const plain = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jpg,jpeg,png}', '../assets/images/sections/*-group.*', '../assets/images/provas/historia/*.jpg'], {
   eager: true,
   import: 'default',
 });
-const srcsets = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jpg,jpeg,png}', '../assets/images/sections/*-group.*'], {
+const srcsets = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jpg,jpeg,png}', '../assets/images/sections/*-group.*', '../assets/images/provas/historia/*.jpg'], {
   eager: true,
   import: 'default',
   query: { w: '480;800;1200;1600;2048', format: 'webp', quality: '70', as: 'srcset' },
@@ -13,7 +14,7 @@ const srcsets = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jp
 
 // Each photo's proportions, read at build time from a tiny 64px variant: lets a component size its
 // request to how the photo will actually be shown (a full-screen viewer is limited by height)
-const shapes = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jpg,jpeg,png}', '../assets/images/sections/*-group.*'], {
+const shapes = import.meta.glob(['../assets/images/{carousel,noticias}/**/*.{jpg,jpeg,png}', '../assets/images/sections/*-group.*', '../assets/images/provas/historia/*.jpg'], {
   eager: true,
   import: 'default',
   query: { w: '64', format: 'webp', as: 'meta:width;height' },

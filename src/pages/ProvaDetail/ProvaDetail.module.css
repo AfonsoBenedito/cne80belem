@@ -231,6 +231,34 @@
   margin-bottom: var(--spacing-xl);
 }
 
+/* A part of a prova told in parts (the História: "O Escutismo", "O CNE"): a step over the
+   section headings, in the darkest text so the secção's ink stays the sections' own; a short
+   rule in the secção's colour under it, as the PDF sets the prova's title. A wide pause before
+   it, so the second part reads as a new beginning */
+.partHeading {
+  margin: var(--spacing-3xl) 0 var(--spacing-lg);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-gray-900);
+  text-wrap: balance;
+}
+
+.partHeading::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 3px;
+  margin-top: var(--spacing-sm);
+  border-radius: 2px;
+  background: var(--part-rule);
+}
+
+.partHeading:first-child {
+  margin-top: 0;
+}
+
 .section:last-of-type {
   margin-bottom: 0;
 }
@@ -505,6 +533,22 @@
 /* The opening portrait's column, as wide as the portrait at its 20rem height */
 .withMediaAside:has([class*="funcoesHero"]) {
   width: calc(20rem * 0.7 + 2 * var(--spacing-md) + 2px);
+}
+
+/* A photograph (the História's archive photos) goes under its heading at every size, as wide
+   as the text it heads, instead of a thumbnail beside it: the photo is the period's evidence */
+.withMedia:has([class*="funcoesPhoto"]) {
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.withMedia:has([class*="funcoesPhoto"]) .withMediaText {
+  align-self: stretch;
+}
+
+.withMediaAside:has([class*="funcoesPhoto"]) {
+  width: 100%;
+  max-width: 32rem;
 }
 
 /* On phones the drawing sits under its heading, its tile the column's full width, so every
@@ -874,6 +918,23 @@
 
 .stepsDated .step:not(:last-child)::after {
   top: 2.1rem;
+}
+
+/* Under a section's own years (the História's "1908–1920" over its heading), the steps' years
+   step down to the text's size and line, so the range and the heading stay the frame and each
+   year reads as its line's anchor, not a heading of its own; the rail starts under it */
+.section:has(.sectionDate) .stepsDated {
+  --marker: 2.75rem;
+  --rail-x: 0.95rem;
+}
+
+.section:has(.sectionDate) .stepLabel {
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+}
+
+.section:has(.sectionDate) .stepsDated .step:not(:last-child)::after {
+  top: 2rem;
 }
 
 /* A narrow list (a small phone, or a larger text size: the width is in rem, so it grows with the
@@ -1290,4 +1351,12 @@ ol.list {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* The pointer to another prova after a section's colours, words or steps (the História's
+   1908–1920): a pause from the list it follows, as between paragraphs */
+.steps + .paragraph,
+.swatches + .paragraph,
+.terms + .paragraph {
+  margin-top: var(--spacing-lg);
 }

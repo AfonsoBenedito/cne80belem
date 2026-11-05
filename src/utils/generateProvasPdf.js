@@ -300,8 +300,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
   // where it ends, on which page, and how wide the text beside it is
   let float = null;
   for (const sec of content.sections) {
-    if (sec.heading) {
-      const lines = draw.split(sec.heading, colW, 12.5, 'bold');
+    // A part may head a section of its own with no heading (the História's word list)
+    if (sec.heading || sec.part) {
+      const lines = sec.heading ? draw.split(sec.heading, colW, 12.5, 'bold') : [];
       const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
@@ -334,13 +335,27 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       }
       // The years it covers (Vida de Baden-Powell's parts), as on the page: small, over it
       const dateH = sec.date ? 8.5 * ts * PT * 1.3 : 0;
-      room(dateH + h + 3 * s + keep);
+      // A part of a prova told in parts (the História's "O Escutismo", "O CNE"), as on the page: a
+      // step over the section headings, black, with the title's short rule in the secção's colour
+      // under it; it asks for its first section's room too, so the two never part
+      const partLines = sec.part ? draw.split(sec.part, colW, 15, 'bold') : null;
+      const partH = partLines ? (y > colTop ? 6 * s : 0) + partLines.length * 15 * ts * PT * 1.2 + 9 * s : 0;
+      room(partH + dateH + h + 3 * s + keep);
+      if (partLines) {
+        if (y > colTop) y += 6 * s;
+        draw.text(partLines, left(), y + asc(15), 15, 'bold', BLACK, { lineHeightFactor: 1.2 });
+        y += partLines.length * 15 * ts * PT * 1.2 + 3 * s;
+        draw.line(left(), y, left() + 12 * s, y, hexToRgb(section.color), 0.8 * s);
+        y += 6 * s;
+      }
       if (sec.date) {
         draw.text(sec.date, left(), y + asc(8.5), 8.5, 'bold', ink);
         y += dateH;
       }
-      draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
-      y += h + 3 * s;
+      if (lines.length) {
+        draw.text(lines, left(), y + asc(12.5), 12.5, 'bold', ink, { lineHeightFactor: 1.25 });
+        y += h + 3 * s;
+      }
     }
     if (sec.media === 'uniformes') {
       // Side by side at one height, as on the page; lower than the page is tall if need be
@@ -536,7 +551,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // Another prova that tells this part in full, as on the page, if this secção has it (in a
     // booklet of all the provas it's a few pages on; on its own, its name says where to look)
     const more = sec.more && numbered(seccao).find((p) => p.title === sec.more);
-    if (more) blocks.push({ kind: 'p', lines: [`Podes saber mais na prova ${more.n}, «${more.title}».`] });
+    const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}».`;
+    // After the section's colours, words or steps when it has them (the História's 1908–1920),
+    // as on the page: it points past the whole part, so it ends it
+    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps);
+    if (moreText && !moreLast) blocks.push({ kind: 'p', lines: [moreText] });
     // Someone else's words (the Manual do Dirigente), as on the page: our line saying whose, the
     // passage in from the text beside a rule in the secção's colour, its source under it, gray
     if (sec.quote) {
@@ -816,7 +835,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // the left, a thin rail joining them, each step's name in bold and its text beside it
     if (sec.steps) {
       const dated = Boolean(sec.steps[0].label);
-      const markW = (dated ? 16 : 5) * s;
+      // Under the section's own years (the História's "1908–1920"), the years at the text's size,
+      // as on the page, so they don't match the heading's
+      const labelSize = sec.date ? BODY : 12.5;
+      const markW = (dated ? (sec.date ? 12 : 16) : 5) * s;
       const railX = left() + (dated ? 4.5 : 1.25) * s;
       const tx = left() + markW + 3 * s;
       const tw = colW - markW - 3 * s;
@@ -828,7 +850,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         // A step is never split, and the last one never starts a page alone
         room(h + (k === sec.steps.length - 2 ? lh * 2 : 0));
         const top = y;
-        if (dated) draw.text(st.label, left(), y + asc(12.5), 12.5, 'bold', ink);
+        if (dated) draw.text(st.label, left(), y + asc(labelSize), labelSize, 'bold', ink);
         else draw.circle(railX, y + asc(BODY) - 1.1 * s, 1.25 * s, ink);
         for (const t of title) {
           draw.text(t, tx, y + asc(BODY), BODY, 'bold', BLACK);
@@ -840,8 +862,18 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           y += lh;
         }
         y += 3 * s;
-        if (k < sec.steps.length - 1) draw.line(railX, top + (dated ? 7 : 2.5) * s, railX, y - 1 * s, GRAY_LIGHT, 0.5);
+        if (k < sec.steps.length - 1) draw.line(railX, top + (dated ? (sec.date ? 6 : 7) : 2.5) * s, railX, y - 1 * s, GRAY_LIGHT, 0.5);
       });
+    }
+    if (moreText && moreLast) {
+      const lines = draw.split(moreText, colW, BODY);
+      y += 2 * s;
+      room(lines.length * lh);
+      for (const t of lines) {
+        draw.text(t, left(), y + asc(BODY), BODY, 'normal', BLACK);
+        y += lh;
+      }
+      y += 3.5 * s;
     }
     // Below the picture, if it is on this page: one left on the page before is no reason to
     // push the next section down (it sent Secretário to a new page, leaving one nearly empty)
