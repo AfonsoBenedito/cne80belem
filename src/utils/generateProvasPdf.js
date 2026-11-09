@@ -302,7 +302,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
   for (const sec of content.sections) {
     // A part may head a section of its own with no heading (the História's word list)
     if (sec.heading || sec.part) {
-      const lines = sec.heading ? draw.split(sec.heading, colW, 12.5, 'bold') : [];
+      // A prova that is one recited text (the Oração do Caminheiro, the Promessa) is named by its
+      // title, as on the page: its heading ("Oração") isn't printed under it
+      const solo = content.sections.length === 1 && sec.recite;
+      const lines = sec.heading && !solo ? draw.split(sec.heading, colW, 12.5, 'bold') : [];
       const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
@@ -329,8 +332,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // A recited prayer is kept whole (below), so its heading asks for room for all of it
       const first = g.cols === 1 && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
       if (first && first.kind === 'p' && first.lines.length > 1) {
-        const rh = 11.5 * ts * PT * 1.4;
-        const whole = first.lines.reduce((t, line) => t + draw.split(line, colW - 1.25 * 11.5 * ts * PT, 11.5).length * rh, 0);
+        // Measured as it's drawn (below): alone on its page, 13.5pt, rows at 1.3 and a gap between
+        // lines; with others, 11.5pt at an even 1.4
+        const one = content.sections.length === 1;
+        const rs = one ? 13.5 : 11.5;
+        const rh = rs * ts * PT * (one ? 1.3 : 1.4);
+        const whole = first.lines.reduce((t, line) => t + draw.split(line, colW - 1.25 * rs * ts * PT, rs).length * rh, 0) + (one ? (first.lines.length - 1) * 1.8 * s : 0);
         if (h + 3 * s + whole <= bottom - colTop) keep = whole;
       }
       // The years it covers (Vida de Baden-Powell's parts), as on the page: small, over it
@@ -484,9 +491,17 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       y += 2 * s;
     }
     // A recited section (the content's `recite`) is set larger, as on the page. 11.5pt: a step up
-    // from the prose, and the Lobitos' three prayers still fit one A4 page
-    const size = sec.recite ? 11.5 : BODY;
+    // from the prose, and the Lobitos' three prayers still fit one A4 page. A prova that is one
+    // prayer and nothing else (the Oração do Caminheiro, do Escuta) prints at 13.5pt on a page of
+    // its own, filling it as a text to hold and say, not its top half
+    const alone = g.cols === 1 && content.sections.length === 1;
+    const size = sec.recite ? (alone ? 13.5 : 11.5) : BODY;
     const lineH = sec.recite ? size * ts * PT * 1.4 : lh;
+    // A prayer alone on its page, as on the page: a wrapped row closer to its line, each new line a
+    // small gap after the last. Prayers that share a page (the Lobitos' three) keep the even
+    // rhythm: at 11.5pt their lines hardly wrap, and the gaps sent the Avé Maria to a second page
+    const rowH = sec.recite && alone ? size * ts * PT * 1.3 : lineH;
+    const verseGap = sec.recite && alone ? 1.8 * s : 0;
     const blocks = sec.text ? toBlocks(sec.text) : [];
     // The prova's question to the scout (the Livro da Selva's), as on the page: bold, a step larger
     if (sec.lead) {
@@ -657,7 +672,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         // the next page rather than leaving its last lines ("…da nossa morte. / Ámen.") on one of
         // their own. Two columns (the landscape layout) let it run on into the next, on the same page
         if (verse && sec.recite && g.cols === 1) {
-          const h = block.lines.reduce((t, line) => t + splitRecited(line, textW - hang).length * lineH, 0);
+          const h = block.lines.reduce((t, line) => t + splitRecited(line, textW - hang).length * rowH, 0) + (block.lines.length - 1) * verseGap;
           if (h <= bottom - colTop) room(h);
         }
         const marks = { italic: false };
@@ -669,10 +684,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           lines.forEach((wrapped, i) => {
             // No paragraph starts or ends a page with a single line of it
             const last = lines.length - i;
-            room(lineH * ((lines.length > 1 && (i === 0 || last === 2) ? 2 : 1) + (last === 1 ? keepNext : 0)));
+            const step = verse ? rowH : lineH;
+            room(step * ((lines.length > 1 && (i === 0 || last === 2) ? 2 : 1) + (last === 1 ? keepNext : 0)));
             drawRuns(draw, wrapped, left() + (i ? hang : 0), y + asc(size), size, BLACK, marks);
-            y += lineH;
+            y += step;
           });
+          if (verse && n < block.lines.length - 1) y += verseGap;
         });
       } else {
         // Hanging indent: the marker in the secção's ink, the text aligned after it

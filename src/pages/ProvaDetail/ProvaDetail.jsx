@@ -7,6 +7,7 @@ import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
 import { toBlocks, leadsList, inlineRuns } from '../../utils/provaBlocks';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
+import { TEXT_SIZES, readTextSize, saveTextSize, textSizeLabel } from '../../utils/textSize';
 import LoadErrorBoundary from '../../components/LoadErrorBoundary/LoadErrorBoundary';
 import styles from './ProvaDetail.module.css';
 
@@ -43,6 +44,9 @@ export default function ProvaDetail() {
   // Sidebar groups: the one holding this prova starts open, the other closed. Toggles are kept
   // per prova, so moving to another prova opens its own group again
   const [groupToggles, setGroupToggles] = useState({ slug: null, groups: [] });
+  // The reader's text size for recited provas (A− / A+, below), the songs' setting
+  const [sizeIdx, setSizeIdx] = useState(readTextSize);
+  const [sizeMessage, setSizeMessage] = useState('');
   const toggled = groupToggles.slug === slug ? groupToggles.groups : [];
   const toggleGroup = (name) =>
     setGroupToggles({
@@ -84,6 +88,17 @@ export default function ProvaDetail() {
   // secção has that prova: after the text, in every kind of section (with a picture beside it,
   // or under it, too: drawn only in the plain branch, the fraternity's pointer was lost when its
   // section got a photograph)
+  // A prova said aloud (a prayer, the Promessa, the Leis) gets the cancioneiro's text size, A− /
+  // A+, one setting with the songs': only the recited text scales, the rest of the page stays
+  const recited = content?.sections.some((s) => s.recite);
+  const changeTextSize = (dir) => {
+    const next = sizeIdx + dir;
+    if (next < 0 || next >= TEXT_SIZES.length) return;
+    setSizeIdx(next);
+    saveTextSize(next);
+    setSizeMessage(textSizeLabel(next));
+  };
+
   // Section headings are h2, or h3 under the part headings of a prova told in parts
   const SectionH = content?.sections.some((s) => s.part) ? 'h3' : 'h2';
 
@@ -181,9 +196,37 @@ export default function ProvaDetail() {
             className={styles.backLink}
             style={{ color: section.ink }}
           >
-            <FaArrowLeft size={12} aria-hidden="true" /> Provas dos {shortName}
+            {/* On phones the toolbar is one row: "Provas", its secção still read out. One span, so
+                the words stay one flex item (two, the link's gap doubled the space between them) */}
+            <FaArrowLeft size={12} aria-hidden="true" /> <span>Provas<span className={styles.wideOnly}> dos {shortName}</span></span>
           </Link>
-          <ProvasPdfButton seccao={seccao} slug={slug} label="Descarregar PDF" ink={section.ink} />
+          <div className={styles.toolbarActions}>
+            {recited && (
+              // aria-disabled, not disabled, so focus stays put at the smallest or largest size
+              <div className={styles.sizeGroup} role="group" aria-label="Tamanho da letra">
+                <button
+                  type="button"
+                  className={styles.sizeBtn}
+                  onClick={() => changeTextSize(-1)}
+                  aria-disabled={sizeIdx === 0 || undefined}
+                  aria-label="Letra mais pequena"
+                >
+                  A<span aria-hidden="true">−</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.sizeBtn} ${styles.sizeBtnUp}`}
+                  onClick={() => changeTextSize(1)}
+                  aria-disabled={sizeIdx === TEXT_SIZES.length - 1 || undefined}
+                  aria-label="Letra maior"
+                >
+                  A<span aria-hidden="true">+</span>
+                </button>
+              </div>
+            )}
+            <ProvasPdfButton seccao={seccao} slug={slug} label={<span><span className={styles.wideOnly}>Descarregar </span>PDF</span>} ink={section.ink} />
+          </div>
+          <p className={styles.srOnly} aria-live="polite">{sizeMessage}</p>
         </div>
 
         <div className={styles.layout}>
@@ -286,7 +329,7 @@ export default function ProvaDetail() {
 
           {/* Content */}
           {/* The secção's ink reaches the list markers through a variable, as the PDF draws them */}
-          <article className={styles.article} style={{ '--section-ink': section.ink }}>
+          <article className={styles.article} style={{ '--section-ink': section.ink, ...(recited && TEXT_SIZES[sizeIdx] !== 1 ? { '--recite-scale': TEXT_SIZES[sizeIdx] } : {}) }}>
             {content ? (
               // If the pictures' chunk can't download, one note with a reload stands in for the
               // sections (only an all-picture prova has any); a new prova starts afresh
@@ -315,7 +358,10 @@ export default function ProvaDetail() {
                     ) : s.heading && (
                       <SectionH
                         id={s.id}
-                        className={styles.sectionHeading}
+                        // A prova that is one recited text and nothing else (the Oração do Caminheiro,
+                        // the Promessa) is named by its title: its "Oração" stays for screen readers'
+                        // headings, out of sight, so the prayer starts under the title
+                        className={content.sections.length === 1 && s.recite ? styles.srOnly : styles.sectionHeading}
                         style={{ color: section.ink }}
                       >
                         {/* The years then the name, a pause between them for a screen reader
