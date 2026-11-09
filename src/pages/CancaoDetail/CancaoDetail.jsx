@@ -12,21 +12,10 @@ import { tagCategories } from '../../config/tags';
 import JsonLd from '../../components/JsonLd';
 import styles from './CancaoDetail.module.css';
 import dialog from '../../styles/dialog.module.css';
+import { TEXT_SIZES, readTextSize, saveTextSize, textSizeLabel } from '../../utils/textSize';
 
 const sortedCancoes = [...cancoes].sort((a, b) => a.title.localeCompare(b.title, 'pt'));
 const tagLabels = new Map(tagCategories.flatMap((c) => c.tags.map((t) => [t.value, t.label])));
-// Reader's lyrics size, kept across songs and visits
-const TEXT_SIZES = [0.875, 1, 1.125, 1.25, 1.5];
-const TEXT_SIZE_KEY = 'cancioneiro-tamanho-letra';
-function readTextSize() {
-  try {
-    const saved = localStorage.getItem(TEXT_SIZE_KEY);
-    const i = saved === null ? NaN : Number(saved);
-    return Number.isInteger(i) && i >= 0 && i < TEXT_SIZES.length ? i : 1;
-  } catch {
-    return 1;
-  }
-}
 
 const SOURCE_NAMES = { youtube: 'YouTube', soundcloud: 'SoundCloud', tiktok: 'TikTok' };
 
@@ -82,8 +71,8 @@ export default function CancaoDetail() {
     const next = sizeIdx + dir;
     if (next < 0 || next >= TEXT_SIZES.length) return;
     setSizeIdx(next);
-    try { localStorage.setItem(TEXT_SIZE_KEY, String(next)); } catch { /* private mode: this visit only */ }
-    setDraftMessage(`Letra a ${Math.round(TEXT_SIZES[next] * 100)}%`);
+    saveTextSize(next);
+    setDraftMessage(textSizeLabel(next));
   }
   // A ref, not the state: taps in the same frame would all still read pdfBusy as false
   const pdfRunning = useRef(false);

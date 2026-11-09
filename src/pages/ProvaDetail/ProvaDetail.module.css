@@ -87,6 +87,90 @@
   margin: 2.5rem 0 1.25rem;
 }
 
+/* The page's own controls at the toolbar's end: the text size (recited provas only) then the PDF,
+   one height, so the pair reads as one bar */
+.toolbarActions {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-sm);
+}
+
+/* Phones: the back link, the text size and the PDF on one row (two rows, and 40px above them,
+   put a prayer's first line at 479px of a 390px phone's 844). The words that make it fit ("dos
+   Caminheiros", "Descarregar") leave the eye but not the name: a screen reader still hears
+   "Provas dos Caminheiros" and "Descarregar PDF" */
+@media (max-width: 600px) {
+  .toolbar {
+    margin-top: var(--spacing-lg);
+  }
+
+  .wideOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+/* A− / A+, as the song page sets them: two joined buttons, the larger A on the larger step */
+.sizeGroup {
+  display: inline-flex;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  overflow: hidden;
+}
+
+.sizeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  padding: 0 0.6rem;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-gray-700);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.sizeBtn + .sizeBtn {
+  border-left: 1px solid var(--color-gray-200);
+}
+
+.sizeBtnUp {
+  font-size: var(--font-size-base);
+}
+
+/* At the smallest or largest size: greyed by its fill (text stays at gray-500, the lightest
+   allowed for text) */
+.sizeBtn[aria-disabled="true"] {
+  color: var(--color-gray-500);
+  background: var(--color-gray-100);
+  cursor: default;
+}
+
+.sizeBtn:not([aria-disabled="true"]):active {
+  background: var(--color-gray-100);
+}
+
+@media (hover: hover) {
+  .sizeBtn:not([aria-disabled="true"]):hover {
+    color: var(--color-green-dark);
+    background: var(--color-green-light);
+  }
+}
+
+.sizeBtn:focus-visible {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: -2px;
+}
+
 .backLink {
   display: inline-flex;
   align-items: center;
@@ -581,7 +665,8 @@
    recited is the content's own flag, not how it's written (a prayer's lines or a numbered list) */
 .recited .paragraph,
 .recited .list {
-  font-size: var(--font-size-xl);
+  /* --recite-scale: the reader's text size (A− / A+ in the toolbar) */
+  font-size: calc(var(--font-size-xl) * var(--recite-scale, 1));
   line-height: 1.6;
   color: var(--color-gray-900);
 }
@@ -602,10 +687,21 @@
   margin-bottom: var(--spacing-sm);
 }
 
+/* A recited prayer's lines (the Orações, the Promessas): a wrapped row hugs its line and each new
+   line opens a small gap, so a reader glancing up and back from a phone finds their line by its
+   shape, not only by the indent (evenly spaced, 27 rows at 320px read as one block) */
+.recited .paragraph:has(.verseLine) {
+  line-height: 1.45;
+}
+
+.recited .verseLine + .verseLine {
+  margin-top: var(--spacing-sm);
+}
+
 @media (max-width: 768px) {
   .recited .paragraph,
   .recited .list {
-    font-size: var(--font-size-lg);
+    font-size: calc(var(--font-size-lg) * var(--recite-scale, 1));
   }
 }
 
@@ -620,7 +716,7 @@
 @media (max-width: 360px) {
   .recited .paragraph,
   .recited .list {
-    font-size: var(--font-size-base);
+    font-size: calc(var(--font-size-base) * var(--recite-scale, 1));
   }
 }
 
@@ -1301,6 +1397,12 @@ ol.list {
 
 /* Touch input: 44px targets (the back link keeps its size and grows an invisible hit area) */
 @media (pointer: coarse) {
+  /* The text size pair as tall as the PDF button beside it, 44px each */
+  .sizeBtn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
   /* A row 44px tall for a thumb: the line grows 10px above and below (its box only, the text
      stays put), and the items sit 20px apart so a one-line row (24px) and its neighbours tile
      at 44px instead of overlapping */
