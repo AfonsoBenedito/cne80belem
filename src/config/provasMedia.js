@@ -41,6 +41,11 @@ import bpPaxHill from '../assets/images/provas/baden-powell/pax-hill.png';
 import histJunta from '../assets/images/provas/historia/primeira-junta-1925.jpg';
 import histBpPortugal from '../assets/images/provas/historia/bp-portugal-1929.jpg';
 import histTomar from '../assets/images/provas/historia/acanac-tomar-1946.jpg';
+import simbFlor from '../assets/images/provas/simbolos-exploradores/flor-de-lis.png';
+import simbVara from '../assets/images/provas/simbolos-exploradores/vara.png';
+import simbChapeu from '../assets/images/provas/simbolos-exploradores/chapeu.png';
+import simbCantil from '../assets/images/provas/simbolos-exploradores/cantil.png';
+import simbEstrela from '../assets/images/provas/simbolos-exploradores/estrela.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
 import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
@@ -191,6 +196,15 @@ export const badges = {
   histJunta: () => [{ name: null, src: histJunta, photo: true, w: 1611, h: 1181, large: true, zoom: true, kind: 'Fotografia', caption: 'A primeira Junta Nacional, em Braga, 1925', alt: 'Fotografia antiga: seis homens sentados num jardim, cinco de uniforme escutista e chapéu de abas largas e, ao centro, o Arcebispo D. Manuel Vieira de Matos, de batina e capa' }],
   histBpPortugal: () => [{ name: null, src: histBpPortugal, photo: true, w: 1181, h: 828, large: true, zoom: true, kind: 'Fotografia', caption: 'Baden-Powell em Portugal, 1929', alt: 'Fotografia antiga: Baden-Powell, já idoso, de uniforme e chapéu escutista e bengala na mão, a bordo de um navio, rodeado de dirigentes e escuteiros portugueses' }],
   histTomar: () => [{ name: null, src: histTomar, photo: true, w: 1720, h: 2560, large: true, zoom: true, kind: 'Fotografia', caption: 'Acampamento Nacional em Tomar, 1946', alt: 'Fotografia antiga: três rapazes de uniforme escutista, um de chapéu, sentados num tronco no campo, de cabeças juntas sobre o que um deles tem nas mãos' }],
+  // Símbolos e Mística dos Exploradores: the Manual do Dirigente's icons for the 2ª secção's five
+  // symbols, cut from its pages at 6× (vector art, so crisp), one beside each symbol's text. The
+  // icon is the symbol its name already says (a flor-de-lis beside "A Flor-de-Lis"): no alt, so a
+  // screen reader doesn't read the symbol twice
+  simbFlor: () => [{ name: null, src: simbFlor, w: 213, h: 214, alt: '' }],
+  simbVara: () => [{ name: null, src: simbVara, w: 213, h: 214, alt: '' }],
+  simbChapeu: () => [{ name: null, src: simbChapeu, w: 213, h: 214, alt: '' }],
+  simbCantil: () => [{ name: null, src: simbCantil, w: 215, h: 214, alt: '' }],
+  simbEstrela: () => [{ name: null, src: simbEstrela, w: 214, h: 214, alt: '' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },
