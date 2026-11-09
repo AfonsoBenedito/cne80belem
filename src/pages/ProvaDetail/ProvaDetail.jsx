@@ -101,6 +101,8 @@ export default function ProvaDetail() {
 
   // Section headings are h2, or h3 under the part headings of a prova told in parts
   const SectionH = content?.sections.some((s) => s.part) ? 'h3' : 'h2';
+  // A character's or symbol's name, a step under its section's heading
+  const CastH = SectionH === 'h3' ? 'h4' : 'h3';
 
   const moreLine = (s) => {
     const other = s.more && allProvas.find((p) => p.title === s.more);
@@ -434,6 +436,33 @@ export default function ProvaDetail() {
                             </figure>
                           </>
                         )}
+                        {s.overview && (
+                          // A prova's things at a glance (the Exploradores' five symbols): each
+                          // one's picture, name and what it stands for, a link to its own part
+                          // below; the picture is the name's, so it says nothing of its own
+                          // Its label shown, so a reader knows the row is the symbols to revise, and
+                          // named from it for a screen reader
+                          <nav className={styles.overview} aria-labelledby={`overview-${i}`}>
+                            <p id={`overview-${i}`} className={styles.overviewLabel}>{s.overviewLabel}</p>
+                            <ul className={styles.overviewList}>
+                              {s.overview.map((o) => (
+                                <li key={o.href}>
+                                  <a href={o.href} className={styles.overviewLink}>
+                                    <span className={styles.overviewIcon}>
+                                      <LoadErrorBoundary quiet>
+                                        <Suspense fallback={null}>
+                                          <ProvaMedia media={o.media} seccao={seccao} icon />
+                                        </Suspense>
+                                      </LoadErrorBoundary>
+                                    </span>
+                                    <span className={styles.overviewName} style={{ color: section.ink }}>{o.name}</span>
+                                    <span className={styles.overviewPhrase}>{o.phrase}</span>
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          </nav>
+                        )}
                         {s.text && renderText(s.text, false, s.notes)}
                         {!(s.swatches || s.terms || s.steps) && moreLine(s)}
                         {s.swatches && (
@@ -451,7 +480,7 @@ export default function ProvaDetail() {
                         {s.terms && (
                           // Numbers (the book's parts, I to VI) sit in a column of their own, so
                           // the texts after them start on one line
-                          <dl className={`${styles.terms} ${s.terms.every((t) => t.term.length <= 4) ? styles.termsNumbered : ''}`}>
+                          <dl className={`${styles.terms} ${s.terms.every((t) => t.term.length <= 4) ? styles.termsNumbered : ''} ${s.termsColumns ? styles.termsColumns : ''}`}>
                             {s.terms.map((t) => (
                               <div key={t.term} className={styles.termRow}>
                                 <dt className={styles.term} style={{ color: section.ink }}>{t.term}</dt>
@@ -460,16 +489,18 @@ export default function ProvaDetail() {
                             ))}
                           </dl>
                         )}
-                        {s.cast && (
+                        {s.cast && ((NameH) => (
                           // The characters (the Livro da Selva's), as the manual sets them: each
                           // one's drawing beside them, their name in bold opening their text. The
                           // name is a heading (inline, so it still opens the sentence), so a screen
                           // reader can go from character to character. A drawing that can't load
                           // leaves its box empty, and the box gives way: the text stands alone
                           // (while the picture code loads, a placeholder holds the box)
-                          <ul className={styles.cast}>
+                          // `castSide: 'left'`: every picture on the left (five like badges, the
+                          // symbols', where alternating sides only made the eye hunt for each name)
+                          <ul className={`${styles.cast} ${s.castSide === 'left' ? styles.castOneSide : ''}`}>
                             {s.cast.map((c) => (
-                              <li key={c.name} className={styles.castRow}>
+                              <li key={c.name} id={c.id} className={styles.castRow}>
                                 <span className={styles.castPicture}>
                                   <LoadErrorBoundary quiet>
                                     <Suspense fallback={<span aria-hidden="true" />}>
@@ -478,13 +509,15 @@ export default function ProvaDetail() {
                                   </LoadErrorBoundary>
                                 </span>
                                 <div className={styles.castText}>
-                                  <h3 className={styles.castName} style={{ color: section.ink }}>{c.name}</h3>
-                                  <p className={styles.castRest}>{c.text}</p>
+                                  <NameH className={styles.castName} style={{ color: section.ink }}>{c.name}</NameH>
+                                  <p className={styles.castRest}>{inline(c.text)}</p>
                                 </div>
                               </li>
                             ))}
                           </ul>
-                        )}
+                        // Each name a step under its section's heading, or, in a part with no heading
+                        // of its own (the symbols, under "A Simbologia"), the section level itself
+                        ))(s.heading ? CastH : SectionH)}
                         {s.steps && (
                           // Steps on one line, each joined to the next: dates (a history) or names
                           // (a chain, each part of the next)

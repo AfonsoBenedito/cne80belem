@@ -107,7 +107,7 @@ function drawRuns(draw, line, x, y, size, color, state) {
   }
 }
 
-const unmarkLang = (text) => text.replaceAll('{en}', '');
+const unmarkLang = (text) => text.replace(/\{[a-z]{2}\}/g, '');
 
 function setText(doc, size, style = 'normal', color = BLACK) {
   doc.setFont('Nunito', style);
@@ -300,6 +300,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
   // where it ends, on which page, and how wide the text beside it is
   let float = null;
   for (const sec of content.sections) {
+    // The page's overview (the Exploradores' five symbols, links to their parts) is a way around
+    // the page: on paper the parts follow one another, so it isn't printed
+    if (sec.overview) continue;
     // A part may head a section of its own with no heading (the História's word list)
     if (sec.heading || sec.part) {
       // A prova that is one recited text (the Oração do Caminheiro, the Promessa) is named by its
@@ -320,6 +323,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const kept = sec.terms.length <= 4 ? sec.terms : sec.terms.slice(0, 2);
         const terms = kept.reduce((t, w) => t + draw.split(w.text, colW - draw.width(w.term, BODY, 'bold') - 1.5 * s, BODY).length * lh, 0);
         if (h + 3 * s + lead + terms <= bottom - colTop) keep = lead + terms + 2 * s;
+      }
+      // A cast (the symbols, the characters) keeps its heading with its intro and its first row, so
+      // "Os símbolos dos Exploradores" and its sentence never end a page alone
+      if (sec.cast) {
+        const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
+        keep = lead + Math.max(18 * s, lh * 6);
       }
       // A chain of steps (the Lobitismo's Alcateia → CNE) is short and reads only whole: its
       // heading asks for room for the whole section, lead and every step
@@ -780,19 +789,32 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // Numbers (the book's parts, I to VI) sit in a column of their own, as on the page
       const numbered = sec.terms.every((t) => t.term.length <= 4);
       const termW = (t) => (numbered ? 9 * s : draw.width(t.term, BODY, 'bold') + 1.5 * s);
-      const termLines = sec.terms.map((t) => draw.split(t.text, colW - termW(t), BODY).length);
-      for (const [k, t] of sec.terms.entries()) {
+      // A word's meaning runs on after it, as on the page: its first line beside the word, the rest
+      // back at the margin (hung under each word's end, a list's left edge went ragged: "Totem"
+      // at 15mm, "Livro de Ouro" at 21mm). Numbers keep their column
+      const lines = (t) => {
         const tw = termW(t);
-        const rest = draw.split(t.text, colW - tw, BODY);
+        if (numbered) return draw.split(t.text, colW - tw, BODY).map((line) => ({ line, x: tw }));
+        const words = t.text.split(' ');
+        let n = 0;
+        while (n < words.length && tw + draw.width(words.slice(0, n + 1).join(' '), BODY) <= colW) n++;
+        const rest = n < words.length ? draw.split(words.slice(n).join(' '), colW, BODY) : [];
+        return [{ line: words.slice(0, n).join(' '), x: tw }, ...rest.map((line) => ({ line, x: 0 }))];
+      };
+      const termLines = sec.terms.map((t) => lines(t).length);
+      for (const [k, t] of sec.terms.entries()) {
+        const rest = lines(t);
         // Never one word alone at a column's foot or head: the first two go together, and the
         // last two (a list of four or fewer moves whole, with its heading, above)
         const pair = k === 0 || k === sec.terms.length - 2 ? termLines[k + 1] ?? 0 : 0;
         room(lh * (rest.length + pair));
         draw.text(t.term, left(), y + asc(BODY), BODY, 'bold', ink);
-        rest.forEach((line) => {
-          draw.text(line, left() + tw, y + asc(BODY), BODY, 'normal', BLACK);
+        rest.forEach(({ line, x }) => {
+          draw.text(line, left() + x, y + asc(BODY), BODY, 'normal', BLACK);
           y += lh;
         });
+        // A small gap between entries, as on the page, so a wrapped one reads as one
+        if (k < sec.terms.length - 1) y += 1.2 * s;
       }
       y += 2 * s;
     }
@@ -802,7 +824,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // drawings on the outside (left, then right, as the manual alternates them), so all ten fit
     // the page under the text, as in the manual; in a narrow column, one to a row, alternating
     if (sec.cast) {
-      const pairs = colW >= 150 * s;
+      // `castSide: 'left'` (the Exploradores' five symbols): one to a row, every icon on the left,
+      // as on the page; two to a row left the fifth alone with half a row empty
+      const oneSide = sec.castSide === 'left';
+      const pairs = !oneSide && colW >= 150 * s;
       const box = (pairs ? 13 : 18) * s;
       const gap = (pairs ? 2.5 : 5) * s;
       const gutter = 5 * s;
@@ -814,8 +839,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // The name's line is shorter by the name; the rest wrap at the full width
       const measure = (c) => {
         const nameW = draw.width(c.name, size, 'bold');
-        const words = c.text.trimStart().split(' ');
-        const lead = c.text.startsWith(' ') ? ' ' : '';
+        // Its titles' marks (the symbols' *scout*) drawn in italics, as on the page
+        const text = unmarkLang(c.text);
+        const words = text.trimStart().split(' ');
+        const lead = text.startsWith(' ') ? ' ' : '';
         let n = 0;
         while (n < words.length && nameW + draw.width(lead + words.slice(0, n + 1).join(' '), size) <= tw) n++;
         const rest = n < words.length ? draw.split(words.slice(n).join(' '), tw, size) : [];
@@ -832,10 +859,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const tx = imageRight ? x : x + box + gap;
         let ty = y;
         draw.text(c.name, tx, ty + asc(size), size, 'bold', ink);
-        draw.text(first, tx + nameW, ty + asc(size), size, 'normal', BLACK);
+        const marks = { italic: false };
+        drawRuns(draw, first, tx + nameW, ty + asc(size), size, BLACK, marks);
         for (const line of rest) {
           ty += rowLh;
-          draw.text(line, tx, ty + asc(size), size, 'normal', BLACK);
+          drawRuns(draw, line, tx, ty + asc(size), size, BLACK, marks);
         }
       };
       const per = pairs ? 2 : 1;
@@ -844,7 +872,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const row = sec.cast.slice(i, i + per).map(measure);
         const rowH = Math.max(...row.map((m) => m.h));
         room(rowH);
-        row.forEach((m, j) => cell(m, left() + j * (cellW + gutter), pairs ? j === 1 : (i / per) % 2 === 1));
+        row.forEach((m, j) => cell(m, left() + j * (cellW + gutter), oneSide ? false : pairs ? j === 1 : (i / per) % 2 === 1));
         y += rowH + (pairs ? 2 : 4) * s;
       }
     }
