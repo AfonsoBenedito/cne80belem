@@ -98,16 +98,20 @@ function numbered(seccao) {
 // marks. `state` carries an open mark on to the next line
 function drawRuns(draw, line, x, y, size, color, state) {
   let cx = x;
-  for (const [n, part] of line.split('*').entries()) {
-    if (n) state.italic = !state.italic;
+  // `**` toggles bold in the secção's ink (state.ink), `*` italics; a run over a wrap carries on
+  for (const part of line.split(/(\*\*|\*)/)) {
+    if (part === '**') { state.bold = !state.bold; continue; }
+    if (part === '*') { state.italic = !state.italic; continue; }
     if (!part) continue;
-    const style = state.italic ? 'italic' : 'normal';
-    draw.text(part, cx, y, size, style, color);
+    const style = state.bold ? 'bold' : state.italic ? 'italic' : 'normal';
+    draw.text(part, cx, y, size, style, state.bold && state.ink ? state.ink : color);
     cx += draw.width(part, size, style);
   }
 }
 
-const unmarkLang = (text) => text.replace(/\{[a-z]{2}\}/g, '');
+// The language marks are the page's only; a non-breaking hyphen (the page's "saber‑ser", kept
+// whole) is a plain one on paper: jsPDF draws nothing for it, and its lines break at spaces only
+const unmarkLang = (text) => text.replace(/\{[a-z]{2}\}/g, '').replace(/\u2011/g, '-');
 
 function setText(doc, size, style = 'normal', color = BLACK) {
   doc.setFont('Nunito', style);
@@ -312,6 +316,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A heading keeps its first paragraph's opening: two lines, or all three of a paragraph of
+      // three (which moves whole, below), so the two never part
+      if (keep === lh * 2 && sec.text) {
+        const firstBlock = toBlocks(sec.text)[0];
+        if (firstBlock?.kind === 'p' && firstBlock.lines.length === 1 && draw.split(firstBlock.lines[0], colW, BODY).length === 3) keep = lh * 3;
+      }
       // A quotation (the Última Mensagem): the heading takes its introduction and the passage's
       // first lines with it
       if (sec.quote) keep = (sec.intro ? draw.split(sec.intro, colW, BODY).length * lh + 3.5 * s : 0) + lh * 3 + 3.5 * s;
@@ -684,17 +694,20 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           const h = block.lines.reduce((t, line) => t + splitRecited(line, textW - hang).length * rowH, 0) + (block.lines.length - 1) * verseGap;
           if (h <= bottom - colTop) room(h);
         }
-        const marks = { italic: false };
+        const marks = { italic: false, bold: false, ink };
         block.lines.forEach((line, n) => {
           const lines = splitRecited(unmarkLang(line), textW - hang);
           // A prayer's last line ("Ámen.") never starts a page alone: its second-to-last line
           // asks for room for both
           const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], textW - hang, size).length : 0;
           lines.forEach((wrapped, i) => {
-            // No paragraph starts or ends a page with a single line of it
+            // No paragraph starts or ends a page with a single line of it: two together at its
+            // start and at its end, so a paragraph of three moves whole (two at the start, then two
+            // at the end, left its first line alone at the foot of a page)
             const last = lines.length - i;
             const step = verse ? rowH : lineH;
-            room(step * ((lines.length > 1 && (i === 0 || last === 2) ? 2 : 1) + (last === 1 ? keepNext : 0)));
+            const need = lines.length === 3 && i === 0 ? 3 : lines.length > 1 && (i === 0 || last === 2) ? 2 : 1;
+            room(step * (need + (last === 1 ? keepNext : 0)));
             drawRuns(draw, wrapped, left() + (i ? hang : 0), y + asc(size), size, BLACK, marks);
             y += step;
           });
@@ -705,7 +718,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const indent = (block.kind === 'ol' ? 7 : 5) * s;
         block.lines.forEach((item, i) => {
           const wrapped = splitRecited(unmarkLang(item), textW - indent);
-          const marks = { italic: false };
+          const marks = { italic: false, bold: false, ink };
           // A list's last item never starts a page alone: the one before it asks for room for both
           const next = i === block.lines.length - 2 ? Math.min(splitRecited(block.lines[i + 1], textW - indent).length, 2) : 0;
           room(lineH * (Math.min(wrapped.length, 2) + next));
@@ -859,7 +872,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const tx = imageRight ? x : x + box + gap;
         let ty = y;
         draw.text(c.name, tx, ty + asc(size), size, 'bold', ink);
-        const marks = { italic: false };
+        const marks = { italic: false, bold: false, ink };
         drawRuns(draw, first, tx + nameW, ty + asc(size), size, BLACK, marks);
         for (const line of rest) {
           ty += rowLh;
@@ -873,7 +886,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const rowH = Math.max(...row.map((m) => m.h));
         room(rowH);
         row.forEach((m, j) => cell(m, left() + j * (cellW + gutter), oneSide ? false : pairs ? j === 1 : (i / per) % 2 === 1));
-        y += rowH + (pairs ? 2 : 4) * s;
+        // A gap between rows only: after the last, the section's own gap follows (both together
+        // sent the Pioneiros' "O azul do céu e do mar" to a page of its own, 1.3mm short)
+        y += rowH + (i + per < sec.cast.length ? (pairs ? 2 : 4) * s : 0);
       }
     }
     // Steps on one line (the Lobitismo), as on the page: a date or a dot in the secção's ink at
@@ -901,7 +916,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           draw.text(t, tx, y + asc(BODY), BODY, 'bold', BLACK);
           y += lh;
         }
-        const marks = { italic: false };
+        const marks = { italic: false, bold: false, ink };
         for (const t of text) {
           drawRuns(draw, t, tx, y + asc(BODY), BODY, BLACK, marks);
           y += lh;
@@ -944,7 +959,7 @@ function footer(draw, g, page, { logo, label }) {
 }
 
 // Whether any of these provas marks a title of a work (`*…*`), so the italic is needed
-const hasItalics = (seccao, list) => list.some((p) => JSON.stringify(getProvaContent(seccao, p.slug) ?? '').includes('*'));
+const hasItalics = (seccao, list) => list.some((p) => /(^|[^*])\*(?!\*)/.test(JSON.stringify(getProvaContent(seccao, p.slug) ?? '')));
 
 async function newDoc(title, orientation) {
   // `compress`: text, fonts and the logo's pixels deflated (they went in raw)
