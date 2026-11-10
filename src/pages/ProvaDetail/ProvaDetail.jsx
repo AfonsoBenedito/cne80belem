@@ -117,7 +117,9 @@ export default function ProvaDetail() {
   };
 
   // A line with its titles of works in italics (`*…*`, English ones `*{en}…*`)
-  const inline = (line) => inlineRuns(line).map((r, i) => (r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text));
+  const inline = (line) => inlineRuns(line).map((r, i) =>
+    r.bold ? <strong key={i} className={styles.inlineStrong} style={{ color: section.ink }}>{r.text}</strong> : r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text
+  );
 
   // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
   // `labels` (the Cargos prova): a line that opens a list ("Ao Guia compete:") is set as its label
@@ -457,6 +459,10 @@ export default function ProvaDetail() {
                                     </span>
                                     <span className={styles.overviewName} style={{ color: section.ink }}>{o.name}</span>
                                     <span className={styles.overviewPhrase}>{o.phrase}</span>
+                                    {/* What it stands for in a word (`tag`, the Pioneiros' verbs: Saber,
+                                        Querer, Agir, Acreditar), at the row's end in the secção's ink;
+                                        a pause before it for a screen reader */}
+                                    {o.tag && <span className={styles.overviewTag} style={{ color: section.ink }}><span className={styles.srOnly}>, </span>{o.tag}</span>}
                                   </a>
                                 </li>
                               ))}

@@ -1412,6 +1412,22 @@ ol.list {
   color: var(--color-gray-600);
 }
 
+.overviewLink:has(.overviewTag) {
+  grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+}
+
+.overviewLink:has(.overviewTag) .overviewName,
+.overviewLink:has(.overviewTag) .overviewPhrase {
+  grid-column: 2;
+}
+
+.overviewTag {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+}
+
 .overviewLink:active .overviewIcon {
   transform: scale(0.95);
 }
@@ -1605,4 +1621,10 @@ ol.list {
 .swatches + .paragraph,
 .terms + .paragraph {
   margin-top: var(--spacing-lg);
+}
+
+/* A word set apart in the secção's ink (`**…**`: the Pioneiros' verbs, as their list sets them;
+   the Icthus acrostic's initials) */
+.inlineStrong {
+  font-weight: 800;
 }

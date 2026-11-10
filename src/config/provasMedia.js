@@ -46,6 +46,10 @@ import simbVara from '../assets/images/provas/simbolos-exploradores/vara.png';
 import simbChapeu from '../assets/images/provas/simbolos-exploradores/chapeu.png';
 import simbCantil from '../assets/images/provas/simbolos-exploradores/cantil.png';
 import simbEstrela from '../assets/images/provas/simbolos-exploradores/estrela.png';
+import simbGota from '../assets/images/provas/simbolos-pioneiros/gota-de-agua.png';
+import simbRosa from '../assets/images/provas/simbolos-pioneiros/rosa-dos-ventos.png';
+import simbMachada from '../assets/images/provas/simbolos-pioneiros/machada.png';
+import simbIcthus from '../assets/images/provas/simbolos-pioneiros/icthus.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
 import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
@@ -205,6 +209,12 @@ export const badges = {
   simbChapeu: () => [{ name: null, src: simbChapeu, w: 213, h: 214, alt: '' }],
   simbCantil: () => [{ name: null, src: simbCantil, w: 215, h: 214, alt: '' }],
   simbEstrela: () => [{ name: null, src: simbEstrela, w: 214, h: 214, alt: '' }],
+  // Símbolos e Mística dos Pioneiros: the Manual do Dirigente's icons for the 3ª secção's four
+  // symbols, cut from its diagram at 6×, as the Exploradores' are; no alt, the name heads each
+  simbGota: () => [{ name: null, src: simbGota, w: 216, h: 216, alt: '' }],
+  simbRosa: () => [{ name: null, src: simbRosa, w: 216, h: 216, alt: '' }],
+  simbMachada: () => [{ name: null, src: simbMachada, w: 216, h: 215, alt: '' }],
+  simbIcthus: () => [{ name: null, src: simbIcthus, w: 216, h: 215, alt: '' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },
