@@ -26,14 +26,23 @@ function fileSlug(title) {
 }
 
 // The cover's numbered song list. One centred column while it fits between top and bottom; past
-// that it flows into two or three columns, and only then shrinks, so any number of songs stays on
-// the cover. Titles too long for their column are cut with an ellipsis.
+// that it flows into two or three columns, and only then shrinks (to 60%; the landscape cover,
+// wide enough, takes a fourth column first), so any number of songs stays on the cover. Below
+// 60% only when nothing else fits: the list never runs over the footer (every song, a long title
+// and a description did, on the landscape cover). Titles too long for their column are cut with
+// an ellipsis.
 function drawCoverIndex(doc, songs, { cx, top, bottom, width, fontSize, lineH, indent, dotGap, titleGap }) {
   const avail = Math.max(bottom - top, lineH);
-  const fits = (cols) => (Math.ceil(songs.length / cols) - 1) * lineH <= avail;
-  const cols = [1, 2, 3].find(fits) || 3;
+  const need = (cols) => (Math.ceil(songs.length / cols) - 1) * lineH;
+  const maxCols = width >= 200 ? 4 : 3;
+  let cols = [1, 2, 3].find((c) => need(c) <= avail);
+  let scale = 1;
+  if (!cols) {
+    const wide = [3, 4].filter((c) => c <= maxCols);
+    cols = wide.find((c) => avail / need(c) >= 0.6) ?? maxCols;
+    scale = avail / need(cols);
+  }
   const rows = Math.ceil(songs.length / cols);
-  const scale = fits(cols) ? 1 : Math.max(avail / ((rows - 1) * lineH), 0.6);
   const size = fontSize * scale;
   const step = lineH * scale;
   const colW = width / cols;
