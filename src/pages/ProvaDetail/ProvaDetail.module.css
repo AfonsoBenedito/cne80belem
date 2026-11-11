@@ -1009,6 +1009,8 @@
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-gray-700);
+  /* No word left alone on a step's last line ("…o CNE tem / 20.") */
+  text-wrap: pretty;
 }
 
 /* A step's second paragraph, a paragraph's step below its first */
@@ -1619,8 +1621,6 @@ ol.list {
 /* The pointer to another prova after a section's colours, words or steps (the História's
    1908–1920): a pause from the list it follows, as between paragraphs */
 .steps + .paragraph,
-.swatches + .paragraph,
-.terms + .paragraph {
 /* Things of one kind told the same way (the units): two to a row where two fit at the paragraphs'
    measure, else one; each its name over its facts, a hairline over it, no box (a card each would
    make four equal tiles of the page's one table). The columns come from the room there is, in
@@ -1686,6 +1686,8 @@ ol.list {
   line-height: 1.55;
 }
 
+.swatches + .paragraph,
+.terms + .paragraph {
   margin-top: var(--spacing-lg);
 }
 
