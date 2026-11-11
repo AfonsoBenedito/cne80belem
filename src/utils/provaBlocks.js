@@ -43,6 +43,18 @@ const INLINE = /\*\*([^*]+)\*\*|\*(?:\{([a-z]{2})\})?([^*]+)\*|\^([^^]+)\^|~([^~
 // the spaces before the comma are no-break ones, on the page and in the PDF. On the page its
 // verses' hyphen is a no-break one too ("5,1-" / "11)" was a break the browser took)
 export const keepBook = (cite) => cite.replace(/^[^,]*/, (book) => book.replace(/ /g, '\u00A0'));
+// No word alone on a block's last line ("…com uma festa, um jantar ou uma exposição de /
+// fotografias."): `text-wrap: pretty` leaves some in Chrome at 320px, so the last two words are
+// joined. Only when they're short together (24 characters); a line of one or two words is left as
+// it is. The PDF joins them with a no-break space; the page with `PAIR`, a mark it sets as a span
+// that keeps the two together only while its column holds them (at 200% text on a 320px phone a
+// no-break pair didn't fit, and the browser split "Interne / t." instead)
+export const PAIR = '\uE000';
+export const keepLastPair = (line, joiner = '\u00A0') => line.replace(/ (\S+ ?)$/, (m, last) => {
+  const before = line.slice(0, line.length - m.length);
+  const prev = before.slice(before.lastIndexOf(' ') + 1);
+  return before.includes(' ') && (prev + last).length <= 24 ? joiner + last : m;
+});
 export function inlineRuns(line) {
   const runs = [];
   let at = 0;

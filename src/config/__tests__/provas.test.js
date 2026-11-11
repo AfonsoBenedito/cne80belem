@@ -3,7 +3,7 @@ import { provas } from '../provas';
 import { provasContent } from '../provasContent';
 import { seccoes } from '../seccoes';
 import { badges } from '../provasMedia';
-import { toBlocks } from '../../utils/provaBlocks';
+import { toBlocks, keepLastPair } from '../../utils/provaBlocks';
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 
@@ -103,5 +103,16 @@ describe('saudação drawings', () => {
   const items = ['saudacoes', 'sinal', 'sinalLobito', 'aperto'].flatMap((m) => badges[m]('exploradores'));
   it.each(items.map((f) => [basename(f.src).split('?')[0], f]))('%s has its file\'s size', (name, f) => {
     expect([f.w, f.h]).toEqual(pngSize(dir + name));
+  });
+});
+
+describe('keepLastPair', () => {
+  it('holds a short last pair together with a no-break space', () => {
+    expect(keepLastPair('um jantar ou uma exposição de fotografias.')).toBe('um jantar ou uma exposição de\u00A0fotografias.');
+  });
+  it('leaves a long last pair, and one- or two-word lines, alone', () => {
+    expect(keepLastPair('passa a ser o Empreendimento extraordinariamente')).toBe('passa a ser o Empreendimento extraordinariamente');
+    expect(keepLastPair('Preparação')).toBe('Preparação');
+    expect(keepLastPair('Duas palavras')).toBe('Duas palavras');
   });
 });
