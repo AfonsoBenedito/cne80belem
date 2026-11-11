@@ -86,7 +86,7 @@ export default function TugOfWar({
         {trimesters.map((t) => {
           const sums = patrulhas.map((p) => t.activities.reduce((n, d) => n + dayTotal(d, p.key), 0));
           const scored = t.activities.some((d) => d.points);
-          const over = !mock && t.activities.at(-1)?.date < today;
+          const over = !mock && t.last < today;
           const tTie = sums[0] === sums[1];
           const w = sums[0] > sums[1] ? 0 : 1;
           const status = !scored ? 'Por jogar' : tTie ? 'Empate' : over ? 'Ganhou' : 'Vai à frente';

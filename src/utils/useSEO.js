@@ -26,13 +26,16 @@ function setMeta(attr, name, content) {
  * @param {string} [opts.image]       Absolute or root-relative OG image URL
  * @param {string} [opts.keywords]    Comma-separated keywords (used by Bing etc.)
  * @param {boolean} [opts.noindex]    Ask search engines not to index this address (not-found pages)
+ * @param {string} [opts.canonicalPath] The page's canonical address when another page has the same
+ *                                      content (a shared prova); the build bakes the same one into its file
  */
-export function useSEO({ title, rawTitle, description, image, keywords, noindex = false } = {}) {
+export function useSEO({ title, rawTitle, description, image, keywords, noindex = false, canonicalPath } = {}) {
   const { pathname } = useLocation();
 
   useEffect(() => {
     const fullTitle = rawTitle || (title ? `${title} | ${SITE_NAME}` : SITE_NAME);
-    const fullUrl = `${BASE_URL}${pathname}`;
+    const path = canonicalPath || (pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname);
+    const fullUrl = `${BASE_URL}${path}`;
     const fullImg = image
       ? image.startsWith('http')
         ? image
@@ -66,5 +69,5 @@ export function useSEO({ title, rawTitle, description, image, keywords, noindex 
       document.title = SITE_NAME;
       if (noindex) document.querySelector('meta[name="robots"]')?.remove();
     };
-  }, [title, rawTitle, description, image, keywords, noindex, pathname]);
+  }, [title, rawTitle, description, image, keywords, noindex, canonicalPath, pathname]);
 }

@@ -4,6 +4,7 @@ import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
+import { provaCanonicalPath } from '../../config/canonical';
 import { useSEO } from '../../utils/useSEO';
 import { toBlocks, leadsList, inlineRuns, keepLastPair, PAIR } from '../../utils/provaBlocks';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
@@ -68,6 +69,7 @@ export default function ProvaDetail() {
   useSEO(provaItem && section ? {
     title: `${provaItem.title} - ${section.label}`,
     description: `${provaItem.title}: prova de ${provaGroup.group} da ${section.label} do Agrupamento 80.`,
+    canonicalPath: provaCanonicalPath(seccao, slug),
   } : {});
 
   if (!section || !sectionProvas) return <Navigate to="/" replace />;

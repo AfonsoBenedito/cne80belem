@@ -21,25 +21,27 @@ export const categorias = [
   { key: 'farda', label: 'Farda', emoji: '👕', about: 'Vir sem a farda completa tira pontos à patrulha.', tip: 'Preparem a farda na véspera: lenço, camisa e tudo!' },
 ];
 
-// `mock`: the points are invented, to try the page with a whole year of data (the Raid's are
-// real). The page says so in its band; set it to false once the sheet's real points are in.
+// `mock`: true shows the page with invented points (the band says "Dados de exemplo"). The points
+// are the sheet's own; it adds each day's faltas to its TOTAL column as if they were points, so
+// its day and trimester totals are off by the faltas: the trimester row (Pontos do Trimestre)
+// subtracts them, as here.
 export const pontuacoes = {
-  mock: true,
+  mock: false,
   unidade: 'Expedição',
   year: '2026/2027',
   trimesters: [
     {
       label: '1º Trimestre',
       activities: [
-        { date: '2026-10-03', name: 'Abertura do Ano 2026/2027' },
-        { date: '2026-10-10', name: 'Venda de Calendários', points: { lobo: { atividade: 25, sala: 10, grito: 1, presencas: -3, farda: -1 }, esquilo: { atividade: 50, sala: 5, grito: 3 } } },
-        { date: '2026-10-17', name: 'Elaboração do Programa do Trimestre' },
-        { date: '2026-10-24', name: 'Variedade de Jogos', points: { lobo: { atividade: 50, sala: 2, casa: 13, grito: 3 }, esquilo: { atividade: 30, casa: 2, presencas: -2 } } },
-        { date: '2026-10-30', name: 'Acantonamento', points: { lobo: { atividade: 50, sala: 3, casa: 7, grito: 8, presencas: -2 }, esquilo: { atividade: 22, sala: 7, grito: 10, presencas: -5 } } },
+        { date: '2026-10-03', name: 'Abertura do Ano 2026/2027', points: { lobo: { presencas: -1 }, esquilo: { presencas: -1 } } },
+        { date: '2026-10-10', name: 'Venda de Calendários', points: { lobo: { presencas: -1 }, esquilo: { presencas: -1 } } },
+        { date: '2026-10-17', name: 'Elaboração do Programa do Trimestre', points: { lobo: {}, esquilo: { presencas: -1 } } },
+        { date: '2026-10-24', name: 'Variedade de Jogos', points: { lobo: { atividade: 30, presencas: -2 }, esquilo: { atividade: 15, grito: 5, presencas: -2 } } },
+        { date: '2026-10-30', name: 'Acantonamento', points: { lobo: { sala: 10, presencas: -3 }, esquilo: { sala: 20, presencas: -4 } } },
         {
           date: '2026-11-07',
           name: 'Raid',
-          points: { lobo: { atividade: 25 }, esquilo: { atividade: 50 } },
+          points: { lobo: { atividade: 25, grito: 5, presencas: -1 }, esquilo: { atividade: 50, presencas: -1 } },
           details: {
             note: 'Quem fez mais pontos no Raid ganhou 50 pontos na Atividade principal; a outra patrulha ganhou 25.',
             groups: [
@@ -47,7 +49,7 @@ export const pontuacoes = {
                 label: 'Tempo',
                 rows: [
                   {
-                    label: 'Chegada (hora limite 18:45)',
+                    label: 'Chegada (início 16:15, hora limite 18:45)',
                     lobo: { result: '18:35, 10 min antes', points: 0 },
                     esquilo: { result: '18:50, 5 min atrasados', points: -5 },
                   },
@@ -86,36 +88,36 @@ export const pontuacoes = {
             ],
           },
         },
-        { date: '2026-11-14', name: 'Atividade relacionada com o Imaginário', points: { lobo: { atividade: 25, sala: 2, casa: 4, grito: 2, presencas: -4, farda: -1 }, esquilo: { atividade: 50, sala: 8, casa: 6 } } },
+        { date: '2026-11-14', name: 'Competição de Jangadas' },
         { date: '2026-11-21', name: 'Formação de Guias (Núcleo)' },
-        { date: '2026-11-28', name: 'Banco Alimentar', points: { lobo: { atividade: 25, sala: 9, presencas: -2, farda: -2 }, esquilo: { atividade: 50, sala: 8, casa: 5, presencas: -1 } } },
-        { date: '2026-12-05', name: 'Dia da Sede / Material de Campo', points: { lobo: { atividade: 50, sala: 6, casa: 7, grito: 7 }, esquilo: { atividade: 30, sala: 2, presencas: -4, farda: -1 } } },
-        { date: '2026-12-12', name: "Preparação do ACANAT '26", points: { lobo: { atividade: 50, sala: 7, casa: 2, grito: 8, presencas: -1 }, esquilo: { atividade: 25, sala: 4, casa: 4, grito: 2, presencas: -2, farda: -2 } } },
-        { date: '2026-12-19', name: "ACANAT '26", points: { lobo: { atividade: 50, sala: 14, casa: 4, grito: 6, presencas: -2 }, esquilo: { atividade: 20, sala: 13, casa: 2, grito: 7, presencas: -2, farda: -2 } } },
+        { date: '2026-11-28', name: 'Banco Alimentar' },
+        { date: '2026-12-05', name: 'Dia da Sede / Material de Campo' },
+        { date: '2026-12-12', name: "Preparação do ACANAT '26" },
+        { date: '2026-12-19', name: "ACANAT '26" },
       ],
     },
     {
       label: '2º Trimestre',
       activities: [
-        { date: '2027-01-09', name: 'Ceia de Reis', points: { lobo: { atividade: 50, sala: 7, casa: 3, grito: 3, presencas: -1 }, esquilo: { atividade: 20, sala: 9, casa: 2, grito: 3, presencas: -2, farda: -2 } } },
-        { date: '2027-01-30', name: 'INDABA', points: { lobo: { atividade: 25, sala: 7, casa: 1, presencas: -4, farda: -2 }, esquilo: { atividade: 50, sala: 4, casa: 3, grito: 1 } } },
-        { date: '2027-02-06', name: "ACACAR '27", points: { lobo: { atividade: 20, sala: 11, casa: 2, grito: 1, presencas: -2, farda: -2 }, esquilo: { atividade: 50, sala: 12, casa: 10, presencas: -2 } } },
+        { date: '2027-01-09', name: 'Ceia de Reis' },
+        { date: '2027-01-30', name: 'INDABA' },
+        { date: '2027-02-06', name: "ACACAR '27" },
         { date: '2027-03-05', name: 'Vigília' },
-        { date: '2027-03-06', name: 'Promessas', points: { lobo: { atividade: 50, sala: 14, casa: 5, grito: 4, presencas: -1 }, esquilo: { atividade: 25, casa: 1, grito: 3, presencas: -2, farda: -1 } } },
-        { date: '2027-03-20', name: "ACAGRUP '27", points: { lobo: { atividade: 25, sala: 3, casa: 6, grito: 1, presencas: -3, farda: -2 }, esquilo: { atividade: 51, sala: 2, casa: 2, grito: 10, presencas: -2, farda: -1 } } },
+        { date: '2027-03-06', name: 'Promessas' },
+        { date: '2027-03-20', name: "ACAGRUP '27" },
       ],
     },
     {
       label: '3º Trimestre',
       activities: [
         { date: '2027-04-10', name: 'Indaba' },
-        { date: '2027-04-17', name: 'Início do Trimestre', points: { lobo: { atividade: 30, sala: 4, casa: 1, grito: 3, presencas: -5, farda: -2 }, esquilo: { atividade: 50, sala: 11, casa: 1, presencas: -2 } } },
-        { date: '2027-04-24', name: 'São Jorge', points: { lobo: { atividade: 51, sala: 7, casa: 4, grito: 10, presencas: -1, farda: -1 }, esquilo: { atividade: 20, sala: 3, casa: 3, grito: 5, presencas: -3 } } },
-        { date: '2027-05-01', name: 'Venda de Flores', points: { lobo: { atividade: 50, sala: 5, casa: 8, grito: 8, farda: -1 }, esquilo: { atividade: 25, sala: 3, casa: 2, presencas: -2 } } },
-        { date: '2027-05-08', name: 'Lx Aventura', points: { lobo: { atividade: 25, sala: 8, grito: 1, presencas: -4 }, esquilo: { atividade: 50, sala: 12, casa: 6, grito: 7, presencas: -2, farda: -1 } } },
+        { date: '2027-04-17', name: 'Início do Trimestre' },
+        { date: '2027-04-24', name: 'São Jorge' },
+        { date: '2027-05-01', name: 'Venda de Flores' },
+        { date: '2027-05-08', name: 'Lx Aventura' },
         { date: '2027-05-15', name: 'Momento Espiritual' },
-        { date: '2027-05-29', name: 'Banco Alimentar', points: { lobo: { atividade: 30, sala: 2, presencas: -2, farda: -1 }, esquilo: { atividade: 50, sala: 1, casa: 3, grito: 9 } } },
-        { date: '2027-06-05', name: 'Arraial de SFX', points: { lobo: { atividade: 59, sala: 3, casa: 10, grito: 10, presencas: -2 }, esquilo: { atividade: 20, sala: 2, presencas: -2 } } },
+        { date: '2027-05-29', name: 'Banco Alimentar' },
+        { date: '2027-06-05', name: 'Arraial de SFX' },
         { date: '2027-06-19', name: '47º Aniversário do Agrupamento' },
       ],
     },
