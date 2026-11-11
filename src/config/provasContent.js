@@ -785,7 +785,7 @@ export const provasContent = {
     sections: [
       {
         heading: 'A Expedição',
-        text: 'A unidade dos Exploradores chama-se Expedição. Tem de **duas** a **cinco** Patrulhas e é animada pela Equipa de Animação: o Chefe de Expedição e o seu Adjunto, o Assistente de Agrupamento e os instrutores.\n\nA Expedição reúne-se na **Base**, o ponto de partida e de chegada das suas aventuras.',
+        text: 'A unidade dos Exploradores chama‑se Expedição. Tem de **duas** a **cinco** Patrulhas e é animada pela Equipa de Animação: o Chefe de Expedição e o seu Adjunto, o Assistente de Agrupamento e os instrutores.\n\nA Expedição reúne‑se na **Base**, o ponto de partida e de chegada das suas aventuras.',
       },
       {
         heading: 'A Patrulha',
@@ -800,12 +800,12 @@ export const provasContent = {
       },
       {
         heading: 'Guia, Sub-Guia e cargos',
-        text: 'Cada Patrulha é dirigida por um Guia, escolhido pelos seus membros. Para o ajudar, e substituir quando falta, o Guia escolhe um Sub‑Guia.\n\nOs outros elementos têm um cargo na Patrulha.\n\nDe entre os Guias, a Expedição elege, por voto secreto, o Guia de Expedição.\n\nNos Escuteiros Marítimos, os Exploradores chamam-se Moços, a Expedição Flotilha, a Patrulha Tripulação e o Guia Timoneiro; nos Escuteiros do Ar, chamam-se Aventureiros, e o Guia chama-se Asa.',
+        text: 'Cada Patrulha é dirigida por um Guia, escolhido pelos seus membros. Para o ajudar, e substituir quando falta, o Guia escolhe um Sub‑Guia.\n\nOs outros elementos têm um cargo na Patrulha.\n\nDe entre os Guias, a Expedição elege, por voto secreto, o Guia de Expedição.\n\nNos Escuteiros Marítimos, os Exploradores chamam‑se Moços, a Expedição Flotilha, a Patrulha Tripulação e o Guia Timoneiro; nos Escuteiros do Ar, chamam‑se Aventureiros, e o Guia chama‑se Asa.',
         more: 'Cargos da Patrulha',
       },
       {
         heading: 'As reuniões e os conselhos',
-        text: 'As decisões da Patrulha e da Expedição tomam-se em reunião e nos conselhos que todas as unidades têm, aqui como a Expedição os vive:',
+        text: 'As decisões da Patrulha e da Expedição tomam‑se em reunião e nos conselhos que todas as unidades têm, aqui como a Expedição os vive:',
         terms: [
           { term: 'Reunião de Patrulha', text: 'só os elementos da Patrulha, que nela marcam os seus objetivos e preparam as suas propostas e tarefas. Na Patrulha validam‑se também os Trilhos de cada um. O Guia leva depois as ideias da Patrulha ao Conselho de Guias.' },
           { term: 'Conselho de Guias', text: 'os Guias e os Sub‑Guias, com o Chefe de Expedição, o seu Adjunto e o Assistente de Agrupamento. Decide a vida do dia a dia da Expedição, o seu plano de atividades e o progresso das Patrulhas, e valida as etapas do progresso de cada um e a decisão de fazer a Promessa. Votam os Guias e os Sub‑Guias; o Chefe aconselha, e só pode vetar uma decisão por razões graves.' },
@@ -818,7 +818,7 @@ export const provasContent = {
       },
       {
         heading: 'A Aventura',
-        text: 'O projeto dos Exploradores chama-se Aventura: um conjunto de atividades que a Expedição escolhe, prepara, vive e avalia.',
+        text: 'O projeto dos Exploradores chama‑se Aventura: um conjunto de atividades que a Expedição escolhe, prepara, vive e avalia.',
       },
     ],
   },
