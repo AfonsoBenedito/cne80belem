@@ -537,9 +537,14 @@ a.funcaoZoom {
   gap: var(--spacing-lg);
 }
 
-.etapas {
+.etapasBox {
   flex: 1 1 20rem;
+  container-type: inline-size;
+}
+
+.etapas {
   list-style: none;
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--spacing-sm);
@@ -567,6 +572,27 @@ a.funcaoZoom {
   }
 }
 
+/* An etapa's name is never hyphenated ("Desprendi-mento", "Desco-berta" under the Pioneiros' and
+   Exploradores' insígnias): where four don't fit across (28rem, by the etapas' own width), they go
+   two by two, and one by one where two don't (a phone at 200% text); a word wider still than its
+   tile breaks rather than spill onto the next */
+.etapa .funcaoName {
+  hyphens: manual;
+}
+
+@container (width < 28rem) {
+  .etapas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--spacing-md);
+  }
+}
+
+@container (width < 12rem) {
+  .etapas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .etapaNumber {
   display: grid;
   place-items: center;
@@ -587,8 +613,13 @@ a.funcaoZoom {
 }
 
 .completaImg {
-  height: 8rem;
-  width: auto;
+  /* By its width, its height following, so it stays round when the column is narrower than
+     8rem (at 200% text on a phone it was squeezed into an oval); a fixed width capped at 100%,
+     not min(8rem, 100%), whose share of a figure sized by it let the figure take the image's
+     full 262px and leave the etapas too narrow for four across on a desktop */
+  width: 8rem;
+  max-width: 100%;
+  height: auto;
 }
 
 .srOnly {
@@ -611,5 +642,62 @@ a.funcaoZoom {
   .progresso,
   .dirigentes {
     padding-right: 48px;
+  }
+}
+
+/* A cast picture that opens in the viewer (`zoom` on its cast item, the first Jamboree's photo):
+   the picture itself is the button, a small magnifier in its corner, as the posters' mark */
+.pictureZoom {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: none;
+  cursor: zoom-in;
+}
+
+.pictureZoom img {
+  display: block;
+  border-radius: var(--radius-xs);
+  transition: transform var(--transition-interactive);
+}
+
+.pictureZoom:active img {
+  transform: scale(0.97);
+}
+
+.pictureZoom:focus-visible {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 3px;
+}
+
+.pictureZoomMark {
+  position: absolute;
+  right: var(--spacing-xs);
+  bottom: var(--spacing-xs);
+  display: inline-flex;
+  padding: 0.3rem;
+  color: var(--color-gray-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (hover: hover) {
+  .pictureZoom:hover .pictureZoomMark {
+    color: var(--color-gray-900);
+    border-color: var(--color-gray-400);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pictureZoom img {
+    transition: none;
+  }
+
+  .pictureZoom:active img {
+    transform: none;
   }
 }

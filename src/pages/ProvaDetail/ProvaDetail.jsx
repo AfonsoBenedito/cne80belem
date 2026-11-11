@@ -540,19 +540,21 @@ export default function ProvaDetail() {
                           // (while the picture code loads, a placeholder holds the box)
                           // `castSide: 'left'`: every picture on the left (five like badges, the
                           // symbols', where alternating sides only made the eye hunt for each name)
-                          <ul className={`${styles.cast} ${s.castSide === 'left' ? styles.castOneSide : ''} ${s.castLarge ? styles.castLarge : ''}`}>
+                          <ul className={`${styles.cast} ${s.castSide === 'left' ? styles.castOneSide : ''} ${s.castLarge ? styles.castLarge : ''} ${s.castColumn ? styles.castColumn : ''}`}>
                             {s.cast.map((c) => (
                               <li key={c.name} id={c.id} className={styles.castRow}>
                                 <span className={styles.castPicture}>
                                   <LoadErrorBoundary quiet>
                                     <Suspense fallback={<span aria-hidden="true" />}>
-                                      <ProvaMedia media={c.media} seccao={seccao} picture />
+                                      <ProvaMedia media={c.media} seccao={seccao} picture zoom={c.zoom} title={c.name} caption={c.caption} kind={c.kind} />
                                     </Suspense>
                                   </LoadErrorBoundary>
                                 </span>
                                 <div className={styles.castText}>
                                   <NameH className={styles.castName} style={{ color: section.ink }}>{c.name}</NameH>
                                   <p className={styles.castRest}>{inline(c.text)}</p>
+                                  {/* A line of its own under the text (`line`: an area's three trilhos) */}
+                                  {c.line && <p className={styles.castLine}>{inline(c.line)}</p>}
                                 </div>
                               </li>
                             ))}

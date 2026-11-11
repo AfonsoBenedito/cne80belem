@@ -52,6 +52,15 @@ import simbRosa from '../assets/images/provas/simbolos-pioneiros/rosa-dos-ventos
 import simbMachada from '../assets/images/provas/simbolos-pioneiros/machada.png';
 import simbIcthus from '../assets/images/provas/simbolos-pioneiros/icthus.png';
 import jotaJoti from '../assets/images/provas/projetos-pioneiros/jota-joti.png';
+import insigniaMundial from '../assets/images/provas/fraternidade/insignia-mundial.png';
+import areaFisico from '../assets/images/provas/trilhos/area-fisico.png';
+import areaAfetivo from '../assets/images/provas/trilhos/area-afetivo.png';
+import areaCaracter from '../assets/images/provas/trilhos/area-caracter.png';
+import areaEspiritual from '../assets/images/provas/trilhos/area-espiritual.png';
+import areaIntelectual from '../assets/images/provas/trilhos/area-intelectual.png';
+import areaSocial from '../assets/images/provas/trilhos/area-social.png';
+import jogoDePista from '../assets/images/provas/trilhos/jogo-de-pista.png';
+import mapaOmme from '../assets/images/provas/fraternidade/mapa-omme.png';
 import jamboree2027 from '../assets/images/provas/projetos-pioneiros/jamboree-2027.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
@@ -229,6 +238,24 @@ export const badges = {
   // logo.png", WOSM, CC BY-SA 4.0); the 26th World Scout Jamboree's from Commons too ("26th
   // World Scout Jamboree Logo.svg", jamboree2027.org, CC0), drawn to PNG at 600px. Each sits
   // beside its name: the alt says what the logo shows
+  // Escutismo, uma fraternidade mundial: the OMME's own World Scout Emblem (Wikimedia Commons,
+  // "WOSM 2024.svg", by the World Organization of the Scout Movement, CC BY-SA 4.0), drawn to PNG
+  // at 600px, beside its parts at the drawings' size (`large`); and the map of its members by region (Commons,
+  // "World Organization of the Scout Movement Members Map.svg", TommyTu25, 2016, CC BY-SA 4.0),
+  // drawn to PNG at 1400px, under its text at its own width, its caption saying the year
+  // Áreas e Trilhos (the Exploradores' and the Pioneiros'): the six areas' icons, the CNE's own, as
+  // both Cadernos de Pista set them (cut from the Caderno de Pista II at 8×, their corners made
+  // transparent), one beside each area; the icon is the area its name says, so no alt. And the
+  // Caderno de Pista II's "Jogo de Pista" page, the progress drawn as a trail, cut of its title
+  areaFisico: () => [{ name: null, src: areaFisico, w: 166, h: 166, alt: '' }],
+  areaAfetivo: () => [{ name: null, src: areaAfetivo, w: 166, h: 166, alt: '' }],
+  areaCaracter: () => [{ name: null, src: areaCaracter, w: 166, h: 166, alt: '' }],
+  areaEspiritual: () => [{ name: null, src: areaEspiritual, w: 166, h: 166, alt: '' }],
+  areaIntelectual: () => [{ name: null, src: areaIntelectual, w: 166, h: 166, alt: '' }],
+  areaSocial: () => [{ name: null, src: areaSocial, w: 166, h: 166, alt: '' }],
+  jogoDePista: () => [{ name: null, src: jogoDePista, w: 1488, h: 1457, large: true, zoom: true, title: 'O jogo de pista dos Exploradores', caption: 'O jogo de pista dos Exploradores, no Caderno de Pista', alt: 'Desenho de um caminho de terra que serpenteia por colinas verdes, marcado com sinais de pista (setas, cruzes, uma mensagem), desde uma exploradora com o seu bordão, em baixo, até a uma bandeira com a saudação escutista' }],
+  insigniaMundial: () => [{ name: null, src: insigniaMundial, w: 600, h: 600, large: true, zoom: false, alt: 'A Insígnia Mundial: uma flor-de-lis branca com duas estrelas, sobre um círculo roxo, rodeada por uma corda atada num nó direito' }],
+  mapaOmme: () => [{ name: null, src: mapaOmme, w: 1400, h: 719, natural: 700, zoom: true, kind: 'Mapa', caption: 'Os países membros da OMME em 2016; a cinzento, os que não eram membros.', alt: 'Mapa do mundo com os países membros da OMME pintados por região: as Américas a amarelo, a Europa a azul, a Eurásia a roxo, o mundo árabe a verde, a África a laranja e a Ásia-Pacífico a rosa; a China e alguns outros países a cinzento' }],
   jotaJoti: () => [{ name: null, src: jotaJoti, w: 691, h: 866, alt: 'Logótipo do JOTA-JOTI: um globo azul com auscultadores, sobre um lenço escutista roxo, e o emblema do Escutismo mundial' }],
   jamboree2027: () => [{ name: null, src: jamboree2027, w: 600, h: 741, alt: 'Logótipo do 26.º Jamboree Mundial, na Polónia, em 2027, com o emblema do Escutismo mundial' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below

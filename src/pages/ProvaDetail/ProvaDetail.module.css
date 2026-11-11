@@ -959,6 +959,15 @@
   font-weight: 800;
 }
 
+/* A cast item's line of its own under its text (`line`, an area's three trilhos "Desempenho ·
+   Autoconhecimento · Bem‑estar físico"): as a comma list, names with an "e" of their own
+   ("Solidariedade e tolerância") made three read as two or four */
+.castLine {
+  margin: var(--spacing-xs) 0 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
 /* A drawing that couldn't load: its box gives way, the text takes the row */
 .castPicture:empty {
   display: none;
@@ -1569,6 +1578,55 @@ ol.list {
   .castPicture {
     float: none;
     justify-content: flex-start;
+    margin: 0 0 var(--spacing-sm);
+  }
+}
+
+/* `castColumn` (the six areas, beside their short texts and trilhos' lines): each icon keeps a
+   column of its own at every width, the text never running on under it ("e cooperação." had
+   dropped under the Social's icon, on a desktop too: the one-side list is under its 36rem float
+   rule at any width); only under 13rem (a phone at 200% text; the list on a 320px phone is 14rem,
+   clear of the floating button) does the icon go over its text */
+@container (max-width: 36rem) {
+  .castColumn .castRow,
+  .castColumn .castRow:nth-child(even) {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr);
+    column-gap: var(--spacing-md);
+  }
+
+  .castColumn .castPicture {
+    float: none;
+    width: auto;
+    margin: 0.3rem 0 0;
+  }
+
+  .castColumn .castRow:has(.castPicture:empty) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* On a 320px phone (the list 14rem) the icon a step smaller (3rem), so its text keeps about 22
+   characters a line (beside 4rem it had 18, three words a line) */
+@container (max-width: 16rem) {
+  .castColumn .castRow,
+  .castColumn .castRow:nth-child(even) {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    column-gap: var(--spacing-sm);
+  }
+
+  .castColumn .castPicture img {
+    max-height: 3rem;
+  }
+}
+
+@container (max-width: 13rem) {
+  .castColumn .castRow,
+  .castColumn .castRow:nth-child(even) {
+    display: flow-root;
+  }
+
+  .castColumn .castPicture {
     margin: 0 0 var(--spacing-sm);
   }
 }

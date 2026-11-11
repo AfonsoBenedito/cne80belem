@@ -47,6 +47,25 @@ const cargos = (seccao) => {
   };
 };
 
+// Áreas e Trilhos (the Exploradores' and the Pioneiros' prova 15): the six areas as the Manual do
+// Dirigente sums them (B.2) and their three trilhos, the same names in every secção; each beside
+// its icon from the Cadernos de Pista; the three trilhos a line of their own (`line`), each "·"
+// held to the name before it (a no-break space), so a line never starts on one
+const areas = {
+  text: 'O Escutismo quer que cada um cresça em todos os aspetos da sua pessoa. Por isso, o progresso organiza‑se em seis **áreas de desenvolvimento**, as FACEIS (Físico, Afetivo, Carácter, Espiritual, Intelectual e Social), e cada área tem três **trilhos**:',
+  castSide: 'left',
+  // Each icon in a column of its own, the text never running on under it
+  castColumn: true,
+  cast: [
+    { name: 'Desenvolvimento físico', media: 'areaFisico', text: ' incentiva o conhecimento e o desenvolvimento do corpo.', line: 'Desempenho · Autoconhecimento · Bem‑estar físico' },
+    { name: 'Desenvolvimento afetivo', media: 'areaAfetivo', text: ' favorece o equilíbrio dos afetos e a valorização pessoal.', line: 'Relacionamento e sensibilidade · Equilíbrio emocional · Autoestima' },
+    { name: 'Desenvolvimento do carácter', media: 'areaCaracter', text: ' promove o aperfeiçoamento dos valores e das atitudes, e o ser mais.', line: 'Autonomia · Responsabilidade · Coerência' },
+    { name: 'Desenvolvimento espiritual', media: 'areaEspiritual', text: ' aprofunda o sentido de Deus.', line: 'Descoberta · Aprofundamento · Serviço' },
+    { name: 'Desenvolvimento intelectual', media: 'areaIntelectual', text: ' fomenta a exploração e a criatividade.', line: 'Procura do conhecimento · Resolução de problemas · Criatividade e expressão' },
+    { name: 'Desenvolvimento social', media: 'areaSocial', text: ' estimula o encontro, a partilha e o sentido do outro.', line: 'Exercer ativamente a cidadania · Solidariedade e tolerância · Interação e cooperação' },
+  ],
+};
+
 // The knots (Nó Direito e Nó de Correr), the same in every secção
 const nos = {
     title: 'Nó Direito e Nó de Correr',
@@ -767,6 +786,87 @@ export const provasContent = {
     ],
   },
 
+  'exploradores/adesao-seccao-1': {
+    title: 'Escutismo, uma fraternidade mundial',
+    // The Caderno de Pista II asks "Reconheces que o Escutismo é uma fraternidade mundial?". From
+    // the CNE's Caderno de Descobertas ("O Escutismo - Movimento Mundial"), the Regulamento Geral
+    // (art. 6.º: the OMME, the CICE, the FEP, the Escutismo Lusófono, the AEP and the AGP),
+    // escutismo.pt (its Internacional page: the OMME's three bodies, the Jamboree, the JOTA and
+    // JOTI; and its page on the Insígnia Mundial, as the Wayback Machine keeps it); the Jamboree's
+    // ages as the Pioneiros' Projetos have them. No numbers: the sources' (216 or 224 países e
+    // territórios, 40 or 60 milhões) date as soon as they're printed. The OMME's three bodies by
+    // name only, as escutismo.pt gives them; the CNE's other memberships are prova 2's
+    sections: [
+      {
+        heading: 'Uma fraternidade mundial',
+        text: 'O Escutismo é uma **fraternidade mundial**: um movimento que não olha a diferenças de classe, religião, país ou origem. Nunca parou de crescer desde que foi fundado, em 1907, e hoje junta milhões de escuteiros em quase todos os países do mundo.\n\nGraças a isso, os escuteiros podem fazer atividades internacionais e conhecer outros jovens, outros países e outras culturas. Sentem‑se assim parte de um grande movimento, com os mesmos ideais e símbolos.',
+        media: 'mapaOmme',
+        mediaAfter: true,
+      },
+      {
+        heading: 'A OMME e o CNE',
+        text: 'O Escutismo mundial é coordenado pela **Organização Mundial do Movimento Escutista** (OMME, ou WOSM, em inglês), uma organização internacional, independente dos governos. Tem três órgãos: a **Conferência Mundial**, que reúne as associações escutistas dos países membros e escolhe onde se faz cada Jamboree Mundial, o **Comité Mundial** e o **Bureau Mundial**.\n\nEm Portugal, o CNE e a AEP (Associação dos Escoteiros de Portugal) formam a **Federação Escutista de Portugal**, que os representa na OMME.',
+        more: 'Organização do Agrupamento e do CNE',
+      },
+      {
+        heading: 'A Insígnia Mundial',
+        // The OMME's emblem at the drawings' size (13rem), its parts listed beside it, so each can
+        // be found on it; it floats (`wrap`), the list running on under it (S. Tiago's signs)
+        media: 'insigniaMundial',
+        mediaFirst: true,
+        wrap: true,
+        text: 'A **Insígnia Mundial** é o símbolo da OMME. Os escuteiros de todo o mundo usam‑na para mostrar que pertencem ao movimento, e cada associação decide como se usa. A insígnia de hoje surgiu no 8.º Jamboree Mundial, em 1955.\n\nCada parte tem um significado:\n\n• **A flor‑de‑lis** indica o norte nos mapas, como o escuteiro mostra o caminho do serviço aos outros.\n• **As duas estrelas** são o conhecimento e a verdade.\n• **A ligação** é a família escutista.\n• **A corda** rodeia a flor‑de‑lis: é a família do movimento escutista em todo o mundo.\n• **O nó direito** é a força dessa família.\n• **As cores**: o branco é a pureza, e o roxo a liderança e o serviço.',
+      },
+      {
+        heading: 'Encontros pelo mundo',
+        text: 'Os escuteiros de todo o mundo encontram‑se em atividades internacionais, como estas:',
+        // The JOTA-JOTI's logo and the first Jamboree's photo, at the text's width (`castLarge`): the
+        // JOTA-JOTI first, the one an Expedição can take part in
+        castSide: 'left',
+        castLarge: true,
+        cast: [
+          { name: 'O JOTA‑JOTI', media: 'jotaJoti', text: ' é o Jamboree no Ar (desde 1957) e na Internet (desde 1996): todos os anos, no terceiro fim de semana de outubro, escuteiros de todo o mundo falam entre si por rádio e pela Internet.' },
+          // Too small to see in place: it opens in the viewer, with a caption of its own
+          { name: 'O Jamboree Mundial', media: 'bpJamboree', zoom: true, kind: 'Fotografia', caption: 'O primeiro Jamboree Mundial, em Londres, em 1920', text: ' é o grande acampamento do Escutismo mundial, de quatro em quatro anos, para jovens dos 14 aos 17 anos. O primeiro foi em 1920, em Londres, com escuteiros de 34 países.' },
+        ],
+      },
+      {
+        text: 'Em cada encontro vive‑se o 4.º artigo da Lei: «O Escuta é amigo de todos e irmão de todos os outros Escutas.»',
+        more: 'Lei e Princípios',
+      },
+    ],
+  },
+  'exploradores/adesao-seccao-7': {
+    title: 'Áreas de Desenvolvimento e Trilhos da etapa da Aliança',
+    // The Caderno de Pista II asks "Já conheces as áreas de desenvolvimento e os trilhos que terás
+    // de escolher para a tua etapa da Aliança?". From the Caderno de Pista II (the etapas, the
+    // Patrulha validating a trilho, the Conselho de Guias the etapa, the insígnias on the sleeve,
+    // the anilha) and the Manual do Dirigente (the areas and trilhos, B.2; the negociação, the
+    // oportunidades educativas and the especialidades, in its Expedição's Sistema de Progresso)
+    sections: [
+      { heading: 'Seis áreas, dezoito trilhos', ...areas },
+      {
+        heading: 'As etapas',
+        // The Caderno's own drawing of the progress as a trail, beside the etapas (S. Tiago's float)
+        media: 'jogoDePista',
+        mediaFirst: true,
+        wrap: true,
+        text: 'O progresso do explorador é um **jogo de pista**. Começa no **Apelo**, a etapa de quem chega, que dura cerca de cinco meses e prepara a Promessa. Depois da Promessa vêm três etapas: a **Aliança**, o **Rumo** e a **Descoberta**.\n\nEm cada uma, o explorador escolhe um trilho de cada área, seis ao todo, diferentes dos das etapas anteriores. Quando completa a Descoberta, já percorreu os dezoito trilhos e chegou ao fim da pista, o **Local de Acampamento**, e o Conselho de Guias pode atribuir‑lhe a anilha de mérito.\n\nNo início de cada etapa, a insígnia de progresso ganha uma peça. Usa‑se na manga esquerda da camisa, pela ordem Apelo, Aliança, Rumo e Descoberta.',
+      },
+      // The insígnia piece by piece, on its own: beside a text its etapas' names broke ("Ali-ança")
+      { media: 'progresso' },
+      {
+        heading: 'Escolher e validar os trilhos',
+        numbered: true,
+        steps: [
+          { title: 'Escolher', text: 'Em cada etapa, o explorador escolhe, com a ajuda da Equipa de Animação, um trilho de cada área: é a negociação. Deve escolher o que o faz crescer, e não o que já faz com facilidade.' },
+          { title: 'Viver', text: 'Para cada trilho, define ações concretas, as oportunidades educativas, que vive dentro e fora das atividades. Uma especialidade também pode ser uma oportunidade para progredir num trilho.' },
+          { title: 'Validar o trilho', text: 'Quando acha que já tem as atitudes que o trilho pede, fala com a sua Patrulha, que o valida.' },
+          { title: 'Validar a etapa', text: 'Completados os seis trilhos da etapa, o Conselho de Guias valida‑a.' },
+        ],
+      },
+    ],
+  },
   'exploradores/adesao-seccao-2': {
     title: 'Organização dos Exploradores',
     // General, as the Organização do Agrupamento e do CNE: any Expedição's exploradores can study
@@ -926,6 +1026,32 @@ export const provasContent = {
         heading: 'O Empreendimento',
         text: 'O projeto dos Pioneiros chama‑se Empreendimento: um conjunto de atividades ligadas entre si, que os pioneiros escolhem, preparam, realizam e avaliam em Comunidade e com o apoio da Equipa de Animação.',
         more: 'Projetos dos Pioneiros',
+      },
+    ],
+  },
+  'pioneiros/adesao-seccao-7': {
+    title: 'Áreas e Trilhos',
+    // The Caderno de Pista III asks "Já conheces as Áreas e os Trilhos que terás que escolher na
+    // tua etapa de Conhecimento?". From the Caderno de Pista III (the etapas, one trilho of each
+    // area in each, the Equipa validating a trilho, the Conselho de Guias the etapa, the
+    // especialidades, the Local de Acampamento and its anilha) and the Manual do Dirigente (the
+    // areas and trilhos, B.2; the negociação)
+    sections: [
+      { heading: 'Seis áreas, dezoito trilhos', ...areas },
+      {
+        heading: 'As etapas',
+        text: 'O progresso do pioneiro começa no **Desprendimento**, a etapa de quem chega, que não deve passar dos sete meses e prepara a Promessa. Depois da Promessa vêm três etapas: o **Conhecimento**, a **Vontade** e a **Construção**.\n\nEm cada uma, o pioneiro escolhe um trilho de cada área, seis ao todo, diferentes dos das etapas anteriores. Quando completa a Construção, já percorreu os dezoito trilhos: chegou ao fim do seu caminho, o **Local de Acampamento**, e recebe a anilha de mérito.\n\nNo início de cada etapa, a insígnia de progresso ganha uma peça.',
+      },
+      { media: 'progresso' },
+      {
+        heading: 'Escolher e validar os trilhos',
+        numbered: true,
+        steps: [
+          { title: 'Escolher', text: 'Em cada etapa, o pioneiro escolhe, com a ajuda da Equipa de Animação, um trilho de cada área: é a negociação. Deve escolher o que o faz crescer, e não o que já faz com facilidade.' },
+          { title: 'Viver', text: 'Para cada trilho, define ações concretas, as oportunidades educativas, que vive dentro e fora das atividades, na família e na comunidade. Uma especialidade também pode ser uma oportunidade para progredir num trilho.' },
+          { title: 'Validar o trilho', text: 'Sempre que conclui um trilho, o pioneiro apresenta‑o na reunião de Equipa, que o valida.' },
+          { title: 'Validar a etapa', text: 'Completados os seis trilhos da etapa, o Conselho de Guias valida‑a.' },
+        ],
       },
     ],
   },

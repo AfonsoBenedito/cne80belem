@@ -1,4 +1,5 @@
 import { Fragment, Suspense, lazy, useId, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { FaSearchPlus } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../../config/provasMedia';
@@ -263,7 +264,9 @@ function Badges({ items: all, seccao, title }) {
             onClose={() => setViewer((v) => v && { ...v, leaving: true })}
             leaving={viewer.leaving}
             onLeft={() => setViewer(null)}
-            title={title}
+            // A picture can name itself (`title`, the Exploradores' jogo de pista): by the section
+            // heading alone it opened as "Desenho: As etapas"
+            title={drawings[viewer.index]?.title ?? title}
             captions={drawings.map((f) => f.name ?? f.caption ?? '')}
             alts={drawings.map((f) => f.alt)}
             drawings
@@ -281,6 +284,9 @@ function Progresso({ seccao }) {
   const { surface, onSurface } = seccoes[seccao];
   return (
     <div className={styles.progresso}>
+      {/* The etapas' own width decides four across or two by two (a container), not the screen's:
+          beside the whole insígnia at 768px they had a phone's room */}
+      <div className={styles.etapasBox}>
       <ol className={styles.etapas}>
         {etapas.map((e, i) => (
           <li key={e.name} className={styles.etapa}>
@@ -294,6 +300,7 @@ function Progresso({ seccao }) {
           </li>
         ))}
       </ol>
+      </div>
       <figure className={styles.completa}>
         <img src={completa} alt={`A insígnia de progresso completa, com as etapas ${etapas.map((e) => e.name).join(', ')}`} className={styles.completaImg} />
         <figcaption className={styles.funcaoName}>A insígnia completa</figcaption>
@@ -306,18 +313,62 @@ function Progresso({ seccao }) {
 // images and the photo viewer, so a prova of plain text never downloads them
 // A drawing alone, sized by the box it sits in (the Livro da Selva's characters). One that fails
 // to load leaves nothing, so its box gives way to the text instead of holding a broken image
-function Picture({ f }) {
+function Picture({ f, zoom = false, title, caption, kind }) {
   const [failed, setFailed] = useState(false);
+  const [viewer, setViewer] = useState(null);
+  const descId = useId();
   if (failed) return null;
   // A cast sits down the page (the Livro da Selva's ten, the Jamboree's logos), so its pictures
   // wait until they're near the screen; their width and height hold the box meanwhile
-  return <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} loading="lazy" decoding="async" onError={() => setFailed(true)} />;
+  const img = (alt) => <img src={f.src} alt={alt} width={f.w} height={f.h} loading="lazy" decoding="async" onError={() => setFailed(true)} />;
+  if (!zoom) return img(f.alt ?? '');
+  // One too small to see in place (the first Jamboree's photo, ~110px) opens in the photo viewer
+  // (`zoom` on its cast item): the button is named by its name, the picture described by its alt,
+  // a magnifier in its corner says it opens, as the posters' mark does
+  return (
+    <>
+      <button
+        type="button"
+        className={styles.pictureZoom}
+        onClick={(e) => {
+          e.currentTarget.focus({ preventScroll: true });
+          setViewer({ leaving: false });
+        }}
+        aria-label={`Ampliar: ${title}`}
+        aria-describedby={f.alt ? descId : undefined}
+      >
+        {img('')}
+        <span className={styles.pictureZoomMark} aria-hidden="true">
+          <FaSearchPlus size={11} />
+        </span>
+      </button>
+      {f.alt && <Description id={descId}>{f.alt}</Description>}
+      {/* At the page's root: inside the cast's box, its picture rules (7rem) sized the viewer's too */}
+      {viewer && createPortal(
+        <Suspense fallback={null}>
+          <Lightbox
+            photos={[f.src]}
+            index={0}
+            onIndex={() => {}}
+            onClose={() => setViewer((v) => v && { ...v, leaving: true })}
+            leaving={viewer.leaving}
+            onLeft={() => setViewer(null)}
+            title={title}
+            captions={[caption ?? f.caption ?? '']}
+            alts={[f.alt]}
+            kind={kind}
+          />
+        </Suspense>,
+        document.body,
+      )}
+    </>
+  );
 }
 
-export default function ProvaMedia({ media, seccao, title, icon = false, picture = false }) {
+export default function ProvaMedia({ media, seccao, title, icon = false, picture = false, zoom = false, caption, kind }) {
   // A badge set small beside its heading (the Cargos prova): the heading names it, so no alt
   if (icon && badges[media]) return <img src={badges[media](seccao)[0].src} alt="" className={styles.headingIcon} />;
-  if (picture && badges[media]) return <Picture f={badges[media](seccao)[0]} />;
+  if (picture && badges[media]) return <Picture f={badges[media](seccao)[0]} zoom={zoom} title={title} caption={caption} kind={kind} />;
   if (media === 'uniformes') return <Uniformes seccao={seccao} />;
   if (media === 'progresso') return <Progresso seccao={seccao} />;
   if (media === 'dirigentes') return <Dirigentes />;
