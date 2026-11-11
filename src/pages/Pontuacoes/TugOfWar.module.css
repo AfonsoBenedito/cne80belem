@@ -1,0 +1,346 @@
+.band {
+  --rope: color-mix(in oklab, var(--color-yellow-dark) 55%, var(--color-gray-700));
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--color-yellow-light) 0%, rgba(255, 249, 219, 0) 70%),
+    var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── The rope ── */
+.rope {
+  position: relative;
+  height: 4.5rem;
+  margin: 0 auto;
+  max-width: 40rem;
+}
+
+.line {
+  position: absolute;
+  left: 3rem;
+  right: 3rem;
+  top: 50%;
+  height: 10px;
+  translate: 0 -50%;
+  border-radius: var(--radius-pill);
+  background: repeating-linear-gradient(-60deg, var(--rope) 0 5px, color-mix(in oklab, var(--rope) 70%, white) 5px 10px);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* The centre line on the ground: the knot is judged against it */
+.middle {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  bottom: 12%;
+  width: 2px;
+  translate: -50% 0;
+  background: repeating-linear-gradient(180deg, var(--color-gray-400) 0 4px, transparent 4px 8px);
+}
+
+/* The knot rides a track as wide as the rope, so it can be moved in its own percentages:
+   a tug toward the other side, an overpull, and a settle where the lead puts it */
+.knot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ribbon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.4rem;
+  height: 2rem;
+  translate: -50% -50%;
+  border-radius: var(--radius-xs);
+  background: var(--color-green-dark);
+  box-shadow: var(--shadow-md);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+}
+
+.pulled .knot {
+  animation: tug 1600ms cubic-bezier(0.45, 0, 0.25, 1) 200ms both;
+}
+
+@keyframes tug {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(calc((var(--knot) - 50%) * -0.5)); }
+  55% { transform: translateX(calc((var(--knot) - 50%) * 1.25)); }
+  78% { transform: translateX(calc((var(--knot) - 50%) * 0.9)); }
+  100% { transform: translateX(calc(var(--knot) - 50%)); }
+}
+
+/* The two patrulhas, one at each end, leaning back as they pull */
+.puller {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  margin-top: -1.5rem;
+  border-radius: 50%;
+  border: 3px solid var(--patrol);
+  background: var(--color-white);
+  font-size: var(--emoji-md);
+  line-height: 1;
+  box-shadow: var(--shadow-md);
+  z-index: 1;
+}
+
+.pullerLeft {
+  left: 0;
+  --lean: -1;
+}
+
+.pullerRight {
+  right: 0;
+  --lean: 1;
+}
+
+.pulled .puller {
+  animation: heave 1600ms ease-in-out 200ms both;
+}
+
+.pulled .pullerLead {
+  animation-name: heaveLead;
+}
+
+@keyframes heave {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(calc(var(--lean) * 14deg)); }
+  60% { transform: rotate(calc(var(--lean) * -6deg)); }
+}
+
+/* The leader ends leaning back, holding the rope */
+@keyframes heaveLead {
+  0% { transform: rotate(0); }
+  30% { transform: rotate(calc(var(--lean) * 6deg)); }
+  60% { transform: rotate(calc(var(--lean) * 18deg)) scale(1.06); }
+  100% { transform: rotate(calc(var(--lean) * 12deg)) scale(1.06); }
+}
+
+/* ── The score and the call ── */
+.score {
+  display: flex;
+  justify-content: space-between;
+  max-width: 40rem;
+  margin: var(--spacing-xs) auto 0;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 3rem;
+  line-height: 1.1;
+}
+
+.sideName {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--patrol);
+}
+
+.sideTotal {
+  font-size: var(--font-size-2xl);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-black);
+}
+
+.verdict {
+  margin-top: var(--spacing-md);
+  text-align: center;
+}
+
+.verdictMain {
+  font-size: var(--font-size-xl);
+  font-weight: 900;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.verdictMain strong {
+  color: var(--color-green-dark);
+}
+
+.verdictSub {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-gray-600);
+}
+
+/* ── Each trimester ── */
+.trophies {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  max-width: 40rem;
+  margin: var(--spacing-xl) auto 0;
+}
+
+.trophy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-sm);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.trophy:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.trophyOn {
+  border-color: var(--color-green-dark);
+  background: var(--color-green-light);
+}
+
+.trophyEmpty {
+  border-style: dashed;
+  background: var(--color-gray-50);
+  cursor: default;
+}
+
+.trophyName {
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gray-600);
+}
+
+.trophyIcon {
+  font-size: var(--emoji-lg);
+  line-height: 1.2;
+}
+
+.trophyWho {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--color-black);
+}
+
+.trophyStatus {
+  font-weight: 600;
+  color: var(--color-gray-600);
+}
+
+.trophyScore {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-gray-600);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The next chance ── */
+.next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: var(--spacing-lg);
+  text-align: center;
+}
+
+.nextLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-gray-600);
+}
+
+.nextWhat {
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  color: var(--color-black);
+}
+
+@media (hover: hover) {
+  .trophy:not(:disabled):not(.trophyOn):hover {
+    border-color: var(--color-green);
+  }
+}
+
+@media (max-width: 600px) {
+  .band {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .verdictMain {
+    font-size: var(--font-size-lg);
+  }
+
+  .trophies {
+    gap: var(--spacing-xs);
+  }
+
+  .trophy {
+    padding: var(--spacing-sm) var(--spacing-xs);
+  }
+
+  /* "1º" and the winner's name; the rest stays for screen readers */
+  .phoneHide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .trophyName {
+    font-size: var(--font-size-sm);
+  }
+}
+
+.instant .knot {
+  transform: translateX(calc(var(--knot) - 50%));
+}
+
+.instant .pullerLead {
+  transform: rotate(calc(var(--lean) * 12deg)) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulled .knot,
+  .pulled .puller {
+    animation: none;
+  }
+
+  .knot {
+    transform: translateX(calc(var(--knot) - 50%));
+  }
+
+  .pullerLead {
+    transform: rotate(calc(var(--lean) * 12deg)) scale(1.06);
+  }
+
+  .trophy {
+    transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .trophy {
+    min-height: 44px;
+  }
+}

@@ -28,6 +28,7 @@ const UnderConstruction = lazy(() => import('./pages/UnderConstruction/UnderCons
 const Seccao = lazy(() => import('./pages/Seccao/Seccao'));
 const Provas = lazy(() => import('./pages/Provas/Provas'));
 const ProvaDetail = lazy(() => import('./pages/ProvaDetail/ProvaDetail'));
+const Pontuacoes = lazy(() => import('./pages/Pontuacoes/Pontuacoes'));
 const Programa = lazy(() => import('./pages/Programa/Programa'));
 const Contactos = lazy(loadContactos);
 const Cancioneiro = lazy(loadCancioneiro);
@@ -92,6 +93,8 @@ export default function App() {
               <Route path="/seccao/:seccao/programa" element={<Programa />} />
               <Route path="/seccao/:seccao/provas" element={<Provas />} />
               <Route path="/seccao/:seccao/provas/:slug" element={<ProvaDetail />} />
+              {/* Not linked anywhere: shared with the Expedição by its address */}
+              <Route path="/seccao/exploradores/pontuacoes" element={<Pontuacoes />} />
               {/* Pages under construction */}
               <Route path="/seccao/:seccao/*" element={<UnderConstruction />} />
               <Route path="/recursos/cancioneiro" element={<Cancioneiro />} />

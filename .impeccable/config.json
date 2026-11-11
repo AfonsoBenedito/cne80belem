@@ -48,6 +48,123 @@
         ],
         "createdAt": "2026-10-15T22:43:23.613Z",
         "reason": "The quotation rule on the Manual do Dirigente's blockquote (S. Tiago prova, .quoteText), chosen by the user: a quotation convention, not a card accent. The only other side border here is the sidebar's current-prova accent (.sidebarLink, set inline in the secção's colour), which predates this ignore"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.25, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/DayBreakdown.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.578Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.3, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/DayBreakdown.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.642Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.8, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/DayBreakdown.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.694Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.4, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/MarbleJar.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.760Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.5, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/MarbleJar.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.809Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.6, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/MarbleJar.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.859Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.5, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/Pontuacoes.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.917Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.8, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/Pontuacoes.module.css"
+        ],
+        "createdAt": "2026-11-11T16:37:01.963Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; overshoot is the playful marble/lid/crown/pop motion, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.25, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/DivergingBar.module.css"
+        ],
+        "createdAt": "2026-11-11T16:58:40.618Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; playful overshoot on bars, cards and medals, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.3, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/CategoryCompare.module.css"
+        ],
+        "createdAt": "2026-11-11T16:58:40.676Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; playful overshoot on bars, cards and medals, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.8, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/CategoryCompare.module.css"
+        ],
+        "createdAt": "2026-11-11T16:58:40.730Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; playful overshoot on bars, cards and medals, scoped to this page"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.6, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/CategoryCompare.module.css"
+        ],
+        "createdAt": "2026-11-11T17:10:43.981Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; the duel winner's crown dropping on, scoped to this file"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.3, 0.64, 1)",
+        "files": [
+          "src/pages/Pontuacoes/MarbleJar.module.css"
+        ],
+        "createdAt": "2026-11-11T17:18:31.151Z",
+        "reason": "agent decision: user asked for the Pontuações page (kids 10-13) to be 'the most animated and kid possible'; the jug/bucket swinging in and the umbrella pole popping up, scoped to this file"
       }
     ]
   }

@@ -40,6 +40,9 @@
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 2rem;
+  /* Display numbers: scores and totals that are the point of their card */
+  --font-size-4xl: 2.5rem;
+  --font-size-5xl: 3.25rem;
 
   /* Spacing */
   --spacing-xs: 0.25rem;

@@ -1,0 +1,741 @@
+.page {
+  /* Where the tabs stick (the header's drawn height, set from the page) and the room they take
+     at the top while they do; both come back to the header alone when the tabs don't stick */
+  --sticky-top: var(--header-height);
+  --bar-room: var(--bar-height, 4.5rem);
+  /* Emoji used as illustration (patrulhas, medals, crowns, categories): their own small scale,
+     shared by every part of the page, so the type scale stays for text */
+  --emoji-sm: 1.25rem;
+  --emoji-md: 1.5rem;
+  --emoji-lg: 1.75rem;
+  --emoji-xl: 2.25rem;
+  padding-bottom: var(--spacing-3xl);
+  overflow-x: clip;
+}
+
+/* ── Hero: the secção band, like Programa ── */
+.hero {
+  position: relative;
+  text-align: left;
+  padding: 2.75rem 0;
+  overflow: hidden;
+}
+
+.heroBadge {
+  position: absolute;
+  right: -5%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 220%;
+  width: auto;
+  opacity: 0.3;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  border-radius: 70%;
+}
+
+.heroLabel {
+  position: relative;
+  z-index: 1;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.mockBadge {
+  display: inline-block;
+  margin-left: var(--spacing-sm);
+  padding: 0.1rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-yellow);
+  color: var(--color-black);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.06em;
+  vertical-align: 1px;
+}
+
+.heroTitle {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(var(--font-size-3xl), 6vw, var(--font-size-5xl));
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: inherit;
+}
+
+.heroLead {
+  position: relative;
+  z-index: 1;
+  max-width: 34rem;
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+/* ── Jars ── */
+.jarsSection {
+  padding: var(--spacing-lg) 0 var(--spacing-xl);
+  /* A replay brings the section up to just under the header and the sticky tabs */
+  scroll-margin-top: calc(var(--sticky-top) + var(--bar-room));
+  background:
+    radial-gradient(ellipse at 50% 100%, var(--color-yellow-light) 0%, rgba(255, 249, 219, 0) 65%);
+}
+
+/* Trimester / year choice, styled like Programa's trimester buttons. It sticks under the
+   header as the same translucent material, since everything below follows it */
+.viewBar {
+  position: sticky;
+  top: var(--sticky-top);
+  z-index: 50;
+  padding: var(--spacing-sm) 0;
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+  .viewBar {
+    background: rgba(255, 255, 255, 0.78);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .viewBar {
+    background: var(--color-white);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Header and tabs together too tall for the screen: the tabs scroll with the page */
+.page[data-unstick] {
+  --bar-room: 0rem;
+}
+
+.page[data-unstick] .viewBar {
+  position: relative;
+  top: auto;
+}
+
+/* The trimester we're in now */
+.nowDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 0.35rem;
+  vertical-align: 2px;
+  border-radius: 50%;
+  background: var(--color-yellow);
+  box-shadow: 0 0 0 1.5px var(--color-gray-700);
+}
+
+.views {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.viewBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 3.25rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  color: var(--color-gray-700);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.viewBtn:active {
+  transform: scale(0.97);
+}
+
+.viewName {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.viewScore {
+  display: flex;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.viewPoint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* The patrulha dots keep a white ring on the filled (chosen) button */
+.viewBtnOn .chipDot {
+  box-shadow: 0 0 0 1.5px var(--color-white);
+}
+
+@media (max-width: 480px) {
+  .viewWord {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .viewName {
+    font-size: var(--font-size-base);
+  }
+
+  .viewScore {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.jars {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(var(--spacing-xl), 10vw, 7rem);
+  padding-top: 2.5rem;
+}
+
+.jarSlot {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.vs {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--color-yellow);
+  color: var(--color-black);
+  font-size: var(--font-size-base);
+  font-weight: 900;
+  box-shadow: var(--shadow-md);
+  animation: vsIn 700ms cubic-bezier(0.34, 1.8, 0.64, 1) 350ms both;
+}
+
+@keyframes vsIn {
+  from { opacity: 0; transform: scale(0) rotate(-180deg); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The result, above the jars. Its box keeps the height of the result while the jars fill, so
+   nothing below moves when it arrives (two lines on a phone, one on wider screens) */
+.headline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(1.2 * clamp(var(--font-size-xl), 4vw, var(--font-size-3xl)));
+  text-align: center;
+  font-size: clamp(var(--font-size-xl), 4vw, var(--font-size-3xl));
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* While the jars fill: a quieter line, gently breathing */
+.headlineWait {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-gray-600);
+  animation: wait 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes wait {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+.headlineIn {
+  animation: headlineIn 600ms cubic-bezier(0.34, 1.5, 0.64, 1) both;
+}
+
+@keyframes headlineIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.9); }
+  to { opacity: 1; transform: none; }
+}
+
+.jarFooter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+/* What fills the jars */
+.contents {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.contentsLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-gray-700);
+}
+
+.contentBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-gray-700);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.contentBtn:active {
+  transform: scale(0.95);
+}
+
+.contentBtnOn {
+  border-color: var(--color-green-dark);
+  background: var(--color-green-light);
+  color: var(--color-green-dark);
+}
+
+.legendNote {
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-600);
+}
+
+.legendMarble {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 9%, rgba(255, 255, 255, 0) 22%),
+    radial-gradient(circle at 40% 38%, var(--color-gray-300), var(--color-gray-500) 60%, var(--color-gray-700));
+}
+
+.layerHint {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  color: var(--color-green-dark);
+  opacity: 0;
+}
+
+/* Shown as the pour starts, so the tap is taught while the layers go in */
+.layerHintIn {
+  animation: headlineIn 600ms cubic-bezier(0.34, 1.5, 0.64, 1) 900ms both;
+}
+
+.replay {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-gray-700);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+@media (hover: hover) {
+  .contentBtn:not(.contentBtnOn):hover {
+    border-color: var(--color-green);
+  }
+
+  .viewBtn:not(.viewBtnOn):hover {
+    border-color: var(--color-green);
+  }
+
+  .replay:hover {
+    border-color: var(--color-green);
+    color: var(--color-green-dark);
+  }
+}
+
+.replay:active {
+  transform: scale(0.96);
+}
+
+.replay svg {
+  transition: transform 400ms cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+@media (hover: hover) {
+  .replay:hover svg {
+    transform: rotate(-200deg);
+  }
+}
+
+.scrollCue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-lg) auto 0;
+  border: none;
+  background: none;
+  color: var(--color-green-dark);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition-interactive);
+}
+
+.scrollCue:active {
+  transform: scale(0.96);
+}
+
+.scrollCueIcon {
+  /* A few nudges to point the way, then it rests: a cue, not a loop running the whole visit */
+  animation: nudge 1.6s ease-in-out 1.2s 3;
+}
+
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ── Confetti over the leader's jar ── */
+.confetti {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.confettiBit,
+.confettiDot {
+  position: absolute;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confetti 1600ms cubic-bezier(0.15, 0.6, 0.4, 1) var(--d) forwards;
+}
+
+.confettiDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+@keyframes confetti {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0) scale(0.6); }
+  55% { opacity: 1; transform: translate(calc(var(--x) * 0.85), var(--y)) rotate(calc(var(--r) * 0.6)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 220px)) rotate(var(--r)) scale(1); }
+}
+
+/* ── The race ── */
+.raceSection {
+  padding-top: var(--spacing-lg);
+  /* Clear of the header and the sticky period bar */
+  scroll-margin-top: calc(var(--sticky-top) + var(--bar-room) + 1rem);
+}
+
+.compareSection {
+  padding-top: var(--spacing-2xl);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-3xl);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.sectionLead {
+  margin-top: var(--spacing-xs);
+  max-width: 40rem;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-gray-600);
+}
+
+.chartCard {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-xl);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-md);
+}
+
+/* Activity tickets: one row that scrolls sideways */
+.chipsWrap {
+  margin: var(--spacing-lg) calc(var(--spacing-md) * -1) var(--spacing-lg);
+}
+
+.chips {
+  display: flex;
+  gap: var(--spacing-sm);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-md);
+  scrollbar-width: thin;
+}
+
+.chip {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 10.5rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transition: var(--transition-interactive);
+}
+
+@media (hover: hover) {
+  .chip:hover {
+    border-color: var(--color-green);
+  }
+}
+
+.chip:active {
+  transform: scale(0.97);
+}
+
+.chipOn {
+  border-color: var(--color-green-dark);
+  background: var(--color-green-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.chipOn:active {
+  transform: translateY(-3px) scale(0.97);
+}
+
+.chipDate {
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-gray-500);
+}
+
+.chipOn .chipDate {
+  color: var(--color-green-dark);
+}
+
+.chipName {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--color-black);
+}
+
+.chipPoints {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: 2px;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-gray-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.chipPoint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.chipDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .heroLead {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Phones: a shorter band, so the tabs, the result and the jars fit on the first screen */
+@media (max-width: 600px) {
+  .hero {
+    padding: var(--spacing-lg) 0 var(--spacing-xl);
+  }
+
+  .heroLabel {
+    letter-spacing: 1px;
+  }
+
+  .mockBadge {
+    margin-left: var(--spacing-xs);
+    padding: 0 0.5rem;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .heroTitle {
+    font-size: var(--font-size-3xl);
+  }
+
+  .heroLead {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+  }
+
+  .jarsSection {
+    padding-top: var(--spacing-md);
+  }
+
+  .headline {
+    min-height: calc(2.4 * var(--font-size-xl));
+  }
+
+  .jars {
+    gap: var(--spacing-lg);
+    padding-top: 2rem;
+  }
+
+  /* "Encher com" on its own line, the three choices together on the next */
+  .contentsLabel {
+    flex-basis: 100%;
+    text-align: center;
+  }
+
+  .contentBtn {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .vs {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .sectionTitle {
+    font-size: var(--font-size-2xl);
+  }
+
+  .chartCard {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+/* The narrowest phones: the badge says just "Exemplo", so it stays on the label's line */
+@media (max-width: 400px) {
+  .mockWords {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vs,
+  .headlineIn,
+  .headlineWait,
+  .scrollCueIcon {
+    animation: none;
+  }
+
+  .layerHint {
+    opacity: 1;
+  }
+
+  .layerHintIn {
+    animation: none;
+  }
+
+  .replay svg {
+    transition: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .contentBtn,
+  .viewBtn,
+  .replay,
+  .chip {
+    min-height: 44px;
+  }
+
+  .scrollCue {
+    min-height: 44px;
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
