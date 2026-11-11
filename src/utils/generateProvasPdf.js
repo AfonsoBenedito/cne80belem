@@ -374,9 +374,20 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // one (the Palavras dos nós) for its lead and first two words, so they're never apart
       if (sec.terms) {
         const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
-        const kept = sec.terms.length <= 4 ? sec.terms : sec.terms.slice(0, 2);
-        const terms = kept.reduce((t, w) => t + draw.split(w.text, colW - draw.width(w.term, BODY, 'bold') - 1.5 * s, BODY).length * lh, 0);
+        // Kept whole only when it's short (four words, eight lines at most) and fits where it is:
+        // otherwise the lead and the first two go together and the rest follow (the conselhos'
+        // three long rows, moved whole, left a third of a page blank above them)
+        const termLines = (w) => draw.split(w.text, colW - draw.width(w.term, BODY, 'bold') - 1.5 * s, BODY).length;
+        const height = (list) => list.reduce((t, w) => t + termLines(w) * lh, 0);
+        const short = sec.terms.length <= 4 && sec.terms.reduce((t, w) => t + termLines(w), 0) <= 8;
+        const whole = h + 3 * s + lead + height(sec.terms);
+        const terms = short && (y + whole <= bottom || whole > bottom - colTop) ? height(sec.terms) : height(sec.terms.slice(0, 2));
         if (h + 3 * s + lead + terms <= bottom - colTop) keep = lead + terms + 2 * s;
+      }
+      // The profiles (the units) keep their heading with the lead and their first row
+      if (sec.profiles) {
+        const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
+        keep = lead + lh * 7 + 4 * s;
       }
       // A cast (the symbols, the characters) keeps its heading with its intro and its first row, so
       // "Os símbolos dos Exploradores" and its sentence never end a page alone
@@ -384,12 +395,16 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
         keep = lead + Math.max(18 * s, lh * 6);
       }
-      // A chain of steps (the Lobitismo's Alcateia → CNE) is short and reads only whole: its
-      // heading asks for room for the whole section, lead and every step
+      // A chain of steps (the Lobitismo's Alcateia → CNE) reads best whole: its heading asks for
+      // room for the lead and every step when they fit where it is; when not, for the lead and the
+      // first step, and the rest follow, a step at a time (the CNE's four levels, moved whole, left
+      // a third of a page blank)
       if (sec.steps && !sec.steps[0].label) {
         const tw = colW - 8 * s;
         const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
-        const steps = sec.steps.reduce((t, st) => t + ((st.title ? draw.split(st.title, tw, BODY, 'bold').length : 0) + (st.text ? draw.split(st.text, tw, BODY).length : 0)) * lh + 3 * s, 0);
+        const stepsH = (list) => list.reduce((t, st) => t + ((st.title ? draw.split(st.title, tw, BODY, 'bold').length : 0) + (st.text ? draw.split(st.text, tw, BODY).length : 0)) * lh + 3 * s, 0);
+        const whole = h + 3 * s + lead + stepsH(sec.steps);
+        const steps = y + whole <= bottom ? stepsH(sec.steps) : stepsH(sec.steps.slice(0, 1));
         if (h + 3 * s + lead + steps <= bottom - colTop) keep = lead + steps + 1 * s;
       }
       // A recited prayer is kept whole (below), so its heading asks for room for all of it
@@ -632,7 +647,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}».`;
     // After the section's colours, words or steps when it has them (the História's 1908–1920),
     // as on the page: it points past the whole part, so it ends it
-    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps);
+    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps || sec.profiles);
     if (moreText && !moreLast) blocks.push({ kind: 'p', lines: [moreText] });
     // Someone else's words (the Manual do Dirigente), as on the page: our line saying whose, the
     // passage in from the text beside a rule in the secção's colour, its source under it, gray
@@ -743,11 +758,16 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           if (h <= bottom - colTop) room(h);
         }
         const marks = { italic: false, bold: false, ink };
+        // A sentence that opens a list ("…pela Direção de Agrupamento:") keeps the list's first two
+        // items with it: it ended page 1 with only "o Chefe de Agrupamento" under it
+        const next = blocks[bi + 1];
+        const intoList = !verse && block.lines[0].endsWith(':') && next && (next.kind === 'ul' || next.kind === 'ol');
+        const listStart = intoList ? next.lines.slice(0, 2).reduce((t, item) => t + Math.min(splitRecited(unmarkLang(item), textW - 5 * s).length, 2), 0) : 0;
         block.lines.forEach((line, n) => {
           const lines = splitRecited(unmarkLang(line), textW - hang);
           // A prayer's last line ("Ámen.") never starts a page alone: its second-to-last line
           // asks for room for both
-          const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], textW - hang, size).length : 0;
+          const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], textW - hang, size).length : listStart;
           lines.forEach((wrapped, i) => {
             // No paragraph starts or ends a page with a single line of it: two together at its
             // start and at its end, so a paragraph of three moves whole (two at the start, then two
@@ -767,8 +787,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         block.lines.forEach((item, i) => {
           const wrapped = splitRecited(unmarkLang(item), textW - indent);
           const marks = { italic: false, bold: false, ink };
-          // A list's last item never starts a page alone: the one before it asks for room for both
-          const next = i === block.lines.length - 2 ? Math.min(splitRecited(block.lines[i + 1], textW - indent).length, 2) : 0;
+          // A list's first item never ends a page alone, nor its last starts one: the first asks for
+          // room for the second too, and the one before the last for both
+          const next = (i === 0 || i === block.lines.length - 2) && block.lines[i + 1] ? Math.min(splitRecited(block.lines[i + 1], textW - indent).length, 2) : 0;
           room(lineH * (Math.min(wrapped.length, 2) + next));
           draw.text(block.kind === 'ol' ? `${block.start + i}.` : '•', left(), y + asc(size), size, 'bold', ink);
           wrapped.forEach((w, k) => {
@@ -878,6 +899,41 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         if (k < sec.terms.length - 1) y += 1.2 * s;
       }
       y += 2 * s;
+    }
+    // Things of one kind told the same way (the units), as on the page: two to a row, each its
+    // name after a dot in its secção's colour, over its facts as label and value; a row kept whole
+    if (sec.profiles) {
+      const gutter = 8 * s;
+      const cellW = (colW - gutter) / 2;
+      const labelW = Math.max(...sec.profiles.flatMap((p) => p.facts.map(([l]) => draw.width(l, BODY - 1.5, "bold")))) + 4 * s;
+      const r = 1.3 * s;
+      const nameH = lh + 1 * s;
+      const factLines = (p) => p.facts.map(([, v]) => draw.split(v, cellW - labelW, BODY));
+      y += 2 * s;
+      for (let i = 0; i < sec.profiles.length; i += 2) {
+        const row = sec.profiles.slice(i, i + 2);
+        const rowH = nameH + Math.max(...row.map((p) => factLines(p).reduce((t, l) => t + l.length, 0))) * lh;
+        room(rowH + 2 * s);
+        row.forEach((p, k) => {
+          const x = left() + k * (cellW + gutter);
+          let ty = y;
+          draw.rect(x, ty, cellW, 0.25 * s, GRAY_LIGHT);
+          ty += 2 * s;
+          const dot = seccoes[p.seccao]?.color;
+          if (dot) draw.circle(x + r, ty + asc(BODY) / 2 + 0.2 * s, r, hexToRgb(dot), GRAY_LIGHT);
+          draw.text(p.name, x + 2 * r + 2 * s, ty + asc(BODY), BODY, 'bold', BLACK);
+          ty += nameH;
+          factLines(p).forEach((lines, n) => {
+            draw.text(p.facts[n][0], x, ty + asc(BODY), BODY - 1.5, 'bold', GRAY);
+            for (const line of lines) {
+              draw.text(line, x + labelW, ty + asc(BODY), BODY, 'normal', BLACK);
+              ty += lh;
+            }
+          });
+        });
+        // the rows' gap between them only: after the last, the section's own gap follows
+        y += rowH + 2 * s + (i + 2 < sec.profiles.length ? 4 * s : 0);
+      }
     }
     // The characters (the Livro da Selva's), as on the page and in the manual: each one's drawing
     // fitted to a box, their text beside it, its first line level with the drawing's top,
