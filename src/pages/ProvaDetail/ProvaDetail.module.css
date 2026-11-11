@@ -659,6 +659,15 @@
   line-height: 1.7;
   color: var(--color-gray-700);
   margin-bottom: var(--spacing-md);
+  /* No word left alone on a paragraph's last line ("…e os / instrutores."), as the terms and the
+     steps already do */
+  text-wrap: pretty;
+}
+
+/* Beside a floated picture (S. Tiago's), `pretty` pulled the short lines narrower still, as it did
+   the cast's text */
+.withMediaWrap .paragraph {
+  text-wrap: wrap;
 }
 
 /* Recited text is said slowly and aloud, often by a child over a parent's phone: larger and
