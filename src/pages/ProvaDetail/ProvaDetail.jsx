@@ -471,7 +471,7 @@ export default function ProvaDetail() {
                           </nav>
                         )}
                         {s.text && renderText(s.text, false, s.notes)}
-                        {!(s.swatches || s.terms || s.steps) && moreLine(s)}
+                        {!(s.swatches || s.terms || s.steps || s.profiles) && moreLine(s)}
                         {s.swatches && (
                           // Colours with their names (the Bandos'): the name is the content, the
                           // swatch shows it
@@ -495,6 +495,29 @@ export default function ProvaDetail() {
                               </div>
                             ))}
                           </dl>
+                        )}
+                        {s.profiles && (
+                          // Things of one kind told the same way (the units: secção, ages, small
+                          // groups, patrono, colour), so they can be compared: each its name, after
+                          // a dot in its secção's colour, and its facts as label and value
+                          <ul className={styles.profiles}>
+                            {s.profiles.map((p) => (
+                              <li key={p.name} className={styles.profile}>
+                                <CastH className={styles.profileName}>
+                                  <span className={styles.profileDot} style={{ background: seccoes[p.seccao]?.color }} aria-hidden="true" />
+                                  {p.name}
+                                </CastH>
+                                <dl className={styles.profileFacts}>
+                                  {p.facts.map(([label, value]) => (
+                                    <div key={label} className={styles.profileFact}>
+                                      <dt>{label}</dt>
+                                      <dd>{value}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </li>
+                            ))}
+                          </ul>
                         )}
                         {s.cast && ((NameH) => (
                           // The characters (the Livro da Selva's), as the manual sets them: each
@@ -543,7 +566,7 @@ export default function ProvaDetail() {
                         )}
                         {/* After the colours, words or steps the section has (the História's
                             1908–1920): the pointer goes past the whole part, so it ends it */}
-                        {(s.swatches || s.terms || s.steps) && moreLine(s)}
+                        {(s.swatches || s.terms || s.steps || s.profiles) && moreLine(s)}
                       </>
                     )}
                   </div>

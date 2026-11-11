@@ -384,6 +384,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
         keep = lead + Math.max(18 * s, lh * 6);
       }
+      // The profiles (the units) keep their heading with the lead and their first row
+      if (sec.profiles) {
+        const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
+        keep = lead + lh * 7 + 4 * s;
+      }
       // A chain of steps (the Lobitismo's Alcateia → CNE) is short and reads only whole: its
       // heading asks for room for the whole section, lead and every step
       if (sec.steps && !sec.steps[0].label) {
@@ -632,7 +637,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}».`;
     // After the section's colours, words or steps when it has them (the História's 1908–1920),
     // as on the page: it points past the whole part, so it ends it
-    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps);
+    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps || sec.profiles);
     if (moreText && !moreLast) blocks.push({ kind: 'p', lines: [moreText] });
     // Someone else's words (the Manual do Dirigente), as on the page: our line saying whose, the
     // passage in from the text beside a rule in the secção's colour, its source under it, gray
@@ -895,6 +900,41 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const cellW = pairs ? (colW - gutter) / 2 : colW;
       // In pairs a step smaller and tighter (9.5pt), as the manual sets them, so the ten fit
       const size = pairs ? 9.5 : BODY;
+    // Things of one kind told the same way (the units), as on the page: two to a row, each its
+    // name after a dot in its secção's colour, over its facts as label and value; a row kept whole
+    if (sec.profiles) {
+      const gutter = 8 * s;
+      const cellW = (colW - gutter) / 2;
+      const labelW = Math.max(...sec.profiles.flatMap((p) => p.facts.map(([l]) => draw.width(l, BODY - 1.5, "bold")))) + 4 * s;
+      const r = 1.3 * s;
+      const nameH = lh + 1 * s;
+      const factLines = (p) => p.facts.map(([, v]) => draw.split(v, cellW - labelW, BODY));
+      y += 2 * s;
+      for (let i = 0; i < sec.profiles.length; i += 2) {
+        const row = sec.profiles.slice(i, i + 2);
+        const rowH = nameH + Math.max(...row.map((p) => factLines(p).reduce((t, l) => t + l.length, 0))) * lh;
+        room(rowH + 2 * s);
+        row.forEach((p, k) => {
+          const x = left() + k * (cellW + gutter);
+          let ty = y;
+          draw.rect(x, ty, cellW, 0.25 * s, GRAY_LIGHT);
+          ty += 2 * s;
+          const dot = seccoes[p.seccao]?.color;
+          if (dot) draw.circle(x + r, ty + asc(BODY) / 2 + 0.2 * s, r, hexToRgb(dot), GRAY_LIGHT);
+          draw.text(p.name, x + 2 * r + 2 * s, ty + asc(BODY), BODY, 'bold', BLACK);
+          ty += nameH;
+          factLines(p).forEach((lines, n) => {
+            draw.text(p.facts[n][0], x, ty + asc(BODY), BODY - 1.5, 'bold', GRAY);
+            for (const line of lines) {
+              draw.text(line, x + labelW, ty + asc(BODY), BODY, 'normal', BLACK);
+              ty += lh;
+            }
+          });
+        });
+        // the rows' gap between them only: after the last, the section's own gap follows
+        y += rowH + 2 * s + (i + 2 < sec.profiles.length ? 4 * s : 0);
+      }
+    }
       const rowLh = pairs ? size * ts * PT * 1.42 : lh;
       const tw = cellW - box - gap;
       // The name's line is shorter by the name; the rest wrap at the full width

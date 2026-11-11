@@ -1621,6 +1621,71 @@ ol.list {
 .steps + .paragraph,
 .swatches + .paragraph,
 .terms + .paragraph {
+/* Things of one kind told the same way (the units): two to a row where two fit at the paragraphs'
+   measure, else one; each its name over its facts, a hairline over it, no box (a card each would
+   make four equal tiles of the page's one table). The columns come from the room there is, in
+   rem, not the screen's width: at 200% text, two to a row on a wide screen broke the values one
+   word to a line ("Patrulhas / de 4 / a 8") */
+.profiles {
+  list-style: none;
+  max-width: 32rem;
+  margin: var(--spacing-md) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: var(--spacing-lg) var(--spacing-xl);
+}
+
+.profile {
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.profileName {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--font-size-base);
+  font-weight: 800;
+  color: var(--color-gray-900);
+}
+
+/* Its secção's colour, edged so the yellow shows on white */
+.profileDot {
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--color-gray-300);
+}
+
+/* Label and value side by side: the labels' column as wide as the longest, so the values line up */
+.profileFacts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.125rem var(--spacing-md);
+}
+
+.profileFact {
+  display: contents;
+}
+
+.profileFact dt {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-600);
+  line-height: 1.7;
+}
+
+.profileFact dd {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--color-gray-700);
+  line-height: 1.55;
+}
+
   margin-top: var(--spacing-lg);
 }
 
