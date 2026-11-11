@@ -876,8 +876,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // at 15mm, "Livro de Ouro" at 21mm). Numbers keep their column
       const lines = (t) => {
         const tw = termW(t);
-        if (numbered) return draw.split(t.text, colW - tw, BODY).map((line) => ({ line, x: tw }));
-        const words = t.text.split(' ');
+        // a no-break hyphen ("Sub‑Guias") a plain one, as in the paragraphs: jsPDF draws nothing for it
+        const text = unmarkLang(t.text);
+        if (numbered) return draw.split(text, colW - tw, BODY).map((line) => ({ line, x: tw }));
+        const words = text.split(' ');
         let n = 0;
         while (n < words.length && tw + draw.width(words.slice(0, n + 1).join(' '), BODY) <= colW) n++;
         const rest = n < words.length ? draw.split(words.slice(n).join(' '), colW, BODY) : [];
