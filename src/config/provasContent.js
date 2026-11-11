@@ -645,7 +645,8 @@ export const provasContent = {
   'exploradores/adesao-seccao-5': {
     title: 'Patrono: S. Tiago',
     // His life told for the Exploradores (10 to 13): ours, from the Gospels and the Acts (the
-    // references given) and what tradition tells (said as tradition), in short parts under
+    // references given, small and gray (`^`), as S. Pedro's; the first written out, chapter and
+    // verses, so the short ones after it can be read) and what tradition tells (said as tradition), in short parts under
     // sub-headings; then why he is their patrono, the CNE's Manual do Dirigente's own words
     sections: [
       {
@@ -661,7 +662,7 @@ export const provasContent = {
       {
         heading: 'A vida de São Tiago',
         // Three parts, each a step of his life, so each heading is one to remember
-        text: '### Pescador e chamado por Jesus\n\nTiago nasceu na Galileia, uma região no norte da Terra Santa, há cerca de dois mil anos. Era filho de Zebedeu e de Salomé e irmão de João, que também viria a ser apóstolo. Tal como o pai, os dois irmãos eram pescadores no lago de Genesaré, a que também se chama mar da Galileia.\n\nUm dia, Jesus passou junto ao lago e viu os dois irmãos no barco, a arranjar as redes com o pai. Chamou-os, e eles deixaram logo o barco e o pai e foram com Ele (Evangelho de São Marcos, 1,19-20). Jesus deu-lhes uma alcunha: «Boanerges», que quer dizer «filhos do trovão» (São Marcos, 3,17), talvez por terem um feitio forte e decidido.\n\n### Amigo de Jesus\n\nTiago, o irmão João e Pedro eram os três apóstolos que Jesus levava consigo nos momentos mais importantes. Estiveram com Ele quando devolveu a vida à filha de Jairo e quando se transfigurou no alto de um monte. Estiveram também no Jardim das Oliveiras, onde Jesus rezou na noite antes de morrer.\n\nDepois de Jesus morrer e ressuscitar, Tiago viu-O ressuscitado e, com os outros apóstolos, recebeu o Espírito Santo no dia de Pentecostes. A partir daí, deixou de ter medo e partiu a anunciar Jesus a toda a gente.\n\n### Até à Península Ibérica, e de volta\n\nSegundo a tradição, Tiago viajou até à Península Ibérica, onde hoje ficam Portugal e Espanha, para anunciar o Evangelho, sobretudo na Galiza e na região de Aragão. Conta também a tradição que, num dia em que estava desanimado, em Saragoça, Nossa Senhora lhe apareceu sobre um pilar para lhe dar coragem.\n\nMais tarde, Tiago voltou a Jerusalém. Por volta do ano 44, o rei Herodes Agripa mandou matá-lo à espada (Atos dos Apóstolos, 12,1-2). Foi o primeiro dos doze apóstolos a dar a vida por Jesus.',
+        text: '### Pescador e chamado por Jesus\n\nTiago nasceu na Galileia, uma região no norte da Terra Santa, há cerca de dois mil anos. Era filho de Zebedeu e de Salomé e irmão de João, que também viria a ser apóstolo. Tal como o pai, os dois irmãos eram pescadores no lago de Genesaré, a que também se chama mar da Galileia.\n\nUm dia, Jesus passou junto ao lago e viu os dois irmãos no barco, a arranjar as redes com o pai. Chamou-os, e eles deixaram logo o barco e o pai e foram com Ele ^(São Marcos, capítulo 1, versículos 19 e 20)^. Jesus deu-lhes uma alcunha: «Boanerges», que quer dizer «filhos do trovão» ^(São Marcos, 3,17)^, talvez por terem um feitio forte e decidido.\n\n### Amigo de Jesus\n\nTiago, o irmão João e Pedro eram os três apóstolos que Jesus levava consigo nos momentos mais importantes. Estiveram com Ele quando devolveu a vida à filha de Jairo e quando se transfigurou no alto de um monte. Estiveram também no Jardim das Oliveiras, onde Jesus rezou na noite antes de morrer.\n\nDepois de Jesus morrer e ressuscitar, Tiago viu-O ressuscitado e, com os outros apóstolos, recebeu o Espírito Santo no dia de Pentecostes. A partir daí, deixou de ter medo e partiu a anunciar Jesus a toda a gente.\n\n### Até à Península Ibérica, e de volta\n\nSegundo a tradição, Tiago viajou até à Península Ibérica, onde hoje ficam Portugal e Espanha, para anunciar o Evangelho, sobretudo na Galiza e na região de Aragão. Conta também a tradição que, num dia em que estava desanimado, em Saragoça, Nossa Senhora lhe apareceu sobre um pilar para lhe dar coragem.\n\nMais tarde, Tiago voltou a Jerusalém. Por volta do ano 44, o rei Herodes Agripa mandou matá-lo à espada ^(Atos dos Apóstolos, 12,1-2)^. Foi o primeiro dos doze apóstolos a dar a vida por Jesus.',
       },
       {
         // After his life, what came of it: its own part
@@ -797,7 +798,6 @@ export const provasContent = {
       },
     ],
   },
-  'caminheiros/adesao-seccao-8': cargos('caminheiros'),
   'pioneiros/adesao-seccao-4': {
     title: 'Patrono: S. Pedro',
     // His life told for the Pioneiros (14 to 17), as S. Tiago's is for the Exploradores: ours,
@@ -836,6 +836,7 @@ export const provasContent = {
       },
     ],
   },
+  'caminheiros/adesao-seccao-8': cargos('caminheiros'),
   'caminheiros/adesao-seccao-3': {
     title: 'Oração do Caminheiro',
     // The prayer alone, as the CNE's agrupamentos all give it (1348, 1281, 348), in today's
