@@ -1624,8 +1624,23 @@ ol.list {
   margin-top: var(--spacing-lg);
 }
 
-/* A word set apart in the secção's ink (`**…**`: the Pioneiros' verbs, as their list sets them;
-   the Icthus acrostic's initials) */
+/* A word set apart in the secção's ink (`**…**`: the Icthus acrostic's initials) */
 .inlineStrong {
   font-weight: 800;
+}
+
+/* The Bible's own words in a patrono's life (`~«…»~`): italics in the secção's ink, the voice
+   of a quotation. Not bold: the site's links are its ink at 700, and a quote is nothing to tap.
+   A <q>, so it is a quotation in the markup too; its own «» are in the text, so none are added */
+.inlineQuote {
+  font-style: italic;
+  quotes: none;
+}
+
+/* Where a passage comes from (`^…^`, a book and its verses): a step smaller and gray, so the
+   Bible's words before it stand out and their source reads as a note. It wraps with the line,
+   only never inside the book's name (keepBook) */
+.inlineCite {
+  color: var(--color-gray-500);
+  font-size: var(--font-size-sm);
 }

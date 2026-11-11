@@ -33,9 +33,15 @@ describe('provasContent', () => {
       const { text, steps, cast, ...rest } = sec;
       for (const c of cast ?? []) expect(c.name, `"*" in a cast name in ${key}`).not.toContain('*');
       expect(JSON.stringify(rest), `"*" outside a section's text or steps in ${key}`).not.toContain('*');
+      expect(JSON.stringify(rest), `"^" outside a section's text or steps in ${key}`).not.toContain('^');
+      expect(JSON.stringify(rest), `"~" outside a section's text or steps in ${key}`).not.toContain('~');
       for (const st of steps ?? []) expect(st.title ?? '', `"*" in a step's title in ${key}`).not.toContain('*');
       for (const t of [text, ...(steps ?? []).map((st) => st.text), ...(cast ?? []).map((c) => c.text)].filter(Boolean)) {
-        for (const line of t.split('\n')) expect(line.split('*').length % 2, `unpaired "*" in ${key}: ${line}`).toBe(1);
+        for (const line of t.split('\n')) {
+          expect(line.split('*').length % 2, `unpaired "*" in ${key}: ${line}`).toBe(1);
+          expect(line.split('^').length % 2, `unpaired "^" in ${key}: ${line}`).toBe(1);
+          expect(line.split('~').length % 2, `unpaired "~" in ${key}: ${line}`).toBe(1);
+        }
       }
     }
   });

@@ -116,9 +116,10 @@ export default function ProvaDetail() {
     ) : null;
   };
 
-  // A line with its titles of works in italics (`*…*`, English ones `*{en}…*`)
+  // A line with its marks: titles of works in italics (`*…*`, English ones `*{en}…*`), a word in
+  // bold in the ink (`**`), the Bible's words (`~`) and where they come from (`^`)
   const inline = (line) => inlineRuns(line).map((r, i) =>
-    r.bold ? <strong key={i} className={styles.inlineStrong} style={{ color: section.ink }}>{r.text}</strong> : r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text
+    r.bold ? <strong key={i} className={styles.inlineStrong} style={{ color: section.ink }}>{r.text}</strong> : r.cite ? <span key={i} className={styles.inlineCite}>{r.text}</span> : r.quote ? <q key={i} className={styles.inlineQuote} style={{ color: section.ink }}>{r.text}</q> : r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text
   );
 
   // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
