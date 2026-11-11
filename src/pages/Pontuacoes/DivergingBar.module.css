@@ -1,0 +1,71 @@
+.track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-gray-100);
+}
+
+.thin {
+  height: 10px;
+}
+
+.zero {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  translate: -50% 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-gray-500);
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.pos {
+  left: 50%;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  background: var(--c);
+  transform-origin: left center;
+}
+
+/* Lost points: the same colour, hatched, so "lost" never rests on colour alone */
+.neg {
+  right: 50%;
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--c) 0 3px,
+    color-mix(in srgb, var(--c) 35%, var(--color-white)) 3px 6px
+  );
+  transform-origin: right center;
+}
+
+.idle {
+  transform: scaleX(0);
+}
+
+.grow {
+  animation: grow 800ms cubic-bezier(0.34, 1.25, 0.64, 1) calc(150ms + var(--o) * 70ms) both;
+}
+
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grow {
+    animation: none;
+  }
+
+  .idle {
+    transform: none;
+  }
+}

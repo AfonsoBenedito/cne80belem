@@ -1,0 +1,1058 @@
+.jarWrap {
+  --rim: 12px;              /* half the height of the jar's mouth, seen a little from above */
+  --base: 26px;             /* how far the rounded glass base curves down */
+  /* The drawing's own materials, named once: sand, and the shade that models the glass, lid,
+     marbles and straw (black at three strengths, plus the hole through the lid) */
+  --sand: #e9d3a6;
+  --shade-faint: rgba(0, 0, 0, 0.12);
+  --shade: rgba(0, 0, 0, 0.2);
+  --shade-strong: rgba(0, 0, 0, 0.3);
+  --hole: rgba(0, 0, 0, 0.75);
+  --hole-rim: rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(128px, 30vw, 180px);
+  animation: jarIn 600ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+@keyframes jarIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ── The winner's crown and its little hop ── */
+.crownSlot {
+  position: relative;
+  z-index: 7;
+  height: 2.75rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.crown {
+  font-size: var(--emoji-xl);
+  line-height: 1;
+  animation: crownIn 700ms cubic-bezier(0.34, 1.6, 0.64, 1) both;
+}
+
+@keyframes crownIn {
+  from { opacity: 0; transform: translateY(-40px) rotate(-30deg) scale(0.4); }
+  to { opacity: 1; transform: none; }
+}
+
+.winner .jar {
+  animation: wiggle 700ms ease-in-out 1;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-4deg); }
+  40% { transform: rotate(3.5deg); }
+  60% { transform: rotate(-2deg); }
+  80% { transform: rotate(1deg); }
+}
+
+.jar {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: 50% 100%;
+}
+
+/* ── Lid: a short cylinder, its top face an ellipse ── */
+.lid {
+  position: relative;
+  z-index: 5;
+  width: 104%;
+  height: 2.1rem;
+  margin-bottom: calc(var(--rim) * -0.6);
+  display: grid;
+  place-items: center;
+  border-radius: 0 0 50% 50% / 0 0 10px 10px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--patrol-surface) 70%, black) 0%,
+    var(--patrol-surface) 22%,
+    color-mix(in srgb, var(--patrol-surface) 88%, white) 40%,
+    var(--patrol-surface) 62%,
+    color-mix(in srgb, var(--patrol-surface) 70%, black) 100%
+  );
+  color: var(--patrol-on);
+  box-shadow: var(--shadow-md);
+  transform-origin: 6% 100%;
+  /* Open: tipped back off the mouth, kept low enough to clear the result line above the jars */
+  transform: translate(-20%, -24px) rotate(-22deg);
+  transition: transform 650ms cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+
+.lid::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -9px;
+  height: 18px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--patrol-surface) 78%, white);
+  box-shadow: inset 0 -2px 0 var(--shade-faint);
+}
+
+/* Closed once the jar is full: the lid swings down and settles with a small bounce */
+.lidClosed {
+  transform: none;
+}
+
+.lidName {
+  position: relative;
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px var(--shade-strong);
+}
+
+/* ── The glass: a cylinder with a thick rounded base ── */
+.body {
+  /* The closed lid's top face, above the glass: its height less the overlap */
+  --lid-top: calc(var(--rim) * 0.6 - 2.1rem);
+  position: relative;
+  width: 100%;
+  padding: var(--rim) 7px var(--base);
+  border: 3px solid var(--patrol);
+  border-top: none;
+  border-radius: 0 0 50% 50% / 0 0 calc(var(--base) + 8px) calc(var(--base) + 8px);
+}
+
+/* The inside of the glass, seen through the front: darker towards the back */
+.backWall {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 100%, color-mix(in srgb, var(--patrol) 22%, transparent), transparent 70%),
+    linear-gradient(90deg, color-mix(in srgb, var(--patrol) 16%, var(--color-white)), color-mix(in srgb, var(--patrol) 5%, var(--color-white)) 40%, color-mix(in srgb, var(--patrol) 10%, var(--color-white)));
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* Over the marbles: the curve of the glass darkens both sides, and light catches on it */
+.frontGlass {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--patrol) 38%, transparent) 0%,
+      transparent 13%,
+      rgba(255, 255, 255, 0) 17%,
+      rgba(255, 255, 255, 0.55) 20%,
+      rgba(255, 255, 255, 0.55) 24%,
+      rgba(255, 255, 255, 0) 29%,
+      transparent 78%,
+      rgba(255, 255, 255, 0.3) 82%,
+      rgba(255, 255, 255, 0) 85%,
+      transparent 88%,
+      color-mix(in srgb, var(--patrol) 40%, transparent) 100%
+    );
+  box-shadow: inset 0 calc(var(--base) * -0.5) 14px -8px color-mix(in srgb, var(--patrol) 35%, transparent);
+}
+
+/* Over the marbles, in the same box: the "+52" of each layer as it lands */
+.pops {
+  position: absolute;
+  z-index: 6;
+  top: var(--rim);
+  left: 7px;
+  right: 7px;
+  bottom: var(--base);
+  pointer-events: none;
+}
+
+.pop {
+  position: absolute;
+  left: 50%;
+  padding: 0.1rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-yellow);
+  color: var(--color-black);
+  font-size: var(--font-size-sm);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  translate: -50% 0;
+  animation: popUp 900ms ease-out var(--at) both;
+}
+
+@keyframes popUp {
+  0% { opacity: 0; transform: translateY(6px) scale(0.6); }
+  20% { opacity: 1; transform: translateY(-6px) scale(1.1); }
+  35% { transform: translateY(-10px) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-34px) scale(1); }
+}
+
+/* The open mouth: a ring seen from slightly above */
+.mouth {
+  position: absolute;
+  z-index: 4;
+  left: -3px;
+  right: -3px;
+  top: 0;
+  height: calc(var(--rim) * 2);
+  translate: 0 -50%;
+  border: 3px solid var(--patrol);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 60%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.55));
+  pointer-events: none;
+}
+
+.floor {
+  position: absolute;
+  z-index: -1;
+  left: 4%;
+  right: 4%;
+  bottom: -14px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, var(--shade), transparent 70%);
+}
+
+.label {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: -1.3rem;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 3px solid var(--patrol);
+  background: var(--color-white);
+  font-size: var(--emoji-md);
+  line-height: 1;
+  box-shadow: var(--shadow-md);
+}
+
+/* ── One activity's layer: a button around its marbles ── */
+.layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  /* Only the marbles take the pointer: layers share rows, so their boxes overlap */
+  pointer-events: none;
+}
+
+.layer:focus-visible {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 2px;
+}
+
+/* ── Marbles: glossy spheres that fall in, squash and bounce ── */
+.marble {
+  --b: 1;
+  position: absolute;
+  z-index: 2;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.95) 0 9%, rgba(255, 255, 255, 0) 22%),
+    radial-gradient(circle at 40% 38%, var(--m-light), var(--m-base) 58%, var(--m-dark) 100%);
+  box-shadow: inset -2px -3px 4px var(--shade);
+  filter: brightness(var(--b));
+  pointer-events: auto;
+  animation: drop var(--fall) linear var(--delay) both;
+  transition: filter 150ms ease, translate 150ms ease;
+}
+
+/* The back row: further away, so a touch smaller and in shade */
+.back {
+  --b: 0.86;
+  z-index: 1;
+  scale: 0.92;
+}
+
+/* Layers alternate a deep and a light shade of the patrulha's colour, like sand art */
+.tint0 {
+  --m-base: color-mix(in oklab, var(--patrol) calc(96% - var(--shade) * 4%), black);
+  --m-light: color-mix(in oklab, var(--patrol) 55%, white);
+  --m-dark: color-mix(in oklab, var(--patrol) 60%, black);
+}
+
+.tint1 {
+  --m-base: color-mix(in oklab, var(--patrol) calc(42% - var(--shade) * 3%), white);
+  --m-light: var(--color-white);
+  --m-dark: color-mix(in oklab, var(--patrol) 70%, white);
+}
+
+@keyframes drop {
+  0% {
+    opacity: 0;
+    transform: translateY(calc(var(--rise) * -100%)) rotate(0);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+  }
+  12% { opacity: 1; }
+  70% {
+    transform: translateY(0) rotate(var(--spin)) scale(1.12, 0.86);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  }
+  84% {
+    transform: translateY(-22%) rotate(var(--spin)) scale(0.96, 1.04);
+    animation-timing-function: cubic-bezier(0.6, 0, 1, 1);
+  }
+  100% { opacity: 1; transform: translateY(0) rotate(var(--spin)); }
+}
+
+/* Pointing at a layer (or having it open) lifts it and fades the rest of the jar */
+.inner:has(.layer:hover) .marble,
+.inner:has(.layer:focus-visible) .marble,
+.inner:has(.layerPicked) .marble {
+  filter: brightness(var(--b)) saturate(0.5) opacity(0.5);
+}
+
+.inner .layer:hover .marble,
+.inner .layer:focus-visible .marble,
+.inner .layerPicked .marble {
+  filter: brightness(calc(var(--b) * 1.1)) drop-shadow(0 0 3px var(--color-yellow));
+  translate: 0 -3px;
+}
+
+/* ── Liquid and sand: one solid layer per activity ── */
+.layerSolid {
+  pointer-events: auto;
+  border-radius: 0;
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: filter 150ms ease;
+}
+
+.fillClip {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+}
+
+/* The bottom layer sits in the rounded base */
+.layer:first-child .fillClip,
+.layer:first-child .areia {
+  border-radius: 0 0 40% 40% / 0 0 calc(var(--base) - 8px) calc(var(--base) - 8px);
+}
+
+/* Layered juice: alternate a deep and a light shade, a bright line where two meet. Each layer
+   rises from below inside its clip, a wave running across its front while it pours */
+.sumo {
+  animation: rise var(--pour) cubic-bezier(0.3, 0.55, 0.35, 1) var(--start) both;
+  --deep: color-mix(in oklab, var(--patrol) 92%, black);
+  --light: color-mix(in oklab, var(--patrol) 48%, white);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--l) 100%, white 12%), var(--l));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+
+.sumo::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  right: -20px;
+  bottom: calc(100% - 1px);
+  height: 9px;
+  background: color-mix(in srgb, var(--l) 100%, white 12%);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 9' preserveAspectRatio='none'%3E%3Cpath d='M0 9 V5 Q5 0 10 5 T20 5 V9Z'/%3E%3C/svg%3E") 0 0 / 20px 100% repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 9' preserveAspectRatio='none'%3E%3Cpath d='M0 9 V5 Q5 0 10 5 T20 5 V9Z'/%3E%3C/svg%3E") 0 0 / 20px 100% repeat-x;
+  animation: crest var(--pour) linear var(--start) both;
+}
+
+@keyframes rise {
+  0% { opacity: 0; transform: translateY(101%); }
+  2% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* The wave travels and gets calmer as the layer settles */
+/* Invisible until its layer starts pouring (the first frame also holds before the start) */
+@keyframes crest {
+  0% { -webkit-mask-position: 0 0; mask-position: 0 0; transform: scaleY(1.4); opacity: 0; }
+  4% { opacity: 1; }
+  80% { opacity: 1; transform: scaleY(0.8); }
+  100% { -webkit-mask-position: 60px 0; mask-position: 60px 0; transform: scaleY(0.3); opacity: 0; }
+}
+
+.sumo.shade0 { --l: var(--deep); }
+.sumo.shade1 { --l: var(--light); }
+.sumo.shade2 { --l: color-mix(in oklab, var(--patrol) 70%, white); }
+
+/* Sand art: grainy layers in sandy shades of the patrulha's colour, with wavy edges. Each one
+   piles up as a mound where the grains land, then spreads to the glass */
+.areia {
+  clip-path: ellipse(3% 0% at 50% 100%);
+  animation: pile var(--pour) cubic-bezier(0.25, 0.6, 0.35, 1) var(--start) both;
+  /* Grain: dots on grids of different, unrelated sizes, so no regular pattern shows */
+  background:
+    radial-gradient(circle at 30% 40%, var(--shade) 0 0.7px, transparent 1.2px) 0 0 / 5px 7px,
+    radial-gradient(circle at 70% 20%, var(--shade-faint) 0 0.9px, transparent 1.4px) 2px 3px / 11px 9px,
+    radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.45) 0 0.8px, transparent 1.3px) 1px 0 / 7px 13px,
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 0 1px, transparent 1.6px) 4px 5px / 17px 11px,
+    var(--l);
+}
+
+/* Vivid sand-art shades: the patrulha's colour, a pale one, and one warmed with sand */
+@keyframes pile {
+  0% { clip-path: ellipse(3% 0% at 50% 100%); }
+  45% { clip-path: ellipse(55% 160% at 50% 100%); }
+  100% { clip-path: ellipse(125% 230% at 50% 100%); }
+}
+
+.areia.shade0 { --l: var(--patrol); }
+.areia.shade1 { --l: color-mix(in oklab, var(--patrol) 40%, white); }
+.areia.shade2 { --l: color-mix(in oklab, var(--patrol) 72%, var(--sand)); }
+
+/* The wavy top of each sand layer, in the layer's own colour and grain */
+.areia::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 1px);
+  height: 7px;
+  background: inherit;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8' preserveAspectRatio='none'%3E%3Cpath d='M0 8 V5 Q5 0 10 4 T20 4 T30 3 T40 5 V8Z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8' preserveAspectRatio='none'%3E%3Cpath d='M0 8 V5 Q5 0 10 4 T20 4 T30 3 T40 5 V8Z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
+}
+
+.layer:nth-child(even) .areia::before {
+  transform: scaleX(-1);
+}
+
+/* ── Pouring with movement ── */
+/* The jug (juice) or bucket (sand) sweeps across the mouth while it pours: the track moves it
+   from side to side (a sine, in step with where the drops start), the pourer tips inside it */
+.pourTrack {
+  position: absolute;
+  z-index: 6;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 0;
+  pointer-events: none;
+  animation: sweep var(--sweep-period) linear var(--sweep-at) var(--sweep-times) both;
+}
+
+@keyframes sweep {
+  0% { transform: translateX(0); animation-timing-function: cubic-bezier(0.33, 0.67, 0.67, 1); }
+  25% { transform: translateX(var(--amp)); animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0.33); }
+  50% { transform: translateX(0); animation-timing-function: cubic-bezier(0.33, 0.67, 0.67, 1); }
+  75% { transform: translateX(calc(var(--amp) * -1)); animation-timing-function: cubic-bezier(0.33, 0, 0.67, 0.33); }
+  100% { transform: translateX(0); }
+}
+
+.pourer {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--rim) * -0.5);
+  width: 68px;
+  height: 68px;
+  translate: -4% -10%;
+  transform-origin: 4% 10%;
+  opacity: 0;
+  animation:
+    pourIn 450ms cubic-bezier(0.34, 1.3, 0.64, 1) var(--in) both,
+    pourOut 450ms cubic-bezier(0.5, 0, 0.75, 0) var(--out) forwards;
+}
+
+.bucket {
+  --tip: -105deg;
+  transform-origin: 6% 10%;
+}
+
+.jug {
+  --tip: -72deg;
+}
+
+@keyframes pourIn {
+  from { opacity: 0; transform: translate(40px, -50px) rotate(0); }
+  to { opacity: 1; transform: rotate(var(--tip)); }
+}
+
+@keyframes pourOut {
+  from { opacity: 1; transform: rotate(var(--tip)); }
+  to { opacity: 0; transform: translate(50px, -60px) rotate(10deg); }
+}
+
+/* What falls: in the inner box, behind the glass's shine. Each drop starts at the spout (the
+   top of the box, in container units) and falls with gravity onto the level */
+.rain {
+  position: absolute;
+  z-index: 2;
+  top: var(--rim);
+  left: 7px;
+  right: 7px;
+  bottom: var(--base);
+  container-type: size;
+  pointer-events: none;
+}
+
+.drop,
+.clump {
+  position: absolute;
+  opacity: 0;
+  translate: -50% 0;
+  animation: fallDrop var(--fall) cubic-bezier(0.55, 0, 1, 0.6) var(--at) both;
+}
+
+/* A drop of juice: a little teardrop that stretches as it speeds up, then splats */
+.drop {
+  width: 8px;
+  height: 11px;
+  border-radius: 50% 50% 50% 50% / 38% 38% 62% 62%;
+  background: radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--patrol) 35%, white), var(--patrol) 70%);
+}
+
+@keyframes fallDrop {
+  0% { opacity: 0; transform: translateY(var(--from)) scale(0.7, 0.9); }
+  8% { opacity: 1; }
+  86% { opacity: 1; transform: translateY(0) scale(0.75, 1.5) rotate(0); }
+  100% { opacity: 0; transform: translateY(2px) scale(2.2, 0.3); }
+}
+
+/* A clump of sand: a few grains together, tumbling */
+.clump {
+  width: 9px;
+  height: 9px;
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--patrol) 70%, var(--sand)) 0 1.6px, transparent 2px),
+    radial-gradient(circle at 75% 40%, color-mix(in oklab, var(--patrol) 85%, black) 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at 45% 78%, color-mix(in oklab, var(--patrol) 50%, var(--sand)) 0 1.6px, transparent 2px),
+    radial-gradient(circle at 80% 85%, color-mix(in oklab, var(--patrol) 70%, var(--sand)) 0 1.1px, transparent 1.5px);
+  animation-name: fallClump;
+}
+
+@keyframes fallClump {
+  0% { opacity: 0; transform: translateY(var(--from)) rotate(0); }
+  8% { opacity: 1; }
+  90% { opacity: 1; transform: translateY(0) rotate(var(--spin)); }
+  100% { opacity: 0; transform: translateY(1px) rotate(var(--spin)) scale(1.6, 0.4); }
+}
+
+/* ── The straw: a hole opens in the lid, the straw slides down through it ── */
+/* Hole, top and inside part are all placed in the glass's own box (the body's padding box) at
+   --sx, so they line up; --lid-top (on .body) is where the lid's top face sits */
+
+.lidHole {
+  position: absolute;
+  z-index: 6;
+  top: calc(var(--lid-top) - 1px);
+  left: calc(var(--sx) * 100% - 8px);
+  width: 16px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 40%, var(--hole), var(--hole-rim));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+  transform: scale(0);
+  animation: holeOpen 300ms cubic-bezier(0.34, 1.5, 0.64, 1) 550ms forwards;
+}
+
+@keyframes holeOpen {
+  to { transform: scale(1); }
+}
+
+/* Its top, out of the hole: above the lid, ending in the hole */
+.straw {
+  position: absolute;
+  z-index: 7;
+  left: calc(var(--sx) * 100% - 4.5px);
+  top: calc(var(--lid-top) - 58px);
+  height: 61px;
+  width: 9px;
+  border-radius: 4px 4px 0 0;
+  background: repeating-linear-gradient(-35deg, var(--color-white) 0 6px, var(--patrol-surface) 6px 12px);
+  box-shadow: inset -2px 0 0 var(--shade-faint);
+  animation: strawIn 700ms cubic-bezier(0.34, 1.3, 0.64, 1) 700ms both;
+}
+
+/* Inside the jar the straw shows through the glass, over the surface; below the surface's front
+   edge it's tinted by the juice */
+.strawIn {
+  position: absolute;
+  z-index: 2;
+  top: var(--rim);
+  bottom: var(--base);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.strawInside,
+.strawTint {
+  position: absolute;
+  left: calc(var(--sx) * 100% - 4.5px);
+  width: 9px;
+  animation: strawIn 700ms cubic-bezier(0.34, 1.3, 0.64, 1) 700ms both;
+}
+
+/* One straight piece, the same stripes as the straw's top, through the surface to near the bottom */
+.strawInside {
+  top: 0;
+  bottom: 6%;
+  border-radius: 0 0 4px 4px;
+  background: repeating-linear-gradient(-35deg, var(--color-white) 0 6px, var(--patrol-surface) 6px 12px);
+  opacity: 0.92;
+}
+
+/* Over it, below the surface's front edge: the juice's colour, so it reads as in the juice */
+.strawTint {
+  top: calc(100% - var(--level) + var(--rim) * 0.8);
+  bottom: 6%;
+  border-radius: 0 0 4px 4px;
+  background: color-mix(in srgb, var(--patrol) 55%, transparent);
+}
+
+/* Hidden while it waits its turn (the first frame also holds before the start) */
+@keyframes strawIn {
+  0% { opacity: 0; transform: translateY(-150px); }
+  15% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* The juice's top: inside the glass, under the straw */
+.liquidTop {
+  position: absolute;
+  z-index: 2;
+  top: var(--rim);
+  left: 7px;
+  right: 7px;
+  bottom: var(--base);
+  pointer-events: none;
+}
+
+/* Inside the glass, behind its shine: the sun umbrella. Clipped to the glass, so with the lid
+   on, the umbrella comes down from under it */
+.scene {
+  position: absolute;
+  z-index: 2;
+  top: var(--rim);
+  left: 7px;
+  right: 7px;
+  bottom: var(--base);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The sun umbrella: comes down closed and is pushed into the sand in three jabs, wobbling,
+   with a puff of sand at each; then it opens. It leans by --tilt (random, 6–16° either way) */
+.umbrella {
+  position: absolute;
+  left: 52%;
+  width: 36%;
+  aspect-ratio: 50 / 58;
+  margin-left: -18%;
+  translate: 0 12%;
+  transform-origin: 50% 100%;
+  animation: stuff 1100ms linear 700ms both;
+}
+
+@keyframes stuff {
+  0% { opacity: 0; transform: translateY(-140%) rotate(var(--tilt)); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
+  10% { opacity: 1; }
+  30% { transform: translateY(-34%) rotate(calc(var(--tilt) + 5deg)); animation-timing-function: ease-out; }
+  40% { transform: translateY(-40%) rotate(calc(var(--tilt) - 3deg)); animation-timing-function: ease-in; }
+  55% { transform: translateY(-16%) rotate(calc(var(--tilt) + 4deg)); animation-timing-function: ease-out; }
+  65% { transform: translateY(-20%) rotate(calc(var(--tilt) - 2deg)); animation-timing-function: ease-in; }
+  82% { transform: translateY(0) rotate(calc(var(--tilt) + 2deg)); animation-timing-function: ease-out; }
+  100% { opacity: 1; transform: translateY(0) rotate(var(--tilt)); }
+}
+
+.umbrellaTop {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: canopyOpen 650ms cubic-bezier(0.34, 1.6, 0.64, 1) 1850ms both;
+}
+
+@keyframes canopyOpen {
+  from { transform: scale(0.18, 0.9); }
+  to { transform: none; }
+}
+
+/* A puff of sand at the base, at each of the three jabs */
+.puff {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 26px;
+  height: 10px;
+  margin-left: -13px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 20% 60%, color-mix(in oklab, var(--patrol) 55%, var(--sand)) 0 1.6px, transparent 2px),
+    radial-gradient(circle at 50% 30%, color-mix(in oklab, var(--patrol) 75%, var(--sand)) 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at 80% 55%, color-mix(in oklab, var(--patrol) 55%, var(--sand)) 0 1.6px, transparent 2px);
+  opacity: 0;
+  animation: puff 420ms ease-out calc(700ms + 330ms + var(--k) * 270ms) both;
+}
+
+@keyframes puff {
+  0% { opacity: 1; transform: scale(0.4) translateY(0); }
+  100% { opacity: 0; transform: scale(1.6) translateY(-8px); }
+}
+
+/* The juice's surface, seen from slightly above like the mouth: a lighter oval, with a
+   gentle wave across it for a few seconds */
+.surface {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(var(--rim) * 1.6);
+  translate: 0 50%;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 8'%3E%3Cpath d='M0 4 Q10 0 20 4 T40 4' fill='none' stroke='white' stroke-opacity='0.75' stroke-width='1.6'/%3E%3C/svg%3E") 0 50% / 40px 8px repeat-x,
+    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--patrol) 30%, white), color-mix(in srgb, var(--patrol) 60%, white));
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  animation: surfaceIn 300ms ease-out var(--start) forwards, wave 2.4s linear var(--start) 4;
+}
+
+@keyframes surfaceIn {
+  to { opacity: 1; }
+}
+
+@keyframes wave {
+  from { background-position-x: 0; }
+  to { background-position-x: 40px; }
+}
+
+.bubble {
+  position: absolute;
+  bottom: 4%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  animation: bubble 2.2s ease-in var(--start) 3;
+}
+
+@keyframes bubble {
+  0% { opacity: 0; bottom: 4%; }
+  15% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; bottom: calc(100% - var(--top) - 6px); }
+}
+
+.inner:has(.layer:hover) .fill,
+.inner:has(.layer:focus-visible) .fill,
+.inner:has(.layerPicked) .fill {
+  filter: saturate(0.4) opacity(0.5);
+}
+
+.inner .layer:hover .fill,
+.inner .layer:focus-visible .fill,
+.inner .layerPicked .fill {
+  filter: brightness(1.08) drop-shadow(0 0 4px var(--color-yellow));
+}
+
+/* Once full, a ring pulses twice around the top layer: layers are things to tap */
+.layerHint::before {
+  content: "";
+  position: absolute;
+  inset: -3px -4px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 3px var(--color-yellow), 0 0 12px 2px color-mix(in srgb, var(--color-yellow) 60%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  animation: layerPulse 1100ms ease-in-out 900ms 2;
+}
+
+@keyframes layerPulse {
+  0%, 100% { opacity: 0; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* The marks on the glass: on the outer side (left for the left jar, right for the right one) */
+.ticks {
+  position: absolute;
+  z-index: 4;
+  top: var(--rim);
+  bottom: var(--base);
+  right: -13px;
+  width: 9px;
+  pointer-events: none;
+}
+
+.sideLeft .ticks {
+  right: auto;
+  left: -13px;
+}
+
+.tick {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--patrol) 70%, var(--color-white));
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: tickIn 300ms ease-out var(--at) forwards;
+}
+
+.sideLeft .tick {
+  transform-origin: right center;
+}
+
+@keyframes tickIn {
+  to { transform: scaleX(1); }
+}
+
+.empty {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 38%;
+  translate: -50% 0;
+  width: 80%;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--color-gray-600);
+}
+
+/* The layer's name beside the jar, on the outer side */
+.tag {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 22px);
+  max-width: 14rem;
+  translate: 0 -50%;
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-200);
+  color: var(--color-black);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+}
+
+.tag > :first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sideLeft .tag {
+  left: auto;
+  right: calc(100% + 22px);
+}
+
+@media (hover: hover) {
+  .layer:hover .tag {
+    opacity: 1;
+  }
+}
+
+.layer:focus-visible .tag {
+  opacity: 1;
+}
+
+/* ── Score under the jar ── */
+.caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.9rem;
+}
+
+.score {
+  font-size: clamp(var(--font-size-4xl), 8vw, var(--font-size-5xl));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-black);
+  font-variant-numeric: tabular-nums;
+}
+
+.bump {
+  display: inline-block;
+  animation: bump 220ms ease-out;
+}
+
+@keyframes bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.scoreUnit {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Without motion: the jar is shown full, lid on, score in place */
+.instant .tick {
+  animation: none;
+  transform: none;
+}
+
+.instant .layerHint::before {
+  animation: none;
+}
+
+.instant .fill,
+.instant .fill::before {
+  animation: none;
+  clip-path: none;
+  transform: none;
+}
+
+.instant .fill::before,
+.instant .puff {
+  display: none;
+}
+
+.instant .straw,
+.instant .strawInside,
+.instant .strawTint,
+.instant .lidHole,
+.instant .umbrellaTop {
+  animation: none;
+  transform: none;
+}
+
+.instant .umbrella {
+  animation: none;
+  transform: rotate(var(--tilt));
+}
+
+.instant,
+.instant .marble,
+.instant .crown,
+.instant.winner .jar {
+  animation: none;
+}
+
+.instant .lid {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pops {
+    display: none;
+  }
+
+  .tick {
+    animation: none;
+    transform: none;
+  }
+
+  .layerHint::before {
+    animation: none;
+  }
+
+  .fill,
+  .straw,
+  .strawInside,
+  .strawTint,
+  .lidHole,
+  .umbrellaTop {
+    animation: none;
+    clip-path: none;
+    transform: none;
+  }
+
+  .umbrella {
+    animation: none;
+    transform: rotate(var(--tilt));
+  }
+
+  .fill::before,
+  .pourTrack,
+  .rain,
+  .puff {
+    display: none;
+  }
+
+  .jarWrap,
+  .marble,
+  .crown,
+  .winner .jar,
+  .bump {
+    animation: none;
+  }
+
+  .lid,
+  .marble,
+  .tag {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .jarWrap {
+    --rim: 9px;
+    --base: 20px;
+  }
+
+  .lidName {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Touch: a whole layer takes the tap, not just its marbles, and never less than 44px tall
+   (where two thin layers meet, the later one wins the overlap) */
+@media (pointer: coarse) {
+  .layer {
+    pointer-events: auto;
+  }
+
+  .layer::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: max(100%, 44px);
+    translate: 0 -50%;
+  }
+}
