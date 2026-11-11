@@ -284,6 +284,9 @@ function Progresso({ seccao }) {
     <div className={styles.progresso}>
       <ol className={styles.etapas}>
         {etapas.map((e, i) => (
+      {/* The etapas' own width decides four across or two by two (a container), not the screen's:
+          beside the whole insígnia at 768px they had a phone's room */}
+      <div className={styles.etapasBox}>
           <li key={e.name} className={styles.etapa}>
             <img src={e.src} alt="" className={styles.etapaImg} />
             {/* The number in the secção's colour, as the provas list numbers its provas; the
@@ -300,6 +303,7 @@ function Progresso({ seccao }) {
         <figcaption className={styles.funcaoName}>A insígnia completa</figcaption>
       </figure>
     </div>
+      </div>
   );
 }
 

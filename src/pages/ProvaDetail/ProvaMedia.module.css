@@ -537,9 +537,14 @@ a.funcaoZoom {
   gap: var(--spacing-lg);
 }
 
-.etapas {
+.etapasBox {
   flex: 1 1 20rem;
+  container-type: inline-size;
+}
+
+.etapas {
   list-style: none;
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--spacing-sm);
@@ -567,6 +572,27 @@ a.funcaoZoom {
   }
 }
 
+/* An etapa's name is never hyphenated ("Desprendi-mento", "Desco-berta" under the Pioneiros' and
+   Exploradores' insígnias): where four don't fit across (28rem, by the etapas' own width), they go
+   two by two, and one by one where two don't (a phone at 200% text); a word wider still than its
+   tile breaks rather than spill onto the next */
+.etapa .funcaoName {
+  hyphens: manual;
+}
+
+@container (width < 28rem) {
+  .etapas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--spacing-md);
+  }
+}
+
+@container (width < 12rem) {
+  .etapas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .etapaNumber {
   display: grid;
   place-items: center;
@@ -587,8 +613,13 @@ a.funcaoZoom {
 }
 
 .completaImg {
-  height: 8rem;
-  width: auto;
+  /* By its width, its height following, so it stays round when the column is narrower than
+     8rem (at 200% text on a phone it was squeezed into an oval); a fixed width capped at 100%,
+     not min(8rem, 100%), whose share of a figure sized by it let the figure take the image's
+     full 262px and leave the etapas too narrow for four across on a desktop */
+  width: 8rem;
+  max-width: 100%;
+  height: auto;
 }
 
 .srOnly {
