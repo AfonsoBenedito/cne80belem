@@ -546,7 +546,7 @@ export default function ProvaDetail() {
                                 <span className={styles.castPicture}>
                                   <LoadErrorBoundary quiet>
                                     <Suspense fallback={<span aria-hidden="true" />}>
-                                      <ProvaMedia media={c.media} seccao={seccao} picture />
+                                      <ProvaMedia media={c.media} seccao={seccao} picture zoom={c.zoom} title={c.name} caption={c.caption} kind={c.kind} />
                                     </Suspense>
                                   </LoadErrorBoundary>
                                 </span>

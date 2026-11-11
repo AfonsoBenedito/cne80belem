@@ -613,3 +613,60 @@ a.funcaoZoom {
     padding-right: 48px;
   }
 }
+
+/* A cast picture that opens in the viewer (`zoom` on its cast item, the first Jamboree's photo):
+   the picture itself is the button, a small magnifier in its corner, as the posters' mark */
+.pictureZoom {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: none;
+  cursor: zoom-in;
+}
+
+.pictureZoom img {
+  display: block;
+  border-radius: var(--radius-xs);
+  transition: transform var(--transition-interactive);
+}
+
+.pictureZoom:active img {
+  transform: scale(0.97);
+}
+
+.pictureZoom:focus-visible {
+  outline: 2px solid var(--color-green-dark);
+  outline-offset: 3px;
+}
+
+.pictureZoomMark {
+  position: absolute;
+  right: var(--spacing-xs);
+  bottom: var(--spacing-xs);
+  display: inline-flex;
+  padding: 0.3rem;
+  color: var(--color-gray-700);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (hover: hover) {
+  .pictureZoom:hover .pictureZoomMark {
+    color: var(--color-gray-900);
+    border-color: var(--color-gray-400);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pictureZoom img {
+    transition: none;
+  }
+
+  .pictureZoom:active img {
+    transform: none;
+  }
+}
