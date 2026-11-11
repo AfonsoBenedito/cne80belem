@@ -924,7 +924,8 @@ export const provasContent = {
       },
       {
         heading: 'O Empreendimento',
-        text: 'O projeto dos Pioneiros chama‑se Empreendimento: um conjunto de atividades que os pioneiros escolhem, preparam, realizam e avaliam, em Equipa e em Comunidade, para atingir um objetivo concreto.',
+        text: 'O projeto dos Pioneiros chama‑se Empreendimento: um conjunto de atividades ligadas entre si, que os pioneiros escolhem, preparam, realizam e avaliam em Comunidade e com o apoio da Equipa de Animação.',
+        more: 'Projetos dos Pioneiros',
       },
     ],
   },
