@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import faviconUrl from '/favicon.png';
 import { registerNunito, registerNunitoItalic } from './pdfFonts';
 import { normalize } from './normalize';
-import { toBlocks, leadsList, keepBook } from './provaBlocks';
+import { toBlocks, leadsList, keepBook, keepLastPair } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
 import { getProvaContent } from '../config/provasContent';
@@ -126,7 +126,9 @@ function drawRuns(draw, line, x, y, size, color, state) {
 // whole) is a plain one on paper: jsPDF draws nothing for it, and its lines break at spaces only.
 // A passage's source (`^…^`) breaks only after its book's name, as on the page: the book's
 // spaces are no-break ones for the wrapping, and drawRuns draws them as plain ones
-const unmarkLang = (text) => text.replace(/\{[a-z]{2}\}/g, '').replace(/\u2011/g, '-').replace(/\^[^^]+\^/g, keepBook);
+// …and its last two words joined by a no-break space, as the page joins them, so none prints alone
+// on a last line ("fotografias." under the Avaliação)
+const unmarkLang = (text) => keepLastPair(text.replace(/\{[a-z]{2}\}/g, '').replace(/\u2011/g, '-').replace(/\^[^^]+\^/g, keepBook));
 
 function setText(doc, size, style = 'normal', color = BLACK) {
   doc.setFont('Nunito', style);
@@ -644,7 +646,8 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // Another prova that tells this part in full, as on the page, if this secção has it (in a
     // booklet of all the provas it's a few pages on; on its own, its name says where to look)
     const more = sec.more && numbered(seccao).find((p) => p.title === sec.more);
-    const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}».`;
+    // A prova still to be written says so, as the page does
+    const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}»${getProvaContent(seccao, more.slug) ? '' : ' (texto em preparação)'}.`;
     // After the section's colours, words or steps when it has them (the História's 1908–1920),
     // as on the page: it points past the whole part, so it ends it
     const moreLast = Boolean(sec.swatches || sec.terms || sec.steps || sec.profiles);
@@ -947,8 +950,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // `castSide: 'left'` (the Exploradores' five symbols): one to a row, every icon on the left,
       // as on the page; two to a row left the fifth alone with half a row empty
       const oneSide = sec.castSide === 'left';
-      const pairs = !oneSide && colW >= 150 * s;
-      const box = (pairs ? 13 : 18) * s;
+      // Two to a row only for a long cast (the ten): two alone (the Jamboree's and the JOTA-JOTI's
+      // logos) one to a row, at the body's size, so the logos aren't 13mm thumbnails
+      const pairs = !oneSide && sec.cast.length > 2 && colW >= 150 * s;
+      // `castLarge` (the logos): a larger box, each on the text's left edge, so small lettering
+      // ("World Scout") prints legibly
+      const box = (pairs ? 13 : sec.castLarge ? 26 : 18) * s;
       const gap = (pairs ? 2.5 : 5) * s;
       const gutter = 5 * s;
       const cellW = pairs ? (colW - gutter) / 2 : colW;
@@ -974,7 +981,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         if (img) {
           const w = Math.min(box, (box * img.w) / img.h);
           const h = (w * img.h) / img.w;
-          draw.image(img.data, (imageRight ? x + cellW - box : x) + (box - w) / 2, y, w, h, 'JPEG');
+          draw.image(img.data, (imageRight ? x + cellW - box : x) + (sec.castLarge ? 0 : (box - w) / 2), y, w, h, 'JPEG');
         }
         const tx = imageRight ? x : x + box + gap;
         let ty = y;
@@ -1005,8 +1012,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // Under the section's own years (the História's "1908–1920"), the years at the text's size,
       // as on the page, so they don't match the heading's
       const labelSize = sec.date ? BODY : 12.5;
-      const markW = (dated ? (sec.date ? 12 : 16) : 5) * s;
-      const railX = left() + (dated ? 4.5 : 1.25) * s;
+      // `numbered` (the Empreendimento's phases): each marker its number in a disc, as on the page
+      const numbered = !dated && sec.numbered;
+      const markW = (dated ? (sec.date ? 12 : 16) : numbered ? 6.5 : 5) * s;
+      const railX = left() + (dated ? 4.5 : numbered ? 2.4 : 1.25) * s;
       const tx = left() + markW + 3 * s;
       const tw = colW - markW - 3 * s;
       if (blocks.length) y += 1 * s;
@@ -1018,7 +1027,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         room(h + (k === sec.steps.length - 2 ? lh * 2 : 0));
         const top = y;
         if (dated) draw.text(st.label, left(), y + asc(labelSize), labelSize, 'bold', ink);
-        else draw.circle(railX, y + asc(BODY) - 1.1 * s, 1.25 * s, ink);
+        else if (numbered) {
+          const cy = y + asc(BODY) - 1.1 * s;
+          draw.circle(railX, cy, 2.4 * s, hexToRgb(section.surface));
+          draw.text(String(k + 1), railX, cy + asc(7.5) / 2, 7.5, 'bold', hexToRgb(section.onSurface), { align: 'center' });
+        } else draw.circle(railX, y + asc(BODY) - 1.1 * s, 1.25 * s, ink);
         for (const t of title) {
           draw.text(t, tx, y + asc(BODY), BODY, 'bold', BLACK);
           y += lh;
@@ -1029,7 +1042,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           y += lh;
         }
         y += 3 * s;
-        if (k < sec.steps.length - 1) draw.line(railX, top + (dated ? (sec.date ? 6 : 7) : 2.5) * s, railX, y - 1 * s, GRAY_LIGHT, 0.5);
+        if (k < sec.steps.length - 1) draw.line(railX, top + (dated ? (sec.date ? 6 : 7) : numbered ? 4 : 2.5) * s, railX, y - 1 * s, GRAY_LIGHT, 0.5);
       });
     }
     if (moreText && moreLast) {

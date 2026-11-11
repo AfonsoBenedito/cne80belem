@@ -5,7 +5,7 @@ import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
 import { getProvaContent } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
-import { toBlocks, leadsList, inlineRuns } from '../../utils/provaBlocks';
+import { toBlocks, leadsList, inlineRuns, keepLastPair, PAIR } from '../../utils/provaBlocks';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import { TEXT_SIZES, readTextSize, saveTextSize, textSizeLabel } from '../../utils/textSize';
 import LoadErrorBoundary from '../../components/LoadErrorBoundary/LoadErrorBoundary';
@@ -111,15 +111,27 @@ export default function ProvaDetail() {
         Podes saber mais na prova{' '}
         <Link to={`/seccao/${seccao}/provas/${other.slug}`} className={styles.moreLink} style={{ color: section.ink }}>
           {other.title}
-        </Link>.
+        </Link>
+        {/* A prova still to be written says so, as the sidebar does, until its text lands */}
+        {!getProvaContent(seccao, other.slug) && ' (texto em preparação)'}.
       </p>
     ) : null;
   };
 
   // A line with its marks: titles of works in italics (`*…*`, English ones `*{en}…*`), a word in
   // bold in the ink (`**`), the Bible's words (`~`) and where they come from (`^`)
-  const inline = (line) => inlineRuns(line).map((r, i) =>
-    r.bold ? <strong key={i} className={styles.inlineStrong} style={{ color: section.ink }}>{r.text}</strong> : r.cite ? <span key={i} className={styles.inlineCite}>{r.text}</span> : r.quote ? <q key={i} className={styles.inlineQuote} style={{ color: section.ink }}>{r.text}</q> : r.italic ? <i key={i} lang={r.lang}>{r.text}</i> : r.text
+  // The block's last two words, joined (`keepLastPair`): a span that keeps them on one line while
+  // its column holds them (`.keepPair`). A pair split across two marks ("de **fotografias**") is
+  // joined by a no-break space instead
+  const pair = (text) => {
+    const k = text.indexOf(PAIR);
+    if (k < 0) return text;
+    const start = text.lastIndexOf(' ', k - 1) + 1;
+    if (k === 0 || k === text.length - 1) return text.replace(PAIR, '\u00A0');
+    return [text.slice(0, start), <span key="pair" className={styles.keepPair}>{text.slice(start).replace(PAIR, ' ')}</span>];
+  };
+  const inline = (line) => inlineRuns(keepLastPair(line, PAIR)).map((r, i) =>
+    r.bold ? <strong key={i} className={styles.inlineStrong} style={{ color: section.ink }}>{pair(r.text)}</strong> : r.cite ? <span key={i} className={styles.inlineCite}>{pair(r.text)}</span> : r.quote ? <q key={i} className={styles.inlineQuote} style={{ color: section.ink }}>{pair(r.text)}</q> : r.italic ? <i key={i} lang={r.lang}>{pair(r.text)}</i> : <Fragment key={i}>{pair(r.text)}</Fragment>
   );
 
   // A section's text: paragraphs (a prayer's lines each a row of their own) and real lists
@@ -334,7 +346,7 @@ export default function ProvaDetail() {
 
           {/* Content */}
           {/* The secção's ink reaches the list markers through a variable, as the PDF draws them */}
-          <article className={styles.article} style={{ '--section-ink': section.ink, ...(recited && TEXT_SIZES[sizeIdx] !== 1 ? { '--recite-scale': TEXT_SIZES[sizeIdx] } : {}) }}>
+          <article className={styles.article} style={{ '--section-ink': section.ink, '--section-surface': section.surface, '--section-on-surface': section.onSurface, ...(recited && TEXT_SIZES[sizeIdx] !== 1 ? { '--recite-scale': TEXT_SIZES[sizeIdx] } : {}) }}>
             {content ? (
               // If the pictures' chunk can't download, one note with a reload stands in for the
               // sections (only an all-picture prova has any); a new prova starts afresh
@@ -491,7 +503,7 @@ export default function ProvaDetail() {
                             {s.terms.map((t) => (
                               <div key={t.term} className={styles.termRow}>
                                 <dt className={styles.term} style={{ color: section.ink }}>{t.term}</dt>
-                                <dd className={styles.termText}>{t.text}</dd>
+                                <dd className={styles.termText}>{pair(keepLastPair(t.text, PAIR))}</dd>
                               </div>
                             ))}
                           </dl>
@@ -528,7 +540,7 @@ export default function ProvaDetail() {
                           // (while the picture code loads, a placeholder holds the box)
                           // `castSide: 'left'`: every picture on the left (five like badges, the
                           // symbols', where alternating sides only made the eye hunt for each name)
-                          <ul className={`${styles.cast} ${s.castSide === 'left' ? styles.castOneSide : ''}`}>
+                          <ul className={`${styles.cast} ${s.castSide === 'left' ? styles.castOneSide : ''} ${s.castLarge ? styles.castLarge : ''}`}>
                             {s.cast.map((c) => (
                               <li key={c.name} id={c.id} className={styles.castRow}>
                                 <span className={styles.castPicture}>
@@ -550,8 +562,9 @@ export default function ProvaDetail() {
                         ))(s.heading ? CastH : SectionH)}
                         {s.steps && (
                           // Steps on one line, each joined to the next: dates (a history) or names
-                          // (a chain, each part of the next)
-                          <ol className={`${styles.steps} ${s.steps[0].label ? styles.stepsDated : ''}`}>
+                          // (a chain, each part of the next); `numbered`, a sequence to remember
+                          // (the Empreendimento's four phases), each name's number in its marker
+                          <ol className={`${styles.steps} ${s.steps[0].label ? styles.stepsDated : ''} ${s.numbered ? styles.stepsNumbered : ''}`}>
                             {s.steps.map((st, k) => (
                               <li key={k} className={styles.step}>
                                 {st.label && <span className={styles.stepLabel} style={{ color: section.ink }}>{st.label}</span>}

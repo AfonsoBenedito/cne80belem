@@ -304,11 +304,29 @@
 
 /* ── Article ── */
 /* ~70 characters a line: at the full column the text ran to 110 */
+/* A block's last two words, kept on one line (`keepLastPair`), so none sits alone on the last
+   one; only while the column holds about 24 characters (14rem, in the article's own width: every
+   phone at the normal size). Narrower (200% text on a phone), they wrap as any words do, rather
+   than one of them breaking mid-word */
+.keepPair {
+  white-space: nowrap;
+}
+
+@container article (max-width: 14rem) {
+  .keepPair {
+    white-space: normal;
+  }
+}
+
 .article {
   /* Its pictures beside text follow its width (below) */
   container: article / inline-size;
   min-width: 0;
   max-width: 68ch;
+  /* A word wider than the column breaks rather than running past it: at a 200% text size on a
+     320px phone "Empreendimento" was 14px wider than the text and cut at the screen's edge. Only
+     such a word: every other wraps as before */
+  overflow-wrap: break-word;
 }
 
 .section {
@@ -476,6 +494,9 @@
   font-size: var(--font-size-xl);
   font-weight: 800;
   margin-bottom: 0.75rem;
+  /* A long heading in even lines, not a word alone under it ("O Empreendimento e o progresso /
+     pessoal" at 390px) */
+  text-wrap: balance;
 }
 
 /* A sub-heading inside a section's text (the "### " lines: S. Francisco's life in its four
@@ -1027,6 +1048,36 @@
   margin-top: var(--spacing-sm);
 }
 
+/* A sequence to remember (`numbered`, the Empreendimento's four phases): each marker its
+   number, in a disc of the secção's text-bearing fill, as the sidebar numbers the open prova; the
+   list already says the order to a screen reader, so the number is drawn for the eye only */
+.stepsNumbered {
+  --marker: 1.5rem;
+  counter-reset: step;
+}
+
+.stepsNumbered .step {
+  counter-increment: step;
+}
+
+.stepsNumbered .step::before {
+  content: counter(step) / "";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  background: var(--section-surface);
+  color: var(--section-on-surface);
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepsNumbered .step:not(:last-child)::after {
+  top: calc(var(--marker) + 0.25rem);
+}
+
 /* A history: the date is the marker, set large in the secção's ink, the line under it */
 .stepsDated {
   --marker: 3.5rem;
@@ -1068,9 +1119,12 @@
 }
 
 /* A narrow list (a small phone, or a larger text size: the width is in rem, so it grows with the
-   text) puts each date above its text, the text taking the full width; side by side, a 3.5rem
-   date column left long words ("voluntariamente") wider than what remained */
-.stepsDated {
+   text) puts each marker above its text, the text taking the full width: side by side, a 3.5rem
+   date column left long words ("voluntariamente") wider than what remained, and at 200% on a
+   320px phone the numbered phases' text was 96px wide, a syllable a line. A date's column is
+   3.5rem, so dates stack under 15rem; a dot or number is 1.5rem, so those stack only under 10rem
+   (a phone at 200% text): at the normal size on a 320px phone they keep their rail */
+.steps {
   container-type: inline-size;
 }
 
@@ -1086,6 +1140,22 @@
   }
 
   .stepsDated .step:not(:last-child)::after {
+    content: none;
+  }
+}
+
+@container (width < 10rem) {
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.25rem;
+  }
+
+  .stepBody {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .step:not(:last-child)::after {
     content: none;
   }
 }
@@ -1499,6 +1569,64 @@ ol.list {
   .castPicture {
     float: none;
     justify-content: flex-start;
+    margin: 0 0 var(--spacing-sm);
+  }
+}
+
+/* `castLarge` (the Jamboree's and the JOTA-JOTI's logos): one column at the paragraphs' width,
+   as the symbols, but each logo at the characters' 7rem at every width, so its lettering stays
+   legible (at 5.5rem on a phone the Jamboree's "World Scout" couldn't be read): beside its text,
+   floating under 26rem, over it under 18rem. Each on the text's left edge, not centred in its
+   column, and a paragraph's gap under the sentence that leads into them ("…mundial:") */
+.castLarge {
+  margin-top: var(--spacing-md);
+}
+
+.castLarge .castPicture {
+  justify-content: flex-start;
+}
+
+@container (max-width: 36rem) {
+  .castLarge .castRow,
+  .castLarge .castRow:nth-child(even) {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+  }
+
+  .castLarge .castPicture {
+    float: none;
+    width: auto;
+    margin: 0;
+  }
+
+  .castLarge .castPicture img {
+    max-height: 7rem;
+  }
+
+  /* A logo that couldn't load gives its column back, as any cast picture does (the even row's
+     rule above outranked the general one and left the Jamboree's text 7rem wide) */
+  .castLarge .castRow:has(.castPicture:empty) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@container (max-width: 26rem) {
+  .castLarge .castRow,
+  .castLarge .castRow:nth-child(even) {
+    display: flow-root;
+  }
+
+  /* One width for both (the logos are 89 and 91px wide), so their names start together */
+  .castLarge .castPicture {
+    float: left;
+    width: 6rem;
+    margin: 0.3rem var(--spacing-md) var(--spacing-xs) 0;
+  }
+}
+
+@container (max-width: 18rem) {
+  .castLarge .castPicture {
+    float: none;
     margin: 0 0 var(--spacing-sm);
   }
 }

@@ -309,7 +309,9 @@ function Progresso({ seccao }) {
 function Picture({ f }) {
   const [failed, setFailed] = useState(false);
   if (failed) return null;
-  return <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} onError={() => setFailed(true)} />;
+  // A cast sits down the page (the Livro da Selva's ten, the Jamboree's logos), so its pictures
+  // wait until they're near the screen; their width and height hold the box meanwhile
+  return <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} loading="lazy" decoding="async" onError={() => setFailed(true)} />;
 }
 
 export default function ProvaMedia({ media, seccao, title, icon = false, picture = false }) {
