@@ -349,6 +349,31 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
   // A picture that the following text runs on beside (`wrap`, S. Tiago's), as on the page:
   // where it ends, on which page, and how wide the text beside it is
   let float = null;
+  // A section's picture beside its text, and the room it takes: measured here once, for its
+  // heading (kept with it) and for drawing it
+  const asideOf = (sec) => {
+    // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
+    // picture on the right of the text's first line, the text narrower to make room
+    const asideItem = sec.text && !sec.mediaAfter && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
+    const aside = asideItem ? media.get(asideItem.src) : null;
+    // 26mm tall (40mm for the hand sign, `large`; 14mm for a cargo's badge, `small`, as on the
+    // page), or narrower for a wide picture (the handshake), so the text keeps two thirds
+    const asideTall = (asideItem?.hero ? 58 : asideItem?.large ? 40 : asideItem?.small ? 14 : 26) * s;
+    const imgW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
+    const imgH = aside ? (imgW * aside.h) / aside.w : 0;
+    // Numbers on the drawing (the pilgrim's signs), as on the page, and what each is under it:
+    // the block is as wide as the longest name, the drawing centred over it
+    const marks = aside && asideItem.marks ? asideItem.marks : [];
+    const MARK_R = 2.2 * s;
+    const MARK_LINE = 5.5 * s;
+    const asideW = marks.length ? Math.max(imgW, ...marks.map((m) => 2 * MARK_R + 2 * s + draw.width(m.label, 8.5, 'bold'))) : asideItem?.caption ? Math.max(imgW, 30 * s) : imgW;
+    // Its caption (Vida de Baden-Powell's photographs), as on the page: small and gray, under it
+    const capLines = aside && asideItem.caption && !marks.length ? draw.split(asideItem.caption, Math.max(imgW, 30 * s), 8) : [];
+    const CAP_LINE = 8 * ts * PT * 1.35;
+    const asideH = imgH + (marks.length ? 3 * s + marks.length * MARK_LINE : 0) + (capLines.length ? 2 * s + capLines.length * CAP_LINE : 0);
+    return { asideItem, aside, imgW, imgH, marks, MARK_R, MARK_LINE, asideW, capLines, CAP_LINE, asideH };
+  };
+
   for (const sec of content.sections) {
     // The page's overview (the Exploradores' five symbols, links to their parts) is a way around
     // the page: on paper the parts follow one another, so it isn't printed
@@ -362,6 +387,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A picture beside the text (B.P. em rapaz's drawing and its caption) is drawn first, whole:
+      // the heading asks for all of its room, or it was left alone at a page's foot
+      if (sec.text && !sec.mediaAfter && badges[sec.media]) keep = Math.max(keep, asideOf(sec).asideH);
       // A heading keeps its first paragraph's opening: two lines, or all three of a paragraph of
       // three (which moves whole, below), so the two never part
       if (keep === lh * 2 && sec.text) {
@@ -408,6 +436,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const whole = h + 3 * s + lead + stepsH(sec.steps);
         const steps = y + whole <= bottom ? stepsH(sec.steps) : stepsH(sec.steps.slice(0, 1));
         if (h + 3 * s + lead + steps <= bottom - colTop) keep = lead + steps + 1 * s;
+      }
+      // A dated line of steps with no text of its own (the História's 1974–1983): its heading
+      // asks for room for the first step, which is never split, so the two never part
+      if (sec.steps && sec.steps[0].label && !sec.text) {
+        const tw = colW - (sec.date ? 12 : 16) * s - 3 * s;
+        const st = sec.steps[0];
+        const lines = (st.title ? draw.split(st.title, tw, BODY, 'bold').length : 0) + (st.text ? draw.split(unmarkLang(st.text), tw, BODY).length : 0);
+        keep = lines * lh + (sec.steps.length === 2 ? lh * 2 : 0);
       }
       // A recited prayer is kept whole (below), so its heading asks for room for all of it
       const first = g.cols === 1 && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
@@ -590,25 +626,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       draw.text(lines, left(), y + asc(12), 12, 'bold', BLACK, { lineHeightFactor: 1.35 });
       y += lines.length * 12 * ts * PT * 1.35 + 2 * s;
     }
-    // Text with its picture beside it (the Promessa and its insígnia), as on the page: the
-    // picture on the right of the text's first line, the text narrower to make room
-    const asideItem = sec.text && !sec.mediaAfter && badges[sec.media] ? badges[sec.media](seccao)[0] : null;
-    const aside = asideItem ? media.get(asideItem.src) : null;
-    // 26mm tall (40mm for the hand sign, `large`; 14mm for a cargo's badge, `small`, as on the
-    // page), or narrower for a wide picture (the handshake), so the text keeps two thirds
-    const asideTall = (asideItem?.hero ? 58 : asideItem?.large ? 40 : asideItem?.small ? 14 : 26) * s;
-    const imgW = aside ? Math.min((asideTall * aside.w) / aside.h, colW * 0.33) : 0;
-    const imgH = aside ? (imgW * aside.h) / aside.w : 0;
-    // Numbers on the drawing (the pilgrim's signs), as on the page, and what each is under it:
-    // the block is as wide as the longest name, the drawing centred over it
-    const marks = aside && asideItem.marks ? asideItem.marks : [];
-    const MARK_R = 2.2 * s;
-    const MARK_LINE = 5.5 * s;
-    const asideW = marks.length ? Math.max(imgW, ...marks.map((m) => 2 * MARK_R + 2 * s + draw.width(m.label, 8.5, 'bold'))) : asideItem?.caption ? Math.max(imgW, 30 * s) : imgW;
-    // Its caption (Vida de Baden-Powell's photographs), as on the page: small and gray, under it
-    const capLines = aside && asideItem.caption && !marks.length ? draw.split(asideItem.caption, Math.max(imgW, 30 * s), 8) : [];
-    const CAP_LINE = 8 * ts * PT * 1.35;
-    const asideH = imgH + (marks.length ? 3 * s + marks.length * MARK_LINE : 0) + (capLines.length ? 2 * s + capLines.length * CAP_LINE : 0);
+    const { aside, imgW, imgH, marks, MARK_R, MARK_LINE, asideW, capLines, CAP_LINE, asideH } = asideOf(sec);
     // A block that starts beside it is narrower; one that starts under it (or on a later page)
     // takes the full width
     const besideW = aside ? colW - asideW - 8 * s : colW;
@@ -664,28 +682,30 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       };
       // `keep`: lines of the next paragraph to keep with this one (a one-line opening, «Caros
       // escuteiros:», never alone at a page's foot)
-      const para = (text, x, w, withRule, keep = 0) => {
+      // `dx`: in from the column's left edge, which room() may move to the next column or page
+      const para = (text, dx, w, withRule, keep = 0) => {
         const lines = draw.split(text, w, BODY);
         lines.forEach((line, i) => {
           const last = lines.length - i;
           const page = draw.pages.length - 1;
+          const wasCol = col;
           room(lh * ((lines.length > 1 && (i === 0 || last === 2) ? 2 : 1) + (last === 1 ? keep : 0)) + (last === 1 && keep ? 3.5 * s : 0));
-          if (withRule && rule && draw.pages.length - 1 !== page) {
-            // the passage went on to a new page: its rule there starts again at the top
+          if (withRule && rule && (draw.pages.length - 1 !== page || col !== wasCol)) {
+            // the passage went on to a new column or page: its rule there starts again at the top
             const was = y;
             y = rule.end;
             closeRule();
             y = was;
           }
           if (withRule && !rule) rule = { page: draw.pages.length - 1, x: left(), y };
-          draw.text(line, x, y + asc(BODY), BODY, 'normal', BLACK);
+          draw.text(line, left() + dx, y + asc(BODY), BODY, 'normal', BLACK);
           y += lh;
           if (rule) rule.end = y;
         });
       };
       if (sec.intro) {
         // kept with the passage's first lines: an introduction never ends a page
-        para(sec.intro, left(), colW, false, 3);
+        para(sec.intro, 0, colW, false, 3);
         y += 3.5 * s;
       }
       const indent = 5 * s;
@@ -713,7 +733,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           rule.end = y;
           return;
         }
-        para(block.lines.join(' '), left() + indent, colW - indent, true, keep);
+        para(block.lines.join(' '), indent, colW - indent, true, keep);
         // the rule runs on between the passage's paragraphs
         if (i < all.length - 1) {
           y += 3.5 * s;
@@ -859,9 +879,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       for (const c of sec.swatches) {
         const w = 2 * r + 2 * s + draw.width(c.name, BODY, 'bold') + 7 * s;
         if (x + w > left() + colW && x > left()) {
-          x = left();
           y += rowH;
           room(rowH);
+          x = left();
         }
         draw.circle(x + r, y + r, r, hexToRgb(c.color), GRAY_LIGHT);
         draw.text(c.name, x + 2 * r + 2 * s, y + r + asc(BODY) / 2 - 0.3 * s, BODY, 'bold', BLACK);
@@ -1020,8 +1040,6 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // `numbered` (the Empreendimento's phases): each marker its number in a disc, as on the page
       const numbered = !dated && sec.numbered;
       const markW = (dated ? (sec.date ? 12 : 16) : numbered ? 6.5 : 5) * s;
-      const railX = left() + (dated ? 4.5 : numbered ? 2.4 : 1.25) * s;
-      const tx = left() + markW + 3 * s;
       const tw = colW - markW - 3 * s;
       if (blocks.length) y += 1 * s;
       sec.steps.forEach((st, k) => {
@@ -1030,6 +1048,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const h = (title.length + text.length) * lh;
         // A step is never split, and the last one never starts a page alone
         room(h + (k === sec.steps.length - 2 ? lh * 2 : 0));
+        // After room(): a step that moved on to the next column or page is set from its left edge
+        const railX = left() + (dated ? 4.5 : numbered ? 2.4 : 1.25) * s;
+        const tx = left() + markW + 3 * s;
         const top = y;
         if (dated) draw.text(st.label, left(), y + asc(labelSize), labelSize, 'bold', ink);
         else if (numbered) {

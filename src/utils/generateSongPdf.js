@@ -153,22 +153,38 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
       const label = markerMatch[1];
       const chords = markerMatch[2].trim().split(/\s+/);
 
-      checkSpace(chordLineHeight + stanzaGap);
+      // The badges wrap at the column's edge onto rows under the first, lined up after the
+      // label (Deus Está Aqui's 15-chord intro ran 30mm into the other column). A row: a
+      // badge (3.5mm) and a 1mm gap
+      doc.setFont('Nunito', 'bold');
+      doc.setFontSize(lyricsFontSize);
+      const indent = doc.getTextWidth(`${label}:`) + 3;
+      doc.setFontSize(chordFontSize);
+      const badges = [];
+      let bx = indent;
+      let row = 0;
+      chords.forEach((chord) => {
+        const transposed = transposeChord(chord, semitones);
+        const cw = doc.getTextWidth(transposed) + 2.5;
+        if (bx > indent && bx + cw > colW) {
+          row += 1;
+          bx = indent;
+        }
+        badges.push({ chord: transposed, dx: bx, row });
+        bx += cw + 2;
+      });
+      const extra = row * 4.5;
+
+      checkSpace(chordLineHeight + stanzaGap + extra);
 
       const x = colX();
       doc.setFont('Nunito', 'bold');
       doc.setFontSize(lyricsFontSize);
       doc.setTextColor(...GRAY);
       doc.text(`${label}:`, x, y);
+      badges.forEach((badge) => drawChordBadge(doc, badge.chord, x + badge.dx, y + badge.row * 4.5, chordFontSize));
 
-      let cx = x + doc.getTextWidth(`${label}:`) + 3;
-      chords.forEach((chord) => {
-        const transposed = transposeChord(chord, semitones);
-        const cw = drawChordBadge(doc, transposed, cx, y, chordFontSize);
-        cx += cw + 2;
-      });
-
-      y += chordLineHeight + stanzaGap;
+      y += chordLineHeight + stanzaGap + extra;
       return;
     }
 
@@ -196,11 +212,14 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
 
       if (lineHasChords) {
         let cx = x;
+        let free = x;
 
         segments.forEach((seg) => {
           if (seg.chord) {
             const transposed = transposeChord(seg.chord, semitones);
-            drawChordBadge(doc, transposed, cx, y, chordFontSize);
+            // Two chords on close syllables never overlap: a badge starts after the one before it
+            const bx = Math.max(cx, free);
+            free = bx + drawChordBadge(doc, transposed, bx, y, chordFontSize) + 1;
           }
 
           doc.setFont('Nunito', 'bold');
