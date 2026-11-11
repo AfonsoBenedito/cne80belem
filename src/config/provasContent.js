@@ -47,6 +47,25 @@ const cargos = (seccao) => {
   };
 };
 
+// Áreas e Trilhos (the Exploradores' and the Pioneiros' prova 15): the six areas as the Manual do
+// Dirigente sums them (B.2) and their three trilhos, the same names in every secção; each beside
+// its icon from the Cadernos de Pista; the three trilhos a line of their own (`line`), each "·"
+// held to the name before it (a no-break space), so a line never starts on one
+const areas = {
+  text: 'O Escutismo quer que cada um cresça em todos os aspetos da sua pessoa. Por isso, o progresso organiza‑se em seis **áreas de desenvolvimento**, as FACEIS (Físico, Afetivo, Carácter, Espiritual, Intelectual e Social), e cada área tem três **trilhos**:',
+  castSide: 'left',
+  // Each icon in a column of its own, the text never running on under it
+  castColumn: true,
+  cast: [
+    { name: 'Desenvolvimento físico', media: 'areaFisico', text: ' incentiva o conhecimento e o desenvolvimento do corpo.', line: 'Desempenho · Autoconhecimento · Bem‑estar físico' },
+    { name: 'Desenvolvimento afetivo', media: 'areaAfetivo', text: ' favorece o equilíbrio dos afetos e a valorização pessoal.', line: 'Relacionamento e sensibilidade · Equilíbrio emocional · Autoestima' },
+    { name: 'Desenvolvimento do carácter', media: 'areaCaracter', text: ' promove o aperfeiçoamento dos valores e das atitudes, e o ser mais.', line: 'Autonomia · Responsabilidade · Coerência' },
+    { name: 'Desenvolvimento espiritual', media: 'areaEspiritual', text: ' aprofunda o sentido de Deus.', line: 'Descoberta · Aprofundamento · Serviço' },
+    { name: 'Desenvolvimento intelectual', media: 'areaIntelectual', text: ' fomenta a exploração e a criatividade.', line: 'Procura do conhecimento · Resolução de problemas · Criatividade e expressão' },
+    { name: 'Desenvolvimento social', media: 'areaSocial', text: ' estimula o encontro, a partilha e o sentido do outro.', line: 'Exercer ativamente a cidadania · Solidariedade e tolerância · Interação e cooperação' },
+  ],
+};
+
 // The knots (Nó Direito e Nó de Correr), the same in every secção
 const nos = {
     title: 'Nó Direito e Nó de Correr',
@@ -817,6 +836,37 @@ export const provasContent = {
       },
     ],
   },
+  'exploradores/adesao-seccao-7': {
+    title: 'Áreas de Desenvolvimento e Trilhos da etapa da Aliança',
+    // The Caderno de Pista II asks "Já conheces as áreas de desenvolvimento e os trilhos que terás
+    // de escolher para a tua etapa da Aliança?". From the Caderno de Pista II (the etapas, the
+    // Patrulha validating a trilho, the Conselho de Guias the etapa, the insígnias on the sleeve,
+    // the anilha) and the Manual do Dirigente (the areas and trilhos, B.2; the negociação, the
+    // oportunidades educativas and the especialidades, in its Expedição's Sistema de Progresso)
+    sections: [
+      { heading: 'Seis áreas, dezoito trilhos', ...areas },
+      {
+        heading: 'As etapas',
+        // The Caderno's own drawing of the progress as a trail, beside the etapas (S. Tiago's float)
+        media: 'jogoDePista',
+        mediaFirst: true,
+        wrap: true,
+        text: 'O progresso do explorador é um **jogo de pista**. Começa no **Apelo**, a etapa de quem chega, que dura cerca de cinco meses e prepara a Promessa. Depois da Promessa vêm três etapas: a **Aliança**, o **Rumo** e a **Descoberta**.\n\nEm cada uma, o explorador escolhe um trilho de cada área, seis ao todo, diferentes dos das etapas anteriores. Quando completa a Descoberta, já percorreu os dezoito trilhos e chegou ao fim da pista, o **Local de Acampamento**, e o Conselho de Guias pode atribuir‑lhe a anilha de mérito.\n\nNo início de cada etapa, a insígnia de progresso ganha uma peça. Usa‑se na manga esquerda da camisa, pela ordem Apelo, Aliança, Rumo e Descoberta.',
+      },
+      // The insígnia piece by piece, on its own: beside a text its etapas' names broke ("Ali-ança")
+      { media: 'progresso' },
+      {
+        heading: 'Escolher e validar os trilhos',
+        numbered: true,
+        steps: [
+          { title: 'Escolher', text: 'Em cada etapa, o explorador escolhe, com a ajuda da Equipa de Animação, um trilho de cada área: é a negociação. Deve escolher o que o faz crescer, e não o que já faz com facilidade.' },
+          { title: 'Viver', text: 'Para cada trilho, define ações concretas, as oportunidades educativas, que vive dentro e fora das atividades. Uma especialidade também pode ser uma oportunidade para progredir num trilho.' },
+          { title: 'Validar o trilho', text: 'Quando acha que já tem as atitudes que o trilho pede, fala com a sua Patrulha, que o valida.' },
+          { title: 'Validar a etapa', text: 'Completados os seis trilhos da etapa, o Conselho de Guias valida‑a.' },
+        ],
+      },
+    ],
+  },
   'exploradores/adesao-seccao-2': {
     title: 'Organização dos Exploradores',
     // General, as the Organização do Agrupamento e do CNE: any Expedição's exploradores can study
@@ -976,6 +1026,32 @@ export const provasContent = {
         heading: 'O Empreendimento',
         text: 'O projeto dos Pioneiros chama‑se Empreendimento: um conjunto de atividades ligadas entre si, que os pioneiros escolhem, preparam, realizam e avaliam em Comunidade e com o apoio da Equipa de Animação.',
         more: 'Projetos dos Pioneiros',
+      },
+    ],
+  },
+  'pioneiros/adesao-seccao-7': {
+    title: 'Áreas e Trilhos',
+    // The Caderno de Pista III asks "Já conheces as Áreas e os Trilhos que terás que escolher na
+    // tua etapa de Conhecimento?". From the Caderno de Pista III (the etapas, one trilho of each
+    // area in each, the Equipa validating a trilho, the Conselho de Guias the etapa, the
+    // especialidades, the Local de Acampamento and its anilha) and the Manual do Dirigente (the
+    // areas and trilhos, B.2; the negociação)
+    sections: [
+      { heading: 'Seis áreas, dezoito trilhos', ...areas },
+      {
+        heading: 'As etapas',
+        text: 'O progresso do pioneiro começa no **Desprendimento**, a etapa de quem chega, que não deve passar dos sete meses e prepara a Promessa. Depois da Promessa vêm três etapas: o **Conhecimento**, a **Vontade** e a **Construção**.\n\nEm cada uma, o pioneiro escolhe um trilho de cada área, seis ao todo, diferentes dos das etapas anteriores. Quando completa a Construção, já percorreu os dezoito trilhos: chegou ao fim do seu caminho, o **Local de Acampamento**, e recebe a anilha de mérito.\n\nNo início de cada etapa, a insígnia de progresso ganha uma peça.',
+      },
+      { media: 'progresso' },
+      {
+        heading: 'Escolher e validar os trilhos',
+        numbered: true,
+        steps: [
+          { title: 'Escolher', text: 'Em cada etapa, o pioneiro escolhe, com a ajuda da Equipa de Animação, um trilho de cada área: é a negociação. Deve escolher o que o faz crescer, e não o que já faz com facilidade.' },
+          { title: 'Viver', text: 'Para cada trilho, define ações concretas, as oportunidades educativas, que vive dentro e fora das atividades, na família e na comunidade. Uma especialidade também pode ser uma oportunidade para progredir num trilho.' },
+          { title: 'Validar o trilho', text: 'Sempre que conclui um trilho, o pioneiro apresenta‑o na reunião de Equipa, que o valida.' },
+          { title: 'Validar a etapa', text: 'Completados os seis trilhos da etapa, o Conselho de Guias valida‑a.' },
+        ],
       },
     ],
   },
