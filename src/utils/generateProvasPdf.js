@@ -377,7 +377,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         // Kept whole only when it's short (four words, eight lines at most) and fits where it is:
         // otherwise the lead and the first two go together and the rest follow (the conselhos'
         // three long rows, moved whole, left a third of a page blank above them)
-        const termLines = (w) => draw.split(w.text, colW - draw.width(w.term, BODY, 'bold') - 1.5 * s, BODY).length;
+        const termLines = (w) => draw.split(w.text, colW - draw.width(unmarkLang(w.term), BODY, 'bold') - 1.5 * s, BODY).length;
         const height = (list) => list.reduce((t, w) => t + termLines(w) * lh, 0);
         const short = sec.terms.length <= 4 && sec.terms.reduce((t, w) => t + termLines(w), 0) <= 8;
         const whole = h + 3 * s + lead + height(sec.terms);
@@ -870,13 +870,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     if (sec.terms) {
       // Numbers (the book's parts, I to VI) sit in a column of their own, as on the page
       const numbered = sec.terms.every((t) => t.term.length <= 4);
-      const termW = (t) => (numbered ? 9 * s : draw.width(t.term, BODY, 'bold') + 1.5 * s);
+      const termW = (t) => (numbered ? 9 * s : draw.width(unmarkLang(t.term), BODY, 'bold') + 1.5 * s);
       // A word's meaning runs on after it, as on the page: its first line beside the word, the rest
       // back at the margin (hung under each word's end, a list's left edge went ragged: "Totem"
       // at 15mm, "Livro de Ouro" at 21mm). Numbers keep their column
       const lines = (t) => {
         const tw = termW(t);
-        // a no-break hyphen ("Sub‑Guias") a plain one, as in the paragraphs: jsPDF draws nothing for it
+        // a no-break hyphen ("Sub‑Guias", "JOTA‑JOTI") a plain one, in the word and its meaning, as
+        // in the paragraphs: jsPDF draws nothing for it
         const text = unmarkLang(t.text);
         if (numbered) return draw.split(text, colW - tw, BODY).map((line) => ({ line, x: tw }));
         const words = text.split(' ');
@@ -892,7 +893,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         // last two (a list of four or fewer moves whole, with its heading, above)
         const pair = k === 0 || k === sec.terms.length - 2 ? termLines[k + 1] ?? 0 : 0;
         room(lh * (rest.length + pair));
-        draw.text(t.term, left(), y + asc(BODY), BODY, 'bold', ink);
+        draw.text(unmarkLang(t.term), left(), y + asc(BODY), BODY, 'bold', ink);
         rest.forEach(({ line, x }) => {
           draw.text(line, left() + x, y + asc(BODY), BODY, 'normal', BLACK);
           y += lh;
@@ -957,7 +958,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const tw = cellW - box - gap;
       // The name's line is shorter by the name; the rest wrap at the full width
       const measure = (c) => {
-        const nameW = draw.width(c.name, size, 'bold');
+        const nameW = draw.width(unmarkLang(c.name), size, 'bold');
         // Its titles' marks (the symbols' *scout*) drawn in italics, as on the page
         const text = unmarkLang(c.text);
         const words = text.trimStart().split(' ');
@@ -977,7 +978,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         }
         const tx = imageRight ? x : x + box + gap;
         let ty = y;
-        draw.text(c.name, tx, ty + asc(size), size, 'bold', ink);
+        draw.text(unmarkLang(c.name), tx, ty + asc(size), size, 'bold', ink);
         const marks = { italic: false, bold: false, ink };
         drawRuns(draw, first, tx + nameW, ty + asc(size), size, BLACK, marks);
         for (const line of rest) {
