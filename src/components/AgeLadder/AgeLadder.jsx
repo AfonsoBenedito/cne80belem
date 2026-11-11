@@ -84,7 +84,7 @@ export default function AgeLadder() {
         </ol>
 
         <p className={styles.schedule}>
-          Encontramo-nos aos sábados à tarde, na sede - Capela Nossa Senhora das Dores.
+          Encontramo-nos aos sábados à tarde, na sede, na Rua Diogo Afonso.
         </p>
       </div>
     </section>
