@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import faviconUrl from '/favicon.png';
 import { registerNunito, registerNunitoItalic } from './pdfFonts';
 import { normalize } from './normalize';
-import { toBlocks, leadsList } from './provaBlocks';
+import { toBlocks, leadsList, keepBook } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
 import { getProvaContent } from '../config/provasContent';
@@ -96,22 +96,37 @@ function numbered(seccao) {
 // A wrapped line of a text with titles of works marked (`*…*`; `{en}` only matters on the page,
 // and is taken out before the text is wrapped): drawn run by run, in Nunito Italic between the
 // marks. `state` carries an open mark on to the next line
+const MARKS = /(\*\*|\*|\^|~)/;
+const MARK_KEY = { '**': 'bold', '*': 'italic', '^': 'cite', '~': 'quote' };
+const toggle = (state, part) => {
+  const key = MARK_KEY[part];
+  if (key) state[key] = !state[key];
+  return Boolean(key);
+};
+const runLook = (state, size, base = 'normal') => ({
+  style: state.bold ? 'bold' : state.italic || state.quote ? 'italic' : base,
+  at: state.cite ? size - 1 : size,
+});
 function drawRuns(draw, line, x, y, size, color, state) {
   let cx = x;
-  // `**` toggles bold in the secção's ink (state.ink), `*` italics; a run over a wrap carries on
-  for (const part of line.split(/(\*\*|\*)/)) {
-    if (part === '**') { state.bold = !state.bold; continue; }
-    if (part === '*') { state.italic = !state.italic; continue; }
+  // `**` toggles bold in the secção's ink (state.ink), `*` italics, `~` a passage's words
+  // (italics in the ink), `^` its source (a step smaller, gray), as on the page; a run over a
+  // wrap carries on
+  for (let part of line.split(MARKS)) {
+    if (toggle(state, part)) continue;
     if (!part) continue;
-    const style = state.bold ? 'bold' : state.italic ? 'italic' : 'normal';
-    draw.text(part, cx, y, size, style, state.bold && state.ink ? state.ink : color);
-    cx += draw.width(part, size, style);
+    part = part.replace(/\u00A0/g, ' ');
+    const { style, at } = runLook(state, size);
+    draw.text(part, cx, y, at, style, state.cite ? GRAY : (state.bold || state.quote) && state.ink ? state.ink : color);
+    cx += draw.width(part, at, style);
   }
 }
 
 // The language marks are the page's only; a non-breaking hyphen (the page's "saber‑ser", kept
-// whole) is a plain one on paper: jsPDF draws nothing for it, and its lines break at spaces only
-const unmarkLang = (text) => text.replace(/\{[a-z]{2}\}/g, '').replace(/\u2011/g, '-');
+// whole) is a plain one on paper: jsPDF draws nothing for it, and its lines break at spaces only.
+// A passage's source (`^…^`) breaks only after its book's name, as on the page: the book's
+// spaces are no-break ones for the wrapping, and drawRuns draws them as plain ones
+const unmarkLang = (text) => text.replace(/\{[a-z]{2}\}/g, '').replace(/\u2011/g, '-').replace(/\^[^^]+\^/g, keepBook);
 
 function setText(doc, size, style = 'normal', color = BLACK) {
   doc.setFont('Nunito', style);
@@ -200,10 +215,39 @@ function recorder(doc, g) {
     image(data, x, y, w, h = w, format = 'PNG') {
       if (data) push((ox) => doc.addImage(data, format, ox + x, y, w, h));
     },
-    // Wraps at the size the text will be drawn at
+    // Wraps at the size the text will be drawn at. A line with marks in it is wrapped by its
+    // words as drawRuns draws them (the marks take no room, a source is a step smaller, bold and
+    // italics their own widths): measured whole, the marks wrapped it early
     split(str, width, size, style = 'normal') {
-      setText(doc, size * (g.t ?? g.s), style);
-      return doc.splitTextToSize(str, width);
+      if (!/[*^~]/.test(str)) {
+        setText(doc, size * (g.t ?? g.s), style);
+        return doc.splitTextToSize(str, width);
+      }
+      const measure = (text, at, st) => {
+        setText(doc, at * (g.t ?? g.s), st);
+        return doc.getTextWidth(text.replace(/\u00A0/g, ' '));
+      };
+      const state = {};
+      const space = measure(' ', size, style);
+      const lines = [];
+      let line = null;
+      let lineW = 0;
+      for (const word of str.split(' ')) {
+        let w = 0;
+        for (const part of word.split(MARKS)) {
+          if (toggle(state, part) || !part) continue;
+          const look = runLook(state, size, style);
+          w += measure(part, look.at, look.style);
+        }
+        if (line !== null && lineW + space + w > width) {
+          lines.push(line);
+          line = null;
+        }
+        lineW = line === null ? w : lineW + space + w;
+        line = line === null ? word : `${line} ${word}`;
+      }
+      if (line !== null) lines.push(line);
+      return lines;
     },
     // How wide a line is at the size it will be drawn at
     width(str, size, style = 'normal') {
@@ -674,7 +718,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         // A sub-heading inside the text ("### "), as on the page: bold, a step above its
         // paragraph, kept with its first lines
         y += bi ? 1.5 * s : 0;
-        room(lh * 3);
+        // as many as its paragraph will ask to start with (two, or three when it moves whole),
+        // plus the gap under the heading: lh × 3 fell short of that, so "Construtor da Igreja"
+        // ended page 1 of S. Pedro's prova alone
+        const nextP = blocks[bi + 1]?.kind === 'p' ? splitRecited(unmarkLang(blocks[bi + 1].lines[0]), textW).length : 2;
+        room(lh + 0.5 * s + lineH * (nextP === 3 ? 3 : Math.min(nextP, 2)));
         draw.text(block.lines[0], left(), y + asc(BODY), BODY, 'bold', BLACK);
         y += lh;
       } else if (sec.headingMedia && leadsList(blocks, bi)) {
@@ -959,7 +1007,7 @@ function footer(draw, g, page, { logo, label }) {
 }
 
 // Whether any of these provas marks a title of a work (`*…*`), so the italic is needed
-const hasItalics = (seccao, list) => list.some((p) => /(^|[^*])\*(?!\*)/.test(JSON.stringify(getProvaContent(seccao, p.slug) ?? '')));
+const hasItalics = (seccao, list) => list.some((p) => /(^|[^*])\*(?!\*)|~/.test(JSON.stringify(getProvaContent(seccao, p.slug) ?? '')));
 
 async function newDoc(title, orientation) {
   // `compress`: text, fonts and the logo's pixels deflated (they went in raw)

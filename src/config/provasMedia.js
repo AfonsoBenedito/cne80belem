@@ -30,6 +30,7 @@ import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
 import saoTiago from '../assets/images/provas/sao-tiago/sao-tiago.png';
+import saoPedro from '../assets/images/provas/sao-pedro/sao-pedro.png';
 import bpRetrato from '../assets/images/provas/baden-powell/retrato.jpg';
 import bpBarco from '../assets/images/provas/baden-powell/barco.png';
 import bpHussardos from '../assets/images/provas/baden-powell/hussardos.png';
@@ -181,6 +182,12 @@ export const badges = {
   // as a share of the drawing, each named in a list under it; each number beside its sign, never
   // on it, so the shell and the gourd stay in sight)
   saoTiagoSinais: () => [{ name: null, src: saoTiago, w: 514, h: 804, large: true, zoom: false, marks: [{ x: 0.82, y: 0.28, label: 'Concha de vieira' }, { x: 0.46, y: 0.72, label: 'Bordão' }, { x: 0.1, y: 0.1, label: 'Cabaça' }], alt: 'São Tiago vestido de peregrino, com os números 1, 2 e 3 sobre a concha de vieira ao peito, o bordão e a cabaça' }],
+  // The Pioneiros' patrono, the Manual do Dirigente's drawing (p. 103), cut from its page at 12×
+  // (vector art, so crisp) on white (the viewer's near-black ate its black outline), beside his prova's first part as S. Tiago's is; no
+  // marks: the key is his one sign, and the text names it. Set as the prova's opening figure
+  // (`hero`, 20rem tall, as B.P.'s portrait): at 13rem the key the text points to was a few
+  // pixels; large enough to open in the viewer
+  saoPedro: () => [{ name: null, src: saoPedro, w: 554, h: 1132, large: true, zoom: true, hero: true, alt: 'São Pedro, em desenho: de barba e cabelo encaracolados, túnica cinzenta e manto castanho, descalço, com uma chave na mão' }],
   // Vida de Baden-Powell: the photographs and drawing of the agrupamento's text ("Vida BP"), each
   // beside its part with that text's own caption; cleaned to grey at 2× (the originals are 175 to
   // 400px), so not opened in the viewer, which would show them no sharper

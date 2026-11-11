@@ -30,19 +30,25 @@ export function toBlocks(text) {
 export const leadsList = (blocks, i) =>
   blocks[i].kind === 'p' && blocks[i].lines.length === 1 && blocks[i].lines[0].endsWith(':') && blocks[i + 1] && blocks[i + 1].kind !== 'p';
 
-// Inline marks inside a line: **…** is a word set in bold in the secção's ink (the Pioneiros'
-// Saber, Querer, Agir, as their list sets them; the acrostic's initials); *…* is the title of a work, set in italics; *{en}…* the same in
+// Inline marks inside a line: **…** is a word set in bold in the secção's ink (the Icthus
+// acrostic's initials); *…* is the title of a work, set in italics; *{en}…* the same in
 // another language (its code: {en} Scouting for Boys, {la} Campus stellae), so a screen reader
-// says it in that language. The page draws the runs
+// says it in that language; ~…~ is a passage's own words, the Bible's (~«Tu és Pedro…»~), set in
+// italics in the secção's ink; ^…^ is where a passage comes from, a book and its verses (^(São
+// Mateus, 16,15-18)^), set smaller and gray so the words it follows stand out. The page draws the runs
 // as <i>, the PDF in Nunito Italic. Only paragraphs, list items and steps read them (a test
 // keeps them out of everything else)
-const INLINE = /\*\*([^*]+)\*\*|\*(?:\{([a-z]{2})\})?([^*]+)\*/g;
+const INLINE = /\*\*([^*]+)\*\*|\*(?:\{([a-z]{2})\})?([^*]+)\*|\^([^^]+)\^|~([^~]+)~/g;
+// A source breaks only after its book's name, never inside it ("(São Mateus," / "16,15-18)"):
+// the spaces before the comma are no-break ones, on the page and in the PDF. On the page its
+// verses' hyphen is a no-break one too ("5,1-" / "11)" was a break the browser took)
+export const keepBook = (cite) => cite.replace(/^[^,]*/, (book) => book.replace(/ /g, '\u00A0'));
 export function inlineRuns(line) {
   const runs = [];
   let at = 0;
   for (const m of line.matchAll(INLINE)) {
     if (m.index > at) runs.push({ text: line.slice(at, m.index) });
-    runs.push(m[1] ? { text: m[1], bold: true } : { text: m[3], italic: true, lang: m[2] });
+    runs.push(m[1] ? { text: m[1], bold: true } : m[4] ? { text: keepBook(m[4]).replace(/-/g, '\u2011'), cite: true } : m[5] ? { text: m[5], quote: true } : { text: m[3], italic: true, lang: m[2] });
     at = m.index + m[0].length;
   }
   if (at < line.length) runs.push({ text: line.slice(at) });

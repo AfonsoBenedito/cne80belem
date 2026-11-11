@@ -441,6 +441,13 @@ a.funcaoZoom {
     max-height: 11rem;
     width: calc(11rem * var(--ratio));
   }
+
+  /* The opening figure (B.P.'s portrait, S. Pedro's drawing) at 16rem: at 20rem its card filled
+     a phone's first screen and the text began below it */
+  .funcoesSingle.funcoesLarge.funcoesHero .funcaoImg {
+    max-height: 16rem;
+    width: calc(16rem * var(--ratio));
+  }
 }
 
 .funcaoImg {
