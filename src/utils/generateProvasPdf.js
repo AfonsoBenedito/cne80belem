@@ -674,7 +674,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         // A sub-heading inside the text ("### "), as on the page: bold, a step above its
         // paragraph, kept with its first lines
         y += bi ? 1.5 * s : 0;
-        room(lh * 3);
+        // as many as its paragraph will ask to start with (two, or three when it moves whole),
+        // plus the gap under the heading: lh × 3 fell short of that, so "Construtor da Igreja"
+        // ended page 1 of S. Pedro's prova alone
+        const nextP = blocks[bi + 1]?.kind === 'p' ? splitRecited(unmarkLang(blocks[bi + 1].lines[0]), textW).length : 2;
+        room(lh + 0.5 * s + lineH * (nextP === 3 ? 3 : Math.min(nextP, 2)));
         draw.text(block.lines[0], left(), y + asc(BODY), BODY, 'bold', BLACK);
         y += lh;
       } else if (sec.headingMedia && leadsList(blocks, bi)) {
