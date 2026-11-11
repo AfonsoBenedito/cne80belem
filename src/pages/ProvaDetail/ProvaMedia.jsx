@@ -264,7 +264,9 @@ function Badges({ items: all, seccao, title }) {
             onClose={() => setViewer((v) => v && { ...v, leaving: true })}
             leaving={viewer.leaving}
             onLeft={() => setViewer(null)}
-            title={title}
+            // A picture can name itself (`title`, the Exploradores' jogo de pista): by the section
+            // heading alone it opened as "Desenho: As etapas"
+            title={drawings[viewer.index]?.title ?? title}
             captions={drawings.map((f) => f.name ?? f.caption ?? '')}
             alts={drawings.map((f) => f.alt)}
             drawings
@@ -282,11 +284,11 @@ function Progresso({ seccao }) {
   const { surface, onSurface } = seccoes[seccao];
   return (
     <div className={styles.progresso}>
-      <ol className={styles.etapas}>
-        {etapas.map((e, i) => (
       {/* The etapas' own width decides four across or two by two (a container), not the screen's:
           beside the whole insígnia at 768px they had a phone's room */}
       <div className={styles.etapasBox}>
+      <ol className={styles.etapas}>
+        {etapas.map((e, i) => (
           <li key={e.name} className={styles.etapa}>
             <img src={e.src} alt="" className={styles.etapaImg} />
             {/* The number in the secção's colour, as the provas list numbers its provas; the
@@ -298,12 +300,12 @@ function Progresso({ seccao }) {
           </li>
         ))}
       </ol>
+      </div>
       <figure className={styles.completa}>
         <img src={completa} alt={`A insígnia de progresso completa, com as etapas ${etapas.map((e) => e.name).join(', ')}`} className={styles.completaImg} />
         <figcaption className={styles.funcaoName}>A insígnia completa</figcaption>
       </figure>
     </div>
-      </div>
   );
 }
 

@@ -955,7 +955,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const pairs = !oneSide && sec.cast.length > 2 && colW >= 150 * s;
       // `castLarge` (the logos): a larger box, each on the text's left edge, so small lettering
       // ("World Scout") prints legibly
-      const box = (pairs ? 13 : sec.castLarge ? 26 : 18) * s;
+      // Icons beside short texts (`castSide: 'left'`, the symbols', the areas') at 15mm: at 18mm the
+      // icon, not its two lines of text, set each row's height, and the areas' list pushed the
+      // Exploradores' etapas onto a third page
+      const box = (pairs ? 13 : sec.castLarge ? 26 : oneSide ? 15 : 18) * s;
       const gap = (pairs ? 2.5 : 5) * s;
       const gutter = 5 * s;
       const cellW = pairs ? (colW - gutter) / 2 : colW;
@@ -973,6 +976,8 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         let n = 0;
         while (n < words.length && nameW + draw.width(lead + words.slice(0, n + 1).join(' '), size) <= tw) n++;
         const rest = n < words.length ? draw.split(words.slice(n).join(' '), tw, size) : [];
+        // A line of its own under the text (`line`, an area's trilhos), as on the page
+        if (c.line) rest.push(...draw.split(unmarkLang(c.line), tw, size));
         return { c, nameW, first: lead + words.slice(0, n).join(' '), rest, h: Math.max(box, (1 + rest.length) * rowLh) };
       };
       const cell = ({ c, nameW, first, rest }, x, imageRight) => {
