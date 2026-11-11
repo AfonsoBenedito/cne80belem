@@ -2,8 +2,8 @@
 // Each secção has its own provas (only the ones the secção gives), in two groups. Each prova has
 // a slug (for routing) and a title. When a secção's prova has the same content as one of the
 // Adesão ao Movimento provas below, it is that prova: its name, its slug and so its page and text
-// (a shared text is keyed by slug alone in provasContent.js). A secção's own prova gets its own
-// slug, and a text for it is keyed "<secção>/<slug>".
+// (a shared text is config/provas/<slug>.js). A secção's own prova gets its own slug, and a text
+// for it is config/provas/<secção>/<slug>.js.
 // Titles are short names ("Lei e Princípios"), the same wherever two secções share a
 // topic ("Símbolos e Mística", "Patrono: S. Tiago"). Adesão à Secção follows one order in every
 // secção: organização, cargos, símbolos e mística, patrono, oração, livro/lei, progresso, the rest.
