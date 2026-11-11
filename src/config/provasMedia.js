@@ -52,6 +52,8 @@ import simbRosa from '../assets/images/provas/simbolos-pioneiros/rosa-dos-ventos
 import simbMachada from '../assets/images/provas/simbolos-pioneiros/machada.png';
 import simbIcthus from '../assets/images/provas/simbolos-pioneiros/icthus.png';
 import jotaJoti from '../assets/images/provas/projetos-pioneiros/jota-joti.png';
+import insigniaMundial from '../assets/images/provas/fraternidade/insignia-mundial.png';
+import mapaOmme from '../assets/images/provas/fraternidade/mapa-omme.png';
 import jamboree2027 from '../assets/images/provas/projetos-pioneiros/jamboree-2027.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
@@ -229,6 +231,13 @@ export const badges = {
   // logo.png", WOSM, CC BY-SA 4.0); the 26th World Scout Jamboree's from Commons too ("26th
   // World Scout Jamboree Logo.svg", jamboree2027.org, CC0), drawn to PNG at 600px. Each sits
   // beside its name: the alt says what the logo shows
+  // Escutismo, uma fraternidade mundial: the OMME's own World Scout Emblem (Wikimedia Commons,
+  // "WOSM 2024.svg", by the World Organization of the Scout Movement, CC BY-SA 4.0), drawn to PNG
+  // at 600px, beside its parts at the drawings' size (`large`); and the map of its members by region (Commons,
+  // "World Organization of the Scout Movement Members Map.svg", TommyTu25, 2016, CC BY-SA 4.0),
+  // drawn to PNG at 1400px, under its text at its own width, its caption saying the year
+  insigniaMundial: () => [{ name: null, src: insigniaMundial, w: 600, h: 600, large: true, zoom: false, alt: 'A Insígnia Mundial: uma flor-de-lis branca com duas estrelas, sobre um círculo roxo, rodeada por uma corda atada num nó direito' }],
+  mapaOmme: () => [{ name: null, src: mapaOmme, w: 1400, h: 719, natural: 700, zoom: true, kind: 'Mapa', caption: 'Os países membros da OMME em 2016; a cinzento, os que não eram membros.', alt: 'Mapa do mundo com os países membros da OMME pintados por região: as Américas a amarelo, a Europa a azul, a Eurásia a roxo, o mundo árabe a verde, a África a laranja e a Ásia-Pacífico a rosa; a China e alguns outros países a cinzento' }],
   jotaJoti: () => [{ name: null, src: jotaJoti, w: 691, h: 866, alt: 'Logótipo do JOTA-JOTI: um globo azul com auscultadores, sobre um lenço escutista roxo, e o emblema do Escutismo mundial' }],
   jamboree2027: () => [{ name: null, src: jamboree2027, w: 600, h: 741, alt: 'Logótipo do 26.º Jamboree Mundial, na Polónia, em 2027, com o emblema do Escutismo mundial' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
