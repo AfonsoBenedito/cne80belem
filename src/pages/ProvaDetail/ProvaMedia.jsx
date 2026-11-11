@@ -309,7 +309,7 @@ function Progresso({ seccao }) {
   );
 }
 
-// A prova section's pictures, by its `media` name (provasContent.js): its own chunk, with the
+// A prova section's pictures, by its `media` name (config/provas/): its own chunk, with the
 // images and the photo viewer, so a prova of plain text never downloads them
 // A drawing alone, sized by the box it sits in (the Livro da Selva's characters). One that fails
 // to load leaves nothing, so its box gives way to the text instead of holding a broken image

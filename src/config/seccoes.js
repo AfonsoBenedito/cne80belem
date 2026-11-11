@@ -9,7 +9,7 @@ import pioneirosGroup from '../assets/images/sections/pioneiros-group.jpeg';
 // color: identity (borders, decorative icons). surface/onSurface: any fill that carries text.
 // ink: section-coloured text on white or light tints. Pairs are checked for WCAG AA (4.5:1).
 // ageMin/ageMax repeat the ages in `description` as data (Home's age ladder); keep both in sync,
-// and with the Lobitismo prova's list of the secções (provasContent.js), as the Alcateia's
+// and with the Lobitismo prova's list of the secções (provas/lobitos/adesao-seccao-5.js), as the Alcateia's
 // Manual de Adesão gives them: 6–10, 10–13, 14–17, 18–22.
 export const seccoes = {
   lobitos: {

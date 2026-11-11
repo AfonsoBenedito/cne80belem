@@ -1,4 +1,4 @@
-// The pictures the provas draw, by the `media` name their sections give (provasContent.js): the
+// The pictures the provas draw, by the `media` name their sections give (config/provas/): the
 // uniforms, badges and progresso insígnias of "Uniforme e distintivos dos dirigentes" (the CNE's own
 // posters and badge scans, in assets/images/distintivos/), and the drawings and diagrams other provas
 // set beside or under their text (the Saudação's, the Cargos' badges, the Manual de Adesão's knots
