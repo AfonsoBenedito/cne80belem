@@ -51,6 +51,8 @@ import simbGota from '../assets/images/provas/simbolos-pioneiros/gota-de-agua.pn
 import simbRosa from '../assets/images/provas/simbolos-pioneiros/rosa-dos-ventos.png';
 import simbMachada from '../assets/images/provas/simbolos-pioneiros/machada.png';
 import simbIcthus from '../assets/images/provas/simbolos-pioneiros/icthus.png';
+import jotaJoti from '../assets/images/provas/projetos-pioneiros/jota-joti.png';
+import jamboree2027 from '../assets/images/provas/projetos-pioneiros/jamboree-2027.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
 import selvaAquela from '../assets/images/provas/livro-da-selva/aquela.jpg';
 import selvaPaiLobo from '../assets/images/provas/livro-da-selva/pai-lobo.jpg';
@@ -222,6 +224,13 @@ export const badges = {
   simbRosa: () => [{ name: null, src: simbRosa, w: 216, h: 216, alt: '' }],
   simbMachada: () => [{ name: null, src: simbMachada, w: 216, h: 215, alt: '' }],
   simbIcthus: () => [{ name: null, src: simbIcthus, w: 216, h: 215, alt: '' }],
+  // Projetos dos Pioneiros: World Scouting's two encounters by their own logos, kept here so
+  // they can't vanish with an event site. The JOTA-JOTI's from Wikimedia Commons ("JOTA-JOTI
+  // logo.png", WOSM, CC BY-SA 4.0); the 26th World Scout Jamboree's from Commons too ("26th
+  // World Scout Jamboree Logo.svg", jamboree2027.org, CC0), drawn to PNG at 600px. Each sits
+  // beside its name: the alt says what the logo shows
+  jotaJoti: () => [{ name: null, src: jotaJoti, w: 691, h: 866, alt: 'Logótipo do JOTA-JOTI: um globo azul com auscultadores, sobre um lenço escutista roxo, e o emblema do Escutismo mundial' }],
+  jamboree2027: () => [{ name: null, src: jamboree2027, w: 600, h: 741, alt: 'Logótipo do 26.º Jamboree Mundial, na Polónia, em 2027, com o emblema do Escutismo mundial' }],
   // The grid that opens the Cargos prova: every badge, each a link to its cargo below
   cargosIndex: (seccao) => [
     { ...guias[seccao][0], href: '#guia', group: 'guias' },
