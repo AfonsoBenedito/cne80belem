@@ -285,7 +285,8 @@ export default function Pontuacoes() {
   const today = localToday();
   // The next chance to score comes from the real calendar, mock data or not
   const nextActivity = pontuacoes.trimesters.flatMap((t) => t.activities).find((a) => a.date > today) ?? null;
-  const byTrimester = pontuacoes.trimesters.map((t) => ({ label: t.label, activities: days.filter((d) => d.trimester === t.label) }));
+  // `last` is the trimester's last activity in the calendar: `activities` are only those already played
+  const byTrimester = pontuacoes.trimesters.map((t) => ({ label: t.label, last: t.activities.at(-1)?.date, activities: days.filter((d) => d.trimester === t.label) }));
 
   return (
     <main ref={pageRef} className={styles.page}>
