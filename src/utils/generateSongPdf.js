@@ -200,7 +200,9 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
         segments.forEach((seg) => {
           if (seg.chord) {
             const transposed = transposeChord(seg.chord, semitones);
-            drawChordBadge(doc, transposed, cx, y, chordFontSize);
+            // Two chords on close syllables never overlap: a badge starts after the one before it
+            const bx = Math.max(cx, free);
+            free = bx + drawChordBadge(doc, transposed, bx, y, chordFontSize) + 1;
           }
 
           doc.setFont('Nunito', 'bold');
@@ -210,6 +212,7 @@ export async function generateSongPdf(song, semitones = 0, showChords = true) {
 
         y += chordLineHeight + 1;
       }
+        let free = x;
 
       // Draw lyrics line
       doc.setFont('Nunito', 'bold');

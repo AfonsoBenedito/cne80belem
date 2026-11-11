@@ -251,7 +251,9 @@ function renderSongColumns(doc, song, marginLeft, colWidth, colGap, numCols, sta
           if (seg.chord) {
             let displayChord = transposeChord(seg.chord, semitones);
             if (solfege) displayChord = chordToSolfege(displayChord);
-            drawChordBadge(doc, displayChord, cx, y, chordFontSize);
+            // Two chords on close syllables never overlap: a badge starts after the one before it
+            const bx = Math.max(cx, free);
+            free = bx + drawChordBadge(doc, displayChord, bx, y, chordFontSize) + 1;
           }
 
           doc.setFont('Nunito', 'bold');
@@ -272,6 +274,7 @@ function renderSongColumns(doc, song, marginLeft, colWidth, colGap, numCols, sta
         advance(lineHeight);
         doc.text(wl, getX(), y);
         y += lineHeight;
+        let free = x;
       });
     });
 
@@ -543,7 +546,8 @@ function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, sta
           if (seg.chord) {
             let displayChord = seg.chord;
             if (useSolfege) displayChord = chordToSolfege(displayChord);
-            drawChordBadge(doc, displayChord, cx, y, chordSize);
+            const bx = Math.max(cx, free);
+            free = bx + drawChordBadge(doc, displayChord, bx, y, chordSize) + 1;
           }
           doc.setFont('Nunito', 'bold');
           doc.setFontSize(fontSize);
@@ -569,6 +573,7 @@ function renderBookletSongPage(doc, song, logoData, ox, oy, pw, ph, pageNum, sta
   }
 
   // Footer
+        let free = cx;
   doc.setDrawColor(...GREEN);
   doc.setLineWidth(0.3);
   doc.line(ox + margin, oy + ph - 9, ox + pw - margin, oy + ph - 9);
