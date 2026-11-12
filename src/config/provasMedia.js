@@ -72,6 +72,14 @@ import areaIntelectual from '../assets/images/provas/trilhos/area-intelectual.pn
 import areaSocial from '../assets/images/provas/trilhos/area-social.png';
 import jogoDePista from '../assets/images/provas/trilhos/jogo-de-pista.png';
 import rodaProgresso from '../assets/images/provas/objetivos-caminheiros/roda-do-progresso.png';
+import canoa from '../assets/images/provas/caminho-do-triunfo/canoa.png';
+import ctRemar from '../assets/images/provas/caminho-do-triunfo/remar.png';
+import ctPortagem from '../assets/images/provas/caminho-do-triunfo/portagem.png';
+import ctDick from '../assets/images/provas/caminho-do-triunfo/dick.png';
+import ctVinho from '../assets/images/provas/caminho-do-triunfo/vinho.png';
+import ctCuco from '../assets/images/provas/caminho-do-triunfo/cuco.png';
+import ctAndes from '../assets/images/provas/caminho-do-triunfo/andes.png';
+import ctCaminheiro from '../assets/images/provas/caminho-do-triunfo/caminheiro.png';
 import mapaOmme from '../assets/images/provas/fraternidade/mapa-omme.png';
 import jamboree2027 from '../assets/images/provas/projetos-pioneiros/jamboree-2027.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
@@ -291,6 +299,24 @@ export const badges = {
   // its text at 440px (`natural`, as the nós' diagrams), so the 42 codes read without opening
   // it; the column's width on phones; in the PDF, a sheet to tick
   rodaProgresso: () => [{ name: null, src: rodaProgresso, w: 1200, h: 1200, natural: 440, zoom: true, kind: 'Diagrama', title: 'A roda do progresso dos Caminheiros', caption: 'Os quarenta e dois objetivos, no Caderno de Pista IV', alt: 'Uma roda dividida em seis áreas de cor, à volta de uma vara bifurcada vermelha: Físico, verde, com os objetivos F1 a F6; Afetivo, vermelho, A1 a A6; Carácter, azul, C1 a C8; Espiritual, roxo, E1 a E8; Intelectual, laranja, I1 a I7; e Social, amarelo, S1 a S7.' }],
+  // B.-P.'s own frontispiece to Rovering to Success ("Paddling your own canoe. This picture is the
+  // index to the book"), from the 1930 edition's scan (Internet Archive), cut from its frame and
+  // its yellowed paper set to white: the canoe making for Happiness between the five rocks. Under
+  // the text that tells it, at 440px as the wheel, so the rocks' figures read; zoomable
+  canoa: () => [{ name: null, src: canoa, w: 2290, h: 2284, natural: 440, zoom: true, kind: 'Desenho', title: 'Remar a sua própria canoa', caption: 'O desenho de B.-P. que abre o livro: «o índice do livro»', alt: 'Desenho a tinta de Baden-Powell: um caminheiro de chapéu escuteiro rema numa canoa em direção à palavra «Happiness» (felicidade), que brilha como um sol sob uma estrela. À volta, cinco rochedos saem da água, cada um com uma figura em cima: um cavaleiro, uma bailarina, um homem sobre um barril, uma mulher que ergue uma taça e um homem de cartola.' }],
+  // More of B.-P.'s drawings from the same scan, each cut from its page (the text it sat in
+  // blanked) and cleaned as the canoe: the Rover's own pack and canoe, each beside its text (the
+  // book's introduction, "paddle your own canoe"), their captions ours from his
+  ctPortagem: () => [{ name: null, src: ctPortagem, w: 2184, h: 1592, large: true, zoom: true, kind: 'Desenho', caption: 'Uma portagem: cada um leva a sua carga', alt: 'Desenho de Baden-Powell: dois caminheiros sobem uma encosta a pé, um com a mochila às costas e um bordão, o outro com uma canoa virada sobre os ombros.' }],
+  ctRemar: () => [{ name: null, src: ctRemar, w: 1981, h: 1005, large: true, zoom: true, kind: 'Desenho', caption: 'Remar a sua própria canoa, a olhar em frente: quem se deixa levar pelos outros, de costas para o perigo, pode naufragar', alt: 'Desenho de Baden-Powell: à frente, um caminheiro rema sozinho numa canoa, a olhar em frente; atrás, um barco a remos com vários rapazes, que remam de costas para o caminho, vira-se contra um rochedo e eles caem à água.' }],
+  // Beside four of the five rocks (the Women chapter's drawings judge women by their dress, or
+  // set a white man against a black one: none of them here)
+  ctDick: () => [{ name: null, src: ctDick, w: 1168, h: 1684, alt: 'Desenho de Baden-Powell: a cabeça de Dick, o seu cavalo.' }],
+  ctVinho: () => [{ name: null, src: ctVinho, w: 1288, h: 1110, alt: 'Desenho de Baden-Powell: um oficial gordo tenta montar a cavalo e não consegue, com uma perna no estribo.' }],
+  ctCuco: () => [{ name: null, src: ctCuco, w: 1294, h: 2214, alt: 'Desenho de Baden-Powell: um orador de cabelo eriçado, de pé em cima de um barril, grita de punhos estendidos.' }],
+  ctAndes: () => [{ name: null, src: ctAndes, w: 1252, h: 1570, alt: 'Desenho de Baden-Powell: a estátua do Cristo dos Andes, de braço erguido junto a uma cruz, sobre um pedestal no alto das montanhas.' }],
+  // The Rover on the road, beside the part on Rovering
+  ctCaminheiro: () => [{ name: null, src: ctCaminheiro, w: 672, h: 1688, large: true, zoom: true, kind: 'Desenho', caption: 'A caminho da saúde e da felicidade', alt: 'Desenho de Baden-Powell: um caminheiro de chapéu escuteiro, camisa e calções, com um bordão na mão, a caminhar pela estrada.' }],
   insigniaMundial: () => [{ name: null, src: insigniaMundial, w: 600, h: 600, large: true, zoom: false, alt: 'A Insígnia Mundial: uma flor-de-lis branca com duas estrelas, sobre um círculo roxo, rodeada por uma corda atada num nó direito' }],
   mapaOmme: () => [{ name: null, src: mapaOmme, w: 1400, h: 719, natural: 700, zoom: true, kind: 'Mapa', caption: 'Os países membros da OMME em 2016; a cinzento, os que não eram membros.', alt: 'Mapa do mundo com os países membros da OMME pintados por região: as Américas a amarelo, a Europa a azul, a Eurásia a roxo, o mundo árabe a verde, a África a laranja e a Ásia-Pacífico a rosa; a China e alguns outros países a cinzento' }],
   jotaJoti: () => [{ name: null, src: jotaJoti, w: 691, h: 866, alt: 'Logótipo do JOTA-JOTI: um globo azul com auscultadores, sobre um lenço escutista roxo, e o emblema do Escutismo mundial' }],
