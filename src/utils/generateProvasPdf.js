@@ -669,8 +669,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // Another prova that tells this part in full, as on the page, if this secção has it (in a
     // booklet of all the provas it's a few pages on; on its own, its name says where to look)
     const more = sec.more && numbered(seccao).find((p) => p.title === sec.more);
-    // A prova still to be written says so, as the page does
-    const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}»${getProvaContent(seccao, more.slug) ? '' : ' (texto em preparação)'}.`;
+    // The pointer names the prova only: one still to be written says so in its own place (the
+    // page's sidebar), not in the text that points to it
+    const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}».`;
     // After the section's colours, words or steps when it has them (the História's 1908–1920),
     // as on the page: it points past the whole part, so it ends it
     const moreLast = Boolean(sec.swatches || sec.terms || sec.steps || sec.profiles || sec.moreAfterMedia);

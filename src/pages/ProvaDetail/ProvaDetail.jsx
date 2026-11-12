@@ -114,8 +114,7 @@ export default function ProvaDetail() {
         <Link to={`/seccao/${seccao}/provas/${other.slug}`} className={styles.moreLink} style={{ color: section.ink }}>
           {other.title}
         </Link>
-        {/* A prova still to be written says so, as the sidebar does, until its text lands */}
-        {!getProvaContent(seccao, other.slug) && ' (texto em preparação)'}.
+.
       </p>
     ) : null;
   };
