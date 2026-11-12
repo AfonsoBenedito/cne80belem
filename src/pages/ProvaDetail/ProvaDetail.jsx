@@ -564,8 +564,10 @@ export default function ProvaDetail() {
                             ))}
                           </ul>
                         // Each name a step under its section's heading, or, in a part with no heading
-                        // of its own (the symbols, under "A Simbologia"), the section level itself
-                        ))(s.heading ? CastH : SectionH)}
+                        // of its own (the symbols, under "A Simbologia"), the section level itself.
+                        // A section with neither carries on the one before it (the Caminheiros'
+                        // áreas, under their wheel): its names a step under that heading
+                        ))(s.heading || (!s.part && i > 0) ? CastH : SectionH)}
                         {s.steps && (
                           // Steps on one line, each joined to the next: dates (a history) or names
                           // (a chain, each part of the next); `numbered`, a sequence to remember
