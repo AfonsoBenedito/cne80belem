@@ -268,6 +268,15 @@ export const badges = {
     { ...guias[seccao][1], href: '#subguia', group: 'guias' },
     ...cargos.map((c) => ({ name: c.name, src: c.src, href: `#cargo-${c.slug}`, group: 'cargos' })),
   ],
+  // The Guia's and the Sub-Guia's side by side, each named (the Organização da IVª Secção): at
+  // the drawings' size on screen (`large`), so the fitas can be counted, with no viewer (the
+  // scans are 116px); printed at a badge's size (`badge`)
+  guiasUnidade: (seccao) => guias[seccao].map((g, i) => ({
+    ...g, large: true, zoom: false, badge: true,
+    // What the scan shows, as the Regulamento dos Uniformes puts it (6.1 b and c): its name is
+    // the tile's label, so a screen reader hears what the fitas are, not only whose
+    alt: i ? 'Uma fita vermelha, passando por baixo da Insígnia de Promessa, no bolso esquerdo da camisa' : 'Duas fitas vermelhas, uma de cada lado da Insígnia de Promessa, no bolso esquerdo da camisa',
+  })),
   guia: (seccao) => [{ src: guias[seccao][0].src, name: null, small: true, alt: `Insígnia de ${guias[seccao][0].name}` }],
   subguia: (seccao) => [{ src: guias[seccao][1].src, name: null, small: true, alt: `Insígnia de ${guias[seccao][1].name}` }],
   ...Object.fromEntries(cargos.map((c) => [`cargo-${c.slug}`, () => [{ src: c.src, name: null, small: true, alt: `Insígnia de ${c.name}` }]])),
