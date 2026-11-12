@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useEffect } from 'react';
 
 function ScrollToTop() {
@@ -61,6 +61,12 @@ function RouteBoundary({ children }) {
   return <LoadErrorBoundary key={pathname} page>{children}</LoadErrorBoundary>;
 }
 
+// A page's old address sends on to its new one, keeping the filters in its query (`?vista=lista`)
+function Moved({ to }) {
+  const { search, hash } = useLocation();
+  return <Navigate to={{ pathname: to, search, hash }} replace />;
+}
+
 export default function App() {
   usePrefetchLikelyRoutes();
 
@@ -84,11 +90,14 @@ export default function App() {
               <Route path="/agrupamento/noticias/:slug" element={<NoticiaDetail />} />
               {/* Section pages */}
               <Route path="/seccao/:seccao" element={<Seccao />} />
-              {/* Section news (covil/cabana/abrigo/base) */}
+              {/* Section news (covil/base/abrigo/albergue) */}
               <Route path="/seccao/lobitos/covil" element={<Noticias fixedSection="Lobitos" hideHero />} />
-              <Route path="/seccao/exploradores/cabana" element={<Noticias fixedSection="Exploradores" hideHero />} />
+              <Route path="/seccao/exploradores/base" element={<Noticias fixedSection="Exploradores" hideHero />} />
               <Route path="/seccao/pioneiros/abrigo" element={<Noticias fixedSection="Pioneiros" hideHero />} />
-              <Route path="/seccao/caminheiros/base" element={<Noticias fixedSection="Caminheiros" hideHero />} />
+              <Route path="/seccao/caminheiros/albergue" element={<Noticias fixedSection="Caminheiros" hideHero />} />
+              {/* Their old addresses (the Cabana, now Base; the Caminheiros' Base, now Albergue) */}
+              <Route path="/seccao/exploradores/cabana" element={<Moved to="/seccao/exploradores/base" />} />
+              <Route path="/seccao/caminheiros/base" element={<Moved to="/seccao/caminheiros/albergue" />} />
               {/* Section sub-pages */}
               <Route path="/seccao/:seccao/programa" element={<Programa />} />
               <Route path="/seccao/:seccao/provas" element={<Provas />} />
