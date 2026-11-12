@@ -499,14 +499,18 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       }
       y += h + capH + 6 * s;
     }
-    if (badges[sec.media] && !sec.text) {
+    // A grid of badges, each over its name (drawn alone, or under its text: the Guia's fitas)
+    const badgeGrid = (items, { wide = false } = {}) => {
       // A grid of badges, each over its name, all at one height; drawings of a whole scout
-      // (`large`, the saudações) taller, fewer to a row, each fitted to its cell
-      const items = badges[sec.media](seccao);
-      const large = items[0].large;
+      // (`large`, the saudações) taller, fewer to a row, each fitted to its cell. A scan set large
+      // only on screen (`badge`, the Guia's fitas) prints at a badge's size: on paper 13mm shows
+      // it whole, and the extra 21mm sent it to a page of its own
+      const large = items[0].large && !items[0].badge;
       const imgH = (large ? 34 : 13) * s;
       const perRow = Math.max(1, Math.floor(colW / ((large ? 38 : 26) * s)));
-      const cellW = colW / perRow;
+      // `wide`: a short row whose names are long ("Sub-Guia de Tribo"), each cell wide enough to
+      // hold its name on one line
+      const cellW = Math.max(colW / perRow, wide ? 34 * s : 0);
       // A `group` (the fitas, then the cargos) starts its own row, as on the page, and its rows
       // are as even as they split, so none is left with one (7 cargos are 4 + 3, not 6 + 1)
       const rows = [];
@@ -542,7 +546,8 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         });
         y += rowH + 5 * s;
       });
-    }
+    };
+    if (badges[sec.media] && !sec.text) badgeGrid(badges[sec.media](seccao));
     if (sec.media === 'progresso') {
       // The four etapas in a row, each piece at one height, then the whole insígnia under them
       const { etapas, completa } = progresso(seccao);
@@ -668,7 +673,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     const moreText = more && `Podes saber mais na prova ${more.n}, «${more.title}»${getProvaContent(seccao, more.slug) ? '' : ' (texto em preparação)'}.`;
     // After the section's colours, words or steps when it has them (the História's 1908–1920),
     // as on the page: it points past the whole part, so it ends it
-    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps || sec.profiles);
+    const moreLast = Boolean(sec.swatches || sec.terms || sec.steps || sec.profiles || sec.moreAfterMedia);
     if (moreText && !moreLast) blocks.push({ kind: 'p', lines: [moreText] });
     // Someone else's words (the Manual do Dirigente), as on the page: our line saying whose, the
     // passage in from the text beside a rule in the secção's colour, its source under it, gray
@@ -781,6 +786,14 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           if (h <= bottom - colTop) room(h);
         }
         const marks = { italic: false, bold: false, ink };
+        // A section's last paragraph moves with the badges drawn under it and the pointer after
+        // them (the Guia's fitas under "No bolso esquerdo…", then «Cargos da Tribo»): the sentence
+        // that says what they show ended page 1 with them on page 2
+        const grid = !verse && bi === blocks.length - 1 && sec.mediaAfter && badges[sec.media]?.(seccao)[0].badge;
+        if (grid) {
+          const h = splitRecited(unmarkLang(block.lines[0]), textW).length * lineH + 4.5 * s + FUNCAO_ROW + (moreText && sec.moreAfterMedia ? 2 * s + lh : 0);
+          if (h <= bottom - colTop) room(h);
+        }
         // A sentence that opens a list ("…pela Direção de Agrupamento:") keeps the list's first two
         // items with it: it ended page 1 with only "o Chefe de Agrupamento" under it
         const next = blocks[bi + 1];
@@ -847,7 +860,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     // draws it at (`natural`, a CSS pixel to 0.26mm) and 1.4× that, so on paper, the sheet beside
     // the rope, its steps read at arm's length; the two diagrams keep their sizes to each other,
     // and neither is wider than the column
-    if (sec.mediaAfter && badges[sec.media]) {
+    // Badges under their text (`badge`, the Guia's fitas under the sentence that says what they
+    // show): a grid, each named, as on the page
+    if (sec.mediaAfter && badges[sec.media]?.(seccao)[0].badge) {
+      y += 1 * s;
+      badgeGrid(badges[sec.media](seccao), { wide: true });
+    } else if (sec.mediaAfter && badges[sec.media]) {
       const item = badges[sec.media](seccao)[0];
       const img = media.get(item.src);
       if (img) {
@@ -1080,6 +1098,17 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         y += lh;
       }
       y += 3.5 * s;
+    }
+    // A closing line of reference (`endNote`), as on the page: smaller and gray, kept whole
+    if (sec.endNote) {
+      const lines = draw.split(unmarkLang(sec.endNote), colW, 9);
+      const noteH = 9 * ts * PT * 1.45;
+      y += 1.5 * s;
+      room(lines.length * noteH);
+      for (const t of lines) {
+        draw.text(t, left(), y + asc(9), 9, 'normal', GRAY);
+        y += noteH;
+      }
     }
     // Below the picture, if it is on this page: one left on the page before is no reason to
     // push the next section down (it sent Secretário to a new page, leaving one nearly empty)
