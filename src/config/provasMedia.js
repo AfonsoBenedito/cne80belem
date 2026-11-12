@@ -17,6 +17,8 @@ import guiaPatrulha from '../assets/images/distintivos/funcao/guia-patrulha.jpg'
 import subguiaPatrulha from '../assets/images/distintivos/funcao/subguia-patrulha.jpg';
 import guiaEquipa from '../assets/images/distintivos/funcao/guia-equipa.jpg';
 import subguiaEquipa from '../assets/images/distintivos/funcao/subguia-equipa.jpg';
+import guiaTribo from '../assets/images/distintivos/funcao/guia-tribo.jpg';
+import subguiaTribo from '../assets/images/distintivos/funcao/subguia-tribo.jpg';
 import secretario from '../assets/images/distintivos/funcao/secretario.jpg';
 import tesoureiro from '../assets/images/distintivos/funcao/tesoureiro.jpg';
 import guardaMaterial from '../assets/images/distintivos/funcao/guarda-material.jpg';
@@ -100,12 +102,14 @@ export const dirigentes = {
   ],
 };
 
-// The Guia's and Sub-Guia's fitas on the pocket; the Caminheiros use the Pioneiros' (blue) ones
+// The Guia's and Sub-Guia's fitas on the pocket. The Caminheiros' are red (Regulamento dos
+// Uniformes, Distintivos e Bandeiras, 2026, Distintivos de Função 9 and its Anexo 2): the CNE has
+// no scan of them, so theirs are the Equipa's scans with the blue fitas made red, nothing else changed
 const guias = {
   lobitos: [{ name: 'Guia de Bando', src: guiaBando }, { name: 'Sub-Guia de Bando', src: subguiaBando }],
   exploradores: [{ name: 'Guia de Patrulha', src: guiaPatrulha }, { name: 'Sub-Guia de Patrulha', src: subguiaPatrulha }],
   pioneiros: [{ name: 'Guia de Equipa', src: guiaEquipa }, { name: 'Sub-Guia de Equipa', src: subguiaEquipa }],
-  caminheiros: [{ name: 'Guia de Tribo', src: guiaEquipa }, { name: 'Sub-Guia de Tribo', src: subguiaEquipa }],
+  caminheiros: [{ name: 'Guia de Tribo', src: guiaTribo }, { name: 'Sub-Guia de Tribo', src: subguiaTribo }],
 };
 
 const cargos = [
