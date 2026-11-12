@@ -53,6 +53,12 @@ import simbGota from '../assets/images/provas/simbolos-pioneiros/gota-de-agua.pn
 import simbRosa from '../assets/images/provas/simbolos-pioneiros/rosa-dos-ventos.png';
 import simbMachada from '../assets/images/provas/simbolos-pioneiros/machada.png';
 import simbIcthus from '../assets/images/provas/simbolos-pioneiros/icthus.png';
+import simbVaraBifurcada from '../assets/images/provas/simbolos-caminheiros/vara-bifurcada.png';
+import simbMochila from '../assets/images/provas/simbolos-caminheiros/mochila.png';
+import simbPao from '../assets/images/provas/simbolos-caminheiros/pao.png';
+import simbEvangelho from '../assets/images/provas/simbolos-caminheiros/evangelho.png';
+import simbTenda from '../assets/images/provas/simbolos-caminheiros/tenda.png';
+import simbFogo from '../assets/images/provas/simbolos-caminheiros/fogo.png';
 import jotaJoti from '../assets/images/provas/projetos-pioneiros/jota-joti.png';
 import insigniaMundial from '../assets/images/provas/fraternidade/insignia-mundial.png';
 import areaFisico from '../assets/images/provas/trilhos/area-fisico.png';
@@ -237,6 +243,14 @@ export const badges = {
   simbRosa: () => [{ name: null, src: simbRosa, w: 216, h: 216, alt: '' }],
   simbMachada: () => [{ name: null, src: simbMachada, w: 216, h: 215, alt: '' }],
   simbIcthus: () => [{ name: null, src: simbIcthus, w: 216, h: 215, alt: '' }],
+  // The Caminheiros' six, from the Manual do Dirigente (C.2.4, Os símbolos): each the icon the
+  // manual sets beside its symbol, cropped from the page at the Pioneiros' size
+  simbVaraBifurcada: () => [{ name: null, src: simbVaraBifurcada, w: 216, h: 216, alt: '' }],
+  simbMochila: () => [{ name: null, src: simbMochila, w: 216, h: 216, alt: '' }],
+  simbPao: () => [{ name: null, src: simbPao, w: 216, h: 216, alt: '' }],
+  simbEvangelho: () => [{ name: null, src: simbEvangelho, w: 216, h: 216, alt: '' }],
+  simbTenda: () => [{ name: null, src: simbTenda, w: 216, h: 216, alt: '' }],
+  simbFogo: () => [{ name: null, src: simbFogo, w: 216, h: 216, alt: '' }],
   // Projetos dos Pioneiros: World Scouting's two encounters by their own logos, kept here so
   // they can't vanish with an event site. The JOTA-JOTI's from Wikimedia Commons ("JOTA-JOTI
   // logo.png", WOSM, CC BY-SA 4.0); the 26th World Scout Jamboree's from Commons too ("26th
