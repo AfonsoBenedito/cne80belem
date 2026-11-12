@@ -37,7 +37,7 @@ export const navigation = [
           { label: 'Provas', path: '/seccao/exploradores/provas' },
           { label: 'Programa', path: '/seccao/exploradores/programa' },
           { label: 'Fotos', path: '/seccao/exploradores/fotos' },
-          { label: 'Cabana', path: '/seccao/exploradores/cabana' },
+          { label: 'Base', path: '/seccao/exploradores/base' },
         ],
       },
       {
@@ -59,7 +59,7 @@ export const navigation = [
           { label: 'Provas', path: '/seccao/caminheiros/provas' },
           { label: 'Programa', path: '/seccao/caminheiros/programa' },
           { label: 'Fotos', path: '/seccao/caminheiros/fotos' },
-          { label: 'Base', path: '/seccao/caminheiros/base' },
+          { label: 'Albergue', path: '/seccao/caminheiros/albergue' },
         ],
       },
     ],
