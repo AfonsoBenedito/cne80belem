@@ -280,6 +280,30 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
   const first = draw.pages.length - 1;
   // The text flows down each column, then onto the next page; the title spans them all
   const colW = (textW - COL_GAP * (g.cols - 1)) / g.cols;
+  // A sheet's measures (the PPV's open part), shared by its heading's keep and its drawing: a step
+  // smaller than the body (9.5pt), an empty field one ruled line, so the whole sheet fits under the
+  // page's text instead of leaving half a page above it
+  const SHEET = { size: 9.5, label: 8.5, source: 8 };
+  const sheetLh = SHEET.size * ts * PT * 1.5;
+  const measureSheet = (sheet) => {
+    const pad = 3.5 * s;
+    const innerW = Math.min(colW, 150 * s) - 2 * pad;
+    const labelLh = SHEET.label * ts * PT * 1.4;
+    const fields = sheet.fields.map((f) => {
+      const label = draw.split(unmarkLang(f.label), innerW, SHEET.label, 'bold');
+      const value = f.text
+        ? draw.split(unmarkLang(f.text), innerW, SHEET.size).map((line) => ({ line, x: 0 }))
+        : f.list
+          ? f.list.flatMap((item) => draw.split(unmarkLang(item), innerW - 4 * s, SHEET.size).map((line, i) => ({ line, x: 4 * s, bullet: i === 0 })))
+          : null;
+      return { label, value, h: 1 * s + label.length * labelLh + 0.6 * s + (value ? value.length : 1) * sheetLh + 1.2 * s };
+    });
+    const titleH = 12 * ts * PT * 1.4 + 1 * s;
+    const source = sheet.source ? draw.split(unmarkLang(sheet.source), innerW, SHEET.source) : [];
+    const sourceLh = SHEET.source * ts * PT * 1.4;
+    const h = pad + titleH + fields.reduce((t, f) => t + f.h, 0) + (source.length ? 1 * s + source.length * sourceLh : 0) + pad;
+    return { pad, innerW, labelLh, fields, titleH, source, sourceLh, h };
+  };
   let col = at?.col ?? 0;
   let colTop;
   const left = () => M + col * (colW + COL_GAP);
@@ -399,6 +423,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       // A quotation (the Última Mensagem): the heading takes its introduction and the passage's
       // first lines with it
       if (sec.quote) keep = (sec.intro ? draw.split(sec.intro, colW, BODY).length * lh + 3.5 * s : 0) + lh * 3 + 3.5 * s;
+      // A sheet (the PPV's open part) is kept whole: its heading and lead go with it, never alone
+      // at a page's foot above it (measureSheet, the drawing's own measures)
+      if (sec.sheet) {
+        const lead = sec.text ? toBlocks(sec.text).reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(l, colW, BODY).length, 0) * lh + 3.5 * s, 0) : 0;
+        keep = lead + measureSheet(sec.sheet).h + 2 * s;
+      }
       // A short list of words (Caçadas e Covil: up to four) reads only whole: its heading asks for
       // room for the lead and every word, so it never splits across a page or a column; a longer
       // one (the Palavras dos nós) for its lead and first two words, so they're never apart
@@ -944,6 +974,52 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         if (k < sec.terms.length - 1) y += 1.2 * s;
       }
       y += 2 * s;
+    }
+    // A sheet as it's filled (the PPV's open part), as on the page: a hairline frame, its name
+    // dark, each field its label small and gray over its entry (a list bulleted, an
+    // empty field two ruled lines to write on), hairlines between; kept whole on its page
+    if (sec.sheet) {
+      const { pad, innerW, labelLh, fields, titleH, source, sourceLh, h: boxH } = measureSheet(sec.sheet);
+      y += 1 * s;
+      room(boxH);
+      const x0 = left();
+      const boxW = innerW + 2 * pad;
+      const top = y;
+      for (const [ax, ay, bx, by] of [[x0, top, x0 + boxW, top], [x0, top + boxH, x0 + boxW, top + boxH], [x0, top, x0, top + boxH], [x0 + boxW, top, x0 + boxW, top + boxH]]) {
+        draw.line(ax, ay, bx, by, GRAY_LIGHT, 0.3);
+      }
+      y = top + pad;
+      draw.text(unmarkLang(sec.sheet.label), x0 + pad, y + asc(12), 12, 'bold', BLACK);
+      y += titleH;
+      for (const f of fields) {
+        draw.line(x0 + pad, y, x0 + pad + innerW, y, GRAY_LIGHT, 0.3);
+        y += 1 * s;
+        for (const line of f.label) {
+          draw.text(line, x0 + pad, y + asc(SHEET.label), SHEET.label, 'bold', GRAY);
+          y += labelLh;
+        }
+        y += 0.6 * s;
+        if (f.value) {
+          for (const { line, x, bullet } of f.value) {
+            if (bullet) draw.text('•', x0 + pad + 1 * s, y + asc(SHEET.size), SHEET.size, 'normal', GRAY);
+            draw.text(line, x0 + pad + x, y + asc(SHEET.size), SHEET.size, 'normal', BLACK);
+            y += sheetLh;
+          }
+        } else {
+          // A line to write on (the next field's hairline the second)
+          draw.line(x0 + pad, y + sheetLh - 0.6 * s, x0 + pad + innerW, y + sheetLh - 0.6 * s, GRAY_LIGHT, 0.3);
+          y += sheetLh;
+        }
+        y += 1.2 * s;
+      }
+      if (source.length) {
+        y += 1 * s;
+        for (const line of source) {
+          draw.text(line, x0 + pad, y + asc(SHEET.source), SHEET.source, 'normal', GRAY);
+          y += sourceLh;
+        }
+      }
+      y = top + boxH + 3 * s;
     }
     // Things of one kind told the same way (the units), as on the page: two to a row, each its
     // name after a dot in its secção's colour, over its facts as label and value; a row kept whole
