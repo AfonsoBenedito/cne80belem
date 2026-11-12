@@ -622,6 +622,22 @@
   margin-top: var(--spacing-md);
 }
 
+/* A section's closing line of reference (`endNote`): smaller and in the body's gray, so the
+   section's own text keeps the last word */
+.endNote {
+  max-width: 32rem;
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-gray-600);
+}
+
+/* The pointer after the pictures (`moreAfterMedia`, «Cargos da Tribo» under the Guia's fitas):
+   the same space above it as between the text and the pictures */
+.mediaAfter + .paragraph {
+  margin-top: var(--spacing-md);
+}
+
 /* A lone drawing beside text sits centred in one fixed column, so the text keeps one measure
    from section to section, whatever each drawing's width (the S. Francisco prova's three) */
 .withMediaAside:has([class*="funcoesLarge"]) {

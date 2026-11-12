@@ -4,7 +4,9 @@
 // names pictures the page draws per secção, 'uniformes', 'progresso', 'dirigentes' or a badge grid, from config/provasMedia.js;
 // with text, `mediaFirst` puts a picture that shows what the text explains before it, so on phones it
 // sits under the heading; `mediaAfter` sets it under the text instead, at its own size (a wide
-// diagram: the nós); `notes`, one per list item, set what each item means under it; `steps`,
+// diagram: the nós; badges as a grid), and `moreAfterMedia` puts the section's `more` after it;
+// `endNote`, a plain closing line of reference, smaller and gray (the Marítimos' and Ar's names);
+// `notes`, one per list item, set what each item means under it; `steps`,
 // [{ label?, title?, text? }], a vertical line of steps after the text: a date each (`label`, the
 // Lobitismo's history) or a name each (`title`, its chain); `swatches`, [{ name, color }], colours
 // with their names (the Bandos'); `terms`, [{ term, text }], words and what they mean; `part`, a

@@ -399,7 +399,7 @@ export default function ProvaDetail() {
                       // diagram: the nós' steps)
                       <>
                         {s.text && renderText(s.text)}
-                        {moreLine(s)}
+                        {!s.moreAfterMedia && moreLine(s)}
                         <div className={styles.mediaAfter}>
                           <LoadErrorBoundary quiet>
                             <Suspense fallback={null}>
@@ -407,6 +407,9 @@ export default function ProvaDetail() {
                             </Suspense>
                           </LoadErrorBoundary>
                         </div>
+                        {/* The pointer after the pictures when they belong to the text above it (the
+                            Guia's fitas, then «Cargos da Tribo»), so it still ends the section */}
+                        {s.moreAfterMedia && moreLine(s)}
                       </>
                     ) : s.media && s.text ? (
                       // Text with its picture beside it (the Promessa and its insígnia): the text
@@ -586,6 +589,9 @@ export default function ProvaDetail() {
                         {(s.swatches || s.terms || s.steps || s.profiles) && moreLine(s)}
                       </>
                     )}
+                    {/* A line of reference that closes the section quietly (`endNote`, the
+                        Marítimos' and the Ar's names after the Partida) */}
+                    {s.endNote && <p className={styles.endNote}>{s.endNote}</p>}
                   </div>
                   </Fragment>
                 ))}
