@@ -33,6 +33,7 @@ import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
 import saoTiago from '../assets/images/provas/sao-tiago/sao-tiago.png';
 import saoPedro from '../assets/images/provas/sao-pedro/sao-pedro.png';
+import saoPaulo from '../assets/images/provas/sao-paulo/sao-paulo.png';
 import bpRetrato from '../assets/images/provas/baden-powell/retrato.jpg';
 import bpBarco from '../assets/images/provas/baden-powell/barco.png';
 import bpHussardos from '../assets/images/provas/baden-powell/hussardos.png';
@@ -210,6 +211,9 @@ export const badges = {
   // (`hero`, 20rem tall, as B.P.'s portrait): at 13rem the key the text points to was a few
   // pixels; large enough to open in the viewer
   saoPedro: () => [{ name: null, src: saoPedro, w: 554, h: 1132, large: true, zoom: true, hero: true, alt: 'São Pedro, em desenho: de barba e cabelo encaracolados, túnica cinzenta e manto castanho, descalço, com uma chave na mão' }],
+  // São Paulo as the Manual do Dirigente draws him (p. 115, beside the Caminheiros' Mística), cut
+  // from its card at 16×: the book of his letters and the sword of his martyrdom. As S. Pedro's
+  saoPaulo: () => [{ name: null, src: saoPaulo, w: 578, h: 1234, large: true, zoom: true, hero: true, alt: 'São Paulo, em desenho: calvo, de barba castanha, túnica vermelha e manto cor de areia, de sandálias, com um livro junto ao peito e uma espada nas mãos' }],
   // Vida de Baden-Powell: the photographs and drawing of the agrupamento's text ("Vida BP"), each
   // beside its part with that text's own caption; cleaned to grey at 2× (the originals are 175 to
   // 400px), so not opened in the viewer, which would show them no sharper
