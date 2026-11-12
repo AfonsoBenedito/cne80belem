@@ -571,9 +571,7 @@ export default function ProvaDetail() {
                           // symbols', where alternating sides only made the eye hunt for each name)
                           <ul className={`${styles.cast} ${s.castSide === 'left' ? styles.castOneSide : ''} ${s.castLarge ? styles.castLarge : ''} ${s.castColumn ? styles.castColumn : ''}`}>
                             {s.cast.map((c) => (
-                              // A row with no picture of its own (`media` left out, the Caminho do
-                              // Triunfo's Women) keeps its column, so its text lines up with the rest
-                              <li key={c.name} id={c.id} className={`${styles.castRow} ${c.media ? '' : styles.castRowBare}`}>
+                              <li key={c.name} id={c.id} className={styles.castRow}>
                                 <span className={styles.castPicture}>
                                   <LoadErrorBoundary quiet>
                                     <Suspense fallback={<span aria-hidden="true" />}>

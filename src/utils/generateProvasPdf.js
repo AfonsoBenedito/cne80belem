@@ -658,6 +658,20 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     const rowH = sec.recite && alone ? size * ts * PT * 1.3 : lineH;
     const verseGap = sec.recite && alone ? 1.8 * s : 0;
     const blocks = sec.text ? toBlocks(sec.text) : [];
+    // A section with no heading whose picture follows its text (`mediaAfter`, the line that
+    // introduces B.P.'s frontispiece): the text and the picture move together, never the line
+    // alone at a page's foot with its picture on the next
+    if (sec.mediaAfter && !sec.heading && !sec.part && sec.text && badges[sec.media] && !badges[sec.media](seccao)[0].badge) {
+      const item = badges[sec.media](seccao)[0];
+      const img = media.get(item.src);
+      if (img) {
+        const w = Math.min((item.natural ?? img.w) * 0.2646 * 1.4 * s, colW);
+        const textH = blocks.reduce((t, b) => t + b.lines.reduce((u, l) => u + draw.split(unmarkLang(l), colW, BODY).length, 0) * lh + 3.5 * s, 0);
+        const capH = item.caption ? draw.split(item.caption, w, 8.5).length * 8.5 * ts * PT * 1.4 : 0;
+        const need = textH + 1 * s + (w * img.h) / img.w + 2 * s + capH;
+        if (need <= bottom - colTop) room(need);
+      }
+    }
     // The prova's question to the scout (the Livro da Selva's), as on the page: bold, a step larger
     if (sec.lead) {
       const lines = draw.split(sec.lead, colW, 12, 'bold');
@@ -1071,13 +1085,20 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const oneSide = sec.castSide === 'left';
       // Two to a row only for a long cast (the ten): two alone (the Jamboree's and the JOTA-JOTI's
       // logos) one to a row, at the body's size, so the logos aren't 13mm thumbnails
-      const pairs = !oneSide && sec.cast.length > 2 && colW >= 150 * s;
+      // A cast whose pictures have captions (`caption`, A Caminho do Triunfo's drawings beside its
+      // rocks): one to a row at the larger box, each caption under its picture, as on the page; two
+      // to a row they printed as 13mm thumbnails, Dick and the Cristo dos Andes alike
+      const captioned = sec.cast.some((c) => c.caption);
+      const pairs = !oneSide && !captioned && sec.cast.length > 2 && colW >= 150 * s;
       // `castLarge` (the logos): a larger box, each on the text's left edge, so small lettering
       // ("World Scout") prints legibly
       // Icons beside short texts (`castSide: 'left'`, the symbols', the areas') at 15mm: at 18mm the
       // icon, not its two lines of text, set each row's height, and the areas' list pushed the
       // Exploradores' etapas onto a third page
-      const box = (pairs ? 13 : sec.castLarge ? 26 : oneSide ? 15 : 18) * s;
+      const box = (pairs ? 13 : sec.castLarge ? 26 : captioned ? 24 : oneSide ? 15 : 18) * s;
+      const CAP = 7.5;
+      const capLh = CAP * ts * PT * 1.3;
+      const capLines = (c) => (c.caption && c.media ? draw.split(unmarkLang(c.caption), box, CAP) : []);
       const gap = (pairs ? 2.5 : 5) * s;
       const gutter = 5 * s;
       const cellW = pairs ? (colW - gutter) / 2 : colW;
@@ -1086,7 +1107,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const rowLh = pairs ? size * ts * PT * 1.42 : lh;
       const tw = cellW - box - gap;
       // The name's line is shorter by the name; the rest wrap at the full width
+      // A row with no picture of its own (the Women's) takes the cell's whole width, as on the page
+      const textW = (c) => (c.media ? tw : cellW);
       const measure = (c) => {
+        const tw = textW(c);
         const nameW = draw.width(unmarkLang(c.name), size, 'bold');
         // Its titles' marks (the symbols' *scout*) drawn in italics, as on the page
         const text = unmarkLang(c.text);
@@ -1109,7 +1133,8 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         }
         const textH = (1 + rest.length + (obj ? obj.rows : 0)) * rowLh + (obj ? 1.5 * s : 0);
         // Its codes' range under the icon (`range`, "F1–F6"), as on the page
-        const iconH = box + (c.range ? 4.5 * s : 0);
+        const caps = capLines(c);
+        const iconH = c.media ? box + (c.range ? 4.5 * s : 0) + (caps.length ? 1.5 * s + caps.length * capLh : 0) : 0;
         return { c, nameW, first: lead + words.slice(0, n).join(' '), rest, obj, h: Math.max(iconH, textH) };
       };
       const cell = ({ c, nameW, first, rest, obj }, x, imageRight) => {
@@ -1120,11 +1145,15 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           const h = (w * img.h) / img.w;
           draw.image(img.data, (imageRight ? x + cellW - box : x) + (sec.castLarge ? 0 : (box - w) / 2), y, w, h, 'JPEG');
         }
+        // Its caption under it, small and gray, centred on its picture
+        capLines(c).forEach((line, k) => {
+          draw.text(line, (imageRight ? x + cellW - box : x) + box / 2, y + box + 1.5 * s + k * capLh + asc(CAP), CAP, 'normal', GRAY, { align: 'center' });
+        });
         if (c.range) {
           const rx = (imageRight ? x + cellW - box : x) + (box - draw.width(c.range, 8, 'bold')) / 2;
           draw.text(c.range, rx, y + box + 1.5 * s + asc(8), 8, 'bold', ink);
         }
-        const tx = imageRight ? x : x + box + gap;
+        const tx = imageRight || !c.media ? x : x + box + gap;
         let ty = y;
         draw.text(unmarkLang(c.name), tx, ty + asc(size), size, 'bold', ink);
         const marks = { italic: false, bold: false, ink };

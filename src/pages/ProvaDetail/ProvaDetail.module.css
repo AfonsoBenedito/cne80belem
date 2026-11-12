@@ -1042,27 +1042,6 @@
   text-wrap: balance;
 }
 
-/* A row with no picture of its own (`castRowBare`): beside the others it keeps the picture's
-   column empty, so its text starts where theirs does; under 36rem, where the pictures float, it
-   takes the row as theirs runs on under them */
-@container (min-width: 36.01rem) {
-  .castRow.castRowBare:has(.castPicture:empty) {
-    grid-template-columns: 8rem minmax(0, 1fr);
-  }
-
-  .castRow.castRowBare:has(.castPicture:empty) .castText {
-    grid-column: 2;
-  }
-
-  .castRow.castRowBare:nth-child(even):has(.castPicture:empty) {
-    grid-template-columns: minmax(0, 1fr) 8rem;
-  }
-
-  .castRow.castRowBare:nth-child(even):has(.castPicture:empty) .castText {
-    grid-column: 1;
-  }
-}
-
 /* A drawing that couldn't load: its box gives way, the text takes the row */
 .castPicture:empty {
   display: none;
