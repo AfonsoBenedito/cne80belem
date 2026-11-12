@@ -1017,15 +1017,32 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const rest = n < words.length ? draw.split(words.slice(n).join(' '), tw, size) : [];
         // A line of its own under the text (`line`, an area's trilhos), as on the page
         if (c.line) rest.push(...draw.split(unmarkLang(c.line), tw, size));
-        return { c, nameW, first: lead + words.slice(0, n).join(' '), rest, h: Math.max(box, (1 + rest.length) * rowLh) };
+        // Or a list (`objectives`, the Caminheiros' objetivos), as on the page: one a line, the
+        // code in a slot of its own, two columns down when every name fits its column
+        let obj = null;
+        if (c.objectives) {
+          const codeW = Math.max(...c.objectives.map((o) => draw.width(o.code, size, 'bold'))) + 2.5 * s;
+          const colGap = 5 * s;
+          const half = (tw - colGap) / 2;
+          const cols = c.objectives.every((o) => codeW + draw.width(o.name, size) <= half) ? 2 : 1;
+          obj = { codeW, colGap, colW: cols === 2 ? half : tw, rows: Math.ceil(c.objectives.length / cols) };
+        }
+        const textH = (1 + rest.length + (obj ? obj.rows : 0)) * rowLh + (obj ? 1.5 * s : 0);
+        // Its codes' range under the icon (`range`, "F1–F6"), as on the page
+        const iconH = box + (c.range ? 4.5 * s : 0);
+        return { c, nameW, first: lead + words.slice(0, n).join(' '), rest, obj, h: Math.max(iconH, textH) };
       };
-      const cell = ({ c, nameW, first, rest }, x, imageRight) => {
+      const cell = ({ c, nameW, first, rest, obj }, x, imageRight) => {
         const f = badges[c.media]?.(seccao)[0];
         const img = f && media.get(f.src);
         if (img) {
           const w = Math.min(box, (box * img.w) / img.h);
           const h = (w * img.h) / img.w;
           draw.image(img.data, (imageRight ? x + cellW - box : x) + (sec.castLarge ? 0 : (box - w) / 2), y, w, h, 'JPEG');
+        }
+        if (c.range) {
+          const rx = (imageRight ? x + cellW - box : x) + (box - draw.width(c.range, 8, 'bold')) / 2;
+          draw.text(c.range, rx, y + box + 1.5 * s + asc(8), 8, 'bold', ink);
         }
         const tx = imageRight ? x : x + box + gap;
         let ty = y;
@@ -1035,6 +1052,15 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         for (const line of rest) {
           ty += rowLh;
           drawRuns(draw, line, tx, ty + asc(size), size, BLACK, marks);
+        }
+        if (obj) {
+          const top = ty + rowLh + 1.5 * s;
+          c.objectives.forEach((o, k) => {
+            const ox = tx + Math.floor(k / obj.rows) * (obj.colW + obj.colGap);
+            const oy = top + (k % obj.rows) * rowLh + asc(size);
+            draw.text(o.code, ox, oy, size, 'bold', ink);
+            draw.text(o.name, ox + obj.codeW, oy, size, 'normal', BLACK);
+          });
         }
       };
       const per = pairs ? 2 : 1;

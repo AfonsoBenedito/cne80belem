@@ -68,6 +68,7 @@ import areaEspiritual from '../assets/images/provas/trilhos/area-espiritual.png'
 import areaIntelectual from '../assets/images/provas/trilhos/area-intelectual.png';
 import areaSocial from '../assets/images/provas/trilhos/area-social.png';
 import jogoDePista from '../assets/images/provas/trilhos/jogo-de-pista.png';
+import rodaProgresso from '../assets/images/provas/objetivos-caminheiros/roda-do-progresso.png';
 import mapaOmme from '../assets/images/provas/fraternidade/mapa-omme.png';
 import jamboree2027 from '../assets/images/provas/projetos-pioneiros/jamboree-2027.png';
 import selvaMaugli from '../assets/images/provas/livro-da-selva/maugli.jpg';
@@ -272,6 +273,11 @@ export const badges = {
   areaIntelectual: () => [{ name: null, src: areaIntelectual, w: 166, h: 166, alt: '' }],
   areaSocial: () => [{ name: null, src: areaSocial, w: 166, h: 166, alt: '' }],
   jogoDePista: () => [{ name: null, src: jogoDePista, w: 1488, h: 1457, large: true, zoom: true, title: 'O jogo de pista dos Exploradores', caption: 'O jogo de pista dos Exploradores, no Caderno de Pista', alt: 'Desenho de um caminho de terra que serpenteia por colinas verdes, marcado com sinais de pista (setas, cruzes, uma mensagem), desde uma exploradora com o seu bordão, em baixo, até a uma bandeira com a saudação escutista' }],
+  // The Caderno de Pista IV's progress wheel (its page 10), cut round from the page at 6×: the
+  // six áreas around the Caminheiros' fork, each with its objetivos educativos by number. Under
+  // its text at 440px (`natural`, as the nós' diagrams), so the 42 codes read without opening
+  // it; the column's width on phones; in the PDF, a sheet to tick
+  rodaProgresso: () => [{ name: null, src: rodaProgresso, w: 1200, h: 1200, natural: 440, zoom: true, kind: 'Diagrama', title: 'A roda do progresso dos Caminheiros', caption: 'Os quarenta e dois objetivos, no Caderno de Pista IV', alt: 'Uma roda dividida em seis áreas de cor, à volta de uma vara bifurcada vermelha: Físico, verde, com os objetivos F1 a F6; Afetivo, vermelho, A1 a A6; Carácter, azul, C1 a C8; Espiritual, roxo, E1 a E8; Intelectual, laranja, I1 a I7; e Social, amarelo, S1 a S7.' }],
   insigniaMundial: () => [{ name: null, src: insigniaMundial, w: 600, h: 600, large: true, zoom: false, alt: 'A Insígnia Mundial: uma flor-de-lis branca com duas estrelas, sobre um círculo roxo, rodeada por uma corda atada num nó direito' }],
   mapaOmme: () => [{ name: null, src: mapaOmme, w: 1400, h: 719, natural: 700, zoom: true, kind: 'Mapa', caption: 'Os países membros da OMME em 2016; a cinzento, os que não eram membros.', alt: 'Mapa do mundo com os países membros da OMME pintados por região: as Américas a amarelo, a Europa a azul, a Eurásia a roxo, o mundo árabe a verde, a África a laranja e a Ásia-Pacífico a rosa; a China e alguns outros países a cinzento' }],
   jotaJoti: () => [{ name: null, src: jotaJoti, w: 691, h: 866, alt: 'Logótipo do JOTA-JOTI: um globo azul com auscultadores, sobre um lenço escutista roxo, e o emblema do Escutismo mundial' }],

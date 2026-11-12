@@ -553,19 +553,35 @@ export default function ProvaDetail() {
                                       <ProvaMedia media={c.media} seccao={seccao} picture zoom={c.zoom} title={c.name} caption={c.caption} kind={c.kind} />
                                     </Suspense>
                                   </LoadErrorBoundary>
+                                  {/* Its codes' range under the icon (`range`, "F1–F6"), to find
+                                      its slice on the wheel; the list under the text says them */}
+                                  {c.range && <span className={styles.castRange} style={{ color: section.ink }} aria-hidden="true">{c.range}</span>}
                                 </span>
                                 <div className={styles.castText}>
                                   <NameH className={styles.castName} style={{ color: section.ink }}>{c.name}</NameH>
                                   <p className={styles.castRest}>{inline(c.text)}</p>
                                   {/* A line of its own under the text (`line`: an area's three trilhos) */}
                                   {c.line && <p className={styles.castLine}>{inline(c.line)}</p>}
+                                  {/* Or a list (`objectives`: the Caminheiros' objetivos, each by its
+                                      code), one a line, so they can be read down and counted */}
+                                  {c.objectives && (
+                                    <ul className={styles.castObjectives}>
+                                      {c.objectives.map((o) => (
+                                        <li key={o.code}>
+                                          <span className={styles.castCode} style={{ color: section.ink }}>{o.code}</span> {o.name}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
                                 </div>
                               </li>
                             ))}
                           </ul>
                         // Each name a step under its section's heading, or, in a part with no heading
-                        // of its own (the symbols, under "A Simbologia"), the section level itself
-                        ))(s.heading ? CastH : SectionH)}
+                        // of its own (the symbols, under "A Simbologia"), the section level itself.
+                        // A section with neither carries on the one before it (the Caminheiros'
+                        // áreas, under their wheel): its names a step under that heading
+                        ))(s.heading || (!s.part && i > 0) ? CastH : SectionH)}
                         {s.steps && (
                           // Steps on one line, each joined to the next: dates (a history) or names
                           // (a chain, each part of the next); `numbered`, a sequence to remember
