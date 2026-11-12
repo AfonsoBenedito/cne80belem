@@ -1041,7 +1041,11 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       for (let i = 0; i < sec.cast.length; i += per) {
         const row = sec.cast.slice(i, i + per).map(measure);
         const rowH = Math.max(...row.map((m) => m.h));
-        room(rowH);
+        // The last row never starts a page alone: the one before asks for room for both (the
+        // Caminheiros' Fogo stood on page 3, apart from the other five symbols)
+        const next = i + per < sec.cast.length && i + 2 * per >= sec.cast.length ? Math.max(...sec.cast.slice(i + per).map((c) => measure(c).h)) : 0;
+        const both = rowH + (pairs ? 2 : 4) * s + next;
+        room(next && both <= bottom - colTop ? both : rowH);
         row.forEach((m, j) => cell(m, left() + j * (cellW + gutter), oneSide ? false : pairs ? j === 1 : (i / per) % 2 === 1));
         // A gap between rows only: after the last, the section's own gap follows (both together
         // sent the Pioneiros' "O azul do céu e do mar" to a page of its own, 1.3mm short)
