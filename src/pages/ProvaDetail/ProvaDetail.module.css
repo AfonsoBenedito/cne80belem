@@ -984,6 +984,52 @@
   line-height: inherit;
 }
 
+/* A cast item's codes' range under its icon (`range`, the Caminheiros' "F1–F6"), small and bold
+   in the secção's ink, so an icon on the wheel finds its list */
+.castPicture:has(.castRange) {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.castRange {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A cast item's list (`objectives`, the Caminheiros' objetivos): one a line, the code in a slot of
+   its own so the names line up and a long one wraps under its name, not its code; two columns
+   down when the text has room for them (below), F1 to F3 then F4 to F6 */
+.castObjectives {
+  list-style: none;
+  margin: var(--spacing-sm) 0 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.castObjectives li {
+  display: grid;
+  /* The numbered terms' slot (`.termsNumbered`), so codes and numbers align alike */
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  padding: calc(var(--spacing-xs) / 2) 0;
+  break-inside: avoid;
+}
+
+.castCode {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+@container (min-width: 30rem) {
+  .castObjectives {
+    columns: 2;
+    column-gap: var(--spacing-lg);
+  }
+}
+
 /* A drawing that couldn't load: its box gives way, the text takes the row */
 .castPicture:empty {
   display: none;
