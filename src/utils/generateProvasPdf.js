@@ -402,6 +402,46 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
     return { asideItem, aside, imgW, imgH, marks, MARK_R, MARK_LINE, asideW, capLines, CAP_LINE, asideH };
   };
 
+  // A badge grid's layout and measures (its rows, their heights, the whole grid's), shared by
+  // the grid and by its heading, which asks for the whole grid when the grid moves whole
+  const measureGrid = (items, { wide = false } = {}) => {
+    // A grid of badges, each over its name, all at one height; drawings of a whole scout
+    // (`large`, the saudações) taller, fewer to a row, each fitted to its cell. A scan set large
+    // only on screen (`badge`, the Guia's fitas) prints at a badge's size: on paper 13mm shows
+    // it whole, and the extra 21mm sent it to a page of its own
+    const large = items[0].large && !items[0].badge;
+    const imgH = (large ? 34 : 13) * s;
+    const perRow = Math.max(1, Math.floor(colW / ((large ? 38 : 26) * s)));
+    // `wide`: a short row whose names are long ("Sub-Guia de Tribo"), each cell wide enough to
+    // hold its name on one line
+    const cellW = Math.max(colW / perRow, wide ? 34 * s : 0);
+    // A `group` (the fitas, then the cargos) starts its own row, as on the page, and its rows
+    // are as even as they split, so none is left with one (7 cargos are 4 + 3, not 6 + 1)
+    const rows = [];
+    const groups = [];
+    items.forEach((f, k) => (f.group === items[k - 1]?.group && k ? groups[groups.length - 1].push(f) : groups.push([f])));
+    for (const g of groups) {
+      const n = Math.ceil(g.length / Math.ceil(g.length / perRow));
+      for (let i = 0; i < g.length; i += n) rows.push(g.slice(i, i + n));
+    }
+    // A name wider than its cell breaks after its hyphen ("Guarda- / Material"), not inside a
+    // word ("Guarda-Materi / al"): the lines only break at spaces
+    const nameW = cellW - 3 * s;
+    const fit = (name) => name.split(' ').map((w) => (draw.width(w, 8.5, 'bold') > nameW ? w.replace(/-(?=\S)/g, '- ') : w)).join(' ');
+    const measured = rows.map((row, r) => {
+      const names = row.map((f) => (f.name ? draw.split(fit(f.name), nameW, 8.5, 'bold') : []));
+      // A group's own heading (the Posições), as on the page, kept with its first row
+      const heading = row[0].groupHeading && rows[r - 1]?.[0].group !== row[0].group ? row[0].groupHeading : null;
+      return { names, heading, rowH: imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * ts * PT * 1.25 };
+    });
+    // A grid that fits a column moves whole (the four saudações had split two and two across a
+    // page, the Noites de campo three and two); a taller one flows row by row, its last row never
+    // starting a column alone
+    const tall = (m) => m.rowH + (m.heading ? LABEL_H : 0);
+    const whole = measured.reduce((t, m) => t + tall(m) + 5 * s, 0) - 5 * s;
+    return { large, imgH, cellW, rows, measured, tall, whole };
+  };
+
   for (const sec of content.sections) {
     // The page's overview (the Exploradores' five symbols, links to their parts) is a way around
     // the page: on paper the parts follow one another, so it isn't printed
@@ -415,6 +455,13 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       const h = lines.length * 12.5 * ts * PT * 1.25;
       // Keep a heading with at least two lines of its text, or with its pictures
       let keep = sec.media === 'dirigentes' ? NIVEIS_H : sec.media === 'progresso' ? PROGRESSO_H : badges[sec.media] && !sec.mediaAfter ? (badges[sec.media](seccao)[0].large ? 38 * s + NAME_LINE * 2 : FUNCAO_ROW) : lh * 2;
+      // A section that is only a grid (the Guias e cargos) moves whole when it fits a column, so
+      // its heading asks for the whole of it: for its first row only, the heading was left at a
+      // column's foot with the grid in the next
+      if (badges[sec.media] && !sec.text && !sec.mediaAfter && sec.media !== 'dirigentes' && sec.media !== 'progresso') {
+        const { whole } = measureGrid(badges[sec.media](seccao));
+        if (h + 3 * s + whole <= bottom - colTop) keep = Math.max(keep, whole);
+      }
       // A picture beside the text (B.P. em rapaz's drawing and its caption) is drawn first, whole:
       // the heading asks for all of its room, or it was left alone at a page's foot
       if (sec.text && !sec.mediaAfter && badges[sec.media]) keep = Math.max(keep, asideOf(sec).asideH);
@@ -479,8 +526,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const lines = (st.title ? draw.split(st.title, tw, BODY, 'bold').length : 0) + (st.text ? draw.split(unmarkLang(st.text), tw, BODY).length : 0);
         keep = lines * lh + (sec.steps.length === 2 ? lh * 2 : 0);
       }
-      // A recited prayer is kept whole (below), so its heading asks for room for all of it
-      const first = g.cols === 1 && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
+      // A recited prayer is kept whole (below), so its heading asks for room for all of it: on a
+      // one-column page, and in a page's last column, where running on would mean the next page
+      const first = (g.cols === 1 || col === g.cols - 1) && sec.recite && sec.text ? toBlocks(sec.text)[0] : null;
       if (first && first.kind === 'p' && first.lines.length > 1) {
         // Measured as it's drawn (below): alone on its page, 13.5pt, rows at 1.3 and a gap between
         // lines; with others, 11.5pt at an even 1.4
@@ -534,36 +582,13 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
       y += h + capH + 6 * s;
     }
     // A grid of badges, each over its name (drawn alone, or under its text: the Guia's fitas)
-    const badgeGrid = (items, { wide = false } = {}) => {
-      // A grid of badges, each over its name, all at one height; drawings of a whole scout
-      // (`large`, the saudações) taller, fewer to a row, each fitted to its cell. A scan set large
-      // only on screen (`badge`, the Guia's fitas) prints at a badge's size: on paper 13mm shows
-      // it whole, and the extra 21mm sent it to a page of its own
-      const large = items[0].large && !items[0].badge;
-      const imgH = (large ? 34 : 13) * s;
-      const perRow = Math.max(1, Math.floor(colW / ((large ? 38 : 26) * s)));
-      // `wide`: a short row whose names are long ("Sub-Guia de Tribo"), each cell wide enough to
-      // hold its name on one line
-      const cellW = Math.max(colW / perRow, wide ? 34 * s : 0);
-      // A `group` (the fitas, then the cargos) starts its own row, as on the page, and its rows
-      // are as even as they split, so none is left with one (7 cargos are 4 + 3, not 6 + 1)
-      const rows = [];
-      const groups = [];
-      items.forEach((f, k) => (f.group === items[k - 1]?.group && k ? groups[groups.length - 1].push(f) : groups.push([f])));
-      for (const g of groups) {
-        const n = Math.ceil(g.length / Math.ceil(g.length / perRow));
-        for (let i = 0; i < g.length; i += n) rows.push(g.slice(i, i + n));
-      }
+    const badgeGrid = (items, opts = {}) => {
+      const { imgH, cellW, rows, measured, tall, whole } = measureGrid(items, opts);
+      if (rows.length > 1 && whole <= bottom - colTop) room(whole);
       rows.forEach((row, r) => {
-        // A name wider than its cell breaks after its hyphen ("Guarda- / Material"), not inside a
-        // word ("Guarda-Materi / al"): the lines only break at spaces
-        const nameW = cellW - 3 * s;
-        const fit = (name) => name.split(' ').map((w) => (draw.width(w, 8.5, 'bold') > nameW ? w.replace(/-(?=\S)/g, '- ') : w)).join(' ');
-        const names = row.map((f) => (f.name ? draw.split(fit(f.name), nameW, 8.5, 'bold') : []));
-        const rowH = imgH + 4 * s + Math.max(...names.map((n) => n.length)) * 8.5 * ts * PT * 1.25;
-        // A group's own heading (the Posições), as on the page, kept with its first row
-        const heading = row[0].groupHeading && rows[r - 1]?.[0].group !== row[0].group ? row[0].groupHeading : null;
-        room(rowH + (heading ? LABEL_H : 0));
+        const { names, heading, rowH } = measured[r];
+        const pairLast = rows.length > 2 && r === rows.length - 2 ? 5 * s + tall(measured[r + 1]) : 0;
+        room(tall(measured[r]) + (pairLast && tall(measured[r]) + pairLast <= bottom - colTop ? pairLast : 0));
         if (heading) {
           draw.text(heading.toUpperCase(), left(), y + asc(7.5), 7.5, 'bold', GRAY, { charSpace: 0.4 * s });
           y += LABEL_H;
@@ -819,8 +844,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         y += lh;
       } else if (sec.headingMedia && leadsList(blocks, bi)) {
         // A cargo's list label ("Ao Guia compete:"), as on the page: bold, in the secção's ink,
-        // smaller, kept with the list's first item
-        room(lineH * 3);
+        // smaller, kept with the list's start: the room its first item will ask for (its lines and
+        // the second's, two each at most, below) and the gap between; three lines fell short of
+        // that, so "Ao Guia compete:" ended booklet pages with its list overleaf
+        const items = blocks[bi + 1].lines;
+        const itemLines = (k) => (items[k] ? Math.min(splitRecited(unmarkLang(items[k]), textW - (blocks[bi + 1].kind === 'ol' ? 7 : 5) * s).length, 2) : 0);
+        room(lineH + 1.5 * s + lineH * (itemLines(0) + itemLines(1)));
         draw.text(block.lines[0], left(), y + asc(size - 1), size - 1, 'bold', ink);
         y += lineH;
       } else if (block.kind === 'p') {
@@ -829,8 +858,10 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const hang = verse ? 1.25 * size * ts * PT : 0;
         // On a one-column page, a recited prayer that fits a page is never split: it moves whole to
         // the next page rather than leaving its last lines ("…da nossa morte. / Ámen.") on one of
-        // their own. Two columns (the landscape layout) let it run on into the next, on the same page
-        if (verse && sec.recite && g.cols === 1) {
+        // their own. Two columns (the landscape layout) let it run on into the next, on the same
+        // page; from the last column it would run onto the next page (the Lobitos' Pai Nosso, three
+        // lines at page 14's foot), so there it moves whole too
+        if (verse && sec.recite && (g.cols === 1 || col === g.cols - 1)) {
           const h = block.lines.reduce((t, line) => t + splitRecited(line, textW - hang).length * rowH, 0) + (block.lines.length - 1) * verseGap;
           if (h <= bottom - colTop) room(h);
         }
@@ -853,6 +884,9 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
           // A prayer's last line ("Ámen.") never starts a page alone: its second-to-last line
           // asks for room for both
           const keepNext = verse && n === block.lines.length - 2 ? draw.split(block.lines[n + 1], textW - hang, size).length : listStart;
+          // The pointer to another prova after this paragraph ("Podes saber mais na prova…") goes
+          // with its last two lines: alone, it opened a page of its own (the PPV's, in the booklet)
+          const pointer = !verse && n === block.lines.length - 1 && next?.kind === 'p' && next.lines[0] === moreText ? splitRecited(unmarkLang(moreText), textW).length : 0;
           lines.forEach((wrapped, i) => {
             // No paragraph starts or ends a page with a single line of it: two together at its
             // start and at its end, so a paragraph of three moves whole (two at the start, then two
@@ -860,7 +894,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
             const last = lines.length - i;
             const step = verse ? rowH : lineH;
             const need = lines.length === 3 && i === 0 ? 3 : lines.length > 1 && (i === 0 || last === 2) ? 2 : 1;
-            room(step * (need + (last === 1 ? keepNext : 0)));
+            room(step * (need + (last === 1 ? keepNext : 0) + (last === Math.min(lines.length, 2) && pointer ? pointer : 0)) + (last === Math.min(lines.length, 2) && pointer ? 3.5 * s : 0));
             drawRuns(draw, wrapped, left() + (i ? hang : 0), y + asc(size), size, BLACK, marks);
             y += step;
           });
@@ -1204,8 +1238,12 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
         const title = st.title ? draw.split(st.title, tw, BODY, 'bold') : [];
         const text = st.text ? draw.split(unmarkLang(st.text), tw, BODY) : [];
         const h = (title.length + text.length) * lh;
-        // A step is never split, and the last one never starts a page alone
-        room(h + (k === sec.steps.length - 2 ? lh * 2 : 0));
+        // A step is never split, and the last one never starts a page alone; the last takes the
+        // pointer that follows the steps with it ("Podes saber mais na prova…", the Objetivos'
+        // after Validar a etapa), which alone had opened a booklet page: the step's 3mm after it and
+        // the pointer's 2mm before it, then its lines
+        const pointerH = k === sec.steps.length - 1 && moreText && moreLast && !sec.profiles && !sec.moreAfterMedia ? 5 * s + draw.split(moreText, colW, BODY).length * lh : 0;
+        room(h + (k === sec.steps.length - 2 ? lh * 2 : 0) + pointerH);
         // After room(): a step that moved on to the next column or page is set from its left edge
         const railX = left() + (dated ? 4.5 : numbered ? 2.4 : 1.25) * s;
         const tx = left() + markW + 3 * s;
