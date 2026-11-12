@@ -512,6 +512,31 @@ export default function ProvaDetail() {
                             ))}
                           </dl>
                         )}
+                        {s.sheet && (
+                          // A sheet as it's filled (`sheet`, the PPV's open part, the Manual's
+                          // example): each field its label over its entry; a field the example
+                          // leaves empty shows ruled lines, and says so to a screen reader
+                          <figure className={styles.sheet}>
+                            <figcaption className={styles.sheetLabel}>{s.sheet.label}</figcaption>
+                            <dl className={styles.sheetFields}>
+                              {s.sheet.fields.map((f) => (
+                                <div key={f.label} className={styles.sheetField}>
+                                  <dt className={styles.sheetFieldLabel}>{f.label}</dt>
+                                  <dd className={styles.sheetValue}>
+                                    {f.text ?? (f.list ? (
+                                      <ul className={styles.sheetList}>
+                                        {f.list.map((item) => <li key={item}>{item}</li>)}
+                                      </ul>
+                                    ) : (
+                                      <span className={styles.sheetBlank}><span className={styles.srOnly}>Por preencher</span></span>
+                                    ))}
+                                  </dd>
+                                </div>
+                              ))}
+                            </dl>
+                            {s.sheet.source && <p className={styles.sheetSource}>{s.sheet.source}</p>}
+                          </figure>
+                        )}
                         {s.profiles && (
                           // Things of one kind told the same way (the units: secção, ages, small
                           // groups, patrono, colour), so they can be compared: each its name, after

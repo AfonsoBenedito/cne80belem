@@ -34,6 +34,8 @@ import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
 import saoTiago from '../assets/images/provas/sao-tiago/sao-tiago.png';
 import saoPedro from '../assets/images/provas/sao-pedro/sao-pedro.png';
 import saoPaulo from '../assets/images/provas/sao-paulo/sao-paulo.png';
+import ppvRemar from '../assets/images/provas/caminho-do-triunfo/remar.png';
+import ppvElefantes from '../assets/images/provas/caminho-do-triunfo/elefantes.png';
 import bpRetrato from '../assets/images/provas/baden-powell/retrato.jpg';
 import bpBarco from '../assets/images/provas/baden-powell/barco.png';
 import bpHussardos from '../assets/images/provas/baden-powell/hussardos.png';
@@ -214,6 +216,13 @@ export const badges = {
   // São Paulo as the Manual do Dirigente draws him (p. 115, beside the Caminheiros' Mística), cut
   // from its card at 16×: the book of his letters and the sword of his martyrdom. As S. Pedro's
   saoPaulo: () => [{ name: null, src: saoPaulo, w: 578, h: 1234, large: true, zoom: true, hero: true, alt: 'São Paulo, em desenho: calvo, de barba castanha, túnica vermelha e manto cor de areia, de sandálias, com um livro junto ao peito e uma espada nas mãos' }],
+  // The Projeto Pessoal de Vida's: two of B.-P.'s drawings from Rovering to Success (the 1930
+  // scan, cleaned as A Caminho do Triunfo's): paddling one's own canoe, looking ahead, beside the
+  // project each makes for his life; the elephants carrying the log together beside the Clã's
+  // part in it. Their captions ours, from his. The canoe at the opening drawing's size (`hero`):
+  // as a thumbnail (176px) its point, the crew rowing backwards into the rock, didn't read
+  ppvRemar: () => [{ name: null, src: ppvRemar, w: 1981, h: 1005, large: true, hero: true, zoom: true, kind: 'Desenho', caption: 'Remar a sua própria canoa, a olhar em frente', alt: 'Desenho de Baden-Powell: à frente, um caminheiro rema sozinho numa canoa, a olhar em frente; atrás, um barco a remos com vários rapazes, que remam de costas para o caminho, vira-se contra um rochedo e eles caem à água.' }],
+  ppvElefantes: () => [{ name: null, src: ppvElefantes, w: 2288, h: 1196, large: true, zoom: true, kind: 'Desenho', caption: 'Só com boa vontade e entreajuda se carrega o tronco grande', alt: 'Desenho de Baden-Powell: dois elefantes, cada um com o seu condutor às costas, levam juntos um grande tronco de árvore apoiado nas presas e nas trombas.' }],
   // Vida de Baden-Powell: the photographs and drawing of the agrupamento's text ("Vida BP"), each
   // beside its part with that text's own caption; cleaned to grey at 2× (the originals are 175 to
   // 400px), so not opened in the viewer, which would show them no sharper
