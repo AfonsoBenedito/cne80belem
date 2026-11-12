@@ -128,6 +128,9 @@ function drawRuns(draw, line, x, y, size, color, state) {
 // spaces are no-break ones for the wrapping, and drawRuns draws them as plain ones
 // …and its last two words joined by a no-break space, as the page joins them, so none prints alone
 // on a last line ("fotografias." under the Avaliação)
+// jsPDF draws nothing for a non-breaking hyphen: every line drawn or measured prints it plain, the
+// headings', quotes' and sources' too ("B.‑P." had printed "B.P.")
+const plainHyphens = (str) => (typeof str === 'string' ? str.replace(/\u2011/g, '-') : Array.isArray(str) ? str.map(plainHyphens) : str);
 const unmarkLang = (text) => keepLastPair(text.replace(/\{[a-z]{2}\}/g, '').replace(/\u2011/g, '-').replace(/\^[^^]+\^/g, keepBook));
 
 function setText(doc, size, style = 'normal', color = BLACK) {
@@ -168,7 +171,7 @@ function recorder(doc, g) {
     text(str, x, y, size, style, color, opts) {
       push((ox) => {
         setText(doc, size * (g.t ?? g.s), style, color);
-        doc.text(str, ox + x, y, opts);
+        doc.text(plainHyphens(str), ox + x, y, opts);
       });
     },
     rect(x, y, w, h, color) {
@@ -221,6 +224,7 @@ function recorder(doc, g) {
     // words as drawRuns draws them (the marks take no room, a source is a step smaller, bold and
     // italics their own widths): measured whole, the marks wrapped it early
     split(str, width, size, style = 'normal') {
+      str = plainHyphens(str);
       if (!/[*^~]/.test(str)) {
         setText(doc, size * (g.t ?? g.s), style);
         return doc.splitTextToSize(str, width);
@@ -254,7 +258,7 @@ function recorder(doc, g) {
     // How wide a line is at the size it will be drawn at
     width(str, size, style = 'normal') {
       setText(doc, size * (g.t ?? g.s), style);
-      return doc.getTextWidth(str);
+      return doc.getTextWidth(plainHyphens(str));
     },
   };
 }
