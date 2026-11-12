@@ -581,6 +581,9 @@ export default function ProvaDetail() {
                                   {/* Its codes' range under the icon (`range`, "F1–F6"), to find
                                       its slice on the wheel; the list under the text says them */}
                                   {c.range && <span className={styles.castRange} style={{ color: section.ink }} aria-hidden="true">{c.range}</span>}
+                                  {/* A line of ours under the picture (`caption`: what B.-P.'s drawing
+                                      shows, Dick beside the Horses), the viewer's too */}
+                                  {c.media && c.caption && <span className={styles.castCaption}>{c.caption}</span>}
                                 </span>
                                 <div className={styles.castText}>
                                   <NameH className={styles.castName} style={{ color: section.ink }}>{c.name}</NameH>

@@ -986,7 +986,8 @@
 
 /* A cast item's codes' range under its icon (`range`, the Caminheiros' "F1–F6"), small and bold
    in the secção's ink, so an icon on the wheel finds its list */
-.castPicture:has(.castRange) {
+.castPicture:has(.castRange),
+.castPicture:has(.castCaption) {
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xs);
@@ -1028,6 +1029,17 @@
     columns: 2;
     column-gap: var(--spacing-lg);
   }
+}
+
+/* A cast picture's caption (`caption`, Dick under the Horses): small and gray, at the picture's
+   width, so it names the drawing without taking the row */
+.castCaption {
+  max-width: 8rem;
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+  color: var(--color-gray-500);
+  text-align: center;
+  text-wrap: balance;
 }
 
 /* A drawing that couldn't load: its box gives way, the text takes the row */

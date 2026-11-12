@@ -29,6 +29,10 @@ function imageDefaults(url) {
   // that. imagetools never enlarges, so a scan smaller than that keeps its own size
   const badge = path.match(/\/images\/distintivos\/(funcao|progresso|promessa|seccoes|noites|cruzes)\//)
   if (badge) return new URLSearchParams({ h: badge[1] === 'progresso' || badge[1] === 'promessa' ? '384' : '192', format: 'webp', quality: '85' })
+  // B.-P.'s drawings for A Caminho do Triunfo are seen at most whole in the viewer, a screen tall:
+  // 1400px tall covers that, and three times the canoe's 440px on the page (at the folder's
+  // 2048px wide the cast's tall ones were up to 2214px tall)
+  if (path.includes('/images/provas/caminho-do-triunfo/')) return new URLSearchParams({ h: '1400', format: 'webp', quality: '75' })
   // The secções' logos are only a faded badge in their page's header (~465px at most): 960px
   // covers that on a 2× screen. The group photos beside them in sections/ keep the larger cap
   if (/\/images\/sections\/(lobitos|exploradores|pioneiros|caminheiros)\.\w+$/.test(path)) {
