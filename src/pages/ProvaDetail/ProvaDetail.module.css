@@ -986,7 +986,8 @@
 
 /* A cast item's codes' range under its icon (`range`, the Caminheiros' "F1–F6"), small and bold
    in the secção's ink, so an icon on the wheel finds its list */
-.castPicture:has(.castRange) {
+.castPicture:has(.castRange),
+.castPicture:has(.castCaption) {
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xs);
@@ -1027,6 +1028,38 @@
   .castObjectives {
     columns: 2;
     column-gap: var(--spacing-lg);
+  }
+}
+
+/* A cast picture's caption (`caption`, Dick under the Horses): small and gray, at the picture's
+   width, so it names the drawing without taking the row */
+.castCaption {
+  max-width: 8rem;
+  font-size: var(--font-size-xs);
+  line-height: 1.35;
+  color: var(--color-gray-500);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* A row with no picture of its own (`castRowBare`): beside the others it keeps the picture's
+   column empty, so its text starts where theirs does; under 36rem, where the pictures float, it
+   takes the row as theirs runs on under them */
+@container (min-width: 36.01rem) {
+  .castRow.castRowBare:has(.castPicture:empty) {
+    grid-template-columns: 8rem minmax(0, 1fr);
+  }
+
+  .castRow.castRowBare:has(.castPicture:empty) .castText {
+    grid-column: 2;
+  }
+
+  .castRow.castRowBare:nth-child(even):has(.castPicture:empty) {
+    grid-template-columns: minmax(0, 1fr) 8rem;
+  }
+
+  .castRow.castRowBare:nth-child(even):has(.castPicture:empty) .castText {
+    grid-column: 1;
   }
 }
 
