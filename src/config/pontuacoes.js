@@ -89,7 +89,33 @@ export const pontuacoes = {
             ],
           },
         },
-        { date: '2026-11-14', name: 'Competição de Jangadas' },
+        {
+          date: '2026-11-14',
+          name: 'Competição de Jangadas',
+          points: { lobo: { atividade: 40, grito: 2.5, presencas: 1 }, esquilo: { atividade: 20, grito: 2.5, presencas: 3 } },
+          details: {
+            note: 'Quem fez mais pontos na Competição ganhou 40 pontos na Atividade principal; a outra patrulha ganhou 20.',
+            groups: [
+              {
+                label: 'Avaliação do júri',
+                rows: [
+                  {
+                    label: 'Material trazido de casa (0 a 5)',
+                    lobo: { result: 'Trouxeram muito material', points: 5 },
+                    esquilo: { result: 'Só trouxeram um garrafão', points: 0 },
+                  },
+                  {
+                    label: 'Nome da jangada (0 a 3)',
+                    lobo: { result: 'Pérola de Plástico', points: 3 },
+                    esquilo: { result: 'Kraken', points: 2 },
+                  },
+                  { label: 'Aspeto (0 a 10)', lobo: { result: '6 em 10', points: 6 }, esquilo: { result: '8 em 10', points: 8 } },
+                  { label: 'Corrida (0 a 15)', lobo: { result: '15 em 15', points: 15 }, esquilo: { result: '7,5 em 15', points: 7.5 } },
+                ],
+              },
+            ],
+          },
+        },
         { date: '2026-11-21', name: 'Formação de Guias (Núcleo)' },
         { date: '2026-11-28', name: 'Banco Alimentar' },
         { date: '2026-12-05', name: 'Dia da Sede / Material de Campo' },
