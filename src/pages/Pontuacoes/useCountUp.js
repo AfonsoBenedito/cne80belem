@@ -12,7 +12,8 @@ export function useCountUp(target, { run = true, duration = 900, delay = 0, inst
     const tick = (now) => {
       start ??= now + delay;
       const t = Math.min(1, Math.max(0, (now - start) / duration));
-      setValue(Math.round(target * (1 - (1 - t) ** 3)));
+      // Whole numbers on the way, so a half only shows when it lands
+      setValue(t < 1 ? Math.round(target * (1 - (1 - t) ** 3)) : target);
       if (t < 1) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
