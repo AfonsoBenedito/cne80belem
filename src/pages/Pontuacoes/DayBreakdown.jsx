@@ -1,11 +1,9 @@
-import { categorias, dayTotal } from '../../config/pontuacoes';
+import { categorias, catValue, dayTotal } from '../../config/pontuacoes';
 import { useCountUp } from './useCountUp';
 import DivergingBar from './DivergingBar';
 import { longDate } from './dates';
+import { fmt, signed } from './numbers';
 import styles from './DayBreakdown.module.css';
-
-
-const signed = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
 
 // `cats`: the categories either patrulha scored in, the same rows in both cards so they line up
 function PatrolCard({ patrulha, activity, cats, maxAbs, isBest, instant, index }) {
@@ -27,7 +25,7 @@ function PatrolCard({ patrulha, activity, cats, maxAbs, isBest, instant, index }
       {cats.length ? (
         <ul className={styles.cats}>
           {cats.map((c, r) => {
-            const v = activity.points?.[patrulha.key]?.[c.key] ?? 0;
+            const v = catValue(activity, patrulha.key, c.key);
             return (
               <li key={c.key} className={styles.cat} style={{ '--r': r }}>
                 <span className={styles.catLabel}><span aria-hidden="true">{c.emoji}</span> {c.label}</span>
@@ -102,7 +100,7 @@ function Details({ details, name, patrulhas }) {
 
   return (
     <section className={styles.details} aria-labelledby="detalhes-titulo">
-      <h3 id="detalhes-titulo" className={styles.detailsTitle}>Como correu o {name}</h3>
+      <h3 id="detalhes-titulo" className={styles.detailsTitle}>Como correu: {name}</h3>
       <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
@@ -142,8 +140,8 @@ function Details({ details, name, patrulhas }) {
           ))}
           <tfoot>
             <tr>
-              <th scope="row">Pontos do {name}</th>
-              {sums.map((s, i) => <td key={patrulhas[i].key}><strong>{s}</strong></td>)}
+              <th scope="row">Total da prova</th>
+              {sums.map((s, i) => <td key={patrulhas[i].key}><strong>{fmt(s)}</strong></td>)}
             </tr>
           </tfoot>
         </table>

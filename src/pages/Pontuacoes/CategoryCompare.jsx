@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
-import { categorias } from '../../config/pontuacoes';
+import { categorias, catValue } from '../../config/pontuacoes';
 import { useCountUp } from './useCountUp';
 import DivergingBar from './DivergingBar';
 import { shortDate } from './dates';
+import { signed, pts } from './numbers';
 import styles from './CategoryCompare.module.css';
 
-const signed = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
-const pts = (n) => `${Math.abs(n)} ponto${Math.abs(n) === 1 ? '' : 's'}`;
 
 // A number that counts up when its section comes into view. Screen readers get the final value
 // straight away, never the 0 it starts from
@@ -24,7 +23,7 @@ function Value({ n, run, instant, delay, className = styles.value }) {
 // One category opened: what it is, the duel, each patrulha's best (or worst) day, the days as
 // little columns to tap, and a tip for whoever did worse
 function CategoryDetail({ cat, sums, days, patrulhas, onPickDay, instant }) {
-  const val = (d, p) => d.points?.[p.key]?.[cat.key] ?? 0;
+  const val = (d, p) => catValue(d, p.key, cat.key);
   const losing = sums.every((n) => n <= 0) && sums.some((n) => n < 0);
   const [a, b] = sums;
   const tie = a === b;
@@ -47,7 +46,7 @@ function CategoryDetail({ cat, sums, days, patrulhas, onPickDay, instant }) {
   }, null));
 
   let verdict;
-  if (none) verdict = { emoji: '🌱', text: 'Ainda ninguém ganhou nem perdeu pontos aqui.' };
+  if (none) verdict = { emoji: '🌱', text: 'Ainda ninguém tem pontos aqui.' };
   else if (tie) verdict = { emoji: '🤝', text: `Empate! As duas patrulhas têm ${signed(a)}.` };
   else if (losing) verdict = { emoji: '🛡️', text: `${patrulhas[win].name} perdeu menos: ${pts(diff)} a menos que ${patrulhas[lose].name}!` };
   else verdict = { emoji: '🏆', text: `${patrulhas[win].name} ganhou aqui por ${pts(diff)}!` };
@@ -126,7 +125,7 @@ function CategoryDetail({ cat, sums, days, patrulhas, onPickDay, instant }) {
         </>
       )}
 
-      {!tie && !none && (
+      {!tie && !none && cat.tip && (
         <p className={styles.tip}>
           <span aria-hidden="true">💡</span> Dica para o {patrulhas[lose].name}: {cat.tip}
         </p>
@@ -135,8 +134,9 @@ function CategoryDetail({ cat, sums, days, patrulhas, onPickDay, instant }) {
   );
 }
 
-// Gained and lost points per category, both patrulhas side by side on one centre line: what was
-// lost to the left, what was gained to the right. A category opens to explain itself.
+// Each patrulha's points per category, side by side. When a period has points lost, they share a
+// centre line: lost to the left, gained to the right; when nothing was lost (the sheet only adds),
+// the bars start at zero on the left. A category opens to explain itself.
 export default function CategoryCompare({ days, patrulhas, instant, onPickDay }) {
   const ref = useRef(null);
   const [run, setRun] = useState(instant);
@@ -152,46 +152,52 @@ export default function CategoryCompare({ days, patrulhas, instant, onPickDay })
     return () => io.disconnect();
   }, [instant]);
 
-  const val = (d, p, c) => d.points?.[p.key]?.[c] ?? 0;
+  const val = (d, p, c) => catValue(d, p.key, c);
   const rows = categorias.map((c) => ({
     ...c,
     sums: patrulhas.map((p) => days.reduce((n, d) => n + val(d, p, c.key), 0)),
   }));
-  const gained = patrulhas.map((p) => days.reduce((n, d) => n + Object.values(d.points?.[p.key] ?? {}).filter((v) => v > 0).reduce((a, v) => a + v, 0), 0));
-  const lost = patrulhas.map((p) => days.reduce((n, d) => n + Object.values(d.points?.[p.key] ?? {}).filter((v) => v < 0).reduce((a, v) => a + v, 0), 0));
+  const each = (p) => days.flatMap((d) => categorias.map((c) => val(d, p, c.key)));
+  const gained = patrulhas.map((p) => each(p).filter((v) => v > 0).reduce((a, v) => a + v, 0));
+  const lost = patrulhas.map((p) => each(p).filter((v) => v < 0).reduce((a, v) => a + v, 0));
   // One scale for every category, eased (square root): Atividade principal's hundreds stay the
   // longest, the faltas' handful still shows, and categories differ from each other
   const catMax = Math.max(1, ...rows.flatMap((r) => r.sums.map(Math.abs)));
   const totalMax = Math.max(1, ...gained, ...lost.map(Math.abs));
+  const anyLost = lost.some((n) => n < 0);
 
   return (
     <div ref={ref} className={`${styles.wrap} ${run ? styles.run : ''} ${instant ? styles.instant : ''}`}>
-      {/* Gained vs lost, the whole period */}
+      {/* Gained (and lost, if any), the whole period */}
       <div className={styles.summary}>
         {patrulhas.map((p, i) => (
           <div key={p.key} className={styles.summaryCard} style={{ '--patrol': p.color }}>
             <p className={styles.summaryName}><span aria-hidden="true">{p.emoji}</span> {p.name}</p>
             <div className={styles.summaryNums}>
               <p className={styles.gain}>
-                <span className={styles.summaryLabel}>Ganhou</span>
+                <span className={styles.summaryLabel}>{anyLost ? 'Ganhou' : 'Pontos'}</span>
                 <Value n={gained[i]} run={run} instant={instant} delay={i * 120} />
               </p>
-              <p className={styles.loss}>
-                <span className={styles.summaryLabel}>Perdeu</span>
-                <Value n={lost[i]} run={run} instant={instant} delay={200 + i * 120} />
-              </p>
+              {anyLost && (
+                <p className={styles.loss}>
+                  <span className={styles.summaryLabel}>Perdeu</span>
+                  <Value n={lost[i]} run={run} instant={instant} delay={200 + i * 120} />
+                </p>
+              )}
             </div>
-            <DivergingBar neg={lost[i]} pos={gained[i]} max={totalMax} color={p.color} order={i} run={run} sqrt />
+            <DivergingBar neg={lost[i]} pos={gained[i]} max={totalMax} color={p.color} order={i} run={run} sqrt oneSided={!anyLost} />
           </div>
         ))}
       </div>
 
-      <div className={styles.axisHead} aria-hidden="true">
-        <span>← perdidos</span>
-        <span>ganhos →</span>
-      </div>
+      {anyLost && (
+        <div className={styles.axisHead} aria-hidden="true">
+          <span>← perdidos</span>
+          <span>ganhos →</span>
+        </div>
+      )}
 
-      <ul className={styles.rows}>
+      <ul className={`${styles.rows} ${anyLost ? '' : styles.rowsAlone}`}>
         {rows.map((r, ri) => {
           const isOpen = openCat === r.key;
           const best = Math.max(...r.sums);
@@ -223,6 +229,7 @@ export default function CategoryCompare({ days, patrulhas, instant, onPickDay })
                         thin
                         run={run}
                         sqrt
+                        oneSided={!anyLost}
                       />
                       <Value n={r.sums[i]} run={run} instant={instant} delay={ri * 90} />
                       <span className={styles.medal} aria-hidden="true">

@@ -1,7 +1,11 @@
 // The Expedição's (Exploradores) quadro de pontuações, from the sheet "Pontuações" of the Livro
-// de Unidade 2026/2027. Each activity's `points` holds what each patrulha got in each of the
-// sheet's columns (a column left out is 0); Presenças and Farda count faltas, so they're entered
-// as negative numbers. `details` is an activity's own scoring sheet (the Raid), when it has one.
+// de Unidade 2026/2027. The sheet is the authority: each activity's `points` holds each
+// patrulha's value in each of the sheet's columns, as the sheet has it (a column left out is 0),
+// and a day's total is the sheet's TOTAL, the sum of all of them. Presenças and Farda (`lost`)
+// count faltas: wherever a category is shown on its own they're points lost, negative, as the
+// sheet's "Pontos do Trimestre" row shows them (`catValue`); the totals stay the sheet's. `details` is an activity's own
+// scoring sheet (the hidden sheets, like Raid), shown as its breakdown; it never counts towards a
+// total (the Pontuações sheet holds the result it led to, e.g. 50 or 25 in Atividade principal).
 //
 // Patrulha colours: `color` marks the jar, marbles and chart line (both checked for colour-blind
 // separation on white); `surface` + `onSurface` is a fill carrying text, `ink` is text (AA 4.5:1).
@@ -17,14 +21,11 @@ export const categorias = [
   { key: 'sala', label: 'Tarefa de sala', emoji: '🧩', about: 'As missões que a patrulha faz durante a reunião, na sede.', tip: 'Dividam bem as tarefas: cada um faz a sua parte.' },
   { key: 'casa', label: 'Tarefa de casa', emoji: '🏠', about: 'O desafio para fazer em casa e trazer na reunião seguinte.', tip: 'Combinem na reunião quem faz o quê durante a semana.' },
   { key: 'grito', label: 'Grito', emoji: '📣', about: 'O grito da patrulha: quanto mais alto e afinado, mais pontos!', tip: 'Ensaiem o grito juntos até sair bem alto!' },
-  { key: 'presencas', label: 'Presenças', emoji: '🙋', about: 'Cada falta de um elemento da patrulha tira pontos.', tip: 'Lembrem-se uns aos outros das reuniões: cada falta conta!' },
-  { key: 'farda', label: 'Farda', emoji: '👕', about: 'Vir sem a farda completa tira pontos à patrulha.', tip: 'Preparem a farda na véspera: lenço, camisa e tudo!' },
+  { key: 'presencas', label: 'Presenças', emoji: '🙋', lost: true, about: 'Cada falta de um elemento da patrulha conta como pontos perdidos.', tip: 'Lembrem-se uns aos outros das reuniões: cada falta conta!' },
+  { key: 'farda', label: 'Farda', emoji: '👕', lost: true, about: 'Vir sem a farda completa conta como pontos perdidos.', tip: 'Preparem a farda na véspera: lenço, camisa e tudo!' },
 ];
 
-// `mock`: true shows the page with invented points (the band says "Dados de exemplo"). The points
-// are the sheet's own; it adds each day's faltas to its TOTAL column as if they were points, so
-// its day and trimester totals are off by the faltas: the trimester row (Pontos do Trimestre)
-// subtracts them, as here.
+// `mock`: true shows the page with invented points (the band says "Dados de exemplo")
 export const pontuacoes = {
   mock: false,
   unidade: 'Expedição',
@@ -33,15 +34,15 @@ export const pontuacoes = {
     {
       label: '1º Trimestre',
       activities: [
-        { date: '2026-10-03', name: 'Abertura do Ano 2026/2027', points: { lobo: { presencas: -1 }, esquilo: { presencas: -1 } } },
-        { date: '2026-10-10', name: 'Venda de Calendários', points: { lobo: { presencas: -1 }, esquilo: { presencas: -1 } } },
-        { date: '2026-10-17', name: 'Elaboração do Programa do Trimestre', points: { lobo: {}, esquilo: { presencas: -1 } } },
-        { date: '2026-10-24', name: 'Variedade de Jogos', points: { lobo: { atividade: 30, presencas: -2 }, esquilo: { atividade: 15, grito: 5, presencas: -2 } } },
-        { date: '2026-10-30', name: 'Acantonamento', points: { lobo: { sala: 10, presencas: -3 }, esquilo: { sala: 20, presencas: -4 } } },
+        { date: '2026-10-03', name: 'Abertura do Ano 2026/2027', points: { lobo: { presencas: 1 }, esquilo: { presencas: 1 } } },
+        { date: '2026-10-10', name: 'Venda de Calendários', points: { lobo: { presencas: 1 }, esquilo: { presencas: 1 } } },
+        { date: '2026-10-17', name: 'Elaboração do Programa do Trimestre', points: { lobo: {}, esquilo: { presencas: 1 } } },
+        { date: '2026-10-24', name: 'Variedade de Jogos', points: { lobo: { atividade: 30, presencas: 2 }, esquilo: { atividade: 15, grito: 5, presencas: 2 } } },
+        { date: '2026-10-30', name: 'Acantonamento', points: { lobo: { sala: 10, presencas: 3 }, esquilo: { sala: 20, presencas: 4 } } },
         {
           date: '2026-11-07',
           name: 'Raid',
-          points: { lobo: { atividade: 25, grito: 5, presencas: -1 }, esquilo: { atividade: 50, presencas: -1 } },
+          points: { lobo: { atividade: 25, grito: 5, presencas: 1 }, esquilo: { atividade: 50, presencas: 1 } },
           details: {
             note: 'Quem fez mais pontos no Raid ganhou 50 pontos na Atividade principal; a outra patrulha ganhou 25.',
             groups: [
@@ -124,5 +125,14 @@ export const pontuacoes = {
   ],
 };
 
+const LOST = new Set(categorias.filter((c) => c.lost).map((c) => c.key));
+
+// One category's value for a patrulha on a day, as shown on its own: faltas are points lost
+export const catValue = (activity, key, cat) => {
+  const v = activity.points?.[key]?.[cat] ?? 0;
+  return LOST.has(cat) ? -v : v;
+};
+
+// The sheet's TOTAL: every column added as it is
 export const dayTotal = (activity, key) =>
   Object.values(activity.points?.[key] ?? {}).reduce((sum, n) => sum + n, 0);

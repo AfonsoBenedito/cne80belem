@@ -3,10 +3,11 @@ import { patrulhas, categorias, pontuacoes } from '../pontuacoes';
 
 const KEYS = patrulhas.map((p) => p.key);
 const CATS = categorias.map((c) => c.key);
-const FALTAS = ['presencas', 'farda'];
 const all = pontuacoes.trimesters.flatMap((t) => t.activities);
 const scored = all.filter((d) => d.points);
 const today = new Date().toISOString().slice(0, 10);
+// Whole or half points (a Grito of 2,5)
+const halves = (n) => Number.isInteger(n * 2);
 
 // The scores are typed in by hand (the add-pontuacao skill), so a typo must fail here rather
 // than on the live page
@@ -27,8 +28,7 @@ describe('pontuações', () => {
     KEYS.forEach((k) => {
       Object.entries(d.points[k]).forEach(([cat, n]) => {
         expect(CATS).toContain(cat);
-        expect(Number.isInteger(n)).toBe(true);
-        if (FALTAS.includes(cat)) expect(n).toBeLessThanOrEqual(0);
+        expect(halves(n)).toBe(true);
         if (cat === 'atividade') expect(n >= 0 && n <= 50).toBe(true);
       });
     });
@@ -40,7 +40,7 @@ describe('pontuações', () => {
       expect(row.label).toBeTruthy();
       KEYS.forEach((k) => {
         expect(typeof row[k].result).toBe('string');
-        expect(Number.isInteger(row[k].points)).toBe(true);
+        expect(halves(row[k].points)).toBe(true);
       });
     });
   });

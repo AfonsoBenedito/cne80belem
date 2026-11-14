@@ -106,6 +106,10 @@
   margin-top: var(--spacing-xs);
 }
 
+.rowsAlone {
+  margin-top: var(--spacing-xl);
+}
+
 .row {
   border-radius: var(--radius-lg);
   border: 1px solid transparent;
