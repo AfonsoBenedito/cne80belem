@@ -11,6 +11,7 @@ import CategoryCompare from './CategoryCompare';
 import TugOfWar from './TugOfWar';
 import { prefersReducedMotion } from './useCountUp';
 import { shortDate } from './dates';
+import { fmt, signed, pts } from './numbers';
 import styles from './Pontuacoes.module.css';
 
 const START_DELAY = 700;
@@ -42,8 +43,6 @@ const localToday = () => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 };
 
-
-const signed = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0');
 
 // Every activity of the year that already happened (or has points; with mock data, all of
 // them), each with its trimester
@@ -277,7 +276,7 @@ export default function Pontuacoes() {
   const where = view === YEAR ? 'no ano' : `no ${view}`;
   const headline = tie
     ? `Empate ${where}! Está tudo em aberto.`
-    : `${leader.name} vai à frente ${where} por ${gap} ponto${gap === 1 ? '' : 's'}!`;
+    : `${leader.name} vai à frente ${where} por ${pts(gap)}!`;
   const periodTotal = (v, key) => days
     .filter((d) => v === YEAR || d.trimester === v)
     .reduce((n, d) => n + dayTotal(d, key), 0);
@@ -328,7 +327,7 @@ export default function Pontuacoes() {
                       <span key={p.key} className={styles.viewPoint}>
                         <span className={styles.chipDot} style={{ background: p.color }} aria-hidden="true" />
                         <span className={styles.srOnly}>{p.name} </span>
-                        {periodTotal(v, p.key)}
+                        {fmt(periodTotal(v, p.key))}
                       </span>
                     ))}
                   </span>

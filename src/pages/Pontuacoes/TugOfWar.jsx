@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { dayTotal } from '../../config/pontuacoes';
 import { longDate } from './dates';
+import { fmt, pts } from './numbers';
 import styles from './TugOfWar.module.css';
-
-const pts = (n) => `${n} ponto${n === 1 ? '' : 's'}`;
 
 // How far the knot moves for a lead: a 10% lead of all the points pulls it about a third of the
 // way to that side, and it stays clear of the patrulhas at the rope's ends
@@ -61,7 +60,7 @@ export default function TugOfWar({
         {patrulhas.map((p, i) => (
           <p key={p.key} className={styles.side} style={{ '--patrol': p.ink }}>
             <span className={styles.sideName}>{p.name}</span>
-            <span className={styles.sideTotal}>{totals[i]}</span>
+            <span className={styles.sideTotal}>{fmt(totals[i])}</span>
           </p>
         ))}
       </div>
@@ -72,7 +71,7 @@ export default function TugOfWar({
         ) : (
           <>
             <p className={styles.verdictMain}>
-              {patrulhas[behind].name} precisa de <strong>{pts(gap + 1)}</strong> para passar para a frente.
+              {patrulhas[behind].name} precisa de <strong>{pts(Math.floor(gap) + 1)}</strong> para passar para a frente.
             </p>
             <p className={styles.verdictSub}>
               {patrulhas[lead].name} tem {pts(gap)} de vantagem para defender {inPeriod}.
@@ -109,7 +108,7 @@ export default function TugOfWar({
                 <span className={styles.trophyWho}>
                   {!scored || tTie ? status : <>{patrulhas[w].name}<span className={`${styles.trophyStatus} ${styles.phoneHide}`}> {status.toLowerCase()}</span></>}
                 </span>
-                {scored && <span className={styles.trophyScore}>{sums[0]} – {sums[1]}</span>}
+                {scored && <span className={styles.trophyScore}>{fmt(sums[0])} – {fmt(sums[1])}</span>}
               </button>
             </li>
           );

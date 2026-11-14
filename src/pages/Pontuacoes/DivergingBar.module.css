@@ -47,6 +47,16 @@
   transform-origin: right center;
 }
 
+.oneSided .zero {
+  left: 0;
+  translate: 0 0;
+}
+
+.oneSided .pos {
+  left: 0;
+  border-radius: var(--radius-pill);
+}
+
 .idle {
   transform: scaleX(0);
 }

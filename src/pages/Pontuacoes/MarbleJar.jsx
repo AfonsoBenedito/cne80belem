@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FALL, SWEEP, pourDrops } from './jarMath';
+import { fmt, signed } from './numbers';
 import styles from './MarbleJar.module.css';
-
-const signed = (n) => (n > 0 ? `+${n}` : `${n}`);
 
 // A glass jar, one layer per activity. A layer is a button: it opens that
 // activity's breakdown. Arrow keys move between the layers (one tab stop per jar).
@@ -278,10 +277,10 @@ export default function MarbleJar({ patrulha, total, jar, content = 'berlindes',
 
       <figcaption className={styles.caption}>
         <span className={styles.score} aria-hidden="true">
-          <span key={landed} className={landed && !instant ? styles.bump : undefined}>{shown}</span>
+          <span key={landed} className={landed && !instant ? styles.bump : undefined}>{fmt(shown)}</span>
         </span>
         <span className={styles.scoreUnit} aria-hidden="true">pontos</span>
-        <span className={styles.srOnly}>Patrulha {patrulha.name}: {total} pontos</span>
+        <span className={styles.srOnly}>Patrulha {patrulha.name}: {fmt(total)} pontos</span>
       </figcaption>
     </figure>
   );

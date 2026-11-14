@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { shortDate } from './dates';
+import { fmt } from './numbers';
 import styles from './RaceChart.module.css';
 
 const PAD = { top: 28, right: 44, bottom: 40, left: 40 };
@@ -83,12 +84,14 @@ export default function RaceChart({ days, patrulhas, selected, onSelect, instant
     const pts = days.map((d, i) => [x(i), y(d.cum[p.key])]);
     return { p, pts, drawn: partial(pts, s) };
   });
-  // Two avatars on the same spot are nudged apart, so both stay visible
+  // Two avatars on the same spot are nudged apart, so both stay visible; the one ahead stays on
+  // top (a tie keeps the patrulhas' order)
   const heads = lines.map((l) => l.drawn.at(-1));
   if (heads.length === 2 && Math.abs(heads[0][1] - heads[1][1]) < 22) {
     const mid = (heads[0][1] + heads[1][1]) / 2;
-    heads[0] = [heads[0][0], mid - 11];
-    heads[1] = [heads[1][0], mid + 11];
+    const up = heads[1][1] < heads[0][1] ? 1 : 0;
+    heads[up] = [heads[up][0], mid - 11];
+    heads[1 - up] = [heads[1 - up][0], mid + 11];
   }
 
   // The day whose column is nearest the pointer
@@ -205,7 +208,7 @@ export default function RaceChart({ days, patrulhas, selected, onSelect, instant
             {patrulhas.map((p) => (
               <p key={p.key} className={styles.tipRow}>
                 <span className={styles.swatch} style={{ background: p.color }} />
-                {p.name} <strong>{days[shown].cum[p.key]}</strong>
+                {p.name} <strong>{fmt(days[shown].cum[p.key])}</strong>
               </p>
             ))}
             <p className={styles.tipHint}>Toca para ver o dia</p>
