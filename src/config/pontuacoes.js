@@ -1,10 +1,10 @@
 // The Expedição's (Exploradores) quadro de pontuações, from the sheet "Pontuações" of the Livro
 // de Unidade 2026/2027. The sheet is the authority: each activity's `points` holds each
 // patrulha's value in each of the sheet's columns, as the sheet has it (a column left out is 0),
-// and a day's total is the sheet's TOTAL, the sum of all of them. Presenças and Farda (`lost`)
-// count faltas: wherever a category is shown on its own they're points lost, negative, as the
-// sheet's "Pontos do Trimestre" row shows them (`catValue`); the totals stay the sheet's. `details` is an activity's own
-// scoring sheet (the hidden sheets, like Raid), shown as its breakdown; it never counts towards a
+// and a day's total is the sheet's TOTAL. Presenças and Farda (`lost`) count faltas: the sheet
+// stores them positive and subtracts them (TOTAL = SUM(G:J) - SUM(K:L)), so here they're points
+// lost too, in the totals and wherever a category is shown on its own (`catValue`). `details` is
+// an activity's own scoring sheet (the hidden sheets, like Raid), shown as its breakdown; it never counts towards a
 // total (the Pontuações sheet holds the result it led to, e.g. 50 or 25 in Atividade principal).
 //
 // Patrulha colours: `color` marks the jar, marbles and chart line (both checked for colour-blind
@@ -159,6 +159,6 @@ export const catValue = (activity, key, cat) => {
   return LOST.has(cat) ? -v : v;
 };
 
-// The sheet's TOTAL: every column added as it is
+// The sheet's TOTAL: the points scored minus the faltas
 export const dayTotal = (activity, key) =>
-  Object.values(activity.points?.[key] ?? {}).reduce((sum, n) => sum + n, 0);
+  Object.keys(activity.points?.[key] ?? {}).reduce((sum, cat) => sum + catValue(activity, key, cat), 0);
