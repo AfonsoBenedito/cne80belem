@@ -7,10 +7,14 @@ const PAD = { top: 28, right: 44, bottom: 40, left: 40 };
 const DRAW_MS = 1800;
 
 
-function niceTicks(max) {
+// Faltas can take a running total below zero (a first day with only faltas): the axis then goes
+// just far enough under the zero line to show it, a fifth of a step, with no label of its own
+function niceTicks(min, max) {
   const step = [5, 10, 25, 50, 100, 200, 250, 500].find((s) => max / s <= 5) ?? 1000;
   const top = Math.max(step, Math.ceil(max / step) * step);
-  return Array.from({ length: top / step + 1 }, (_, i) => i * step);
+  const ticks = Array.from({ length: top / step + 1 }, (_, i) => i * step);
+  const sub = step / 5;
+  return min < 0 ? [-Math.ceil(-min / sub) * sub, ...ticks] : ticks;
 }
 
 // The line drawn so far: every point reached, and the part of the next segment
@@ -64,13 +68,14 @@ export default function RaceChart({ days, patrulhas, selected, onSelect, instant
     return () => { io.disconnect(); cancelAnimationFrame(frame); };
   }, [instant]);
 
-  const ticks = niceTicks(Math.max(0, ...days.flatMap((d) => patrulhas.map((p) => d.cum[p.key]))));
-  const yMax = ticks.at(-1);
+  const all = days.flatMap((d) => patrulhas.map((p) => d.cum[p.key]));
+  const ticks = niceTicks(Math.min(0, ...all), Math.max(0, ...all));
+  const [yMin, yMax] = [ticks[0], ticks.at(-1)];
   const plotW = W - PAD.left - PAD.right;
   const plotH = H - PAD.top - PAD.bottom;
   const step = n > 1 ? plotW / (n - 1) : 0;
   const x = (i) => (n > 1 ? PAD.left + i * step : PAD.left + plotW / 2);
-  const y = (v) => PAD.top + plotH - (Math.max(0, v) / yMax) * plotH;
+  const y = (v) => PAD.top + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
   const s = progress * Math.max(0, n - 1);
   const labelEvery = Math.ceil(n / Math.max(2, Math.floor(plotW / 64)));
   const colW = n > 1 ? step : plotW;
@@ -127,7 +132,7 @@ export default function RaceChart({ days, patrulhas, selected, onSelect, instant
             />
           )}
 
-          {ticks.map((t) => (
+          {ticks.filter((t) => t >= 0).map((t) => (
             <g key={t}>
               <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} className={t === 0 ? styles.baseline : styles.grid} />
               <text x={PAD.left - 8} y={y(t)} className={styles.yLabel}>{t}</text>
