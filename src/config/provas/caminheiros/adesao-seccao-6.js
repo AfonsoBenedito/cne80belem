@@ -13,7 +13,7 @@ const objetivos = [
 ];
 
 export default {
-  title: 'Objetivos educativos da IVª Secção',
+  title: 'Objetivos educativos dos Caminheiros',
   // The Caderno de Pista IV asks "Já conheces os objetivos educativos que te são propostos?". As
   // the Exploradores' and Pioneiros' Áreas e Trilhos, told for the Clã: from the Caderno de
   // Pista IV (the forty-two objectives, by área; the Caminho, before the Promessa; the objectives validated in reunião de Tribo, the etapa in Conselho de Guias; the

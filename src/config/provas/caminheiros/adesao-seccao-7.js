@@ -49,7 +49,7 @@ export default {
       // B.-P.'s elephants beside it: the Clã helping each one carry his
       media: 'ppvElefantes',
       text: 'A partir do que cada caminheiro partilha da parte aberta, o Clã escreve a sua **Carta de Clã**. Os objetivos da parte aberta entram na **Caminhada**, e alguns da fechada podem entrar, para que cada um progrida também nela.\n\nO PPV abrange a pessoa toda: na sua elaboração, o caminheiro tem em conta as relações familiares e afetivas, a sua relação com Deus, vivida na oração, e a mensagem das Bem‑Aventuranças.',
-      more: 'Objetivos educativos da IVª Secção',
+      more: 'Objetivos educativos dos Caminheiros',
     },
   ],
 };

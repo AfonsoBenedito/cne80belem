@@ -327,7 +327,7 @@ export const badges = {
     { ...guias[seccao][1], href: '#subguia', group: 'guias' },
     ...cargos.map((c) => ({ name: c.name, src: c.src, href: `#cargo-${c.slug}`, group: 'cargos' })),
   ],
-  // The Guia's and the Sub-Guia's side by side, each named (the Organização da IVª Secção): at
+  // The Guia's and the Sub-Guia's side by side, each named (the Organização dos Caminheiros): at
   // the drawings' size on screen (`large`), so the fitas can be counted, with no viewer (the
   // scans are 116px); printed at a badge's size (`badge`)
   guiasUnidade: (seccao) => guias[seccao].map((g, i) => ({

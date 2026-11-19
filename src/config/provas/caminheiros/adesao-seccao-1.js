@@ -1,5 +1,5 @@
 export default {
-  title: 'Organização da IVª Secção',
+  title: 'Organização dos Caminheiros',
   // As the Organização dos Exploradores and dos Pioneiros, told for the Clã, and general: any
   // Clã's caminheiros can study it. From the Regulamento Geral (2023, retificado a 01-10-2025:
   // art. 67.º, the Clã, the Tribo, its Patrono, the Guias, the three councils, the Projeto de
