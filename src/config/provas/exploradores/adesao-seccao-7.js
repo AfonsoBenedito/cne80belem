@@ -1,7 +1,7 @@
 import { areas } from '../../provasShared';
 
 export default {
-  title: 'Áreas de Desenvolvimento e Trilhos da etapa da Aliança',
+  title: 'Áreas e Trilhos',
   // The Caderno de Pista II asks "Já conheces as áreas de desenvolvimento e os trilhos que terás
   // de escolher para a tua etapa da Aliança?". From the Caderno de Pista II (the etapas, the
   // Patrulha validating a trilho, the Conselho de Guias the etapa, the insígnias on the sleeve,

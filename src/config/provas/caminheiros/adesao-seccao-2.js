@@ -4,7 +4,7 @@ export default {
   // Dirigente, "C.2.4 Mística e simbologia no Clã", word for word where it can be, in today's
   // spelling, cut of what speaks to the dirigentes, of the marítimos' names and of the lists
   // (the other saints and great Caminheiros, the Bem-Aventuranças one by one, the symbolic
-  // language, which the Organização da IVª Secção tells); its four dimensões as terms (each its line, without the Manual's Emaús step), its six
+  // language, which the Organização dos Caminheiros tells); its four dimensões as terms (each its line, without the Manual's Emaús step), its six
   // symbols as the cast, each beside the manual's own icon, and at a glance at the top. S. Paulo
   // has his own prova: here only why he is the caminheiro's example
   sections: [
