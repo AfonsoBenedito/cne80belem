@@ -28,6 +28,12 @@ import animador from '../assets/images/distintivos/funcao/animador.jpg';
 import relacoesPublicas from '../assets/images/distintivos/funcao/relacoes-publicas.jpg';
 import noDireito from '../assets/images/provas/nos/no-direito.png';
 import noDeCorrer from '../assets/images/provas/nos/no-de-correr.png';
+import noDeTripe from '../assets/images/provas/nos/no-de-tripe.png';
+import noDeTripeEncapeladura from '../assets/images/provas/nos/no-de-tripe-encapeladura.png';
+import noDeTripeAlvalade from '../assets/images/provas/nos/no-de-tripe-alvalade.png';
+import noDePorco from '../assets/images/provas/nos/no-de-porco.png';
+import noDePedreiro from '../assets/images/provas/nos/no-de-pedreiro.png';
+import botaoEmCruzAlvalade from '../assets/images/provas/nos/botao-em-cruz-alvalade.png';
 import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
 import sfLobo from '../assets/images/provas/sao-francisco/lobo-de-gubio.jpg';
@@ -191,6 +197,19 @@ export const badges = {
   // drawing's own order isn't plain (the nó direito's steps run 1, 2 across the top, then 3)
   noDireito: () => [{ name: null, src: noDireito, w: 710, h: 348, natural: 355, zoom: true, caption: 'Segue os passos 1, 2 e 3; em baixo, à direita, o nó pronto.', alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
   noDeCorrer: () => [{ name: null, src: noDeCorrer, w: 424, h: 236, natural: 212, zoom: true, alt: 'O nó de correr em dois passos: 1, um cote direto, uma seta a mostrar o chicote; 2, o chicote livre passado dobrado por dentro da argola, formando um seio' }],
+  // Panels from Manual Apelo (Agrupamento 242, p. 34) and the Girl Scouts Lashing Manual (p. 6).
+  noDeTripe: () => [
+    { name: 'Como atar o nó de tripé', src: noDeTripe, w: 690, h: 456, natural: 345, zoom: true, alt: 'Quatro desenhos do nó de tripé: nó de porco numa vara de fora, voltas entrelaçadas nas três varas, aperto entre as varas e tripé levantado' },
+    // https://clubecompanheirosalvalade.com/infogerais/N%C3%B3s_e_Amarras.pdf#page=17
+    { name: 'Tripé montado', src: noDeTripeAlvalade, besideText: true, w: 256, h: 352, zoom: true, alt: 'Pormenor do tripé aberto, com as voltas da corda visíveis entre as três varas.' },
+    { name: 'Variante com nó de encapeladura', src: noDeTripeEncapeladura, w: 638, h: 210, zoom: true, mobileZoomCue: true, caption: 'Sobrepor as duas voltas e puxar no sentido das setas para formar três alças.', alt: 'Da esquerda para a direita, duas voltas na corda, as voltas sobrepostas com setas em sentidos opostos e as três alças com uma vara em cada uma.' },
+  ],
+  noDePorco: () => [{ name: null, src: noDePorco, w: 472, h: 304, natural: 236, zoom: true, alt: 'Nó de porco em dois passos: a corda cruza a primeira volta na vara e a ponta livre passa por baixo do cruzamento na segunda volta' }],
+  noDePedreiro: () => [{ name: null, src: noDePedreiro, w: 670, h: 284, natural: 335, zoom: true, alt: 'Nó de pedreiro em dois passos: a corda abraça a madeira e a ponta livre enrola-se sobre si própria por dentro da volta' }],
+  botaoEmCruz: () => [
+    // https://clubecompanheirosalvalade.com/infogerais/N%C3%B3s_e_Amarras.pdf#page=15
+    { name: null, src: botaoEmCruzAlvalade, w: 660, h: 460, natural: 330, zoom: true, alt: 'Quatro desenhos de a) a d) mostram o nó inicial, as voltas nas diagonais, o aperto e o remate.' },
+  ],
   // The Lobitos' Manual de Adesão's drawings of S. Francisco de Assis, one beside each part of
   // his prova (`large`: set as drawings; `zoom: false`: 166–294px wide, so not opened in the
   // viewer, which would show them no bigger; w × h kept, as the saudação's)

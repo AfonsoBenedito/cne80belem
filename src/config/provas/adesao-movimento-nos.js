@@ -1,8 +1,6 @@
-// The knots, the same in every secção (the Lobitos' open with a line of their own:
-// lobitos/adesao-movimento-nos.js)
 export default {
   title: 'Nó Direito e Nó de Correr',
-  // The same in every secção. From the Alcateia 16's Manual de Adesão (2021-2022), "Prova 4 –
+  // From the Alcateia 16's Manual de Adesão (2021-2022), "Prova 4 –
   // Os nós", word for word (its opening line, about the Lobitos, only on theirs, below),
   // each knot's steps drawn under its text (`mediaAfter`: the diagrams are wide); the last
   // section, the knot words, is ours

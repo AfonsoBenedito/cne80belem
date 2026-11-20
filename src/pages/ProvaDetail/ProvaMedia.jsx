@@ -24,9 +24,9 @@ function Description({ id, children }) {
 
 // The posters' labels are too small to read in place: this mark says a press enlarges them
 // (the button is named "Ampliar: …", matching it, so the mark itself is hidden from screen readers)
-function ZoomMark() {
+function ZoomMark({ mobileOnly = false }) {
   return (
-    <span className={styles.zoomMark} aria-hidden="true">
+    <span className={mobileOnly ? `${styles.zoomMark} ${styles.mobileZoomCue}` : styles.zoomMark} aria-hidden="true">
       <FaSearchPlus size={11} /> <span className={styles.zoomMarkText}>Ampliar</span>
     </span>
   );
@@ -138,139 +138,164 @@ const photoSources = (f) => {
 // A lone badge (the Promessa) is set larger: it's the one the scout is working towards.
 // The drawings (`large`, the saudações) are old photocopies, small in place: a press opens them
 // in the photo viewer, as the uniform posters do
-function Badges({ items: all, seccao, title }) {
+function Badges({ items: all, seccao, title, knotDiagrams, figureSlot, loading }) {
   const [viewer, setViewer] = useState(null);
   const descId = useId();
-  // A picture that fails to load leaves the grid (or, alone beside its text, its whole column),
-  // never a broken image in its tile
-  const [failed, setFailed] = useState(() => new Set());
-  const fail = (src) => setFailed((was) => new Set(was).add(src));
-  const items = all.filter((f) => !failed.has(f.src));
+  const [loads, setLoads] = useState({});
+  const fail = (src) => setLoads((prev) => ({ ...prev, [src]: { ...prev[src], status: 'failed' } }));
+  const retry = (src) => {
+    const url = new URL(src, document.baseURI);
+    url.searchParams.set('retry', Date.now().toString());
+    setLoads((prev) => ({ ...prev, [src]: { status: 'retrying', url: url.href } }));
+  };
+  const unavailable = (src) => loads[src]?.status === 'failed' || loads[src]?.status === 'retrying';
+  const drawingLabel = (f) => f.name ?? (knotDiagrams ? title : f.caption);
+  const items = knotDiagrams ? all : all.filter((f) => !unavailable(f.src));
   // A drawing smaller than the viewer would show it (`zoom: false`, the S. Francisco cartoons)
   // stays a plain picture: the viewer would only set it on black at the size it already has;
   // one that isn't a drawing tile but gains from it opts in (`zoom: true`, the knot diagrams)
   const zoomable = (f) => (f.large && f.zoom !== false) || f.zoom === true;
-  const drawings = items.filter(zoomable);
   if (!items.length) return null;
+  const sideFigure = figureSlot && items.find((item) => item.besideText);
   const groups = [];
   for (const item of items) {
+    if (item === sideFigure) continue;
     const last = groups[groups.length - 1];
     if (last && last[0].group === item.group) last.push(item);
     else groups.push([item]);
   }
+  const pageOrder = sideFigure ? [sideFigure, ...groups.flat()] : items;
+  const drawings = pageOrder.filter((f) => zoomable(f) && !unavailable(f.src));
+  const namedDiagrams = items.length > 1 && items[0].natural;
   const largest = Math.max(...groups.map((g) => g.length));
   const vars = { '--per-wide': perRow(largest, 5), '--per-narrow': perRow(largest, 3) };
   const ink = seccoes[seccao].ink;
+  const renderGroup = (group, besideText = false) => (
+    <Fragment key={group[0].src}>
+      {group[0].groupHeading && (
+        <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
+      )}
+      <ul
+        className={`${styles.funcoes} ${besideText ? styles.sideFigure : figureSlot ? styles.tyingFigures : ''} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''} ${items[0].hero ? styles.funcoesHero : ''} ${items[0].photo ? styles.funcoesPhoto : ''}`}
+        style={vars}
+      >
+        {group.map((f) => (
+          <li
+            key={f.src}
+            className={`${styles.funcao} ${f.current ? styles.funcaoCurrent : ''}`}
+            style={f.current ? { borderColor: seccoes[seccao].color } : undefined}
+          >
+            {namedDiagrams && f.name && <span className={styles.funcaoName}>{f.name}</span>}
+            {f.href ? (
+            // A link to its cargo below, stretched over the whole tile as the drawings' button is
+            <a href={f.href} className={styles.funcaoZoom}>
+              <img src={f.src} alt="" className={styles.funcaoImg} onError={() => fail(f.src)} />
+              <span className={styles.srOnly}>{f.name}</span>
+            </a>
+          ) : zoomable(f) ? (
+              <>
+                {/* Stretched over the whole tile; the name below stays plain text */}
+                <button
+                  type="button"
+                  className={unavailable(f.src) ? styles.retryDrawing : styles.funcaoZoom}
+                  aria-disabled={loads[f.src]?.status === 'retrying' || undefined}
+                  onClick={(e) => {
+                    if (unavailable(f.src)) {
+                      if (loads[f.src].status === 'failed') retry(f.src);
+                      return;
+                    }
+                    e.currentTarget.focus({ preventScroll: true });
+                    setViewer({ drawings, index: drawings.indexOf(f), leaving: false });
+                  }}
+                  // Named by what it shows: its name, or its caption (a photograph's), or the section
+                  aria-label={unavailable(f.src) ? `Tentar novamente: ${f.name ?? title}` : `Ampliar: ${drawingLabel(f) ?? title}`}
+                  aria-describedby={!unavailable(f.src) && f.alt ? `${descId}-${all.indexOf(f)}` : undefined}
+                  style={f.photo ? ratio(f) : undefined}
+                >
+                  <img
+                    src={loads[f.src]?.url ?? f.src}
+                    loading={loads[f.src]?.url ? 'eager' : loading}
+                    hidden={unavailable(f.src)}
+                    onLoad={loads[f.src]?.status === 'retrying' ? () => setLoads((prev) => ({
+                      ...prev, [f.src]: { ...prev[f.src], status: 'ready' },
+                    })) : undefined}
+                    alt=""
+                    width={f.w}
+                    height={f.h}
+                    className={styles.funcaoImg}
+                    style={ratio(f)}
+                    onError={() => fail(f.src)}
+                    {...(f.photo && photoSources(f))}
+                  />
+                  {/* A photograph (`photo`, the História's) reads as a picture to look at, not
+                      one to press: the posters' mark says it opens larger */}
+                  {unavailable(f.src) && (loads[f.src].status === 'retrying' ? 'A carregar…' : 'Tentar novamente')}
+                  {(f.photo || f.mobileZoomCue) && !unavailable(f.src) && <ZoomMark mobileOnly={f.mobileZoomCue} />}
+                </button>
+                {unavailable(f.src) && <p role="status">A ilustração está indisponível. {f.alt}</p>}
+                {!unavailable(f.src) && f.alt && <Description id={`${descId}-${all.indexOf(f)}`}>{f.alt}</Description>}
+              </>
+            ) : f.marks ? (
+              // Numbers on the drawing (the pilgrim's signs), each named in the list under it:
+              // the numbers are for the eye, the list says it to everyone
+              <span className={styles.marked}>
+                <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
+                {f.marks.map((m, k) => (
+                  <span
+                    key={m.label}
+                    className={styles.mark}
+                    style={{ left: `${m.x * 100}%`, top: `${m.y * 100}%`, background: seccoes[seccao].surface, color: seccoes[seccao].onSurface }}
+                    aria-hidden="true"
+                  >
+                    {k + 1}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
+            )}
+            {f.caption && <span className={styles.funcaoCaption}>{f.caption}</span>}
+            {f.marks && (
+              <ol className={styles.markList}>
+                {f.marks.map((m) => (
+                  <li key={m.label} style={{ '--mark-bg': seccoes[seccao].surface, '--mark-fg': seccoes[seccao].onSurface }}>
+                    {m.label}
+                  </li>
+                ))}
+              </ol>
+            )}
+            {!namedDiagrams && f.name && (
+              <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined} aria-hidden={f.href ? true : undefined}>
+                {f.name}
+                {f.current && <span className={styles.srOnly}> (a tua secção)</span>}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Fragment>
+  );
   return (
     <div className={styles.badgeGroups}>
-      {groups.map((group) => (
-        <Fragment key={group[0].src}>
-          {group[0].groupHeading && (
-            <h3 className={`${styles.subheading} ${styles.groupHeading}`}>{group[0].groupHeading}</h3>
-          )}
-          <ul
-            className={`${styles.funcoes} ${items.length === 1 ? styles.funcoesSingle : ''} ${items[0].large ? styles.funcoesLarge : ''} ${items[0].small ? styles.funcoesSmall : ''} ${items[0].natural ? styles.funcoesNatural : ''} ${group[0].tall ? styles.funcoesTall : ''} ${items[0].hero ? styles.funcoesHero : ''} ${items[0].photo ? styles.funcoesPhoto : ''}`}
-            style={vars}
-          >
-            {group.map((f) => (
-              <li
-                key={f.src}
-                className={`${styles.funcao} ${f.current ? styles.funcaoCurrent : ''}`}
-                style={f.current ? { borderColor: seccoes[seccao].color } : undefined}
-              >
-                {f.href ? (
-                // A link to its cargo below, stretched over the whole tile as the drawings' button is
-                <a href={f.href} className={styles.funcaoZoom}>
-                  <img src={f.src} alt="" className={styles.funcaoImg} onError={() => fail(f.src)} />
-                  <span className={styles.srOnly}>{f.name}</span>
-                </a>
-              ) : zoomable(f) ? (
-                  <>
-                    {/* Stretched over the whole tile; the name below stays plain text */}
-                    <button
-                      type="button"
-                      className={styles.funcaoZoom}
-                      onClick={(e) => {
-                        e.currentTarget.focus({ preventScroll: true });
-                        setViewer({ index: drawings.indexOf(f), leaving: false });
-                      }}
-                      // Named by what it shows: its name, or its caption (a photograph's), or the section
-                      aria-label={`Ampliar: ${f.name ?? f.caption ?? title}`}
-                      aria-describedby={f.alt ? `${descId}-${drawings.indexOf(f)}` : undefined}
-                      style={f.photo ? ratio(f) : undefined}
-                    >
-                      <img
-                        src={f.src}
-                        alt=""
-                        width={f.w}
-                        height={f.h}
-                        className={styles.funcaoImg}
-                        style={ratio(f)}
-                        onError={() => fail(f.src)}
-                        {...(f.photo && photoSources(f))}
-                      />
-                      {/* A photograph (`photo`, the História's) reads as a picture to look at, not
-                          one to press: the posters' mark says it opens larger */}
-                      {f.photo && <ZoomMark />}
-                    </button>
-                    {f.alt && <Description id={`${descId}-${drawings.indexOf(f)}`}>{f.alt}</Description>}
-                  </>
-                ) : f.marks ? (
-                  // Numbers on the drawing (the pilgrim's signs), each named in the list under it:
-                  // the numbers are for the eye, the list says it to everyone
-                  <span className={styles.marked}>
-                    <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
-                    {f.marks.map((m, k) => (
-                      <span
-                        key={m.label}
-                        className={styles.mark}
-                        style={{ left: `${m.x * 100}%`, top: `${m.y * 100}%`, background: seccoes[seccao].surface, color: seccoes[seccao].onSurface }}
-                        aria-hidden="true"
-                      >
-                        {k + 1}
-                      </span>
-                    ))}
-                  </span>
-                ) : (
-                  <img src={f.src} alt={f.alt ?? ''} width={f.w} height={f.h} className={styles.funcaoImg} style={ratio(f)} onError={() => fail(f.src)} />
-                )}
-                {f.caption && <span className={styles.funcaoCaption}>{f.caption}</span>}
-                {f.marks && (
-                  <ol className={styles.markList}>
-                    {f.marks.map((m) => (
-                      <li key={m.label} style={{ '--mark-bg': seccoes[seccao].surface, '--mark-fg': seccoes[seccao].onSurface }}>
-                        {m.label}
-                      </li>
-                    ))}
-                  </ol>
-                )}
-                {f.name && (
-                  <span className={styles.funcaoName} style={f.current ? { color: ink } : undefined} aria-hidden={f.href ? true : undefined}>
-                    {f.name}
-                    {f.current && <span className={styles.srOnly}> (a tua secção)</span>}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </Fragment>
-      ))}
+      {sideFigure && createPortal(renderGroup([sideFigure], true), figureSlot)}
+      {groups.map((group) => renderGroup(group))}
       {viewer && (
         <Suspense fallback={null}>
           <Lightbox
-            photos={drawings.map((f) => f.src)}
+            photos={viewer.drawings.map((f) => loads[f.src]?.url ?? f.src)}
             index={viewer.index}
-            onIndex={(index) => setViewer({ index, leaving: false })}
+            onIndex={(index) => setViewer({ ...viewer, index, leaving: false })}
             onClose={() => setViewer((v) => v && { ...v, leaving: true })}
             leaving={viewer.leaving}
             onLeft={() => setViewer(null)}
             // A picture can name itself (`title`, the Exploradores' jogo de pista): by the section
             // heading alone it opened as "Desenho: As etapas"
-            title={drawings[viewer.index]?.title ?? title}
-            captions={drawings.map((f) => f.name ?? f.caption ?? '')}
-            alts={drawings.map((f) => f.alt)}
+            title={viewer.drawings[viewer.index]?.title ?? title}
+            captions={viewer.drawings.map((f) => drawingLabel(f) ?? '')}
+            note={knotDiagrams ? viewer.drawings[viewer.index]?.caption : undefined}
+            alts={viewer.drawings.map((f) => f.alt)}
             drawings
-            kind={drawings.every((f) => f.kind) ? drawings[0].kind : undefined}
+            kind={viewer.drawings.every((f) => f.kind) ? viewer.drawings[0].kind : undefined}
           />
         </Suspense>
       )}
@@ -365,13 +390,13 @@ function Picture({ f, zoom = false, title, caption, kind }) {
   );
 }
 
-export default function ProvaMedia({ media, seccao, title, icon = false, picture = false, zoom = false, caption, kind }) {
+export default function ProvaMedia({ media, seccao, title, icon = false, picture = false, zoom = false, caption, kind, knotDiagrams = false, figureSlot, loading }) {
   // A badge set small beside its heading (the Cargos prova): the heading names it, so no alt
   if (icon && badges[media]) return <img src={badges[media](seccao)[0].src} alt="" className={styles.headingIcon} />;
   if (picture && badges[media]) return <Picture f={badges[media](seccao)[0]} zoom={zoom} title={title} caption={caption} kind={kind} />;
   if (media === 'uniformes') return <Uniformes seccao={seccao} />;
   if (media === 'progresso') return <Progresso seccao={seccao} />;
   if (media === 'dirigentes') return <Dirigentes />;
-  if (badges[media]) return <Badges items={badges[media](seccao)} seccao={seccao} title={title} />;
+  if (badges[media]) return <Badges loading={loading} figureSlot={figureSlot} knotDiagrams={knotDiagrams} items={badges[media](seccao)} seccao={seccao} title={title} />;
   return null;
 }

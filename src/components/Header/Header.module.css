@@ -370,6 +370,51 @@
   }
 }
 
+/* At enlarged text sizes the written name and menu need the width of the bar. */
+@container header (width < 18rem) {
+  .header .inner {
+    padding-inline: var(--spacing-sm);
+    gap: var(--spacing-xs);
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .brandText,
+  .navLink,
+  .dropdownLink,
+  .megaLabel {
+    overflow-wrap: anywhere;
+  }
+
+  .hamburger {
+    margin-right: 0;
+  }
+
+  .nav {
+    padding: var(--spacing-sm);
+    max-height: calc(100vh - 100%);
+    max-height: calc(100dvh - 100%);
+  }
+
+  .navLink {
+    white-space: normal;
+  }
+
+  .navLink,
+  .dropdownLink,
+  .megaMenu .dropdownLink,
+  .megaLabel {
+    padding-inline: var(--spacing-sm);
+  }
+
+  .dropdownMenu,
+  .megaMenu {
+    padding-inline-start: var(--spacing-sm);
+  }
+}
+
 /* Touch input: 44px targets wherever the bar is, including tablets wide enough for the full nav
    (the compact panel already sets them; this covers the desktop bar and its menus on touch) */
 @media (pointer: coarse) {

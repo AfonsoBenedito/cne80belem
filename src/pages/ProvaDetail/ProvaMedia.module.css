@@ -47,6 +47,10 @@
   transition: var(--transition-interactive);
 }
 
+.mobileZoomCue {
+  display: none;
+}
+
 /* A poster is ~155px wide on a phone: the mark shrinks to its icon so it covers less of it */
 @media (max-width: 600px) {
   .zoomMark {
@@ -57,6 +61,17 @@
 
   .zoomMarkText {
     display: none;
+  }
+
+  .mobileZoomCue {
+    position: static;
+    display: inline-flex;
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .mobileZoomCue .zoomMarkText {
+    display: inline;
   }
 }
 
@@ -194,9 +209,40 @@
   max-height: none;
 }
 
+.funcoesNatural:not(.funcoesSingle) {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 22rem));
+}
+
+.funcoesNatural:not(.funcoesSingle) .funcaoZoom {
+  width: 100%;
+}
+
+.funcoesNatural:not(.funcoesSingle) .funcaoImg {
+  width: 100%;
+  height: auto;
+  max-height: 18rem;
+  object-fit: contain;
+}
+
+@media (min-width: 601px) {
+  .funcoesNatural:not(.funcoesSingle) .funcao:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
 /* On phones it fills the column (the file holds 2×, so it stays crisp), so the steps' numbers
    read with the phone propped on the table */
 @media (max-width: 600px) {
+  .funcoesNatural:not(.funcoesSingle) .funcao:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .funcoesNatural:not(.funcoesSingle) .funcao:first-child .funcaoImg {
+    max-height: none;
+  }
+
   .funcoesSingle.funcoesNatural,
   .funcoesSingle.funcoesNatural .funcao {
     width: 100%;
@@ -216,6 +262,22 @@
   .badgeGroups:has(.funcoesNatural),
   .badgeGroups:has(.funcoesPhoto) {
     padding-right: 0;
+  }
+}
+
+.funcoesNatural.sideFigure {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sideFigure .funcao,
+.tyingFigures .funcao {
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 600px) {
+  .funcoesNatural.tyingFigures {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -327,6 +389,21 @@
 .funcao:has(.funcaoZoom) {
   position: relative;
   transition: var(--transition-interactive), transform var(--transition-fast);
+}
+
+.retryDrawing {
+  min-height: 44px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--color-white);
+  color: var(--section-ink);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-md);
+  font: inherit;
+  cursor: pointer;
+}
+
+.retryDrawing img[hidden] {
+  display: none;
 }
 
 .funcaoZoom {

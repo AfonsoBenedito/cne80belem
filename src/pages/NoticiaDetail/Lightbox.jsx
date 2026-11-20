@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
 import { srcSetFor, aspectRatioFor } from '../../utils/responsiveImage';
 import { useModalDialog } from '../../utils/useModalDialog';
@@ -37,10 +37,11 @@ const viewerSizes = (ratio) => {
 // names what it shows "Desenho" instead of "Foto" (the saudação's drawings), for screen readers.
 // `alts` (optional, one per photo) describes each one where the page does (the knots' steps), so
 // the viewer doesn't read less than the page did
-export default function Lightbox({ photos, index, onIndex, onClose, title, captions, alts, drawings = false, kind, leaving = false, onLeft }) {
+export default function Lightbox({ photos, index, onIndex, onClose, title, captions, note, alts, drawings = false, kind, leaving = false, onLeft }) {
   // `kind` names what it shows when it is neither a photo nor a drawing (B.P.'s painted portrait:
   // "Retrato")
   const noun = kind ?? (drawings ? 'Desenho' : 'Foto');
+  const noteId = useId();
   const panelRef = useRef(null);
   const stageRef = useRef(null);
   const trackRef = useRef(null);
@@ -512,6 +513,7 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
       className={`${styles.lightbox} ${leaving ? styles.lightboxLeaving : ''}`}
       role="dialog"
       aria-modal="true"
+      aria-describedby={note ? noteId : undefined}
       aria-label={`${single ? noun : `${noun}s`}: ${title}`}
       tabIndex={-1}
       onClick={onBackdropClick}
@@ -575,6 +577,8 @@ export default function Lightbox({ photos, index, onIndex, onClose, title, capti
           ))}
         </div>
       </div>
+
+      {note && <p id={noteId} className={styles.lightboxNote}>{note}</p>}
 
       {!single && (
         <div className={styles.lightboxControls}>

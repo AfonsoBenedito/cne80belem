@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { provas } from '../provas';
-import { provasContent } from '../provasContent';
+import { getProvaContent, provasContent } from '../provasContent';
 import { seccoes } from '../seccoes';
 import { badges } from '../provasMedia';
 import { toBlocks, keepLastPair } from '../../utils/provaBlocks';
@@ -8,11 +8,11 @@ import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 
 const slugsOf = (seccao) => provas[seccao].flatMap((g) => g.items.map((p) => p.slug));
-const titlesOf = (slug) => new Set(Object.values(provas).flat().flatMap((g) => g.items).filter((p) => p.slug === slug).map((p) => p.title));
+const titlesOf = (slug, content) => new Set(Object.entries(provas)
+  .filter(([seccao]) => getProvaContent(seccao, slug) === content)
+  .flatMap(([, groups]) => groups.flatMap((g) => g.items.filter((p) => p.slug === slug).map((p) => p.title))));
 
-// A text keyed by slug alone is shown to every secção that lists that slug, so a bare key is only
-// for a prova that is the same wherever it appears (same slug, same title): the shared Adesão ao
-// Movimento provas. A bare 'adesao-seccao-*' once gave all four secções the Pioneiros text.
+// A bare key is the shared version. A section can keep the slug and override its title and text.
 describe('provasContent', () => {
   it.each(Object.keys(provasContent))('%s belongs to a prova that lists it', (key) => {
     const [seccao, slug] = key.includes('/') ? key.split('/') : [null, key];
@@ -20,8 +20,7 @@ describe('provasContent', () => {
       expect(seccoes[seccao], `unknown secção "${seccao}"`).toBeDefined();
       expect(slugsOf(seccao)).toContain(slug);
     } else {
-      expect(titlesOf(slug).size, `"${slug}" is listed by no secção`).toBeGreaterThan(0);
-      expect(titlesOf(slug).size, `"${slug}" means different provas in different secções: key it "<secção>/${slug}"`).toBe(1);
+      expect(titlesOf(slug, provasContent[key]).size, `"${slug}" must have one title across the secções using this text`).toBe(1);
     }
   });
 
@@ -52,10 +51,11 @@ describe('provasContent', () => {
     for (const sec of provasContent[key].sections) if (sec.more) expect(titles, `no prova titled "${sec.more}"`).toContain(sec.more);
   });
 
-  it('gives a slug the same title in every secção that lists it', () => {
-    const slugs = new Set(Object.keys(provas).flatMap(slugsOf));
-    for (const slug of slugs) {
-      if (slug.startsWith('adesao-movimento-')) expect(titlesOf(slug).size, slug).toBe(1);
+  it('gives each shared Adesão ao Movimento text the same title wherever it is used', () => {
+    for (const seccao of Object.keys(provas)) {
+      for (const slug of slugsOf(seccao).filter((p) => p.startsWith('adesao-movimento-'))) {
+        expect(titlesOf(slug, getProvaContent(seccao, slug)).size, `${seccao}/${slug}`).toBe(1);
+      }
     }
   });
 

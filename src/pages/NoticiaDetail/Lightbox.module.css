@@ -14,12 +14,27 @@
   inset: 0;
   z-index: var(--z-dialog);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   height: 100vh;
   height: 100dvh;
   padding: max(var(--spacing-md), env(safe-area-inset-top)) var(--spacing-lg) max(var(--spacing-md), env(safe-area-inset-bottom));
   color: var(--color-white);
   animation: lightboxIn 200ms ease-out;
+}
+
+.lightbox:has(.lightboxNote) {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.lightboxNote {
+  max-width: 56ch;
+  justify-self: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  text-align: center;
+  text-wrap: balance;
 }
 
 /* The backdrop is its own layer so a drag down can thin it, showing the page coming back */
@@ -65,6 +80,8 @@
 }
 
 .lightboxCount {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: var(--font-size-sm);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -261,6 +278,10 @@
     left: max(var(--spacing-md), env(safe-area-inset-left));
     right: max(var(--spacing-md), env(safe-area-inset-right));
     padding-inline: 0;
+  }
+
+  .lightbox:has(.lightboxNote) {
+    grid-template-rows: minmax(0, 1fr) auto;
   }
 
   .lightboxBar {

@@ -329,6 +329,60 @@
   overflow-wrap: break-word;
 }
 
+.glossWord {
+  font: inherit;
+  color: var(--section-ink);
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.glossDefinition {
+  margin-block: var(--spacing-sm);
+  border-inline-start: 2px solid var(--section-ink);
+  padding-inline: var(--spacing-md);
+  color: var(--color-gray-700);
+}
+
+.sectionMenu {
+  margin-bottom: var(--spacing-lg);
+  color: var(--section-ink);
+}
+
+.sectionMenu summary {
+  width: fit-content;
+  cursor: pointer;
+  padding-block: var(--spacing-sm);
+  font-weight: 700;
+}
+
+.sectionMenu ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  list-style: none;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.sectionMenu a {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (pointer: coarse) {
+  .sectionMenu summary,
+  .sectionMenu a {
+    min-height: 44px;
+  }
+}
+
 .section {
   margin-bottom: var(--spacing-xl);
 }
@@ -490,7 +544,7 @@
 
 .sectionHeading {
   /* Under the sticky header when a link (the Cargos grid) jumps to it */
-  scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
+  scroll-margin-top: calc(var(--jump-header-height, var(--header-height)) + var(--spacing-lg));
   font-size: var(--font-size-xl);
   font-weight: 800;
   margin-bottom: 0.75rem;
@@ -618,6 +672,20 @@
 }
 
 /* A picture under its text (the nós' diagrams), a step below the last paragraph */
+.illustratedText {
+  display: flow-root;
+}
+
+.figureSlot:not(:empty) {
+  float: right;
+  width: clamp(5.5rem, 28%, 9rem);
+  margin: 0 0 var(--spacing-sm) var(--spacing-md);
+}
+
+.illustratedText .paragraph:last-child {
+  margin-bottom: 0;
+}
+
 .mediaAfter {
   margin-top: var(--spacing-md);
 }

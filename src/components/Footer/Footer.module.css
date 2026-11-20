@@ -271,6 +271,22 @@
   }
 }
 
+/* Below this text-relative width, the button leaves too little room to enter an address. */
+@container footer (width < 16rem) {
+  .inputGroup {
+    flex-direction: column;
+  }
+
+  .emailInput,
+  .subscribeBtn {
+    padding-inline: var(--spacing-sm);
+  }
+
+  .formStatus {
+    overflow-wrap: anywhere;
+  }
+}
+
 /* Touch input: 44px targets (hit areas grow; visuals stay put where they are small by design) */
 @media (pointer: coarse) {
   /* The email is one 19px line of text: grow its tap area, not its look */
