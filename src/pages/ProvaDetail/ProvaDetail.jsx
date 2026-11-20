@@ -1,4 +1,4 @@
-import { Fragment, Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { Fragment, Suspense, lazy, useEffect, useId, useRef, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
@@ -14,6 +14,45 @@ import styles from './ProvaDetail.module.css';
 
 // The pictures (badges, posters, their viewer) load only for a prova that has them
 const ProvaMedia = lazy(() => import('./ProvaMedia'));
+
+function GlossedInstructions({ text, glosses, terms }) {
+  const [open, setOpen] = useState(null);
+  const definitionId = useId();
+  const seen = new Set();
+
+  return text.split('\n\n').map((paragraph, i) => {
+    let definition;
+    const words = paragraph.split(/(\p{L}+)/u).map((word, j) => {
+      const term = glosses[word];
+      if (!term || seen.has(term)) return word;
+      seen.add(term);
+      const expanded = open === term;
+      if (expanded) definition = terms.find((entry) => entry.term === term);
+      return (
+        <button key={j} type="button" className={styles.glossWord}
+          aria-label={`Significado de «${word}»`} aria-expanded={expanded}
+          aria-controls={expanded ? definitionId : undefined}
+          onClick={() => setOpen(expanded ? null : term)}>
+          {word}
+        </button>
+      );
+    });
+    return (
+      <Fragment key={i}>
+        <p className={styles.paragraph}>{words}</p>
+        {definition && (
+          <p id={definitionId} className={styles.glossDefinition} role="status">
+            <strong>{definition.term}</strong> {definition.text.replace(/^- /, '— ')}
+          </p>
+        )}
+      </Fragment>
+    );
+  });
+}
+
+function measureJumpHeader(article, header = document.querySelector('header')) {
+  if (header && article) article.style.setProperty('--jump-header-height', `${header.offsetHeight}px`);
+}
 
 export default function ProvaDetail() {
   const { seccao, slug } = useParams();
@@ -54,8 +93,10 @@ export default function ProvaDetail() {
       slug,
       groups: toggled.includes(name) ? toggled.filter((g) => g !== name) : [...toggled, name],
     });
+  const articleRef = useRef(null);
   const titleRef = useRef(null);
   const toggleRef = useRef(null);
+  const [figureSlot, setFigureSlot] = useState(null);
   const shownSlug = useRef(slug);
 
   // Moving to another prova keeps the page mounted: put focus on the new title, so a screen
@@ -65,6 +106,41 @@ export default function ProvaDetail() {
     shownSlug.current = slug;
     titleRef.current?.focus({ preventScroll: true });
   }, [slug]);
+
+  // On direct entry the browser can look for the fragment before this lazy route mounts.
+  useEffect(() => {
+    if (slug !== 'adesao-movimento-nos') return;
+    const header = document.querySelector('header');
+    const article = articleRef.current;
+    if (!header || !article) return;
+
+    const measureHeader = () => measureJumpHeader(article, header);
+    measureHeader();
+    const observer = new ResizeObserver(measureHeader);
+    observer.observe(header, { box: 'border-box' });
+
+    const heading = document.getElementById(window.location.hash.slice(1));
+    const landing = new AbortController();
+    if (heading?.matches('h2[tabindex="-1"]') && article.contains(heading)) {
+      const alignHeading = () => heading.scrollIntoView({ behavior: 'instant', block: 'start' });
+      heading.focus({ preventScroll: true });
+      alignHeading();
+
+      // Illustrations and fonts above a shared target can change the article's height after mount.
+      const layout = new ResizeObserver(alignHeading);
+      layout.observe(article);
+      landing.signal.addEventListener('abort', () => layout.disconnect());
+      const release = () => landing.abort();
+      for (const event of ['pointerdown', 'touchstart', 'wheel', 'keydown', 'hashchange']) {
+        window.addEventListener(event, release, { capture: true, passive: true, signal: landing.signal });
+      }
+    }
+    return () => {
+      landing.abort();
+      observer.disconnect();
+      article.style.removeProperty('--jump-header-height');
+    };
+  }, [seccao, slug]);
 
   useSEO(provaItem && section ? {
     title: `${provaItem.title} - ${section.label}`,
@@ -347,11 +423,25 @@ export default function ProvaDetail() {
 
           {/* Content */}
           {/* The secção's ink reaches the list markers through a variable, as the PDF draws them */}
-          <article className={styles.article} style={{ '--section-ink': section.ink, '--section-surface': section.surface, '--section-on-surface': section.onSurface, ...(recited && TEXT_SIZES[sizeIdx] !== 1 ? { '--recite-scale': TEXT_SIZES[sizeIdx] } : {}) }}>
+          <article ref={articleRef} className={styles.article} style={{ '--section-ink': section.ink, '--section-surface': section.surface, '--section-on-surface': section.onSurface, ...(recited && TEXT_SIZES[sizeIdx] !== 1 ? { '--recite-scale': TEXT_SIZES[sizeIdx] } : {}) }}>
             {content ? (
               // If the pictures' chunk can't download, one note with a reload stands in for the
               // sections (only an all-picture prova has any); a new prova starts afresh
               <LoadErrorBoundary key={slug}>
+                {content.sectionMenu && (
+                  <nav className={styles.sectionMenu} aria-label={content.sectionMenu}>
+                    <details>
+                      <summary>{content.sectionMenu}</summary>
+                      <ul>
+                        {content.sections.map(({ id, heading }) => (
+                          <li key={id}>
+                            <a href={`#${id}`} onClick={() => measureJumpHeader(articleRef.current)}>{heading}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  </nav>
+                )}
                 {content.sections.map((s, i) => (
                   <Fragment key={i}>
                   {/* A prova told in parts (the História: the Escutismo, then the CNE) names each
@@ -376,6 +466,7 @@ export default function ProvaDetail() {
                     ) : s.heading && (
                       <SectionH
                         id={s.id}
+                        tabIndex={content.sectionMenu ? -1 : undefined}
                         // A prova that is one recited text and nothing else (the Oração do Caminheiro,
                         // the Promessa) is named by its title: its "Oração" stays for screen readers'
                         // headings, out of sight, so the prayer starts under the title
@@ -397,12 +488,25 @@ export default function ProvaDetail() {
                       // The text, then its picture under it at the picture's own size (a wide
                       // diagram: the nós' steps)
                       <>
-                        {s.text && renderText(s.text)}
+                        {s.mediaBesideText ? (
+                          <div className={styles.illustratedText}>
+                            <div className={styles.figureSlot} ref={setFigureSlot} />
+                            {renderText(s.text)}
+                          </div>
+                        ) : s.glosses ? (
+                          <GlossedInstructions text={s.text} glosses={s.glosses}
+                            terms={content.sections.find((entry) => entry.terms).terms} />
+                        ) : s.text && renderText(s.text)}
                         {!s.moreAfterMedia && moreLine(s)}
                         <div className={styles.mediaAfter}>
                           <LoadErrorBoundary quiet>
                             <Suspense fallback={null}>
-                              <ProvaMedia media={s.media} seccao={seccao} title={s.heading ?? content.title} />
+                              <ProvaMedia
+                                figureSlot={s.mediaBesideText ? figureSlot : null}
+                                knotDiagrams={slug === 'adesao-movimento-nos'}
+                                loading={content.deferLaterImages && i > 0 ? 'lazy' : undefined}
+                                media={s.media} seccao={seccao} title={s.heading ?? content.title}
+                              />
                             </Suspense>
                           </LoadErrorBoundary>
                         </div>

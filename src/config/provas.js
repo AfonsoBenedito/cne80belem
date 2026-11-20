@@ -28,6 +28,7 @@ const adesaoMovimento = {
 
 // The shared Adesão ao Movimento prova n (1–10)
 const mov = (n) => adesaoMovimento.items[n - 1];
+const nosComAmarracoes = { ...mov(10), title: 'Nós' };
 
 export const provas = {
   lobitos: [
@@ -67,7 +68,7 @@ export const provas = {
     },
   ],
   pioneiros: [
-    adesaoMovimento,
+    { ...adesaoMovimento, items: [...adesaoMovimento.items.slice(0, -1), nosComAmarracoes] },
     {
       group: 'Adesão à Secção',
       items: [
@@ -85,7 +86,7 @@ export const provas = {
       group: 'Adesão ao Movimento',
       // "Conhecer a organização do CNE. Saber quando e como surgiu o Escutismo e o CNE." is the
       // shared 1 and 2; "Conhecer as Leis e os Princípios do CNE." the shared 4
-      items: [mov(1), mov(2), mov(3), mov(4), mov(5), mov(7), mov(9), mov(10)],
+      items: [mov(1), mov(2), mov(3), mov(4), mov(5), mov(7), mov(9), nosComAmarracoes],
     },
     {
       group: 'Adesão à Secção',
