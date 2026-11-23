@@ -116,7 +116,7 @@ export const pontuacoes = {
             ],
           },
         },
-        { date: '2026-11-21', name: 'Formação de Guias (Núcleo)' },
+        { date: '2026-11-21', name: 'Formação de Guias (Núcleo)', points: { lobo: { casa: 2, presencas: 5 }, esquilo: { presencas: 3 } } },
         { date: '2026-11-28', name: 'Banco Alimentar' },
         { date: '2026-12-05', name: 'Dia da Sede / Material de Campo' },
         { date: '2026-12-12', name: "Preparação do ACANAT '26" },
