@@ -348,14 +348,16 @@
 }
 
 .sectionMenu {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
   color: var(--section-ink);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
 }
 
 .sectionMenu summary {
-  width: fit-content;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  padding-block: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
   font-weight: 700;
 }
 
@@ -363,11 +365,17 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
   list-style: none;
+  margin-inline: var(--spacing-sm);
   padding: var(--spacing-xs) 0;
   border-bottom: 1px solid var(--color-gray-200);
 }
 
+.sectionMenu details > a {
+  margin: var(--spacing-xs) var(--spacing-sm);
+}
+
 .sectionMenu a {
+  border-radius: var(--radius-xs);
   display: flex;
   align-items: center;
   padding: var(--spacing-xs) var(--spacing-sm);
@@ -1467,6 +1475,10 @@ ol.list {
     text-underline-offset: 3px;
   }
 
+  .sectionMenu :is(summary, a):hover {
+    background: var(--color-gray-50);
+  }
+
   .sidebarGroupToggle:hover {
     color: var(--color-gray-900);
   }
@@ -1832,6 +1844,13 @@ ol.list {
 }
 
 @media (max-width: 768px) {
+  /* Cap the gutters against the viewport as the reader enlarges text. The end
+     gutter also clears the floating button’s 1rem inset; the text clears its width below. */
+  .knotContainer {
+    --knot-gutter: min(var(--spacing-lg), 6vw);
+    padding-inline: var(--knot-gutter) max(var(--knot-gutter), calc(1rem + var(--spacing-xs)));
+  }
+
   .hero {
     padding: 2.5rem 0;
   }
@@ -1888,6 +1907,10 @@ ol.list {
     opacity: 0;
     transform: translateY(-4px);
   }
+}
+
+.sectionMenu :is(summary, a):active {
+  background: var(--color-gray-100);
 }
 
 .backLink:active,

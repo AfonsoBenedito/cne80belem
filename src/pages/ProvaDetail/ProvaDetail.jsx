@@ -264,12 +264,14 @@ export default function ProvaDetail() {
     );
   });
 
+  const containerClass = content?.sectionMenu ? `container ${styles.knotContainer}` : 'container';
+
   return (
     <main className={styles.page}>
       {/* Hero */}
       <section className={styles.hero} style={{ background: section.surface, color: section.onSurface }}>
         <img src={section.image} alt="" className={styles.heroBadge} />
-        <div className="container">
+        <div className={containerClass}>
           {/* On phones the two parts go on their own lines: in capitals they wrapped mid-phrase */}
           <p className={styles.heroLabel}>
             <span>{shortName}</span>
@@ -284,7 +286,7 @@ export default function ProvaDetail() {
       </section>
 
       {/* Body */}
-      <div className="container">
+      <div className={containerClass}>
         <div className={styles.toolbar}>
           <Link
             to={`/seccao/${seccao}/provas`}
@@ -325,10 +327,32 @@ export default function ProvaDetail() {
         </div>
 
         <div className={styles.layout}>
-          {/* Sidebar */}
-          <aside className={styles.sidebar} aria-labelledby="prova-lista-titulo">
+          <div className={styles.sidebar}>
+            {content?.sectionMenu && (
+              <nav className={styles.sectionMenu} aria-label={content.sectionMenu} style={{ '--section-ink': section.ink }}>
+                <details onKeyDown={(event) => {
+                  const menu = event.currentTarget;
+                  if (event.key !== 'Escape' || !menu.open) return;
+                  menu.open = false;
+                  menu.querySelector('summary').focus();
+                }}>
+                  <summary>{content.sectionMenu}</summary>
+                  <ul>
+                    {content.sections.filter(s => !s.terms).map(({ id, heading }) => (
+                      <li key={id}>
+                        <a href={`#${id}`} onClick={() => measureJumpHeader(articleRef.current)}>{heading}</a>
+                      </li>
+                    ))}
+                  </ul>
+                  {content.sections.filter(s => s.terms).map(({ id, heading }) => (
+                    <a key={id} href={`#${id}`} onClick={() => measureJumpHeader(articleRef.current)}>{heading}</a>
+                  ))}
+                </details>
+              </nav>
+            )}
             {/* Escape closes the folded list and hands focus back to its button, as the site's menus do */}
-            <div
+            <aside
+              aria-labelledby="prova-lista-titulo"
               className={styles.sidebarCard}
               onKeyDown={(e) => {
                 if (e.key !== 'Escape' || !menuOpen) return;
@@ -419,8 +443,8 @@ export default function ProvaDetail() {
                   );
                 })}
               </div>
-            </div>
-          </aside>
+            </aside>
+          </div>
 
           {/* Content */}
           {/* The secção's ink reaches the list markers through a variable, as the PDF draws them */}
@@ -429,20 +453,6 @@ export default function ProvaDetail() {
               // If the pictures' chunk can't download, one note with a reload stands in for the
               // sections (only an all-picture prova has any); a new prova starts afresh
               <LoadErrorBoundary key={slug}>
-                {content.sectionMenu && (
-                  <nav className={styles.sectionMenu} aria-label={content.sectionMenu}>
-                    <details>
-                      <summary>{content.sectionMenu}</summary>
-                      <ul>
-                        {content.sections.map(({ id, heading }) => (
-                          <li key={id}>
-                            <a href={`#${id}`} onClick={() => measureJumpHeader(articleRef.current)}>{heading}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    </details>
-                  </nav>
-                )}
                 {content.sections.map((s, i) => (
                   <Fragment key={i}>
                   {/* A prova told in parts (the História: the Escutismo, then the CNE) names each
