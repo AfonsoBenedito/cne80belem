@@ -2,7 +2,6 @@ import nos from '../adesao-movimento-nos';
 
 const [direito, correr, palavras] = nos.sections;
 
-// The Pioneiros and Caminheiros share the two basic knots and four more for field construction.
 export default {
   title: 'Nós',
   sectionMenu: 'Ir para um nó',
@@ -33,11 +32,11 @@ export default {
       text: 'Também se chama volta da ribeira.\n\nPassar a corda à volta do tronco e o chicote à volta da parte comprida da corda (1). Enrolar o chicote sobre si próprio por dentro da volta e puxar pela parte comprida para apertar (2).',
     },
     {
-      id: 'botao-em-cruz',
-      heading: 'Botão em Cruz',
-      media: 'botaoEmCruz',
+      id: 'botao-em-esquadria',
+      heading: 'Botão em Esquadria',
+      media: 'botaoEmEsquadria',
       mediaAfter: true,
-      text: 'Serve para unir duas varas cruzadas que tendem a afastar-se, como as escoras de um cavalete.\n\nPrender as duas varas com um nó de pedreiro (a). Dar três voltas numa diagonal (b) e três na outra (c). Apertar as voltas passando a corda entre as varas e rematar com um nó de porco numa delas (d).',
+      text: 'Serve para unir duas varas em ângulo reto.\n\nFazer um nó de porco no poste, logo abaixo da travessa **(a)**. Passar a corda pela frente da travessa e por trás do poste **(b)**. Seguir esse percurso até completar três voltas, lado a lado **(c)**. Passar a corda duas vezes entre as varas para apertar as voltas **(d)**. Rematar com um nó de porco na travessa **(e)**.',
     },
     { ...palavras, id: 'palavras-dos-nos' },
   ],
