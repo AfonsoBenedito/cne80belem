@@ -20,11 +20,20 @@
 // provas/<secção>/<slug>.js, so its path is its key. Parts several texts share are in
 // provasShared.js. A new file is picked up here on its own.
 
-const files = import.meta.glob('./provas/**/*.js', { eager: true, import: 'default' });
+const loaders = import.meta.glob('./provas/**/*.js', { import: 'default' });
+const contentPromises = new Map();
 
-export const provasContent = Object.fromEntries(
-  Object.entries(files).map(([path, content]) => [path.slice('./provas/'.length, -'.js'.length), content]),
-);
+export function provaContentPath(seccao, slug) {
+  const own = `./provas/${seccao}/${slug}.js`;
+  const shared = `./provas/${slug}.js`;
+  if (loaders[own]) return own;
+  return loaders[shared] ? shared : null;
+}
 
-export const getProvaContent = (seccao, slug) =>
-  provasContent[`${seccao}/${slug}`] ?? provasContent[slug] ?? null;
+// React's use() must receive the same promise across renders, including Suspense retries.
+export function loadProvaContent(seccao, slug) {
+  const path = provaContentPath(seccao, slug);
+  if (!path) return null;
+  if (!contentPromises.has(path)) contentPromises.set(path, loaders[path]());
+  return contentPromises.get(path);
+}

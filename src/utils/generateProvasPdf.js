@@ -5,7 +5,7 @@ import { normalize } from './normalize';
 import { toBlocks, leadsList, keepBook, keepLastPair } from './provaBlocks';
 import { seccoes } from '../config/seccoes';
 import { provas } from '../config/provas';
-import { getProvaContent } from '../config/provasContent';
+import { loadProvaContent } from '../config/provasContent';
 import { uniformes, uniformeDirigentesImg, dirigentes, badges, progresso } from '../config/provasMedia';
 
 // One column, Nunito. The secção's colour is a thin band at the top and the headings' ink; the
@@ -69,7 +69,7 @@ function loadImage(url, type = 'image/png', max = Infinity) {
 async function loadMedia(seccao, list) {
   const urls = new Set();
   for (const prova of list) {
-    for (const sec of getProvaContent(seccao, prova.slug)?.sections ?? []) {
+    for (const sec of prova.content?.sections ?? []) {
       if (sec.media === 'uniformes') [uniformes[seccao], uniformeDirigentesImg].forEach((u) => urls.add(u.src));
       if (sec.media === 'dirigentes') dirigentes.cruzes.forEach((c) => urls.add(c.src));
       if (badges[sec.media]) badges[sec.media](seccao).forEach((f) => urls.add(f.src));
@@ -364,7 +364,7 @@ function layoutProva(draw, g, { seccao, prova, section, total, header, media, at
   const LABEL_H = 7 * s;
   const NIVEIS_H = LABEL_H + 12 * s + 4 * s + NAME_LINE + 6 * s;
 
-  const content = getProvaContent(seccao, prova.slug);
+  const { content } = prova;
   if (!content) {
     // Same wording as the page; in its column, so the next prova can take the one beside it
     const note = draw.split('Ainda estamos a escrever o texto desta prova. Até lá, fala com o teu Chefe.', colW - 6 * s, BODY);
@@ -1312,7 +1312,7 @@ function footer(draw, g, page, { logo, label }) {
 }
 
 // Whether any of these provas marks a title of a work (`*…*`), so the italic is needed
-const hasItalics = (seccao, list) => list.some((p) => /(^|[^*])\*(?!\*)|~/.test(JSON.stringify(getProvaContent(seccao, p.slug) ?? '')));
+const hasItalics = (list) => list.some((p) => /(^|[^*])\*(?!\*)|~/.test(JSON.stringify(p.content ?? '')));
 
 async function newDoc(title, orientation) {
   // `compress`: text, fonts and the logo's pixels deflated (they went in raw)
@@ -1324,11 +1324,15 @@ async function newDoc(title, orientation) {
   return doc;
 }
 
+async function withContent(seccao, prova) {
+  return { ...prova, content: await loadProvaContent(seccao, prova.slug) };
+}
+
 export async function generateProvaPdf(seccao, slug) {
   const section = seccoes[seccao];
-  const prova = numbered(seccao).find((p) => p.slug === slug);
+  const prova = await withContent(seccao, numbered(seccao).find((p) => p.slug === slug));
   const [doc, logo, media] = await Promise.all([newDoc(prova.title, 'portrait'), loadImage(faviconUrl, 'image/png', LOGO_PX), loadMedia(seccao, [prova])]);
-  if (hasItalics(seccao, [prova])) await registerNunitoItalic(doc);
+  if (hasItalics([prova])) await registerNunitoItalic(doc);
 
   const draw = recorder(doc, A4);
   layoutProva(draw, A4, { seccao, prova, section, media });
@@ -1412,9 +1416,9 @@ export async function generateAllProvasPdf(seccao, format = 'booklet') {
   const booklet = format === 'booklet';
   const section = seccoes[seccao];
   const shortName = shortNameOf(section);
-  const all = numbered(seccao);
+  const all = await Promise.all(numbered(seccao).map(prova => withContent(seccao, prova)));
   const [doc, logo, media] = await Promise.all([newDoc(`Provas dos ${shortName}`, orientation), loadImage(faviconUrl, 'image/png', LOGO_PX), loadMedia(seccao, all)]);
-  if (hasItalics(seccao, all)) await registerNunitoItalic(doc);
+  if (hasItalics(all)) await registerNunitoItalic(doc);
 
   // Page 1 is the cover, filled in once the provas' page numbers are known
   const draw = recorder(doc, g);

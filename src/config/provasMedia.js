@@ -33,6 +33,7 @@ import noDeTripeEncapeladura from '../assets/images/provas/nos/no-de-tripe-encap
 import noDeTripeAlvalade from '../assets/images/provas/nos/no-de-tripe-alvalade.png';
 import noDePorco from '../assets/images/provas/nos/no-de-porco.png';
 import noDePedreiro from '../assets/images/provas/nos/no-de-pedreiro.png';
+import botaoEmEsquadriaAlvalade from '../assets/images/provas/nos/botao-em-esquadria-alvalade.png';
 import botaoEmCruzAlvalade from '../assets/images/provas/nos/botao-em-cruz-alvalade.png';
 import sfPatrono from '../assets/images/provas/sao-francisco/patrono.jpg';
 import sfCrianca from '../assets/images/provas/sao-francisco/crianca.jpg';
@@ -195,7 +196,7 @@ export const badges = {
   // (the manual's own, so 2× screens get every file pixel); on phones it fills the column.
   // `zoom`: it opens in the viewer, the rope in one hand. `caption`: ours, under it, where the
   // drawing's own order isn't plain (the nó direito's steps run 1, 2 across the top, then 3)
-  noDireito: () => [{ name: null, src: noDireito, w: 710, h: 348, natural: 355, zoom: true, caption: 'Segue os passos 1, 2 e 3; em baixo, à direita, o nó pronto.', alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
+  noDireito: () => [{ name: null, src: noDireito, w: 710, h: 348, natural: 355, zoom: true, caption: 'Cruzar a ponta esquerda sobre a direita (1) e completar a primeira laçada (2). Cruzar a ponta direita sobre a esquerda e laçar (3). Em baixo, à direita, vê-se o nó apertado.', alt: 'O nó direito em quatro passos: 1, a ponta esquerda cruza sobre a direita e laça; 2, a primeira laçada; 3, a ponta direita cruza de novo sobre a esquerda e laça; e o nó apertado, com os chicotes lado a lado' }],
   noDeCorrer: () => [{ name: null, src: noDeCorrer, w: 424, h: 236, natural: 212, zoom: true, alt: 'O nó de correr em dois passos: 1, um cote direto, uma seta a mostrar o chicote; 2, o chicote livre passado dobrado por dentro da argola, formando um seio' }],
   // Panels from Manual Apelo (Agrupamento 242, p. 34) and the Girl Scouts Lashing Manual (p. 6).
   noDeTripe: () => [
@@ -209,6 +210,10 @@ export const badges = {
   botaoEmCruz: () => [
     // https://clubecompanheirosalvalade.com/infogerais/N%C3%B3s_e_Amarras.pdf#page=15
     { name: null, src: botaoEmCruzAlvalade, w: 660, h: 460, natural: 330, zoom: true, alt: 'Quatro desenhos de a) a d) mostram o nó inicial, as voltas nas diagonais, o aperto e o remate.' },
+  ],
+  botaoEmEsquadria: () => [
+    // https://clubecompanheirosalvalade.com/infogerais/N%C3%B3s_e_Amarras.pdf#page=16
+    { name: null, src: botaoEmEsquadriaAlvalade, w: 463, h: 338, natural: 330, zoom: true, mobileZoomCue: true, alt: 'Cinco desenhos de (a) a (e) mostram o nó de porco no poste, as voltas em torno das duas varas, o aperto entre elas e o remate na travessa.' },
   ],
   // The Lobitos' Manual de Adesão's drawings of S. Francisco de Assis, one beside each part of
   // his prova (`large`: set as drawings; `zoom: false`: 166–294px wide, so not opened in the

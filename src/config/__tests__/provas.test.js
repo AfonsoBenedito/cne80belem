@@ -1,11 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import { provas } from '../provas';
-import { getProvaContent, provasContent } from '../provasContent';
+import { provaContentPath } from '../provasContent';
 import { seccoes } from '../seccoes';
 import { badges } from '../provasMedia';
 import { toBlocks, keepLastPair } from '../../utils/provaBlocks';
 import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
+
+const files = import.meta.glob('../provas/**/*.js', { eager: true, import: 'default' });
+const provasContent = Object.fromEntries(
+  Object.entries(files).map(([path, content]) => [path.slice('../provas/'.length, -'.js'.length), content]),
+);
+const getProvaContent = (seccao, slug) => files[`.${provaContentPath(seccao, slug)}`];
 
 const slugsOf = (seccao) => provas[seccao].flatMap((g) => g.items.map((p) => p.slug));
 const titlesOf = (slug, content) => new Set(Object.entries(provas)
