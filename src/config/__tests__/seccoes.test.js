@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { seccoes } from '../seccoes';
-import { provasContent } from '../provasContent';
+import lobitismo from '../provas/lobitos/adesao-seccao-5';
 
 const ORDER = ['lobitos', 'exploradores', 'pioneiros', 'caminheiros'];
 
@@ -14,7 +14,7 @@ describe('secção ages', () => {
   });
 
   it('match the Lobitismo prova', () => {
-    const list = provasContent['lobitos/adesao-seccao-5'].sections.find((s) => s.heading.includes('secções')).text;
+    const list = lobitismo.sections.find((s) => s.heading.includes('secções')).text;
     const ages = [...list.matchAll(/dos (\d+) aos (\d+)/g)].map((m) => [Number(m[1]), Number(m[2])]);
     expect(ages).toEqual(ORDER.map((k) => [seccoes[k].ageMin, seccoes[k].ageMax]));
   });

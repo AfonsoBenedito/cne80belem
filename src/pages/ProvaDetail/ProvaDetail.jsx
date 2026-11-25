@@ -1,9 +1,9 @@
-import { Fragment, Suspense, lazy, useEffect, useId, useRef, useState } from 'react';
+import { Fragment, Suspense, lazy, use, useEffect, useId, useRef, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaChevronDown } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
-import { getProvaContent } from '../../config/provasContent';
+import { loadProvaContent, provaContentPath } from '../../config/provasContent';
 import { provaCanonicalPath } from '../../config/canonical';
 import { useSEO } from '../../utils/useSEO';
 import { toBlocks, leadsList, inlineRuns, keepLastPair, PAIR } from '../../utils/provaBlocks';
@@ -151,7 +151,8 @@ export default function ProvaDetail() {
   if (!section || !sectionProvas) return <Navigate to="/" replace />;
   if (!provaItem) return <Navigate to={`/seccao/${seccao}/provas`} replace />;
 
-  const content = getProvaContent(seccao, slug);
+  const contentPromise = loadProvaContent(seccao, slug);
+  const content = contentPromise ? use(contentPromise) : null;
 
   // Prev/next run through all the provas in order, so the last of Adesão ao Movimento
   // leads on to the first of Adesão à Secção
@@ -405,7 +406,7 @@ export default function ProvaDetail() {
                                 <span className={styles.sidebarText}>
                                   <span className={styles.srOnly}>{n}. </span>
                                   {item.title}
-                                  {!getProvaContent(seccao, item.slug) && (
+                                  {!provaContentPath(seccao, item.slug) && (
                                     <span className={styles.sidebarMeta}>Texto em preparação</span>
                                   )}
                                 </span>

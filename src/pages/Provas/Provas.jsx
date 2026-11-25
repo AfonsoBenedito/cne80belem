@@ -3,7 +3,7 @@ import { useParams, Navigate, Link } from 'react-router-dom';
 import { FaChevronRight, FaChevronDown, FaArrowLeft, FaBookOpen, FaFileAlt } from 'react-icons/fa';
 import { seccoes } from '../../config/seccoes';
 import { provas } from '../../config/provas';
-import { getProvaContent } from '../../config/provasContent';
+import { provaContentPath } from '../../config/provasContent';
 import { useSEO } from '../../utils/useSEO';
 import ProvasPdfButton from '../../components/ProvasPdfButton/ProvasPdfButton';
 import pdfStyles from '../../components/ProvasPdfButton/ProvasPdfButton.module.css';
@@ -115,7 +115,7 @@ export default function Provas() {
               {/* Closed is `hidden`, not clipped: its links leave the tab order and the reading order */}
               <ol id={listId} className={styles.grid} hidden={!isOpen}>
                 {group.items.map((prova, index) => {
-                  const ready = !!getProvaContent(seccao, prova.slug);
+                  const ready = !!provaContentPath(seccao, prova.slug);
                   return (
                     <li key={prova.slug}>
                       <Link to={`/seccao/${seccao}/provas/${prova.slug}`} className={styles.card}>

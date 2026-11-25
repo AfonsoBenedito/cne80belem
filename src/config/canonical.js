@@ -1,5 +1,5 @@
 import { provas } from './provas';
-import { getProvaContent } from './provasContent';
+import { provaContentPath } from './provasContent';
 
 // A shared Adesão ao Movimento prova has one page per secção with the same text, so search
 // engines are pointed at one of them: the first secção here that gives it with the same text.
@@ -12,9 +12,9 @@ const offers = (seccao, slug) =>
 
 export function canonicalProvaSeccao(seccao, slug) {
   if (PER_SECCAO.has(slug)) return seccao;
-  const content = getProvaContent(seccao, slug);
+  const content = provaContentPath(seccao, slug);
   if (!content) return seccao;
-  return CANONICAL_ORDER.find((s) => offers(s, slug) && getProvaContent(s, slug) === content) ?? seccao;
+  return CANONICAL_ORDER.find((s) => offers(s, slug) && provaContentPath(s, slug) === content) ?? seccao;
 }
 
 export const provaCanonicalPath = (seccao, slug) =>

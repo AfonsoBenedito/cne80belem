@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { siteRoutes } from '../siteRoutes';
 import { provas } from '../provas';
-import { getProvaContent } from '../provasContent';
+import { loadProvaContent } from '../provasContent';
 import { canonicalProvaSeccao } from '../canonical';
 
 const routes = siteRoutes();
@@ -22,12 +22,12 @@ describe('siteRoutes', () => {
 
   it.each(routes.filter((r) => r.canonical !== r.path).map((r) => [r.path, r]))(
     '%s points at an indexed page with the same text',
-    (_, { path, canonical }) => {
+    async (_, { path, canonical }) => {
       const target = byPath.get(canonical);
       expect(target?.index, `${canonical} is not in the sitemap`).toBe(true);
       const [, , seccao, , slug] = path.split('/');
       const [, , other] = canonical.split('/');
-      expect(getProvaContent(other, slug)).toBe(getProvaContent(seccao, slug));
+      expect(await loadProvaContent(other, slug)).toBe(await loadProvaContent(seccao, slug));
     },
   );
 
